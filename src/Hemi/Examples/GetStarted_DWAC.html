@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>Hemi - JavaScript Framework - Get Started with DWAC</title>
+		<link rel="stylesheet" href="/Styles/PageStyles2.css" type="text/css" title = "noauth" />
+		<link id = "oAuthStyle" rel="alternate stylesheet" href="/Styles/PageStyles2Auth.css" type="text/css" title = "auth" />
+		<link rel="stylesheet" href="/Hemi/Styles/hemi.css" type="text/css" />
+        <link rel="stylesheet" href="/Hemi/Styles/tabs.css" type="text/css" />
+		<script type = "text/javascript" src = "/Hemi/hemi.comp.js"></script>
+		<script type = "text/javascript" src = "/Scripts/PageScripts2.js"></script>
+	</head>
+	<body>
+
+		<h1>Hemi - JavaScript Framework - Get Started with DWAC</h1>
+		<h3>AJAX, Monitoring, Portal Sevices, Templates, HTML-Code-Behind - Since 2002</h3>
+		<ul class = "menu">
+			<li class = "home"><a href = "/">Home</a></li>
+			<li class = "hemi"><a href = "/Hemi">Hemi</a></li>
+			<li class = "projects"><a href = "/projects/">Projects</a></li>
+			<li class = "forum"><a href = "/Forum/">Forum</a></li>
+			<li class = "documents"><a href = "/documents/">Documents</a></li>
+			<li class = "contact"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/FeedbackForm.xml">Contact</a></li>
+			<li class = "signup"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">Signup</a></li>
+			<li class = "infomercial"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/Infomercial.xml">Special Note</a></li>
+			<li class = "login">
+				<form action = "/Login.aspx" method = "post">
+					<input type = "text" value = "" name = "UserName" /> 
+					<input type = "password" value = "" name = "Password" />
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Login" />
+				</form>
+			</li>
+			<li class = "session">
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/Profile.xml" class = "profile" title = "My Profile" href = "#">My Profile</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/BlogAdmin.xml" class = "blog" href = "#">My Blog</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/MediaAdmin.xml" class = "media" href = "#">My Media</a>
+				<form action = "/Login.aspx?logout=1" method = "post">
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Logout" />
+				</form>
+			</li>
+			<li class = "tools">
+				<a component = "/Gizmos/component.window_control.xml" template = "Templates/FrameworkProfiler.xml" title = "Developer Tools" class = "tools" href = "#">Tools</a>
+			</li>
+
+		</ul>
+		<div>
+            <div  class = "tabstrip">
+                <div class = "tab"><a href = "../index.html">Hemi Framework</a></div>
+                <div class = "tab"><a href = "../downloads.html">Downloads</a></div>
+                <div class = "tab"><a href = "../documentation.html">Documentation</a></div>
+                <div class = "tab"><a href = "../studies.html">Case Studies</a></div>
+                <div class = "tab"><a href = "../examples.html">Examples</a></div>
+            </div>
+
+			<div class = "tab_pane content_container">
+				<h2>Get Started with DWAC</h2>
+				<div class = "content_data">
+                    <p>
+                        A <i>Distributed Web Application Component</i> (DWAC) is a composite, self-contained project.
+                        At present, a DWAC may contain <i>Fragments</i>, <i>Templates</i>, <i>Tasks</i>, <i>Components</i>.
+                        The <i>DWAC Designer</i> is a GUI for working with the <i>Hemi JavaScript Framework</i>,
+                        and includes builders for each of these components, a builder for projects, a project publisher, and persistence for your project files.
+                    </p>
+                    <p>
+                        At present, you need to  <a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">register with this site</a> to use the <i>DWAC Designer</i>.
+						An Offline/Unregistered <i>Framework Designer</i> is coming soon.
+					</p>
+                    <p>
+                        The following example walks through creating a template, creating a component to load a second template, fragment to include in the second template, and a project to link them all together.
+                    </p>
+                    <ol>
+                        <li>If not already registered, you'll need to <a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">register with this site</a>, and login.  For the DIY-crowd, you can download and setup the <a href = "/documents/html/technical/application/accountManager4.html">Account Manager 4</a>.</li>
+                        <li>Access the <i>DWAC Designer</i> by typing: http://www.whitefrost.com/DWAC/[UserName].  Example: http://www.whitefrost.com/DWAC/steve (<a href = "/Graphics/screenshots/dwac_1.png">Screenshot #1</a>)</li>
+                        <li>Click <i>Templates</i> on the Explorer tab, or from the Templates tab, click the <i>New</i> button, and name the template "Example Template Container". (<a href = "/Graphics/screenshots/dwac_2.png">Screenshot #2</a>)</li>
+                        <li>Click <i>Create</i>.  Note that the status is "Volatile".  Click the <i>Save</i> icon, and take note of the the path. (<a href = "/Graphics/screenshots/dwac_3.png">Screenshot #3</a>)</li>
+                        <li>Click <i>Components</i> on the Explorer tab, or from the Components tab, click the <i>New</i> button, and name the component "ExampleComponent" (no spaces!). Check the <i>Enable Templates</i> checkbox (this will prepopulate the component with example code). (<a href = "/Graphics/screenshots/dwac_4.png">Screenshot #4</a>)</li>
+                        <li>Click <i>Create</i>, and then click <i>Save</i>. <b>Copy the Path</b>.(<a href = "/Graphics/screenshots/dwac_5.png">Screenshot #5</a>)</li>
+                        <li>Click the <i>Templates</i> tab (the Template created in Step #3 should still be loaded; if not, load it from the Explorer tab).  Select "XHTML Template" from the drop down, and enter the following: &lt;p acid = "ExampleComponent" appcomp_path = "/DWAC/[UserName]/Components/ExampleComponent"&gt;[ Template Component ]&lt;/p&gt; Click "Update", then click "Save". (<a href = "/Graphics/screenshots/dwac_6.png">Screenshot #6</a>)</li>
+                        <li>Click <i>Templates</i>.  Follow steps #3 and #4 again to create a new Template named "Embedded Template". (<a href = "/Graphics/screenshots/dwac_7.png">Screenshot #7</a>)</p>
+                        <li>Click <i>Fragments</i> on the Explorer tab, or from the Fragments tab, and click the <i>New</i> button, and name the fragment "Example Fragment". Include some example XHTML: &lt;p&gt;Example Fragment&lt;/p&gt;. (<a href = "/Graphics/screenshots/dwac_8.png">Screenshot #8</a>)
+                        <li>Click <i>Create</i> and then click <i>Save</i>. (<a href = "/Graphics/screenshots/dwac_9.png">Screenshot #9</a>)</li>
+                        <li>Click the <i>Templates</i> tab (the Template created in Step #8 should still be loaded; if not, load it from the Explorer tab).  Click the "Link Fragment" button, and select "Example Fragment".  Notice the &lt;import-xml /&gt; statement that was generated for you.  This is a Hemi abstraction feature that is part of the <i>Application Space</i> service.  Click "Save". (<a href = "/Graphics/screenshots/dwac_10.png">Screenshot #10</a>)</li>
+                        <li>Click the <i>Components</i> tab (The Component created in Step #6 should still be loaded; if not, load it from the Explorer tab).  Select <i>component_init</i> from the Component Model, uncomment the <i>loadTemplate</i> line.  Copy the path from Step #8 and replace the loadTemplate parameter. (<a href = "/Graphics/screenshots/dwac_11.png">Screenshot #11</a>)</li>
+                        <li>At this point, "Example Template Container" includes "Example Component", which loads the "Embedded Template", which imports the "Example Fragment".  Each template, including referenced fragments and components, operates within its own <i>Application Space</i>.  From the "Explorer" tab, click the "Templates" tree, select the "Example Template Container", and click the "Open" icon to reload "Example Template Container".</li>
+                        <li>From the list box, select "Scripted" or "Declarative", and click the "Run" button to see the template executed. This will automatically load the template into the "Running" tab.  (<a href = "/Graphics/screenshots/dwac_12.png">Screenshot #12</a>)</li>
+                        <li>Click "View Example Info" to see example code for how the template was loaded, depending on which option, Scripted or Declarative, was selected. (<a href = "/Graphics/screenshots/dwac_13.png">Screenshot #13</a>)</li>
+                        <li>Click the "Send to Active Source" button to load the Framework Profile, and set a reference to the running object. (<a href = "/Graphics/screenshots/dwac_14.png">Screenshot #14</a>)</li>
+                        <li>Once the Framework Profile is loaded (you can load it from any page by clicking the "Tools" icon in the upper-right hand corner), the Hemi Framework registry identifier is switched from "hemi-" to "dwd-". By selecting the "Filter Results" checkbox on the "Hemi Stats" tab, all new Hemi Framework objects are created with the alternate identifier prefix.  This makes it easy to pick out in-flight work from everything else that may be running.  To try it out, click the checkbox, minimize or close the profiler (this tool will persist once opened), and re-run the Template from the Templates tab. Open up the profiler again, and from the "Hemi Stats" tab click the "Registry" button.  Notice that only the objects related to the running example are displayed. (<a href = "/Graphics/screenshots/dwac_15.png">Screenshot #15</a>)</li>
+                        <li>Now, create a project out of all the Hemi objects that were created.  Click the "Projects" tab and click the "New" button, give the project a name such as "Example Project", and click "Create". (<a href = "/Graphics/screenshots/dwac_16.png">Screenshot #16</a>)</li>
+                        <li>From the "Link" list box, select "Template", click the "Link" button, and select the first template. Do this again for the second template. (<a href = "/Graphics/screenshots/dwac_17.png">Screenshot #17</a>)</li>
+                        <li>Select "Fragment" to link the fragment, and select "Component" to link the component.  For Primary Template, specify "Example Template Container" (if you don't, this particular project won't do anything when you click "Run"), and then click the "Save" button. (<a href = "/Graphics/screenshots/dwac_18.png">Screenshot #18</a>)</li>
+                        <li>When a project is deployed, or by selecting "Deploy XML" from the list box, the linked project modules are merged into a single deployable DWAC XML file.  All linked fragments and /DWAC paths are replaced with internal references.  This will also verify that all discoverable links are resolved.  For example, if the fragment link is not included, an error will be raised. (<a href = "/Graphics/screenshots/dwac_19.png">Screenshot #19</a>)</li>
+                        <li>Click the "Run" button to publish the project, and test the running project in the Runtime Container. Notice that in the example information, the code is different for how the DWAC was loaded.  (<a href = "/Graphics/screenshots/dwac_20.png">Screenshot #20</a>)</li>
+                        <!--
+                        <li><b>Bug/Feature Note:</b> Once a project is published, it must be deleted from the "Pub" node in the "Explorer" tab tree before it can be published/tested again.</li>
+                        -->
+                        <li>Once a DWAC is created, you can copy the <i>Deployed XML</i> text, and use that for your own DWAC - and everything needed for your distributed component is included.  And, by using the <i>Hemi JavaScript Framework</i>, you can load the Framework Profiler at any time to actively view and debug your work.</li>
+                    </ol>
+
+
+				</div>
+
+			</div>
+		
+		</div>
+    	<p class="copyright">[ Stephen W. Cote, 2010 - <a href = "hemi.license.txt">BSD</a> ]</p>
+	</body>
+</html>

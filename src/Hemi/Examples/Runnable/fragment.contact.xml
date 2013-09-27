@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<p>
+		<input type = "text" name = "firstName" /> : First Name
+		<input type = "text" name = "lastName" /> : Last Name
+	</p>
+</html-fragment>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Examples>
+	<Example Id ="framework.object.new">
+		<Name><![CDATA[New Framework Object]]></Name>
+		<Description><![CDATA[Create a new base object.]]></Description>
+		<Script>
+			<![CDATA[
+var oObject = Hemi.newObject("custom_object","1.0",true);
+		]]>
+		</Script>
+	</Example>
+</Examples>

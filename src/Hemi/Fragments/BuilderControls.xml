@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<import-xml src = "Fragments/MemberModelTools.xml" id = "ModelTools" />
+	<div class = "buttons_bar" rid = "buttons-bar">
+		<input rid ="btnNew" type="button" onclick ="${this}.CreateNewObject()" class = "designer_button new_button" button-action = "New" />
+		<input rid ="btnSave" type="button" onclick ="${this}.SaveCurrentObject()" class = "designer_button save_button" button-action = "Save" />
+		<input type="button" rid ="btnPub" style ="display:none;" onclick ="${this}.PublishCurrentProject()" class = "designer_button publish_button" button-action = "Publish"  />
+		<input rid ="btnDel" type="button" onclick ="${this}.DeleteCurrentObject()" class = "designer_button delete_button" button-action = "Delete"  />
+		<span style ="display:block;float:left;margin-left:10px;margin-top:5px;" rid ="builder-label"></span>
+	</div>
+	<embedded-script>
+			<![CDATA[
+		embedded_init : function(){
+			this.getProperties().data_path = 0;
+			this.setupButtons("buttons-bar");
+			this.joinTransactionPacket("datagrid");
+			this.joinTransactionPacket("iobus");
+			this.scopeHandler("template_loaded", 0, 0, 1);
+		},
+		embedded_destroy : function(){
+			/// alert('destroy');
+			this.removeFromTransactionPacket("datagrid");
+			this.removeFromTransactionPacket("iobus");
+			this._prehandle_template_loaded = 0;
+		},
+		SetDataPath : function(s){
+			this.getProperties().data_path = s;
+			if(this.getProperties().builder_title && this.setTitle)
+				this.setTitle(this.getProperties().builder_title + " - " + s);
+		},
+		GetDataPath : function(){
+			return this.getProperties().data_path;
+		},
+		SetLabel : function(s){
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("builder-label"),s);
+		},
+        _handle_template_loaded: function (v) {
+            if (v && v.getProperties().local_invoke) {
+            	if (v.getProperties().local_invoke_params) v[v.getProperties().local_invoke].apply(v, v.getProperties().local_invoke_params);
+            	else v[v.getProperties().local_invoke]();
+            	v.getProperties().local_invoke = 0;
+            	v.getProperties().local_invoke_params = 0;
+            }
+        },
+		RunControl : function(sInvoke, aParams){
+			var oProps = {show_example:0,opener_id:this.getObjectId(),local_invoke: sInvoke, local_invoke_params:aParams};
+			var oW = Hemi.app.createWindow("Runtime", "Templates/RuntimeContainer.xml", "Runtime-" + Hemi.guid(), 0, 0, oProps, this._prehandle_template_loaded);
+            if (oW) {
+            	oW.resizeTo(650, 650);
+            	Hemi.app.getWindowManager().CenterWindow(oW);
+            	// Destroy the window when closed
+            	//
+            	oW.setHideOnClose(0);
+            }
+		},
+		refreshBuilderUI : function(){
+			/// alert('refresh: ' + this.getProperties().busType);
+			var _bt = Hemi.data.io.service.getBusType();
+			var bNO = (this.getProperties().busType != _bt.ONLINE && this.getProperties().busType != _bt.OFFLINE);
+			var sNote = "";
+			if(bNO) sNote = " (Bus must be ONLINE or OFFLINE to save or delete)";
+			if(this.setStatus) this.setStatus("Builder: Bus " + Hemi.data.io.service.getBusName(this.getProperties().busType) + sNote);
+			
+			this.GetElementByRID("btnSave").disabled = bNO;
+			this.GetElementByRID("btnDel").disabled = bNO;
+		},
+		_handle_change_bus : function(s, v){
+			this.getProperties().busType = v.data.src;
+			this.refreshBuilderUI();
+		},
+		ReadData  : function(sName, sId, fHandler, sMime){
+			return this.queryData("Read", 0, 0, 0, sId, 1, 1, sMime, fHandler);
+		},
+		DeleteData  : function(aF, sId){
+			return this.queryData("Delete", aF, 0, 0, sId);
+		},
+		GetNameExists  : function(aF, sName, sCtx){
+			return this.queryData("CheckName", aF, sCtx, sName);
+		},
+		EditData : function(aF, sId, sCtx){
+			return this.queryData("Edit", aF, sCtx, 0, sId);
+		},
+		AddData : function(aF, sCtx){
+			return this.queryData("Add", aF, sCtx);
+		},
+		ListData : function(sName, fHandler){
+			return this.queryDataList("Directory", sName, fHandler);
+		},
+		queryDataList : function(sCtx, sName, fHandler){
+			var _p = this.getProperties();
+			var oRequest = Hemi.data.io.service.newIORequest(
+                _p.busType,
+                _p.application,
+				sCtx,
+                sName,
+				"List", //action
+				0, // id
+				0, // name
+				0, // details only
+				(fHandler ? 1 : 0), // async
+				0, // cache
+				0 // instruction
+			);
+			Hemi.log("BuilderControls queryDataList: " + _p.busType + " / " + _p.application + " / " + sCtx + " / " + sName + " / List");
+			Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
+			return Hemi.data.io.service.getResponseByName(oRequest.responseId);
+		},
+		queryData : function(sAct, aF, sCtx, sName, sId, bFull, bAsync, sMime, fHandler){
+			var _p = this.getProperties();
+			var oD = 0;
+			if(aF && aF.length > 0){
+				oD = this.GetSerialData(aF);
+			}
+			if(!sCtx) sCtx = _p.current_group_name;
+			var oRequest = Hemi.data.io.service.newIORequest(
+                _p.busType,
+                _p.application,
+				sCtx,
+                _p.catalog,
+				sAct, //action
+				(sId ? sId : 0), // id
+				(sName ? sName : 0), // name
+				(bFull ? 0 : 1), // details only
+				(bAsync ? 1 : 0), // async
+				0, // cache
+				0 // instruction
+			);
+			if(sMime) oRequest.mimeType = sMime;
+			Hemi.log("BuilderControls queryData: " + _p.busType + " / " + _p.application + " / " + _p.catalog + " / " + (_p.group_id ? _p.group_id : _p.group_name) + " / " + sAct + " / " + (sId ? sId : "") + " " + (sName ? sName : ""));
+			if(oD) oRequest.requestData.push(oD);
+			Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
+			var oResponse = Hemi.data.io.service.getResponseByName(oRequest.responseId);
+			return oResponse;
+		},
+		GetSerialData : function(aF){
+			var oData = Hemi.data.io.service.newData();
+			oData.postData = 1;
+			oData.name = "serial_form_data";
+			oData.mimeType = "application/xml";
+			oData.value = this.SerializeForm(0,aF);
+			return oData;
+		}
+		]]>
+	</embedded-script>
+	
+</html-fragment>

@@ -1,0 +1,40 @@
+﻿.framework_toolbar
+{
+    background-color: #AAAADD;
+	height:28px;
+	margin: 0px;/*2px 10px 2px 10px;*/
+	padding: 2px 5px 2px 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:  5px;
+	border-bottom: 1px solid #CFCFCF;
+}
+.framework_toolbar input.toolbar_button
+{
+    width:24px;
+    height:24px;
+    margin-left:2px;
+    padding:0px;
+    border:0px dotted #CFCFCF;
+    background-color:transparent;
+    background-repeat:no-repeat;
+}
+input.toolbar_button_profiler
+{
+    background-image: url(../Graphics/Icons/crystal/24x24/advanced-directory.png);
+}
+input.toolbar_button_designer
+{
+    background-image: url(../Graphics/Icons/crystal/24x24/kivio.png);
+}
+input.toolbar_button_log
+{
+    background-image: url(../Graphics/Icons/crystal/24x24/kexi.png);
+}
+input.toolbar_button_test
+{
+    background-image: url(../Graphics/Icons/crystal/24x24/gnome-word.png);
+}
+input.toolbar_button_api
+{
+    background-image: url(../Graphics/Icons/crystal/24x24/kdvi.png);
+}

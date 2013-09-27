@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Template id="Hierarchy Example">
+<!-- Enter valid XHTML -->
+
+<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+<p style ="font: normal 8pt Verdana;color:#CFCFCF;">Id: ${this.id}</p>
+<p rid ="btn_bar">
+	<!--
+	<input type = "button" value = "Org" onclick = "${this}.DoOrg()" />
+	-->
+	<input type = "button" value = "Clear" onclick = "${this}.DoClearHierarchy()" />
+	<input type = "text" rid = "last_id" style ="width:25px;" value = "0" />
+	<input type = "text" rid = "node_name" value = "" />
+	<input type = "button" value = "Add" onclick = "${this}.DoAdd()" />
+	<!--
+	<input type = "button" value = "Render" onclick = "${this}.GetComponentByRID('hierarchy').Render()" />
+	-->
+</p>
+
+<div rid ="canvas" component = "canvas" width = "600" height = "300"></div>
+<span rid ="hierarchy" component = "hierarchy"></span>
+<p>
+	<input type = "button" value = "Export" onclick = "${this}.DoToJSON()" />
+	<input type = "button" value = "Import" onclick = "${this}.EvalHierarchy()" />
+</p>
+<textarea rid = "hierarchy-text" style = "width:100%;height:100px;"></textarea>
+
+<embedded-script><![CDATA[
+DoToJSON : function()
+{
+   this.GetElementByRID("hierarchy-text").value = this.GetComponentByRID("hierarchy").NodeHierarchyToJSON();
+},
+
+EvalHierarchy : function()
+{
+   this.DoClearHierarchy();
+   var sVal = this.GetElementByRID("hierarchy-text").value;
+   var x;
+		eval("x=" + sVal);
+		if(x.Hierarchy) x = x.Hierarchy;
+		for(var i = 0; i < x.length; i++){
+			this.LoadHierarchy(x[i]);
+		}
+		this.GetComponentByRID("hierarchy").Render();
+},
+
+DoClear : function()
+{
+   this.GetComponentByRID("hierarchy").getObjects().canvas.Clear();
+},
+
+DoOrg : function()
+{
+   this.DoClear();
+ this.GetComponentByRID("hierarchy").Render();
+},
+
+DoAdd : function()
+{
+   var oHC = this.GetComponentByRID("hierarchy");
+		var sName = this.GetElementByRID("node_name").value;
+		if(!sName.length) sName = "Node";
+		var iLastId = parseInt(this.GetElementByRID("last_id").value);
+		if(isNaN(iLastId)) iLastId = 0;
+		var oP = 0;
+		if(iLastId >= 0) oP = oHC.getObjects().nodes[iLastId];
+		var oNode = oHC.NewOrganizationNode(++oHC.getProperties().node_counter,sName,oP);
+                this.GetElementByRID("last_id").value = oNode.index;
+		oHC.Render();
+},
+
+DoClearHierarchy : function()
+{
+   this.GetComponentByRID("hierarchy").ClearHierarchy();
+},
+
+LoadHierarchy : function(vNode, oParent)
+{
+   var oOrg = this.GetComponentByRID("hierarchy").NewOrganizationNode(vNode.id,vNode.name,oParent)
+		for(var i = 0; i < vNode.nodes.length; i++){
+			this.LoadHierarchy(vNode.nodes[i],oOrg);
+		}
+},
+ _handle_canvas_available : function(ts, tp){
+	this.updateControls();
+ },
+ updateControls : function(){
+	
+	var oCanvas = this.GetComponentByRID("canvas");
+	if(!oCanvas || !oCanvas.getProperties().canvas_supported){
+		var o = this.GetElementByRID("btn_bar");
+		var aI = o.getElementsByTagName("input");
+		for(var i = 0; i < aI.length; i++) aI[i].disabled = true;
+		this.GetElementByRID("hierarchy-text").value = "Browser does not support Canvas.  Please use FireFox, Safari, or Chrome for this particular page.";
+	}
+ },
+template_init : function()
+{
+	Hemi.transaction.service.register(this);
+	var oPacket = Hemi.transaction.service.getPacketByName("canvas");
+	if(oPacket){
+		this.updateControls();
+	}
+	else{
+		Hemi.transaction.service.openTransaction("canvas",this,{type:0,src:0,data:0});
+	}
+
+	//alert(this.GetComponentByRID("hierarchy").component_init);
+   //this.GetComponentByRID("hierarchy").getObjects().hierarchy_decorator = this.GetComponentByRID("hierarchy-decorator");
+   //this.GetComponentByRID("hierarchy-decorator").SetHierarchy(this.GetComponentByRID("hierarchy"));
+   //this.GetComponentByRID("hierarchy").SetCanvasComponent(this.GetComponentByRID("canvas"));
+   //this.GetComponentByRID("canvas").Resize(600,400);
+   //this.LoadDemo();
+}
+]]></embedded-script>
+</Template>

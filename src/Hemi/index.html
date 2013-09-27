@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>Hemi - JavaScript Framework</title>
+		<link rel="stylesheet" href="/Styles/PageStyles2.css" type="text/css" title = "noauth" />
+		<link id = "oAuthStyle" rel="alternate stylesheet" href="/Styles/PageStyles2Auth.css" type="text/css" title = "auth" />
+		<link rel="stylesheet" href="/Hemi/Styles/hemi.css" type="text/css" />
+        <link rel="stylesheet" href="/Hemi/Styles/tabs.css" type="text/css" />
+		<script type = "text/javascript" src = "/Hemi/hemi.js"></script>
+		<script type = "text/javascript" src = "/Scripts/PageScripts2.js"></script>
+	</head>
+	<body>
+
+		<h1>Hemi - JavaScript Framework</h1>
+		<h3>AJAX, Monitoring, Portal Sevices, Templates, HTML-Code-Behind - Since 2002</h3>
+		<ul class = "menu">
+			<li class = "home"><a href = "/">Home</a></li>
+			<li class = "hemi"><a href = "/Hemi">Hemi</a></li>
+			<li class = "projects"><a href = "/projects/">Projects</a></li>
+			<li class = "forum"><a href = "/Forum/">Forum</a></li>
+			<li class = "documents"><a href = "/documents/">Documents</a></li>
+			<li class = "contact"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/FeedbackForm.xml">Contact</a></li>
+			<li class = "signup"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">Signup</a></li>
+			<li class = "infomercial"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/Infomercial.xml">Special Note</a></li>
+			<li class = "login">
+				<form action = "/Login.aspx" method = "post">
+					<input type = "text" value = "" name = "UserName" /> 
+					<input type = "password" value = "" name = "Password" />
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Login" />
+				</form>
+			</li>
+			<li class = "session">
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/Profile.xml" class = "profile" title = "My Profile" href = "#">My Profile</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/BlogAdmin.xml" class = "blog" href = "#">My Blog</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/MediaAdmin.xml" class = "media" href = "#">My Media</a>
+				<form action = "/Login.aspx?logout=1" method = "post">
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Logout" />
+				</form>
+			</li>
+			<li class = "tools">
+				<a component = "/Gizmos/component.window_control.xml" template = "Templates/FrameworkProfiler.xml" title = "Developer Tools" class = "tools" href = "#">Tools</a>
+			</li>
+
+		</ul>
+		<div template = "ToolBar">&nbsp;</div>
+		<div>
+            <div  class = "tabstrip">
+                <div class = "tab tab_active">Hemi Framework</div>
+                <div class = "tab"><a href = "downloads.html">Downloads</a></div>
+                <div class = "tab"><a href = "documentation.html">Documentation</a></div>
+                <div class = "tab"><a href = "studies.html">Case Studies</a></div>
+                <div class = "tab"><a href = "examples.html">Examples</a></div>
+            </div>
+			<div class = "tab_pane  content_container">
+				<h2>Hemi Framework - v3.1</h2>
+				<h3>What Is "Hemi"?</h3>
+				<div class = "content_data">
+					<p>The Hemi JavaScript Framework (v. 3.1) is a services-oriented Web Page framework.  It is the third major version of <a href = "/projects/engine/">Engine for Web Applications</a> project.</p>
+				</div>
+				<h3>About the Hemi JavaScript Framework</h3>
+				<div class = "content_data">
+					<p>
+                        New features in v 3.1 include enhanced <i>HTML 5</i> support, including the <a href = "api/hemi.worker.html">Hemi Worker Service</a>.
+                        Testing capabilities have been improved by separating the test enhancements into the <a href = "api/hemi.app.module.test.html">Test Module Service</a>
+                    </p>
+				</div>
+				<h3>Mini FAQ</h3>
+				<div class = "content_data">
+					<ul>
+						<li>Will it work in my browser?  <a href = "#" onclick = "Hemi.app.createWindow('Feature Test Suite','Templates/FVTs.xml','FVTs');">Run the feature tests</a>, which perform automatic build-verification testing, to verify the framework modules are operating correctly.</li>
+						<li>Are there any developer tools?  
+							<ul>
+								<li>For in-page framework testing, use the <a href = "#" onclick = "Hemi.app.createWindow(0,'Templates/FrameworkProfiler.xml','Templates/FrameworkProfiler.xml');">The Framework Profiler</a>.</li>
+								<li>Experimental: Try an inline non-persistent <a href = "#" onclick = "Hemi.app.createWindow(0,'/Templates/DWACDesigner.xml','/Templates/DWACDesigner.xml').resizeTo(850,600);">Framework Designer</a>: For prototyping new Hemi projects, tasks, templates, components, and fragments. Login required to save data on server.   The <i>DWAC Designer</i> includes the server-side compliments to the <i>Framework Designer</i>.  You can access <i>DWAC</i> by registering with this site, or using the <a href = "/documents/html/technical/web/coreWeb.html">Core Web</a> project.</li>
+							</ul>
+						</li>
+						<li>Are there any monitors for the <a href = "api/hemi.monitor.html">Monitor Service</a>?  Yes. Performance, Behavior (aka: IMNMotion), and Experience (aka: Raccoon) monitors are available, but require a correctly configured server for configuration, shredding, aggregation, and reporting.  These modules are include in the <i>Account Manager</i> / <i>Core Web</i> projects, but the documentation for setting them up is not ready yet.</li>
+					</ul>
+				</div>
+				<h3>Setup</h3>
+				<div class = "content_data">
+					<ul>
+						<li>Download the latest version: <a href = "http://code.google.com/p/engine-framework/downloads/list">Download v3.1 from Google Code</a></li>
+						<li>Unzip to a directory in your Web site. By default, the Hemi root path is: /Hemi/</li>
+						<li>Add Hemi to your Web page:
+							<ul>
+								<li>Everything all at once: &lt;script type = "text/javascript" src = "/Hemi/hemi.comp.js"&gt;&lt;/script&gt;</li>
+								<li>Or, load on demand: &lt;script type = "text/javascript" src = "/Hemi/hemi.js"&gt;&lt;/script&gt;</li>
+							</ul>
+						</li>
+						<li>If a different location is desired, set the framework path: &lt;script type = "text/javascript"&gt;Hemi.hemi_base = "/Where/Is/Hemi/";&lt;/script&gt;</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<p class="copyright">[ Stephen W. Cote, 2011 - <a href = "hemi.license.txt">BSD</a> ]</p>
+
+	</body>
+</html>

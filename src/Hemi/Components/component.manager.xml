@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-components>
+  <!--
+			Reference: http://www.imnmotion.com/documents/html/technical/dhtml/mdiOverview.html
+			The 'manager' component's mousemove code was adapted from the MDI CContainer class.
+			The 'window' component's behavior and delegation to 'manager' was modeled after the MDI CWindow class.
+			Much of the MDI coding guff was completely dropped
+
+	-->
+
+  <application-component id="manager">
+    <![CDATA[
+			component_destroy:function(){
+
+			},
+			component_init:function(){
+				// bug note: getContainerId is coming through as an object because the component is being tied directly to the engine object
+				// but, the getContainer() correctly points to the engine HTML element
+				//
+
+				if(typeof this.getContainerId() != "string"){
+					alert("Invalid container reference.  terminating object");
+					this.destroy();
+					return;
+				}
+				
+				var _s = this.getProperties();
+				this.setTopWindow(null);
+				this.scopeHandler("mousemove",0,0,1);
+				this.scopeHandler("document_scroll",0,0,1);
+
+				Hemi.event.addEventListener(this.getContainer(),"mousemove",this._prehandle_mousemove);
+				Hemi.event.addEventListener(window,"scroll",this._prehandle_document_scroll);
+
+				_s.mod_x = 0;
+				_s.mod_y = 0;
+				
+				_s.animate_delay = 10;
+				_s.animate_step = 40;
+				_s.animate_count = 0;
+        
+				_s.tile_top = 10;
+				_s.tile_left = 10;
+				_s.tile_width = 200;
+				_s.tile_height = 20;
+		        _s.keep_in_view = 1;
+				_s.cascade_height = 250;
+				_s.cascade_width = 450;
+				_s.tile_mode = 1;
+		        
+				this.getObjects().frame_screening = 0;
+				this.getObjects().frame_screen = 0;
+				this.getObjects().screen = 0;
+				this.getObjects().screen_owner = 0;
+				this.getObjects().windows = [];
+		        
+				_s.screening = 0;
+				this.scopeHandler("window_resize",0,0,1);
+				Hemi.event.addEventListener(window,"resize",this._prehandle_window_resize);
+			},
+      _handle_window_resize : function(){
+        this.RepositionScreen();
+        this.Tile();
+      },
+			_handle_document_scroll : function(e){
+				this.Tile();
+				//this.KeepInView();
+			},
+			/*
+	  KeepInView : function(){
+	    var a = [], _p = this.getObjects(), _s = this.getProperties(), o, i = 0, _sw, iC = 0, iCT=0;
+        var iDT = document.documentElement.clientHeight;
+        var iDW = document.documentElement.clientWidth;
+        var iVH = Hemi.css.getAbsoluteTop(this.getContainer());
+        var iOT = this.getContainer().offsetHeight;
+        var iOW = this.getContainer().offsetWidth;
+        for(; i < _p.windows.length; i++){
+			o = Hemi.registry.service.getObject(_p.windows[i]);
+			var iUW = o.getIsBound() && iOW < iDW ? iOW : iDW;
+			var iUT = o.getIsBound() && iOT < iDT ? iOT : iVH + document.documentElement.scrollTop;
+			_sw = o.getProperties();
+
+			if(!o.getIsMinimized() && !o.getProperties().is_closed){
+				
+				window.status = Hemi.css.getAbsoluteTop(o.getContainer()) + ":" + o.getContainer().offsetTop + ":" + (iVH + document.documentElement.scrollTop);
+			}
+			
+		}
+
+	  },
+	  */
+      SetTileMode : function(i){
+				this.getProperties().tile_mode = i;
+      },
+      GetWindowByName : function(n){
+				var a = this.getObjects().windows, o;
+				for(var i = 0; i < a.length; i++){
+					o = Hemi.registry.service.getObject(a[i]);
+					if(!o || typeof o.getContainerComponentId != "function") continue;
+					if(o.getContainerComponentId() == n) return o;
+				}
+				return 0;
+      },
+      GetWindowIds : function(){
+				return this.getObjects().windows;
+      },
+      RegisterWindow : function(i){
+        var a = this.getObjects().windows;
+        a[a.length] = i;
+      },
+	  CheckAllReadyToClose : function(f){
+		var i = 0, _p = this.getObjects(),b = 1,w;
+		for(; i < _p.windows.length;i++ ){
+			w = Hemi.registry.service.getObject(_p.windows[i]);
+			if(!this.CheckReadyToClose(w)){
+				b = 0;
+				if(f){
+					w.restore();
+					w.getFocus();
+				}
+				break;
+			}
+		}
+		return b;
+	  },
+	  CheckReadyToClose : function(o){
+		if(typeof o == "string") o = this.GetWindowByName(o);
+		if(!o) return 1;
+		if(o.GetChangeCount() > 0) return 0;
+		return 1;
+	  },
+      UnRegisterWindow : function(d){
+				var x = -1, i = 0, _p = this.getObjects();
+				for(; i < _p.windows.length;i++ ){
+					if(_p.windows[i] == d){
+						x = i;
+						break;
+					}
+				}
+				var w = _p.windows;
+				if(x >= 0){
+					w.splice(x,1);
+				}
+      },
+      
+      ReturnFrameScreen: function(b){
+        var _p = this.getObjects();
+        this.getProperties().frame_screening = 0;
+        if(!b && _p.frame_screen) _p.frame_screen.style.display = "none";
+      },
+      RequestFrameScreen : function(){
+        var _p = this.getObjects();
+        this.ReturnFrameScreen(1);
+        if(!_p.frame_screen){
+          _p.frame_screen = document.createElement("div");
+          _p.frame_screen.style.position = "absolute";
+          _p.frame_screen.style.display = "block";
+          _p.frame_screen.style.zIndex = 17;
+          _p.frame_screen.style.top = "0px";
+          _p.frame_screen.style.left = "0px";
+          // _p.frame_screen.style.backgroundColor = "#CFCFCF";
+          _p.frame_screen.onselectstart = function(){return false;};
+          _p.frame_screen.onmousedown = function(){return false;};
+	        document.body.appendChild(_p.frame_screen);
+        }
+        _p.frame_screen.style.display = "block";
+        this.getProperties().frame_screening = 1;
+        this.RepositionFrameScreen();
+      
+      },
+      
+      RepositionFrameScreen : function(){
+        if(!this.getProperties().frame_screening) return;
+        var _p = this.getObjects();
+        var de = document.documentElement;
+        _p.frame_screen.style.width = "1px";
+        _p.frame_screen.style.height = "1px";
+        _p.frame_screen.style.width = ((de.scrollWidth > de.offsetWidth ? de.scrollWidth : de.offsetWidth) - 20) + "px";
+        _p.frame_screen.style.height = ((de.scrollHeight > de.offsetHeight ? de.scrollHeight : de.offsetHeight) - 20) + "px";
+
+      },
+	    ReturnScreen: function(b){
+        var _p = this.getObjects();
+        this.getProperties().screening = 0;
+        if(!b && _p.screen) _p.screen.style.display = "none";
+        _p.screen_owner = 0;
+      },
+      RequestScreen : function(o){
+        var _p = this.getObjects();
+        this.ReturnScreen(1);
+        _p.screen_owner = o;
+        //o.getContainer().style.display = "none";
+        if(!_p.screen){
+          _p.screen = document.createElement("div");
+          _p.screen.className = "gizmo_screen";
+          _p.screen.style.display = "block";
+          // _p.screen.style.width = "100%";
+          // _p.screen.style.height = "100%";
+          _p.screen.bound = o.getIsBound();
+          if(o.getIsBound()) this.getContainer().appendChild(_p.screen);
+          else document.body.appendChild(_p.screen);
+        }
+        _p.screen.style.display = "block";
+        //o.getContainer().style.display = "block";
+        this.getProperties().screening = 1;
+        this.RepositionScreen();
+        
+      },
+      RepositionScreen : function(){
+        if(!this.getProperties().screening) return;
+        
+        var _p = this.getObjects();
+        var de = document.documentElement;
+        _p.screen.style.width = "1px";
+        _p.screen.style.height = "1px";
+        var o = de;
+        if(_p.screen.bound) o = this.getContainer();
+        _p.screen.style.width = (o.scrollWidth > o.offsetWidth ? o.scrollWidth : o.offsetWidth) + "px";
+        _p.screen.style.height = (o.scrollHeight > o.offsetHeight ? o.scrollHeight : o.offsetHeight) + "px";
+
+      },
+		CenterWindow : function(w){
+			var _p = this.getObjects();
+			var de = document.documentElement;
+			if(document.body.scrollTop > de.scrollTop) de = document.body;
+			var iDH = document.documentElement.clientHeight;//Math.max(document.documentElement.clientHeight,document.body.clientHeight);
+			var o = de;
+			if(w.getIsBound()) o = this.getContainer();
+			
+			var iW = w.getContainer().offsetWidth;
+			var iH = w.getContainer().offsetHeight;
+			//alert(iW + "," + iH);
+			var iTop = (iDH / 2 - iH / 2);
+			
+			if(de.scrollTop > 0 || (w.getIsBound() && iDH > 0 && o.offsetHeight > iDH && de.scrollTop > iTop)) iTop = de.scrollTop;
+			w.moveTo((o.offsetWidth / 2 - iW / 2) + "px",iTop + "px");
+		},
+		
+			_handle_mousemove:function(e){
+						
+				var evt=Hemi.event.getEvent(e);
+				
+				if(this.getTopWindow() && (this.getTopWindow().getProperties().is_moving || this.getTopWindow().getProperties().is_resizing)){
+					
+					var iX = evt.clientX;
+					var iY = evt.clientY;
+					var oObj = this.getContainer();
+					
+					var oWin = this.getTopWindow();
+					
+					var iCW = Math.max(document.documentElement.clientWidth,document.body.clientWidth);
+					var iCH = Math.max(document.documentElement.clientHeight,document.body.clientHeight);
+
+					var oFr = oWin.getObjects().active_frame;
+					if(oWin.getProperties().is_resizing){
+						var oTemp= (oWin.getIsBound() ? oObj : document.documentElement);
+						var iNewW=iX - oFr.offsetLeft - oTemp.offsetLeft + document.documentElement.scrollLeft;
+						var iNewH=iY - oFr.offsetTop - oTemp.offsetTop + document.documentElement.scrollTop;
+						if(oWin.getProperties().is_bound){
+							var iTop3 = oObj.offsetTop + oObj.offsetHeight +  this.getProperties().mod_y;
+							var iLeft3 = oObj.offsetLeft + oObj.offsetWidth +  this.getProperties().mod_x;
+							if(iY >= iTop3 || iX >= iLeft3) return;
+						}
+						if(iNewH > 50 && iNewW > 50){
+							oFr.style.height = iNewH + "px";
+							oFr.style.width = iNewW + "px";
+						}
+						
+					}
+					if(oWin.getProperties().is_moving){
+						/*
+							Unbound windows should be sized against their parent.
+						*/
+						//var oTemp= (oWin.getIsBound() ? oObj : document.documentElement);
+
+						/*
+							Bound or unbound, windows should not be able to be moved into a position where the 
+							user can't "grab" the title bar.  In this case, the window can't be moved beyond the point where
+							the mouse pointer exits the frame.
+						*/
+
+						//var iX2 = Hemi.css.getAbsoluteLeft(oTemp) + oTemp.clientWidth;
+						//var iY2 = Hemi.css.getAbsoluteTop(oTemp) + oTemp.clientHeight;
+						var iX2 = 0;
+						
+						var iY2 = 0;
+						
+						if(oWin.getIsBound()){
+							iX2 = Hemi.css.getAbsoluteLeft(oObj) + oObj.clientWidth;
+							iY2 = Hemi.css.getAbsoluteTop(oObj) + oObj.clientHeight;
+						}
+						else{
+							iX2 = iCW;
+							iY2 = iCH;
+
+						}
+						
+						//window.status = iX + ":" + iX2;
+
+						iX=(iX < 0)?0:(iX > iX2)?iX2:iX;
+						iY=(iY < 0)?0:(iY > iY2)?iY2:iY;
+						var iNewX=iX - oWin.getProperties().track_x;
+						var iNewY=iY - oWin.getProperties().track_y;
+						
+						if(!oWin.getIsBound()){
+							iNewY=(iNewY<0)?0:iNewY;
+							oFr.style.left = iNewX + "px";
+							oFr.style.top = iNewY + "px";
+							//document.title = "Unbound: " + iNewX + "," + iNewY;
+						}
+						else{
+						
+							var iLeft1=oFr.offsetLeft + oObj.offsetLeft;
+							var iLeft2=oObj.offsetLeft;
+							var iLeft3=iLeft1 + oFr.offsetWidth;
+							var iLeft4=iLeft2 + oObj.offsetWidth;
+							var iTop1=oFr.offsetTop + oObj.offsetTop;
+							var iTop2=Hemi.css.getAbsoluteTop(oObj);
+							var iTop3=iTop1 + oFr.offsetHeight;
+							var iTop4=iTop2 + oObj.offsetHeight;
+							//window.status=iTop1 + ":" + iTop2 + " / " + iTop3 + ":" + iTop4 + " | " + iLeft1 + ":" + iLeft2 + " / " + iLeft3 + ":" + iLeft4;		
+							//window.status = iX + ":" + oWin.getProperties().track_x;//iNewX + "," + iNewY;
+							if((iLeft1>=iLeft2)&&(iLeft3<=iLeft4)){
+								var iCheckFarLeft=oObj.offsetWidth - oFr.offsetWidth - this.getProperties().mod_x;
+								if(iNewX<0){
+									iNewX=0;
+								}
+								if(iNewX>iCheckFarLeft){
+									iNewX=iCheckFarLeft;
+								}
+								oFr.style.left = iNewX + "px";
+							}
+							else{
+								if(iLeft3>iLeft4){
+									oFr.style.left = (iLeft4 - iLeft2 - oFr.offsetWidth) + "px";
+								}
+							}
+							if((iTop1>=iTop2)&&(iTop3<=iTop4)){
+								var iCheckFarTop=oObj.offsetHeight - oFr.offsetHeight - this.getProperties().mod_y;
+								if(iNewY<0){
+									iNewY = 0;
+								}
+								if(iNewY>iCheckFarTop){
+									iNewY = iCheckFarTop;
+								}
+								oFr.style.top = iNewY + "px";
+							}
+							else{
+								if(iTop3>iTop4){
+									oFr.style.top=(iTop4 - iTop2 - oFr.offsetHeight) + "px";
+								}
+							}			
+					 } // end if bound
+					} // end if is moving
+				} // end if valid window object
+
+			},
+			getTopWindow:function(){
+				return this.getObjects().top_window;
+			},
+			setTopWindow:function(o){
+			  this.getObjects().top_window = o;
+			},
+			setFocus:function(o){
+				if(this.getTopWindow() && this.getTopWindow() != o){
+					var y = this.getTopWindow()
+					y.getContainer().style.zIndex = y.getProperties().lostFocusIndex;
+					y._handle_lost_focus();
+				}
+				this.setTopWindow(o);
+				if(o)
+					o.getContainer().style.zIndex = (o.getProperties().is_dialog ? o.getProperties().dialogFocusIndex : o.getProperties().setFocusIndex);
+				
+			},
+			
+			Cascade : function(){
+				var _p = this.getObjects(), o, i=0, iC = 0, iL = 1,l;
+				var iDT = (document.body.offsetHeight > document.documentElement.offsetHeight ? document.body.offsetHeight : document.documentElement.offsetHeight);
+				var iOT = this.getContainer().offsetHeight;
+				
+ 				for(; i < _p.windows.length; i++){
+					o = Hemi.registry.service.getObject(_p.windows[i]);
+					if(!o.getProperties().can_move) continue;
+					var iUT = o.getIsBound() ? iOT : iDT;
+					var iT = (iC * 50);
+					l = (iL * 25) + (iC * 25);
+					o.blur();
+					if(o.getIsMinimized()){
+						b = o.getProperties().manage_minimize;	
+						o.getProperties().manage_minimize = 0;
+						o.restore(1);
+						o.getProperties().manage_minimize = b;
+					}
+					
+
+					// o.resizeTo(250,250);
+					if((iT + this.getProperties().cascade_height) > iUT){
+						iL += 5;
+						iC = 0;
+						iT = 0;
+						l = (iL * 25) + (iC * 25);
+						
+					}
+					iC++;
+					
+					o.animate(o.getContainer().offsetLeft,o.getContainer().offsetTop,l,iT,0,0,0,1,this.getProperties().cascade_width,this.getProperties().cascade_height);
+					
+				}
+
+          // _p.manager.Tile();
+          // this.animate(this.getContainer().offsetLeft,this.getContainer().offsetTop,_s.last_left,_s.last_top,0,0,0,1,_s.last_width,_s.last_height);
+      },
+      ManageMaximize : function(o){
+        var iDT = document.documentElement.clientHeight;//(document.body.offsetHeight > document.documentElement.offsetHeight && document.body.scrollHeight > document.body.offsetHeight ? document.body.offsetHeight : document.documentElement.offsetHeight);
+        var iDW = document.documentElement.clientWidth;//(document.body.offsetWidth > document.documentElement.offsetWidth ? document.body.offsetWidth : document.documentElement.offsetWidth);        
+
+        var iOT = this.getContainer().offsetHeight;
+        var iOW = this.getContainer().offsetWidth;
+		
+				var iVH = Hemi.css.getAbsoluteTop(this.getContainer());
+        
+        var iUW = o.getIsBound() && iOW < iDW ? iOW : iDW;
+        var iUT = o.getIsBound() && iOT < iDT ? iOT : iDT - iVH + document.documentElement.scrollTop;
+				var iTT = o.getIsBound() ? 0 : document.documentElement.scrollTop;
+				//alert(o.getIsBound());
+		
+        this.animateMove(o,o.getContainer().offsetLeft,o.getContainer().offsetTop,0,iTT,0,0,0,1,iUW,iUT);
+      },
+      
+      ManageMinimize : function(o){
+        if(o.getMinimizeType() == "tile") this.Tile();
+        else if(o.getMinimizeType() == "marker") this.TileToMark(o);
+      },
+      
+      TileAll : function(){
+				var _p = this.getObjects(), i = 0, o, b;
+				for(; i < _p.windows.length; i++){
+					o = Hemi.registry.service.getObject(_p.windows[i]);
+					if(!o.getIsMinimized() && o.getProperties().can_minimize){
+						b = o.getProperties().manage_minimize;
+						o.getProperties().manage_minimize = 0;
+						o.minimize();
+						o.getProperties().manage_minimize = b;
+					}
+				}
+				this.Tile();
+      },
+      TileToMark : function(o){
+          if(o.getIsMinimized() && !o.getProperties().is_closed && o.getProperties().manage_minimize && o.getMinimizeType() == "marker"){
+						var iTT = Hemi.css.getAbsoluteTop(o.getMinimizeMarker());
+						var iTL = Hemi.css.getAbsoluteLeft(o.getMinimizeMarker());
+						var iST = Hemi.css.getAbsoluteTop(o.getContainer());
+						var iSL = Hemi.css.getAbsoluteLeft(o.getContainer());						
+            var iL = iTL + (o.getMinimizeMarker().offsetWidth/2);
+            var iT = iTT + (o.getMinimizeMarker().offsetHeight/2);
+            //alert(Hemi.css.getAbsoluteTop(o.getContainer()) - o.getContainer().parentNode.offsetTop);
+            //alert(o.getContainer().offsetTop + ":" + Hemi.css.getAbsoluteTop(o.getContainer()) + ":" + iT);
+            this.animateMove(o,iSL,iST,iL,iT,1,1,0,1,o.getMinimizeMarker().offsetWidth,o.getMinimizeMarker().offsetHeight);
+          }
+      },
+      
+      Tile : function(){
+        var a = [], _p = this.getObjects(), _s = this.getProperties(), o, i = 0, _sw, iC = 0, iCT=0;
+        var iDT = document.documentElement.clientHeight;//(document.body.offsetHeight > document.documentElement.offsetHeight && document.body.scrollHeight > document.body.offsetHeight ? document.body.offsetHeight : document.documentElement.offsetHeight);
+        var iDW = document.documentElement.clientWidth;//(document.body.offsetWidth > document.documentElement.offsetWidth ? document.body.offsetWidth : document.documentElement.offsetWidth);
+        var iVH = Hemi.css.getAbsoluteTop(this.getContainer());
+        var iOT = this.getContainer().offsetHeight;
+        var iOW = this.getContainer().offsetWidth;
+        for(; i < _p.windows.length; i++){
+          o = Hemi.registry.service.getObject(_p.windows[i]);
+					var iUW = o.getIsBound() && iOW < iDW ? iOW : iDW;
+					var iUT = o.getIsBound() && iOT < iDT ? iOT : iDT - iVH + (document.body.scrollTop > document.documentElement.scrollTop ? document.body.scrollTop : document.documentElement.scrollTop);
+
+          _sw = o.getProperties();
+          if(o.getIsMinimized() && o.getProperties().can_move && !o.getProperties().is_closed && _sw.manage_minimize && o.getMinimizeType() == "tile"){
+			if(_s.tile_mode == 2){
+				var iL = _s.tile_left + (iCT * (_s.tile_width + 5));
+				var iT = _s.tile_top + (iC * (_s.tile_height + 5));
+				if((iT + _s.tile_height) > iUT){
+					iCT++;
+					iC = 0;
+					iL = _s.tile_left + (iCT * (_s.tile_width + 5));
+					iT = _s.tile_top + (iC * (_s.tile_height + 5));
+
+				}
+			}
+			else{
+				var iL = _s.tile_left + (iC * (_s.tile_width + 5));
+				var iT = iUT - ((_s.tile_top + o.getContainer().offsetHeight) * (iCT + 1));
+
+				if((iL + _s.tile_width) > iUW){
+					iCT++;
+					iC = 0;
+					iL = _s.tile_left + (iC * (this.getProperties().tile_width + 5));
+					iT = iUT - ((_s.tile_top + o.getContainer().offsetHeight) * (iCT + 1));
+				}
+			}
+			this.animateMove(o,o.getContainer().offsetLeft,o.getContainer().offsetTop,iL,iT,0,0,0,1,_s.tile_width,_s.tile_height);
+			iC++;
+
+          }
+        }
+        
+      },
+			
+
+       animateObjectTo : function(o,iX,iY){
+
+	      var iN = Math.random();
+	      iN = 1; // (iN < .5 ? -1 : 1);
+	      var iN2 = Math.random();
+	      iN2 = 1; //(iN2 < .5 ? -1 : 1);
+	      var iTX = (Math.random() * document.documentElement.offsetWidth)  * iN;
+	      var iTY = (Math.random() * document.documentElement.offsetHeight) * iN2;
+	      this.animateMove(o,iTX,iTY,iX,iY);
+      },
+
+      animateMove : function(o,iCX,iCY,iDX,iDY,bHide,bFadeOut,bFadeIn,bScale,bScaleToWidth,bScaleToHeight){
+       
+         if(!Hemi.registry.service.isRegistered(o)) return;
+	     
+         var iDistX=iDX - iCX;
+	      var iDistY=iDY - iCY;
+	      var iDist=Math.sqrt(Math.pow(iDistX,2) + Math.pow(iDistY,2));
+	     var iSNum=iDist/this.getProperties().animate_step;
+	      var iMX=iDistX/iSNum;
+	      var iMY=iDistY/iSNum;
+      	
+				o.getProperties().expected_x = iDX;
+				o.getProperties().expected_y = iDY;
+
+        o.getProperties().expected_h = bScaleToHeight;
+        o.getProperties().expected_w = bScaleToWidth;
+	      this.getProperties().animate_count++;
+	      this.animateMotion(o.getObjectId(),iMX,iMY,iDX,iDY,iCX,iCY,iDist,bHide,bFadeOut,bFadeIn,bScale,bScaleToWidth,bScaleToHeight);
+        
+      },
+
+
+    animateMotion : function(sId,iMX,iMY,iDX,iDY,iCX,iCY,iOrgDist,bHide,bFadeOut,bFadeIn,bScale,bScaleToWidth,bScaleToHeight){
+
+ 			var o = Hemi.registry.service.getObject(sId);
+			if(!o || o.getReadyState() != 4 || typeof o.getContainer != "function" || o.getContainer() == null) return;
+
+			var iPerc = parseInt((Math.sqrt(Math.pow(iDX - iCX,2) + Math.pow(iDY - iCY,2)) / iOrgDist) * 100);
+
+			if(
+
+				Math.floor(Math.abs(iMX)) < Math.floor(Math.abs(iDX - iCX))
+				||
+				Math.floor(Math.abs(iMY)) < Math.floor(Math.abs(iDY - iCY))
+			){
+		    
+				iCX+=iMX;
+				iCY+=iMY;
+		    
+				try{
+
+						o.getContainer().style.top = iCY + "px";
+						o.getContainer().style.left = iCX + "px";
+						if(bFadeOut || bFadeIn){
+							o.setOpacity((bFadeIn ? 100 - iPerc : iPerc));
+						}
+						if(bScale){
+							var iWD = o.getContainer().offsetWidth - bScaleToWidth;
+							var iHD = o.getContainer().offsetHeight - bScaleToHeight;
+							o.getContainer().style.width = ((o.getContainer().offsetWidth >= bScaleToWidth ? o.getContainer().offsetWidth - (iWD * (iPerc/100)) : bScaleToWidth * ((100 - iPerc)  /100))) + "px";
+							o.getContainer().style.height = ((o.getContainer().offsetHeight >= bScaleToHeight ? o.getContainer().offsetHeight - (iHD * (iPerc/100)): bScaleToHeight * ((100 - iPerc)  /100))) + "px";
+		    			
+						}
+					
+						if(bFadeOut){
+							if(iCY > document.documentElement.offsetHeight || iCY < 0
+							||
+							iCX > document.documentElement.offsetWidth || iCX < 0
+							){
+								this.getProperties().animate_count--;
+								this.finishAnimation(o, o.getProperties().expected_x, o.getProperties().expected_y, bScaleToWidth, bScaleToHeight, bScale, bHide, bFadeIn);
+								return;
+							};
+						}
+			  }
+				catch(e){
+					o.setStatus("Anim Error #1: " + (e.message ? e.message : e.description));
+				}
+ 				o.getProperties().animated = 1;
+				var sAFP="Hemi.registry.service.getObject('" + this.getObjectId() + "').animateMotion('" + sId + "'," + iMX + "," + iMY + "," + iDX + "," + iDY + "," + iCX + "," + iCY + "," + iOrgDist + "," + bHide + "," + bFadeOut + "," + bFadeIn + "," + bScale + "," + bScaleToWidth + "," + bScaleToHeight + ")";
+				window.setTimeout(sAFP,this.getProperties().animate_delay);
+			}
+			else{
+				this.getProperties().animate_count--;
+			    
+				try{
+
+					this.finishAnimation(o, o.getProperties().expected_x, o.getProperties().expected_y, bScaleToWidth, bScaleToHeight, bScale, bHide, bFadeIn);
+						//alert('fo: ' + o.getProperties().expected_x + ", " + o.getProperties().expected_y);
+    			}
+					catch(e){
+						this.setStatus("Anim Error #2: " + (e.message ? e.message : e.description));
+					}
+				if(typeof o._handle_animation_complete == "function") o._handle_animation_complete();
+			}
+		},
+		finishAnimation : function(o, x, y, w, h, bScale, bHide, bFadeIn){
+			if(!o.getProperties().animated) return;
+			o.getProperties().animated = 0;
+			if(bScale){
+				o.getContainer().style.width = w + "px";
+				o.getContainer().style.height = h + "px";
+			}
+
+			if(bHide)
+			{
+				o.getContainer().style.display = "none";
+			}
+			else if(bFadeIn){
+				o.setOpacity(100);
+			}
+
+			o.getContainer().style.top = y + "px";
+			o.getContainer().style.left = x + "px";
+		}
+    
+		]]>
+  </application-component>
+  
+</application-components>

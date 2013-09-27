@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<html-fragment>
+		<div rid = "profile_model_container" style ="display: none;">
+			<div class="title">Window Model</div>
+			<div ___pointer_marker = "never" component = "wideselect" rid = "object_model">
+			</div>
+		</div>
+		<div rid = "profile_file_container" style ="display: none;">
+			<div class="title">Files</div>
+
+			<div ___pointer_marker = "never" component = "wideselect" rid = "script_model">
+			</div>
+		</div>
+
+		<div class="title">Functions</div>
+
+		<div ___pointer_marker = "never" component = "wideselect" rid = "function_list">
+		</div>
+		<div class="title">Commands</div>
+		<div class = "commands">
+			<select rid = "profile_type" onchange = "${this}.SwitchProfileType()">
+				<option>Files</option>
+				<option>Window Model</option>
+			</select>
+			|
+			<input rid = "btn_prof_monitor" type="button" value = "Register" onclick="${this}.SwitchFunctionMonitor()" />
+			<input rid = "btn_prof_metrics" type="button" value = "Metrics" onclick="${this}.GetProfilerMetrics()" />
+			<input type="button" value = "Stats" onclick="JavaScriptProfiler.PrintStats()" />
+			<input type="button" value = "Update Function" onclick="${this}.UpdateFunction()" />
+			<input type="button" value = "Deobfuscate" onclick="${this}.deobfuscate()" />
+		</div>
+		<div class="title">Data</div>
+		<div rid="oProto" class="results">
+			<textarea rid="oProtoData" class="proto" WRAP="off">
+			</textarea>
+		</div>
+	<embedded-script><![CDATA[
+		embedded_init : function (){
+  			this.GetComponentByRID("object_model").setLoadHandler(this.scopeHandler("setupObjectModel",0,1,1));
+			this.GetComponentByRID("script_model").setLoadHandler(this.scopeHandler("setupScriptModel",0,1,1));
+			this.GetComponentByRID("function_list").setLoadHandler(this.scopeHandler("setupFunctionList",0,1,1));
+		
+			this.scopeHandler("show_jsprofiler",0,0,1);
+			this.GetElementByRID("profile_type").selectedIndex = -1;
+		},
+		setupFunctionList : function(){
+			this.scopeHandler("flist_click",0,0,1);
+			this.GetComponentByRID("function_list").GetWideSelect().setResultHandler( this._prehandle_flist_click);
+		},
+		setupScriptModel : function(){
+			 this.scopeHandler("smodel_click",0,0,1);
+			this.GetComponentByRID("script_model").GetWideSelect().setResultHandler( this._prehandle_smodel_click);
+		},
+		 setupObjectModel : function(){
+			this.scopeHandler("omodel_click",0,0,1);   
+			this.GetComponentByRID("object_model").GetWideSelect().setResultHandler( this._prehandle_omodel_click);
+		},
+		embedded_destroy : function(){
+			this._prehandle_fmodel_click = 0;
+			this._prehandle_smodel_click = 0;
+			this._prehandle_flist_click = 0;
+			this._prehandle_show_jsprofiler = 0;
+		},
+		_handle_show_jsprofiler : function(){
+			if(this.GetElementByRID("profile_type").selectedIndex == -1){
+				this.AttachProfiler();
+				JavaScriptProfiler.ModelsList = this.GetComponentByRID("object_model").GetWideSelect();
+				JavaScriptProfiler.FunctionsList = this.GetComponentByRID("function_list").GetWideSelect();
+				JavaScriptProfiler.ScriptsList = this.GetComponentByRID("script_model").GetWideSelect();
+				JavaScriptProfiler.TextArea = this.GetElementByRID("oProtoData");
+				this.GetElementByRID("profile_type").selectedIndex = 0;
+				this.ShowProfileType(1);
+			}
+		},
+		GetList2 : function(){
+			return this.GetComponentByRID("oRegistry").GetWideSelect();
+		},
+		GetProfilerMetrics : function(){
+			var s = "Active Source Template Required";
+			if(typeof this.GetAllMetrics == "function"){
+				try{
+					s = this.GetAllMetrics();
+				}
+				catch(e){
+					s = (e.message ? e.message : e.description);
+				}
+			}
+			this.GetElementByRID("oProtoData").value = s;
+		},
+		_handle_omodel_click : function(sEvent, oItem){
+			this._handle_smodel_click(sEvent, oItem, 1);
+		},
+		_handle_smodel_click : function(sEvent, oItem, bModelMode){
+			JavaScriptProfiler.activeFunction = null;
+			
+			var sPath = oItem.data;
+			
+			JavaScriptProfiler.FunctionsList.clearItems();
+			
+			if(!bModelMode){
+				this.GetElementByRID("oProtoData").value = "Fetch Time: " + parseFloat(JavaScriptProfiler.downloadTimeA[sPath]/1000) + " seconds\n\n" + JavaScriptProfiler.srcData[sPath];
+			}
+			else{
+				this.GetElementByRID("oProtoData").value = "Model introspection.";
+			}
+			
+			var iFLen=JavaScriptProfiler.functionIndex.length;
+			var iFAdd=0;
+			for(var i = 0; i < iFLen; i++){
+				var vPF = JavaScriptProfiler.functionList[JavaScriptProfiler.functionIndex[i]];
+				var bC = (bModelMode ? JavaScriptProfiler.functionIndex[i].indexOf(sPath) == 0 : sPath == vPF.srcFile);
+				if(bC){
+					var sName=vPF.name;
+					iFAdd++;
+					if(vPF.proto) sName = vPF.proto + ".prototype." + vPF.name;
+					var bReg = 0;
+					if(this.CheckLoadFunctionMonitor(vPF.window)) bReg = (vPF.proto ? vPF.window.FunctionMonitor.getIsRegistered(vPF.name, vPF.window,vPF.proto) : vPF.window.FunctionMonitor.getIsRegistered(sName,vPF.window));
+					JavaScriptProfiler.FunctionsList.addItem((bReg ? "+ " : "") + sName,JavaScriptProfiler.functionIndex[i]);
+				}
+			}
+
+			if(iFAdd==0){
+				JavaScriptProfiler.FunctionsList.addItem("Zero function declarations.");
+			}
+
+		},
+		SwitchFunctionMonitor : function(){
+			var oBtn = this.GetElementByRID("btn_prof_monitor");
+			var oItem = JavaScriptProfiler.FunctionsList.getActiveItem();
+			if(!oItem) return;
+			var FP = JavaScriptProfiler.functionList[oItem.data];
+			if(!FP) return;
+			
+			var bReg = 0;
+			if(this.CheckLoadFunctionMonitor(FP.window, 1)) bReg = (FP.proto ? FP.window.FunctionMonitor.getIsRegistered(FP.name, FP.window,FP.proto) : FP.window.FunctionMonitor.getIsRegistered(FP.name,FP.window));
+			oBtn.value = (!bReg ? "Unregister" : "Register");
+			if(bReg){
+				if(FP.proto) FP.window.FunctionMonitor.unregister(FP.name, FP.window, FP.proto);
+				else FP.window.FunctionMonitor.unregister(FP.name, FP.window);
+			}
+			else{
+				if(FP.proto) FP.window.FunctionMonitor.register(FP.name, FP.window, FP.proto);
+				else FP.window.FunctionMonitor.register(FP.name, FP.window);
+			}
+			var sName=FP.name;
+			if(FP.proto) sName = FP.proto + ".prototype." + FP.name;
+			Hemi.xml.setInnerXHTML(oItem.object,(!bReg ? "+ " : "") + sName);
+			
+			
+		},
+
+		_handle_flist_click : function(sEvent,oItem){
+
+			var FP = JavaScriptProfiler.functionList[oItem.data];
+			if(FP){
+				var vFP = FP.pointer;
+				JavaScriptProfiler.activeFunction = FP;
+				this.GetElementByRID("oProtoData").value = vFP.toString();
+				var bReg = 0;
+				if(this.CheckLoadFunctionMonitor(FP.window)) bReg = (FP.proto ? FP.window.FunctionMonitor.getIsRegistered(FP.name, FP.window,FP.proto) : FP.window.FunctionMonitor.getIsRegistered(FP.name,FP.window));
+				this.GetElementByRID("btn_prof_monitor").value = (bReg ? "Unregister" : "Register");
+			}
+			else{
+				JavaScriptProfiler.activeFunction=null;	
+				this.GetElementByRID("oProtoData").value=oResult.data + " is a bad internal reference.";
+			}
+		},
+		SwitchProfileType : function(){
+			this.ShowProfileType(this.GetElementByRID("profile_type").selectedIndex + 1);
+		},
+		ShowProfileType : function(iType){
+			JavaScriptProfiler.FunctionsList.clearItems();
+			this.GetElementByRID("profile_model_container").style.display = "none";
+			this.GetElementByRID("profile_file_container").style.display = "none";
+			switch(iType){
+				case 2:
+					this.GetElementByRID("profile_model_container").style.display = "block";
+					this.ModelProfile();
+					if(JavaScriptProfiler.ModelsList.getActiveItem()) this._handle_omodel_click(0,JavaScriptProfiler.ModelsList.getActiveItem());
+					break;
+				case 1:
+					this.GetElementByRID("profile_file_container").style.display = "block";
+					this.FilesProfile();
+					if(JavaScriptProfiler.ScriptsList.getActiveItem()) this._handle_smodel_click(0,JavaScriptProfiler.ScriptsList.getActiveItem());
+					break;
+
+			}
+		},
+		FilesProfile : function(){
+			if(!JavaScriptProfiler.ScriptsProfiled){
+				this.GetElementByRID("oProtoData").value = "PROFILING SCRIPTS ...";
+				JavaScriptProfiler.runFilesProfiler();
+			}
+		},
+		ModelProfile : function(){
+			if(!JavaScriptProfiler.ModelsProfiled){
+				this.GetElementByRID("oProtoData").value = "ANALYZING MODEL ...";
+				JavaScriptProfiler.runModelProfiler();
+			}
+		},
+
+		getTabs : function(iTabs){
+			var sRet="";
+			for(var i=0;i<iTabs;i++){
+				sRet+="   ";
+			}
+			return sRet;
+		},
+		deobfuscate : function(){
+			var sVal = this.GetElementByRID("oProtoData").value;
+			var aLines = sVal.split("\n");
+
+			var sParsed="";
+			var iTabs=0;
+			for(var l=0;l<aLines.length;l++){
+
+				var sLine=aLines[l];
+				//	chop spaces
+				sLine=sLine.replace(/\s*$/,"");
+				sLine=sLine.replace(/^\s*/,"");
+				// chop '//' comments
+
+				// BUGBUG: this removes everything up to the first //, so needs to be fixed for http://, etc.
+
+				var oR=new RegExp("//[\\w\\s\\S]*$","gi");
+				sLine=sLine.replace(oR,"");
+				var sCharLen=sLine.length;
+				var sReplace="";
+				
+				var bInStr1=false;
+				var bInStr2=false;			
+				var iInCond=0;
+				var bInComment=false;
+
+				for(var i=0;i<sCharLen;i++){
+					var sTack="";
+					var sChar=sLine.charAt(i);
+					if(sChar=="(") iInCond++;
+					if(sChar==")") iInCond--;
+					if(sChar=="{"){	
+						iTabs++;
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					if(sChar=="}"){
+						iTabs--;
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					if(sChar=="\"") bInStr1=(bInStr1==true)?false:true;
+					if(sChar=="'") bInStr2=(bInStr2==true)?false:true;
+					
+					if(sChar==";" && bInStr1==false && bInStr2==false && iInCond==0){
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					sReplace+=sChar + sTack;
+				}
+				sParsed+=sReplace;
+			}
+			this.GetElementByRID("oProtoData").value=sParsed;
+		},
+
+		CheckLoadFunctionMonitor : function(oWindow, bAdd){
+			return this.CheckObject(oWindow,"FunctionMonitor",bAdd,Hemi.hemi_base + "Fragments/FunMonInject.xml");
+		},
+		CheckObject : function(oWindow, sName, bAdd, sTemplate){
+			var bExists = (typeof oWindow[sName] == "object" ? 1 : 0);
+			if(!bAdd || bExists) return bExists;
+			try{
+				var oX = Hemi.xml.getXml(sTemplate);
+				var sText = Hemi.xml.getInnerText(oX.documentElement);
+				oWindow.eval(oX.documentElement.nodeName + " = " + sText);
+				
+				/// Refresh Active Source Window
+				///
+				if(typeof RefreshActiveSourceUI == "function") this.RefreshActiveSourceUI();
+				bExists = 1;
+			}
+			catch(e){
+				alert(e.message);
+			}
+			return bExists;
+		},
+		AttachProfiler : function(){
+			return this.CheckObject(window,"JavaScriptProfiler",1,Hemi.hemi_base + "Fragments/JavaScriptProfilerInject.xml");
+		}
+
+	]]></embedded-script>
+</html-fragment>

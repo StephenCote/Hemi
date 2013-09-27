@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title ="Text Viewer">
+  <import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+  <!-- __pointer_marker is used to hide this control from the EngineStats modeller -->
+  <div class="title" rid ="title">[ title ]</div>
+  <div>
+    <textarea style ="width:90%;height:150px;" rid ="text"></textarea>
+  </div>
+  <div>
+    <input type ="button" value ="Close" onclick ="${this}.Close()" />
+  </div>
+
+
+  <embedded-script>
+    <![CDATA[
+		template_init : function (){
+			if(this.getProperties().text)
+        this.GetElementByRID("text").value = this.getProperties().text;
+       
+      if(this.getProperties().text_title){
+        Hemi.xml.setInnerXHTML(this.GetElementByRID("title"), this.getProperties().text_title);
+        this.setTitle(this.getProperties().text_title);
+       }
+
+		},
+		template_destroy : function(){
+		}
+	
+
+	]]>
+  </embedded-script>
+</Template>

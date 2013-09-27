@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-components>
+	<!--
+		Reference: http://www.imnmotion.com/documents/html/technical/application/accountManager.html
+		A client to the account manager.
+	-->
+
+	<application-component id="session">
+	<![CDATA[
+		component_init:function(){
+			Hemi.include("hemi.web.security");
+			
+			this.getObjects().session = {};
+
+
+			this.getProperties().last_state = 0;
+			this.scopeHandler("get_sessiondata",0,0,1);
+		},
+		Initialize : function(sPath){
+			this.getProperties().session_url = sPath;
+		},
+
+		GetBoolParam : function(n){
+			var v = this.GetParam(n);
+			if(v == 0 || v != "1") return 0;
+			return 1;
+		},
+		GetIntParam : function(n){
+			var r = parseInt(this.GetParam(n));
+			if(isNaN(r)) return 0;
+			return r;
+		},		
+		GetParam : function(n){
+			var _si = this.getObjects().session;
+			if(typeof _si[n] != "string") return 0;
+			return _si[n];
+		},
+		Refresh : function(bSync){
+			var _t = Hemi.web.security.PageTickets;
+			if(!_t.length) 
+				Hemi.xml.postXml(this.getProperties().session_url + "?t=" + (new Date()).getTime(),"get-ticket=1&path=" + location.pathname,this._prehandle_get_sessiondata,!bSync,0,0);
+			else
+				Hemi.xml.getXml(this.getProperties().session_url + "?t=" + (new Date()).getTime() + "&ticket=" + _t[0].id,this._prehandle_get_sessiondata,!bSync,0,0);
+		},
+		_handle_get_sessiondata : function(s, v){
+			var _s = this.getProperties(), _si;
+            this.getObjects().session = {};
+			_si = this.getObjects().session;
+						
+			if(!v || !v.xdom){
+				alert("Error retrieving session data");
+			}
+			else{
+
+			  var oTicket = v.xdom.getElementsByTagName("PageTicket");
+				
+				if(oTicket.length)
+					Hemi.web.security.AddPageTicket(Hemi.xml.getInnerText(oTicket[0]),location.pathname);
+				
+			  
+			  var oSession = v.xdom.getElementsByTagName("Session");
+			
+				if(oSession.length){
+						oSession = oSession[0];
+					var aParams = oSession.getElementsByTagName("Param");
+					for(var i= 0; i < aParams.length; i++){
+						_si[aParams[i].getAttribute("Name")] = Hemi.xml.getInnerText(aParams[i]);
+					}
+				}
+			 
+				var oContext = v.xdom.getElementsByTagName("Context");
+				if(oContext.length){
+					oContext = oContext[0];
+					var aParams = oContext.getElementsByTagName("Param");
+					for(var i= 0; i < aParams.length; i++){
+						_si[aParams[i].getAttribute("Name")] = Hemi.xml.getInnerText(aParams[i]);
+					}
+				}
+			}
+			var b = this.GetBoolParam("IsLoggedIn");
+			var bChanged = 0;
+			if(this.getProperties().last_state != b) bChanged = 1;
+			this.getProperties().last_state = b;
+			Hemi.message.service.publish("onsessionrefresh", this);
+		}
+
+	]]>
+	</application-component>
+</application-components>

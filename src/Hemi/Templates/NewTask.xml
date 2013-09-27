@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title = "New Task">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<div class ="field">
+		<div class = "field_label">
+			Task Id:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "task_id" />
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Action Type:
+		</div>
+		<div class = "field_input">
+			<select rid ="action_type" onchange ="${this}.ToggleActionBlock()">
+				<option>[ Nothing ]</option>
+				<option value = "xml">Load An XML Document</option>
+				<option value= "import-task">Import an XML Task</option>
+				<option value= "function">Invoke a JavaScript Function</option>
+				<option value = "script">Execute Inline Script</option>
+				<option value= "event">Publish to a MessageService Subscription</option>
+			</select>
+			
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Action:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "action_inline" />
+			<textarea rid ="action_block" wrap ="off" style ="display:none;height:75px;width:100%"></textarea>
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Handler:
+		</div>
+		<div class = "field_input">
+			<select rid ="handler_type" onchange ="${this}.ToggleHandlerBlock()">
+				<option>[ Nothing ]</option>
+				<option value = "xml">Load An XML Document</option>
+				<option value= "import-task">Import an XML Task</option>
+				<option value= "function">Invoke a JavaScript Function</option>
+				<option value = "script">Execute Inline Script</option>
+				<option value= "event">Publish to a MessageService Subscription</option>
+			</select>
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Handler Type:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "handler_inline" />
+			<textarea rid ="handler_block" wrap ="off"  style ="display:none;height:75px;width:100%"></textarea>
+		</div>
+	</div>
+	<div class ="field">
+		<div class ="description">
+			<input type ="button"	value ="Create" onclick ="${this}.CreateNewTask()" />
+			<input type ="button"	value ="Close" onclick ="${this}.Close()" />
+		</div>
+	</div>
+	<embedded-script>
+		<![CDATA[
+		template_init : function(){
+			var sNotes = "// Task Object is scoped as 'o' (yes, this needs to be fixed)"
+				+ "\n// Rember: If you don't return this task id as a dependency,"
+				+ "\n// then other tasks may wait for it and never finish"
+				+ "\n// Example: var oTaskObject = o;"
+				+ "\n// {Do your stuff}"
+				+ "\n// Hemi.task.service.returnDependency(oTaskObject);"
+				+ "\n// OR: Hemi.task.service.returnDependency(oTaskObject.name);"
+			;
+		},
+		CreateNewTask : function(){
+			var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+			var oConstruct = oBuilder.getObjects().task_construct;
+			var sId = this.GetElementByRID("task_id").value.replace(/$\s*/,"").replace(/\s*$/,"");
+			if(sId.length == 0){
+				alert("Task Id is required.");
+				return;
+			}
+			if(oConstruct.tasks[sId]){
+				alert("This task already exists");
+				return;
+			}
+			var sActionType = this.GetElementByRID("action_type").value;
+			var sAction = "";
+			var sHandlerType = this.GetElementByRID("handler_type").value;
+			var sHandler = "";
+			if(sActionType == "script" && sHandlerType == "script"){
+				alert("Action and Handler cannot both be inline script.");
+				return;
+			}
+			sAction = this.GetElementByRID((sActionType == "script" ? "action_block" : "action_inline")).value;
+			sHandler = this.GetElementByRID((sHandlerType == "script" ? "handler_block" : "handler_inline")).value;
+			if(sAction.length == 0) sAction = "[nothing]";
+			if(sHandler.length == 0) sHandler = "[nothing]";
+			oBuilder.AddTaskConstruct(oConstruct, sId, sActionType, sAction, sHandlerType, sHandler);
+
+			oBuilder.BuildTaskList();
+			oBuilder.RefreshTaskBuilder();
+			oConstruct.changes++;
+			this.Close();
+
+		},
+		ToggleActionBlock : function(){
+			var sVal = this.GetElementByRID("action_type").value;
+			this.GetElementByRID("action_inline").style.display = (sVal == "script" ? "none" : "");		 
+			this.GetElementByRID("action_block").style.display = (sVal == "script" ? "block" : "none");
+		},
+		ToggleHandlerBlock : function(){
+			var sVal = this.GetElementByRID("handler_type").value;
+			this.GetElementByRID("handler_inline").style.display = (sVal == "script" ? "none" : "");		 
+			this.GetElementByRID("handler_block").style.display = (sVal == "script" ? "block" : "none");
+		},
+        local_handle_close : function(oWin){
+            var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oBuilder && typeof oBuilder.getFocus == "function") oBuilder.getFocus();
+		}
+  ]]>
+	</embedded-script>
+</Template>

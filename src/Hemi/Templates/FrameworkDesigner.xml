@@ -1,0 +1,185 @@
+﻿<Template Title ="Framework Designer" id = "FrameworkDesigner">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<div class = "content_container">
+		<div style = "float:left;width:25%;">
+			<div>
+				Bus: <select rid = "choose_bus" component = "select_bus" NoAny="1"></select>
+			</div>
+			<div rid = "tree" component = "tree" Application = "Explorer" DirectoryId = "DWAC">
+			</div>
+		</div>
+		<div style = "width:65%;float:left;">
+			<div style = "clear:both;" component = "tree_context"></div>
+			<div rid = "content-viewer" component = "content_viewer" Application = "Explorer" DirectoryId = "DWAC">
+			</div>
+		</div>
+		<div  style = "clear:both;"></div>
+		<!--
+				 <div class = "content_container">
+
+					<div template = "TestSuite" rid = "TestSuite" class = "content_data">
+					</div>
+					 <div module = "Console.Output" class = "content_data">
+					 </div>
+				 </div>
+-->
+	</div>
+
+	<embedded-script>
+		<![CDATA[
+
+	template_init: function () {
+        if(!window.g_application_path) window.g_application_path = "/";
+		Hemi.include("hemi.data.io");
+		Hemi.include("hemi.worker");
+		Hemi.include("hemi.app");
+		Hemi.include("hemi.app.module");
+		Hemi.include("hemi.app.module.test");
+		Hemi.include("hemi.framework.io.provider");
+        Hemi.include("hemi.framework.io.offline.provider");
+		/// Hemi.include("core.io", "/Scripts/");
+	
+		Hemi.util.logger.addLogger(this, "Data Explorer", "Local Data Explorer Builder", "750");
+		Hemi.event.addScopeBuffer(this);
+		this.scopeHandler("template_loaded", 0, 0, 1);
+		this.joinTransactionPacket("datagrid");
+		this.joinTransactionPacket("iobus");
+		
+		var oTR = this.GetComponentByRID("tree");
+		oTR.RePopulateTree();
+		
+		Hemi.data.io.service.mapSession(this.GetSession());
+		var oTS = this.GetComponentByRID("TestSuite");
+		if(oTS){
+			oTS.setTests(["test.core.io", "test.message", "test.framework.io.provider", "test.data.io"]);
+		}
+		if(typeof this.resizeTo == "function"){
+			this.resizeTo(650,400);
+			this.setCanResize(0);
+			Hemi.app.getWindowManager().CenterWindow(this);
+		}
+
+
+	},
+	_handle_treenavigate: function (s, v) {
+		var oTree = v.data.src;
+		var _p = this.getProperties();
+		_p.application = oTree.GetCurrentApplication();
+		_p.rootName = oTree.GetCurrentRootName();
+		_p.current_group_id = oTree.GetCurrentGroupId();
+		_p.current_group_name = oTree.GetCurrentGroupName();
+		_p.current_path = oTree.GetCurrentPath();
+	},
+	_handle_change_bus: function (s, v) {
+		/// alert(v.data.src);
+	},
+	_handle_template_loaded: function (v) {
+		if (v && v.getProperties().local_invoke) {
+			if (v.getProperties().local_invoke_params) v[v.getProperties().local_invoke].apply(v, v.getProperties().local_invoke_params);
+			else v[v.getProperties().local_invoke]();
+			v.getProperties().local_invoke = 0;
+			v.getProperties().local_invoke_params = 0;
+		}
+	},
+	getProps: function () {
+		var _p = this.getProperties();
+		var iBT = this.getTemplateSpace().getSpaceObjectByName("choose_bus");
+		iBT = (iBT && iBT.object ? iBT.object.getApplicationComponent().getBusType() : 0);
+		return {
+			application: "DWAC",
+			rootName: _p.rootName,
+			current_group_id: _p.current_group_id,
+			current_group_name: _p.current_group_name,
+			current_path: _p.current_path,
+			busType: iBT
+		};
+	},
+	_handle_newcontent: function (s, v) {
+		this.handleViewer(v.data.src, "CreateNew");
+	},
+	_handle_opencontent: function (s, v) {
+		this.handleViewer(v.data.src, "Load");
+	},
+	handleViewer: function (oViewer, sAction) {
+		var _p = this.getProperties(), oW;
+		var oProps = this.getProps();
+		var sId = Hemi.guid();
+		if (sAction == "Load" || sAction == "Delete"){
+			sId = oViewer.GetCurrentItem().item_id;
+			oProps.local_invoke_params = [sId];
+		}
+		oProps.local_invoke = sAction + "Object";
+		switch (_p.current_group_name) {
+			case "Components":
+				oW = Hemi.app.createWindow("Component Builder", "Templates/ComponentBuilder.xml", "component-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+
+			case "Fragments":
+				oW = Hemi.app.createWindow("Fragment Builder", "Templates/FragmentBuilder.xml", "fragment-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+			case "Modules":
+				oW = Hemi.app.createWindow("Module Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+			case "Tests":
+				oProps.testFeat = 1;
+				oW = Hemi.app.createWindow("Test Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+			case "Templates":
+				oW = Hemi.app.createWindow("Template Builder", "Templates/TemplateBuilder.xml", "template-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+
+			case "Tasks":
+				oW = Hemi.app.createWindow("Task Builder", "Templates/TaskBuilder.xml", "task-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+			case "Projects":
+				oW = Hemi.app.createWindow("Project Builder", "Templates/ProjectBuilder.xml", "projects-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				break;
+		}
+		if (oW) {
+			oW.resizeTo(650, 650);
+			Hemi.app.getWindowManager().CenterWindow(oW);
+			// Destroy the window when finished
+			//
+			oW.setHideOnClose(0);
+		}
+	},
+	_handle_deletecontent: function (s, v) {
+		var sId = v.data.src.GetCurrentItem().item_id;
+		var oR = this.queryData("DWAC", "Delete", 0, 0, sId, 0, 0, 0);
+		if (!oR.status) {
+			alert("Failed to delete");
+		}
+		else {
+			this.refreshViewer();
+		}
+	},
+	queryData: function (sApp, sAct, aF, sName, sId, bFull, bAsync, fHandler) {
+		var iBT = this.getTemplateSpace().getSpaceObjectByName("choose_bus");
+		iBT = (iBT && iBT.object ? iBT.object.getApplicationComponent().getBusType() : 0);
+		var _p = this.getProperties();
+		var oRequest = Hemi.data.io.service.newIORequest(
+						iBT,
+						sApp,
+						_p.current_group_name,
+						_p.catalog,
+						sAct, //action
+						(sId ? sId : 0), // id
+						(sName ? sName : 0), // name
+						(bFull ? 0 : 1), // details only
+						(bAsync ? 1 : 0), // async
+						0, // cache
+						0 // instruction
+					);
+		this.log("queryData: " + iBT + " / " + _p.application + " / " + _p.catalog + " / " + (_p.group_id ? _p.group_id : _p.group_name) + " / " + sAct + " / " + (sId ? sId : "") + " " + (sName ? sName : ""));
+		Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
+		return Hemi.data.io.service.getResponseByName(oRequest.responseId);
+	},
+	refreshViewer: function () {
+
+		this.getTemplateSpace().getSpaceObjectByName("content-viewer").object.getApplicationComponent().ClearCache(1);
+		var oT = this.getTemplateSpace().getSpaceObjectByName("tree").object.getApplicationComponent();
+		oT.SelectLeaf(oT.GetCurrentGroupName());
+	}
+					 ]]>
+	</embedded-script>
+</Template>

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+        <title>Hemi JavaScript Framework - v3.1.9</title>
+	    <link rel="stylesheet" href="Styles/hemi.css" type="text/css" />
+	    <link rel = "shortcut icon" href="favicon.ico">
+	    <script type = "text/javascript">
+		    // Run Hemi from within the Hemi project
+		    // Note the default hemi_base assumes Hemi is located in a child 'Hemi' directory
+		    //
+		    HemiConfig = { hemi_base: (location.protocol.match(/^file/i) ? "file://" + location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1) : "/") };
+	    </script>
+	    <script type = "text/javascript" src = "hemi.js"></script>
+
+	    <style type = "text/css">
+		    html
+		    {
+				    /*height:auto;*/
+				
+				    overflow:auto;
+				    background-color: #FFFFFF;
+				    height:100%;
+		    }
+		    body{
+
+			    color: #000000;
+			    margin: 5px 0px 0px 0px;
+			    padding:0px;
+			    min-height:100%;
+		    }
+		    div.header
+		    {
+		        height: 86px;
+		        background:url(Graphics/Hemi_Logo_2_2.png) #FFFFFF no-repeat;
+		    }
+
+	        h1,h2 {
+		        margin: 0px 0px 0px 80px;
+		        font-family: Verdana;
+	        }
+
+	    </style>
+	    <script type = "text/javascript">
+		    var g_application_path = "/";
+		    Hemi.include("hemi.app");
+		    Hemi.include("hemi.css");
+		    Hemi.include("hemi.app.space");
+		    Hemi.include("hemi.app.comp");
+		    Hemi.include("hemi.app.module");
+		    Hemi.include("hemi.app.module.test");
+		    Hemi.include("hemi.storage");
+	    </script>
+    </head>
+    <body>
+        <div class = "header">
+            <h1>Hemi JavaScript Framework - v3.1.9</h1>
+            <h2>Services - AJAX - Monitoring - Templates - Since 2002</h2>
+        </div>
+        <div template = "ToolBar">&nbsp;</div>
+        <div>
+            <h3>Test Config Util</h3>
+            <p component = "testable" auto-test = "1" tests = "test.util.config">[ test storage ]</p>
+        </div>
+        <div>
+            <h3>Test Offline Storage</h3>
+            <p component = "testable" auto-test = "1" tests = "test.storage">[ test storage ]</p>
+        </div>
+
+
+
+    </body>
+</html>

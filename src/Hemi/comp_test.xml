@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<application-components>
+	<application-component id = "test">
+		<![CDATA[
+			component_init : function(){
+				
+			}
+		]]>
+	</application-component>
+	<application-component id = "test2">
+		<![CDATA[
+			component_init : function(){
+				this.setTemplateIsSpace(1);
+				//this.loadTemplate(this.getContainer().getAttribute("template"));  
+			}
+		]]>
+	</application-component>
+</application-components>

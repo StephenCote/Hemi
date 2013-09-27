@@ -1,0 +1,20 @@
+<source><name>Hemi.storage</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework</url-title><url>/Hemi/</url></project>
+
+Legacy Package System
+
+_js_package("org.cote.js");
+Stand Alone Package System
+
+Debug
+
+Package("Hemi.storage");
+<package><path>Hemi</path><library>Hemi</library><description>A bridge for implementing DOM Storage or Storage facades.</description><static-class><name>storage</name><version>3.1.9</version><description>A wrapper for cross browser storage support.</description><example><name>Get Item</name><description>Retrieves an item from storage</description><syntax>[string] = getItem(key);</syntax><code>var provider = HemiEngine.storage.StorageManager.getStorageProvider();</code><code>if(provider) var sValue = provider.getItem("some key");</code></example><example><name>Set Item</name><description>Saves an item into storage</description><syntax>[bool] = setItem(key, val);</syntax><code>var provider = HemiEngine.storage.StorageManager.getStorageProvider();</code><code>if(provider) var bReturn = provider.setItem("some key","some value");</code></example>
+Interface Support
+
+length : 0,
+getItem : function("key")
+setItem : function("key","data");
+removeItem : function("key");
+clear : function()
+key : function(iIndex);
+<property type="String" get="1" internal="1"><name>object_version</name><description>Version of the object class.</description></property><property type="Object" get="1" set="1" default="auto"><name>storage_provider</name><description>Specifies the provider to use for storage management.</description></property><property type="String" get="1" set="1" default="auto"><name>preferred_storage_type</name><description>Specify or retrieve the preferred storage type.</description></property><method><name>getStorageProvider</name><return-value name="o" type="StorageProvider">Returns a storage provider.</return-value><description>Returns a reference to a storage provider.</description></method><method><name>testStorageSupported</name><return-value name="b" type="bool">Bit indicating storage API support.</return-value><description>Returns a bit indicating whether the storage API is supported. </description></method></static-class><object><name>StorageProvider</name><version>3.1.9</version><description>A storage provider.</description><property type="String" get="1" internal="1"><name>storage_type</name><description>Type name of the storage provider (eg: DOMStorage, IEStorage, DBStorage).</description></property></object></package><index><description>A bridge for implementing DOM Storage or Storage facades.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

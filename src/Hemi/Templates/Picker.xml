@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Template Title ="Picker">
+		<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<!-- __pointer_marker is used to hide this control from the EngineStats modeller -->
+		 <div class="title" >Choose</div>
+			<div ___pointer_marker = "never" component ="wideselect"  rid = "picker_list">
+		</div>
+
+
+	<embedded-script>
+            <![CDATA[
+		template_init : function (){
+			this.scopeHandler("pickerlistclick",0,0,1);
+			this.GetPickerList().setResultHandler( this._prehandle_pickerlistclick);
+			this.GetPickerList().getContainer().style.height = "150px";
+			
+		},
+		SetPickerHandler : function(f){
+			this.getObjects().picker_handler = f;
+		},
+		template_destroy : function(){
+			this._prehandle_pickerlistclick = 0;
+			this.getObjects().picker_handler = 0;
+		},
+		GetPickerList : function(){
+			return this.GetComponentByRID("picker_list").GetWideSelect();
+		},
+		_handle_pickerlistclick : function(sEvent,oItem){
+				var oOpener = Hemi.registry.service.getObject(this.getProperties().opener_id);
+				if(this.getObjects().picker_handler) this.getObjects().picker_handler(this, oItem);
+		},
+        local_handle_close : function(oWin){
+            var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oBuilder && typeof oBuilder.getFocus == "function") oBuilder.getFocus();
+		}
+	
+
+	]]></embedded-script>
+</Template>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Template Title = "Feature Verification Tests">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+  <!--
+	<p>
+		<input type ="button" value ="Run Tests" onclick ="${this}.RunTests()" />
+	</p>
+  -->
+  <import-xml src = "Fragments/TestSuite.xml" id = "TestSuiteFragment" />
+	<div module = "Console.Output"></div>
+
+	<embedded-script>
+          <![CDATA[
+		template_init : function(){
+			try{
+		  Hemi.include("hemi.data.io");
+		  Hemi.include("hemi.worker");
+		  Hemi.include("hemi.app.module");
+		  Hemi.include("hemi.app.module.test");
+		  Hemi.include("hemi.framework.io.provider");
+		  var oReq = Hemi.data.io.service.getList(Hemi.data.io.service.getBusType().STATIC, "Explorer", "Data", "Tests", "List", 0, 0);
+		  var oResp = Hemi.data.io.service.getResponseByName(oReq.responseId);
+		  var a = [];
+
+		  for (var i = 0; i < oResp.responseData.length; i++) a.push(oResp.responseData[i].name.replace(/\.js$/,""));
+		  this.setTests(a);
+		  this.RefreshTestCases();
+		  }
+		  catch(e){
+		  alert(e.message ? e.message : e.description);
+		  }
+		},
+    setTests : function(s,p){
+      this.getObjects().tests = s;
+      this.getObjects().tests.push("custom");
+      if(!p) p = "Tests/";
+      this.GetElementByRID("test_path").value = p;
+      this.RefreshTestCases();
+		}
+
+		
+	]]></embedded-script>
+</Template>

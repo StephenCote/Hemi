@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Hemi - Space Test</title>
+</head>
+<link rel = "shortcut icon" href="favicon.ico">
+<script type = "text/javascript" src = "hemi.js"></script>
+<script type = "text/javascript">
+Hemi.hemi_base = "";
+Hemi.include("hemi.driver");
+Hemi.include("hemi.app.space");
+Hemi.include("hemi.app.comp");	
+Hemi.message.service.subscribe("onsendmessage", function(s,v){
+	if(document.getElementById("_spot") != null){
+		var d = document.createElement("p");
+		d.appendChild(document.createTextNode(v.message));
+		document.getElementById("_spot").appendChild(d);
+	}
+});
+
+Hemi.message.service.subscribe("dom_event_window_load", function (s, v){
+	//alert(document.body.innerHTML);
+});
+</script>
+<style type = "text/css">
+body{
+	margin-top:5px;
+	background:url(../Graphics/Hemi_Logo_2_2.png) #FFFFFF no-repeat;
+}
+h1,h2,h3,h4 {
+
+	margin: 0px 0px 0px 80px;
+	font-family: Verdana;
+}
+#_spot p {
+	margin:0px;
+	padding:0px;
+	font: normal 8pt Courier;
+}
+</style>
+<body>
+
+<h1>Hemi JavaScript Framework</h1>
+<h2>AJAX - Monitoring - Widgets - Templates - Since 2002</h2>
+
+<p>
+	Hemi is the new release of Engine for Web Applications, and includes derivitives from the libXmlRequest and IMNMotion Behavior Monitor code bases.
+	The design principle is simple: More power, simpler to use.
+</p>
+<p>
+	Space tests.
+</p>
+<p acid = "test2" template = "template_test.xml" appcomp_path = "comp_test.xml">[ test ]</p>
+<!--
+<div component = "canvas"></div>
+<div component = "hierarchy"></div>
+-->
+<div template = "HierarchyBuilder"></div>
+
+<p id = "oTest1">Test Node #1</p>
+<div id = "Hemi:Console.Output"></div>
+<div avoid = "1" id = "_spot"></div>
+</body>
+</html>

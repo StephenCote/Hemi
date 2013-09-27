@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Template Title ="Template Builder">
+	<import-style src ="Styles/jsprof.css" id ="jsprof" />
+	<import-style src ="Styles/wideselect.css" id ="wideselect" />
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<import-xml src = "Fragments/BuilderControls.xml" id = "BuilderControls" />
+
+	<div class="title">Template Description</div>
+		<div>
+			<select rid ="run_template_as"><option>Scripted</option><option>Declarative</option></select>
+			<input type ="button" onclick ="${this}.RunTemplate()" value ="Run" />
+			<span rid ="template_info">[ Volatile Template ]</span>
+		</div>
+	<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "template_name" />
+			<input type = "hidden" value ="0" rid = "template_id" />
+		</div>
+	</div>
+	
+	<div class ="field">
+		<div class = "field_label">
+			Title: (<i>optional</i>)
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "template_description" />
+		</div>
+	</div>
+
+	<div style = "width:50%;float:left;">
+			<div class="title">Embedded Model</div>
+			<div ___pointer_marker = "never" component = "wideselect" rid = "embedded_template_model">
+			</div>
+	</div>
+	
+	<div style = "width:50%;float:left;">
+			<div class="title">Linked Fragments</div>
+			<div ___pointer_marker = "never" component = "wideselect" rid = "linked_fragment_model">
+			</div>
+	</div>
+
+	<div style ="clear:left;">
+		<input type = "button" value = "Import" onclick ="${this}.LoadTemplateText()" />
+		<select onchange ="${this}.BuildTemplate()" rid = "build_template"><option>Template XML</option><option>XHTML Template</option><option>Embedded Script</option><option>Selected Function</option></select>
+		<input type ="button" value ="New Function" onclick ="${this}.NewTemplateFunction();" />
+		<span rid ="template_model_controls" style ="display:none;">
+			<input type ="button" value ="Deobfuscate" onclick ="${this}.DeobfuscateTemplate()" />
+			<input type ="button" value ="Update" onclick ="${this}.UpdateTemplateMember()" />
+			<input type ="button" value ="Remove Function" onclick ="${this}.RemoveTemplateMember()" />
+		</span>
+		<span rid ="linkedfragment_model_controls">
+				<input type ="button" value ="Link Frag" onclick ="${this}.LinkFragment()" />
+				<input type ="button" value ="DeLink Frag" onclick ="${this}.DeLinkFragment()" />
+		</span>
+		<br />
+		<textarea rid ="template_text" wrap ="off" style ="border:0px;margin:0px;width:100%;height:250px;"></textarea>
+	</div>
+	<embedded-script>
+        <![CDATA[
+		template_init : function (){
+			Hemi.include("hemi.text");
+
+			this.scopeHandler("templatemodelclick",0,0,1);
+			this.scopeHandler("linkedfragmentmodelclick",0,0,1);
+			this.scopeHandler("template_load",0,0,1);
+			this.scopeHandler("template_picker_open",0,0,1);
+			this.scopeHandler("template_picker_choose",0,0,1);
+			this.getObjects().template_construct = 0;
+
+			this.GetTemplateModel().setResultHandler( this._prehandle_templatemodelclick);
+			this.GetLinkedFragmentModel().setResultHandler( this._prehandle_linkedfragmentmodelclick);
+			this.refreshBuilderUI();
+			this.RefreshTemplateBuilder();
+		},
+		template_destroy : function(){
+			this._prehandle_templatemodelclick = 0;
+			this._prehandle_template_load = 0;
+			this._prehandle_template_picker_open = 0;
+			this._prehandle_template_picker_choose = 0;
+			
+		},
+		RefreshTemplateBuilder : function(){
+			var b = (this.getObjects().template_construct ? 1 : 0);
+			this.GetElementByRID("template_name").disabled = (b ? false : true);
+			this.GetElementByRID("template_description").disabled = (b ? false : true);
+			this.GetElementByRID("build_template").disabled = (b ? false : true);
+		},
+		RunTemplate : function(s){
+			if(!this.getObjects().template_construct) return;
+			this.GetElementByRID("build_template").selectedIndex = 0;
+			this.BuildTemplate();
+			var aParams = [this.GetElementByRID("template_name").value, this.GetElementByRID("template_text").value,"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + this.getObjects().template_construct.id,this.GetElementByRID("run_template_as").selectedIndex];
+			this.RunControl("RunApplicationTemplate", aParams);
+		},
+		GetTemplateModel : function(){
+			return this.GetComponentByRID("embedded_template_model").GetWideSelect();
+		},
+		GetLinkedFragmentModel : function(){
+			return this.GetComponentByRID("linked_fragment_model").GetWideSelect();
+		},
+
+		LoadObject : function(i){
+			this.SetLabel("Loading ...");
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"[ Volatile Template ]");
+
+			this.getProperties().template_id = i;
+			this.GetElementByRID("build_template").selectedIndex = 0;
+			this.ReadData(0, i, this._prehandle_template_load);
+		},
+		_handle_template_load : function(oService, oSubject, oRequest, oResponse){
+			this.SetLabel("");
+			if(!oResponse.responseData.length){
+				 this.SetLabel("Failed to load component");
+				 return;
+			}
+			var oData = oResponse.responseData[0];
+			var sVal = unescape(oData.value);
+
+			this.GetElementByRID("template_text").value = sVal;
+
+			if(this.LoadTemplateText()){
+				this.getObjects().template_construct.id = this.getProperties().template_id;
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"Id: " + this.getProperties().template_id + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + this.getProperties().template_id);
+				this.RefreshTemplateBuilder();
+			}
+
+			this.GetElementByRID("template_id").value = this.getProperties().template_id + "";
+	
+		},
+
+		DeleteCurrentObject : function(){
+			var id = this.getProperties().template_id;
+			if(typeof id != "number"){
+				 this.SetLabel("Invalid component data id");
+				 return;
+			}
+			if(!confirm("Are you sure you want to delete this template?")) return;
+			var oResp = this.DeleteData(["template_id"], id);
+			if(oResp.status){
+					this.ClearTemplate();
+			}
+			else{
+				 this.SetLabel("Failed to delete data #" + id);
+			}
+		},
+		ClearTemplate : function(){
+				this.GetElementByRID("build_template").selectedIndex = 0;
+				this.GetElementByRID("template_text").value = "";
+				this.GetElementByRID("template_id").value = "0";
+				this.GetElementByRID("template_name").value = "";
+				this.getObjects().template_construct = 0;
+				this.getProperties().template_id = 0;
+				this.GetTemplateModel().clearItems();
+				this.GetLinkedFragmentModel().clearItems();
+				this.RefreshTemplateBuilder();
+		},
+		SaveCurrentObject : function(){
+			if(
+				 !this.getObjects().template_construct
+				 ||
+					(
+						this.getObjects().template_construct.changes == 0
+						&&
+						!confirm("No changes detected.  Save anyway?")
+					)
+			){				 
+				 this.SetLabel("Didn't save - Nothing to do");
+				 return;
+			}
+			if(this.GetElementByRID("build_template").selectedIndex != 0){
+				this.GetElementByRID("build_template").selectedIndex = 0;
+
+			}
+			this.BuildTemplate();
+			
+			var sName = this.GetElementByRID("template_name").value;
+			var oResp = this.GetNameExists(["template_name","template_id"], sName);
+			if(oResp.status == true){
+				Hemi.log("Resp Status=" + oResp.status);
+				this.SetLabel("The template '" + sName + "' already exists");
+				return;
+			}
+
+			var sTemp = this.GetElementByRID("template_text").value;
+			this.GetElementByRID("template_text").value = escape(sTemp);
+			var aF = ["template_name","template_description","template_text","template_id"];
+
+			oResp = 0;
+			if(this.getObjects().template_construct.id > 0){
+				oResp = this.EditData(aF, this.getObjects().template_construct.id);
+			}
+			else{
+				oResp = this.AddData(aF);
+			}
+
+			if(oResp.status){
+				this.getObjects().template_construct.changes = 0;
+				var sId = oResp.responseId;
+				if(!sId || sId.length == 0){
+						this.SetLabel("Error retrieving data id");
+						this.getObjects().template_construct.id = 0;
+				}
+				else{
+					this.getObjects().template_construct.id = parseInt(sId);
+					/// this.RefreshDWACLists();
+					this.SetLabel("Saved!");
+					this.RefreshTemplateBuilder();
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"Id: " + sId + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + sId);
+				}
+			}
+			else{
+					this.SetLabel("Failed to save template");
+			}
+			this.GetElementByRID("template_text").value = sTemp;
+		},
+
+		CreateNewObject : function(){
+				if(this.getObjects().template_construct && this.getObjects().template_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
+
+				var oW = Hemi.app.createWindow(0,"Templates/NewTemplate.xml","NewTemplate-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
+				oW.resizeTo(500,350);
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+		},
+
+		BuildTemplate : function(){
+			if(!this.getObjects().template_construct){
+				this.SetLabel("Invalid template construct");
+				return;	 
+			}
+			if(this.GetElementByRID("build_template").selectedIndex == 3){
+				this.GetElementByRID("build_template").selectedIndex = 0;
+			}
+			 
+			this.GetElementByRID("template_model_controls").style.display = "none";
+			this.GetElementByRID("linkedfragment_model_controls").style.display = "none";
+				 
+			this.getObjects().template_construct.name = this.GetElementByRID("template_name").value;
+			var sTitle = Hemi.text.trim(this.GetElementByRID("template_description").value);
+			
+			var aBuff = [];	
+			
+			var iIndex = this.GetElementByRID("build_template").selectedIndex;
+			var bXml = (iIndex == 0 ? 1 : 0);
+			var bXhtml = (iIndex == 1 ? 1 : 0);
+			var bEmbScr = (iIndex == 2 ? 1 : 0);
+			if(bEmbScr || bXhtml){
+				 this.GetElementByRID("template_model_controls").style.display = "inline";
+			}
+			else{
+				 this.GetElementByRID("template_model_controls").style.display = "none";
+			}
+			if(bXhtml || bXml) this.GetElementByRID("linkedfragment_model_controls").style.display = "inline";
+			else this.GetElementByRID("linkedfragment_model_controls").style.display = "none";
+				 
+			if(bXml){
+				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Template id=\"" + this.getObjects().template_construct.name + "\"" + (sTitle.length > 0 && sTitle != this.getObjects().template_construct.name ? " Title = \"" + sTitle + "\"" : "") + ">\n");
+			}
+
+			if(bXml || bXhtml) aBuff.push(this.getObjects().template_construct.xhtml_content + "\n");
+
+			if(bXml || bEmbScr){
+				var sEmbedded = Hemi.text.trim(this.BuildFunctions(this.getObjects().template_construct));
+				if(sEmbedded.length){
+					aBuff.push("\n<embedded-script><![CDATA[\n");
+					aBuff.push(sEmbedded);
+					aBuff.push("\n]" + "]></embedded-script>\n"); 
+				}
+			}
+			if(bXml){
+				
+				aBuff.push("</Template>");
+			}
+			var sText = aBuff.join("");
+
+			this.GetElementByRID("template_text").value = sText;
+		},
+
+		NewTemplateFunction : function(){
+				this.NewFunction(this.getObjects().template_construct);
+		},
+
+		UpdateTemplateMember : function(){
+			var iIndex = this.GetElementByRID("build_template").selectedIndex;
+			if(iIndex == 1){
+				var sXhtml = this.GetElementByRID("template_text").value;
+				var oX = 0;
+				try{
+						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
+				}
+				catch(e){
+				}
+				if(!oX && !confirm("Warning - content is not valid XHTML/XML.  Continue updating?")) return;
+				
+				this.getObjects().template_construct.xhtml_content = sXhtml;
+				this.getObjects().template_construct.changes++;
+				if(oX) this.SetLabel("Updated Member - Remember to Save!");
+				else this.SetLabel("Updated Member - The content is invalid!");
+			}
+			else if(iIndex == 3){
+				this.UpdateFunction(this.getObjects().template_construct, this.GetElementByRID("template_text").value);
+				this.SetLabel("Updated Template - Remember to Save!");
+			}
+		},
+		_handle_templatemodelclick : function(sEvent,oItem){
+
+			if(!oItem || typeof oItem.data != "string" || !this.getObjects().template_construct){
+				 this.GetElementByRID("template_text").value = "";
+				 return;
+			}
+			var vFunc = this.getObjects().template_construct.functions[oItem.name];
+			if(!vFunc){
+				this.GetElementByRID("template_text").value = "Member '" + oItem.name + "' is not constructed.";
+				return;
+			}
+			this.GetElementByRID("template_model_controls").style.display = "inline";
+			this.GetElementByRID("build_template").selectedIndex = 3;
+			this.GetElementByRID("template_text").value = 
+			"/// Notes: Comments before and after members will be lost.\n"
+			+ "\n" + this.BuildFunction(vFunc)
+			;
+			
+		},
+		_handle_linkedfragmentmodelclick : function(sEvent,oItem){
+
+			if(!oItem || typeof oItem.data != "string" || !this.getObjects().template_construct){
+				 this.GetElementByRID("template_text").value = "";
+				 return;
+			}
+			this.GetElementByRID("template_model_controls").style.display = "inline";
+			var index = this.GetElementByRID("build_template").selectedIndex;
+			if(index != 0 && index != 1) this.GetElementByRID("build_template").selectedIndex = 1;
+			this.BuildTemplate();			
+		},
+		LinkFragment : function(){
+			Hemi.app.createWindow("Fragment Picker","Templates/Picker.xml","FragmentPicker",0,0,[],this._prehandle_template_picker_open);
+		},
+		_handle_template_picker_open : function(oW){
+			oW.setCanResize(0);
+			oW.resizeTo(200,300);
+			Hemi.app.getWindowManager().CenterWindow(oW);
+			oW.setIsModal(1);
+
+			oW.SetPickerHandler(this._prehandle_template_picker_choose);
+			var oResponse = this.ListData("Fragments");
+            var a = oResponse.responseData;
+            if(!a.length && oResponse.responseGroups.length) a = oResponse.responseGroups[0].data;
+			for(var i = 0; i < a.length; i++){
+				oW.GetPickerList().addItem(a[i].name,"" + a[i].id);
+			}
+			oW.setHideOnClose(0);
+		},
+		_handle_template_picker_choose : function(oPicker, oItem){
+			//alert(oItem.name + ":" + oItem.data);
+			oPicker.Close();
+			var aCurrent = this.GetLinkedFragmentModel().getItems();
+			var bCheck = 0;
+			for(var i = 0; i < aCurrent.length; i++){
+				if(aCurrent[i].name == oItem.name){
+						bCheck = 1;
+						break;
+				}
+			}
+			if(bCheck){
+				 this.SetLabel("Fragment '" + oItem.data + "' is already linked");
+			}
+			else{
+				this.GetLinkedFragmentModel().addItem(oItem.name,oItem.data);
+				this.getObjects().template_construct.xhtml_content += "\n<import-xml src = \"" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Fragments/ID-" + oItem.data + "\" id = \"" + oItem.name + "\" />";
+				this.getObjects().template_construct.changes++;
+				this.GetLinkedFragmentModel().commitBuffer();
+				this.BuildTemplate();
+			}
+		},
+		DeLinkFragment : function(){
+			var oItem = this.GetLinkedFragmentModel().getActiveItem();
+			if(!oItem) return;
+			var regEl = /(<import\-xml[A-Za-z0-9=\-_\s\.+=\/"]*\/>)/gi;
+			var regId = /id\s*=\s*"([A-Za-z0-9=\-_\s\.+\/]*)"/mi;
+			var regSrc = /src\s*=\s*"([A-Za-z0-9=\-_\s\.+\/]*)"/mi;
+			var sXhtmlContent = this.getObjects().template_construct.xhtml_content;
+			var aM = sXhtmlContent.match(regEl);
+
+			for(var i = 0; aM != null && i < aM.length; i++){
+
+				  var oMId = aM[i].match(regId);
+				  var oMSrc = aM[i].match(regSrc);
+					var sCheck = (oMId && oMId.length > 1 ? oMId[1] : null);
+					if(!sCheck) sCheck = (oMSrc && oMSrc.length > 1 ? oMSrc[1] : null);
+
+				  if(!sCheck || (sCheck != oItem.data && sCheck != oItem.name)) continue;
+					
+				  var index = sXhtmlContent.indexOf(aM[i]);
+				  sXhtmlContent = sXhtmlContent.substring(0,index) + sXhtmlContent.substring(index + aM[i].length,sXhtmlContent.length)
+					this.getObjects().template_construct.xhtml_content = sXhtmlContent;
+					this.GetLinkedFragmentModel().clearItem(oItem.index);
+					this.BuildTemplate();
+					this.getObjects().template_construct.changes++;
+					break;
+			}
+
+			
+		},
+		LoadTemplateText : function(){
+
+			var bXml = (this.GetElementByRID("build_template").selectedIndex == 0 ? 1 : 0);
+			if(this.getObjects().template_construct && this.getObjects().template_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
+
+			if(!bXml){
+				this.SetLabel("Parsing only available for full application component XML file format.  Select Template XML.");
+				return 0;
+			}
+			var sTempText = this.GetElementByRID("template_text").value
+			var oXml = null;
+			try{
+				 oXml = Hemi.xml.parseXmlDocument(this.GetElementByRID("template_text").value);
+			}
+			catch(e){
+				 //alert("Error parsing XML");
+				 //return 0;
+			}
+			if(oXml == null || oXml.documentElement == null || oXml.documentElement.nodeName == "parsererror"){
+				this.SetLabel("Failed to parse Template XML");
+				return 0;
+			}
+
+			var aAppComp = oXml.getElementsByTagName("Template");
+			if(aAppComp.length == 0){
+				this.SetLabel("No template definitions found");
+				return 0;
+			}
+						
+			this.GetTemplateModel().clearItems();
+			this.GetLinkedFragmentModel().clearItems();
+				 
+			var regEmb = /<embedded\-script>[\s\S]*?<\/embedded\-script>/;
+			var regTemp = /<template[A-Za-z0-9=\s"]*>([\s\S]*?)<\/template>/mi;
+			var oM;
+			var sXhtmlContent = "";
+			if((oM = sTempText.match(regTemp)) && oM.length > 1){
+					 sXhtmlContent = Hemi.text.trim(oM[1].replace(regEmb,""));
+			}
+			
+			if(aAppComp.length > 1){
+				this.SetLabel("Multiple template definitions found.  Displaying the first template only.  Saving any changes will only save the one template.");
+			}
+			var oComp = aAppComp[0];
+			var n;
+			this.GetElementByRID("template_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			this.GetElementByRID("template_description").value = ((n = oComp.getAttribute("Title")) ? n : "");
+			
+
+			var aX = oComp.getElementsByTagName("import-xml");
+			for(var i = 0; i < aX.length; i++){
+				var sUrl = aX[i].getAttribute("src");
+				if(sUrl == null || sUrl.length == 0) continue;
+				var sId = aX[i].getAttribute("id");
+				if(sId == null || sId.length == 0) sId = sUrl;
+				this.GetLinkedFragmentModel().addItem(sId, sId);
+			}
+			
+			var aE = oComp.getElementsByTagName("embedded-script");
+			var sCodeText = "";
+				 
+			if(aE.length) sCodeText = Hemi.xml.getInnerText(aE[0]);
+			this.getObjects().template_construct = this.ParseConstruct(this.GetTemplateModel(), sCodeText);
+			this.getObjects().template_construct.xhtml_content = sXhtmlContent;
+			this.RefreshTemplateBuilder();
+ 		 return 1;
+		},
+		DeobfuscateTemplate : function(){
+			this.GetElementByRID("template_text").value = this.Deobfuscate(this.GetElementByRID("template_text").value);
+		},
+		RemoveTemplateMember : function(){
+			var o = this.GetTemplateModel().getActiveItem();
+			var oConstruct = this.getObjects().template_construct;
+			if(!o || !oConstruct || !oConstruct.functions[o.data]){
+					this.SetLabel("Nothing to do");
+					return;
+			}
+			delete oConstruct.functions[o.data];
+			this.GetTemplateModel().clearItem(o.index);
+			oConstruct.changes++;
+			this.GetElementByRID("build_as").selectedIndex = 0;
+			this.BuildTemplate();
+			this.SetLabel("Removed Member - Remember to Save!");
+		}
+
+	]]></embedded-script>
+</Template>

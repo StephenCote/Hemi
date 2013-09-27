@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-components>
+	<application-component id="wideselect">
+		<![CDATA[
+		component_init:function(){
+			// Create a contex-sensitive handler
+			//
+			Hemi.include("hemi.ui.wideselect");
+			Hemi.css.loadStyleSheet("Styles/wideselect.css","wideselect");
+			this.scopeHandler("result_click",0,0,1);
+			this.getProperties().local_result_click = this.getContainer().getAttribute("localresultclick");
+
+			var fp = this._prehandle_result_click;//(sHandler && typeof eval(sHandler) == "function" ? eval(sHandler) : this._prehandle_result_click);
+			this.getObjects().wide_select = Hemi.ui.wideselect.newInstance(this.getContainer(), fp);
+
+			// default wideselect style is to hide an absolutely positioned container, so
+			// change the style to accomodate a fixed location
+			//
+			this.getObjects().wide_select.getContainer().style.position = "relative";
+			this.getObjects().wide_select.getContainer().style.display = "block";
+			//this.getObjects().wide_select.getContainer().style.height = "100px";
+			
+			this.getObjects().wide_select.setMaximumItems(0);
+		},
+		component_destroy : function(){
+			this.getObjects().wide_select.destroy();
+			this._prehandle_result_click = 0;
+		},
+		_handle_result_click : function(v,b){
+			if(this.getProperties().local_result_click){
+				eval(this.getProperties().local_result_click)();
+			}
+			else{
+				//alert('default result click: ' + this.getObjectId());
+			}
+		},
+		GetWideSelect : function(){
+			return this.getObjects().wide_select;
+		}
+		]]>
+	</application-component>
+</application-components>

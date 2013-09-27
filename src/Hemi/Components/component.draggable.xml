@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<application-components>
+	<application-component id = "draggable" participant-id = "draggable">
+		<![CDATA[
+			component_destroy:function(){
+				Hemi.include("hemi.css");
+				var oT = this.GetTracker();
+				if(oT && oT.getReadyState() == 4){
+					oT.ReleaseDraggable(this);
+				}
+			},
+			component_init : function(){
+				var oEngine = Hemi.app.space.service.getSpace(this.getReferenceId()), _p = this.getObjects();
+
+				var oTracker = this.GetTracker();
+				if(!oTracker){
+					var oA = Hemi.app.comp.newInstance("DragTracker");
+					oA.setAsync(0);
+					oA.loadComponent("drag-tracker","Components/component.dragtracker.xml");
+				}
+				else{
+					this.serveTransaction("trackerload");
+				}
+			
+				this.getContainer().style.position = "relative";
+
+			},
+			GetTracker : function(){
+				return Hemi.registry.service.getObject("DragTracker");
+			},
+			_handle_trackerload : function(s, d){
+
+			},
+			_handle_mouseover : function(e){
+				 var evt = Hemi.event.getEvent(e);
+				 var oSrc = Hemi.event.getEventSource(evt);
+				 var dt = this.GetTracker();
+				 //document.title = (new Date()).getTime();
+				 if(!dt) return;
+				 if(!dt.IsCapturing() || dt.GetCaptured() == this || dt.GetDropping() == this) return;
+				//document.title = (new Date()).getTime() + ":" + dt.IsCapturing() + " / " + this.getObjectId() + ":" + dt.GetCaptured().getObjectId();
+				 dt.RequestDroppable(this);
+				Hemi.event.cancelEvent(evt);
+				evt.returnValue = false;
+						
+				return false;
+
+			},
+			
+			_handle_mousedown : function(e){
+				var evt, t, l;
+				
+				//this.getContainer().innerHTML = "[ draggable - [md]]";
+				evt = Hemi.event.getEvent(e);
+				var oSrc = Hemi.event.getEventSource(evt);
+				if(oSrc != this.getContainer()) return;
+						
+				l = evt.clientX - Hemi.css.getAbsoluteLeft(this.getContainer());
+				t = evt.clientY - Hemi.css.getAbsoluteTop(this.getContainer());
+				this.GetTracker().CaptureDraggable(this, l, t);
+				Hemi.event.cancelEvent(evt);
+				evt.returnValue = false;
+						
+				return false;
+			},
+			_handle_mouseup : function(e){
+
+				this.GetTracker().ReleaseDraggable(this);
+			}
+		]]>
+	</application-component>
+</application-components>

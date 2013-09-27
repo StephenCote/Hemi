@@ -1,0 +1,77 @@
+ul.menu li.hemi
+{
+	background-image: url(../Graphics/Hemi_Logo_48x48.png);
+}
+
+.space
+{
+	width:250px;
+	height:100px;
+	background-color: #EFEFFF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #5555FF;
+	padding: 10px;
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	padding: 5px 5px 5px 15px;
+	margin: 0px 10px 5px 10px;
+}
+.template
+{
+	width:250px;
+	height:100px;
+	background-color: #EFFFEF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #55FF55;
+	padding: 10px;
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	padding: 5px 5px 5px 15px;
+	margin: 0px 10px 5px 10px;
+}
+
+.notes
+{
+	margin: 0px 10px 5px 10px;
+
+	overflow:auto;
+	height:250px;
+	padding: 10px;
+	background-color: #FFFFEF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border: 1px solid #FFFF55;
+	padding: 10px;
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	font: normal 8pt Times;
+	position:relative;
+	/*bottom:0px;*/
+}
+.notes p
+{
+	margin:0px;
+	padding:0px;	
+}
+ul.hemi-api li
+{
+	font: normal 10pt Arial;
+	margin: 0px;
+	list-style:none;
+}
+ul.hemi-api
+{
+	margin:0px;
+	padding:0px;
+	
+}
+
+.drag_frame
+{
+  	filter : Alpha(Opacity=50);
+	opacity : .50; 
+    position: absolute;
+ 	border: 1px outset #555500;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+}

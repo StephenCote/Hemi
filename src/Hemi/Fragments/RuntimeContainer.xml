@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<div>
+		<input type = "button" onclick ="${this}.RemoveContainer()" value ="Destroy" />
+		<input type ="button" onclick ="${this}.SendToActiveSource()" value="Send to Active Source" />
+		<input type = "button" onclick ="${this}.ToggleViewInfo()" rid ="btn_view" value ="View Example Info" />
+		<input type ="button" onclick ="Hemi.app.createWindow('Log Viewer', 'Templates/LogViewer.xml', 'LogViewer');" value ="Log" />
+	</div>
+	
+	<textarea rid ="running_info" style ="display:none;width:100%;height:150px;"></textarea>
+	<div rid ="running_body"></div>
+
+	<embedded-script>
+		<![CDATA[
+		embedded_init : function(){
+			this.getObjects().demo_buff = [];
+			this.scopeHandler("running_profiler_open",0,0,1);
+
+			/// The processor invocation is in a global context when passed through the task service
+			/// Use createHandler to create a context scoped to this object and space.
+			///
+			this.scopeHandler("running_task_processor",0,0,1);
+		},
+		
+		embedded_destroy : function(){
+			this._prehandle_running_task_processor = 0;
+			this._prehandle_running_profiler_open = 0;
+		},
+		ToggleViewInfo : function(){
+			var oBtn = this.GetElementByRID("btn_view");
+			var oInfo = this.GetElementByRID("running_info");
+			var b = (oInfo.style.display != "block");
+			oBtn.value = (b ? "Hide Example Info" : "View Example Info");
+			oInfo.style.display = (b ? "block" : "none");
+
+		},
+		_handle_running_task_processor : function(Service, ParentTask, TaskName, Value){
+				return this._handle_xhtml_token(2,Value);
+		},
+		RunApplicationTaskList : function(sId, sTaskId, sText, sUrl, iType){
+			this.ResetContainer((iType == 0 ? 2 : iType));
+			if(iType == 0){
+				var oBootTask = this.getObjects().running_task_service.executeTaskLoader(
+					"example_loader",
+					"xml",
+					sUrl,
+					"import-task",
+					sTaskId,
+					this._prehandle_running_task_processor
+				);
+				this.getObjects().demo_buff.push("var oBootTask = oService.executeTaskLoader(");
+				this.getObjects().demo_buff.push("\"example_loader\", // loader task id");
+				this.getObjects().demo_buff.push("\"xml\", // action-type");
+				this.getObjects().demo_buff.push("\"" + sUrl + "\", // action");
+				this.getObjects().demo_buff.push("\"import-task\", // handler-type");
+				this.getObjects().demo_buff.push("\"" + sTaskId + "\" // handler");
+				this.getObjects().demo_buff.push(");"); 
+			}
+			else if(iType == 1){
+				 var oComp = document.createElement("div");
+				 // oComp.setAttribute("acid","TemplateLoader");
+				 // oComp.setAttribute("appcomp_path","Gizmos/component.templateloader.xml");
+				 oComp.setAttribute("template",sUrl);
+				 this.getObjects().running_container.appendChild(oComp);
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				//this.getObjects().demo_buff.push("<div Template = \"" + sUrl + "\" acid = \"TemplateLoader\" appcomp_path = \"Gizmos/component.templateloader.xml\"></div>");
+				this.getObjects().demo_buff.push("<div template = \"" + sUrl + "\"></div>");
+				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+			}
+			this.FlushDemoBuff();
+		},
+		RunApplicationFragment : function(sId, sText, sUrl, iType){
+			this.ResetContainer(iType);
+			
+			if(iType == 0){
+				this.getObjects().running_component.setTemplateIsSpace(1);
+				var oX = Hemi.xml.parseXmlDocument("<Template>" + sText + "</Template>");
+				this.getObjects().running_component.loadTemplateFromNode(oX.documentElement);
+				//this.getObjects().running_component.loadTemplate(sUrl);
+				this.getObjects().demo_buff.push("oA.setTemplateIsSpace(1);");
+				this.getObjects().demo_buff.push("var oXml = Hemi.xml.parseXmlDocument(\"<Template>\" + sFragmentText + \"</Template>\");");
+				this.getObjects().demo_buff.push("oA.loadTemplateFromNode(oXml.documentElement);");
+				this.getObjects().demo_buff.push("// Note: Loading fragments via script not recommended");
+			}
+			else if(iType == 1){
+				 this.getObjects().demo_buff.push("<" + "!-- EMPTY BY DESIGN: Fragments should to be loaded via Templates --" + ">");
+					this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+			}
+			this.FlushDemoBuff();
+		},
+		RunApplicationProject : function(sId, sTask, sTemplate, sUrl, iType){
+			this.ResetContainer((iType == 0 ? 3 : iType));
+			//alert(sUrl);
+			if(iType == 0){
+				this.getObjects().demo_buff.push("var oD = Hemi.app.dwac.newInstance(oX,\"" + sUrl + "\", \"" + sTemplate + "\", \"" + sTask + "\");");
+				var o = Hemi.app.dwac.newInstance(this.getObjects().running_container, sUrl + "?ts=" + (new Date()).getTime(), sTemplate, sTask);
+				this.getObjects().running_component = o;
+			}
+			else if(iType == 1){
+				 var oComp = document.createElement("div");
+				 oComp.setAttribute("is-dwac","1");
+				 oComp.setAttribute("DWacControlUri",sUrl);
+				 oComp.setAttribute("DWacTemplateId",sTemplate);
+				 if(sTask && sTask.length) oComp.setAttribute("DWacControlTask",sTask);
+				 this.getObjects().running_container.appendChild(oComp);
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 this.getObjects().demo_buff.push("<div is-dwac = \"1\" DWacControlUri = \"" + sUrl + "\"" + (sTemplate && sTemplate.length ? " DWacTemplateId = \"" + sTemplate + "\"" : "") + (sTask && sTask.length ? " DWacControlTask = \"" + sTask + "\"" : "") + "></div>");
+				 this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+			}
+			this.FlushDemoBuff();
+		},
+		RunApplicationTemplate : function(sId, sText, sUrl, iType){
+			this.ResetContainer(iType);
+			if(iType == 0){
+				this.getObjects().running_component.setTemplateIsSpace(1);
+				var oX = Hemi.xml.parseXmlDocument(sText);
+				this.getObjects().running_component.loadTemplateFromNode(oX.documentElement);
+				//this.getObjects().running_component.loadTemplate(sUrl);
+				this.getObjects().demo_buff.push("oA.setTemplateIsSpace(1);");
+				this.getObjects().demo_buff.push("oA.loadTemplate(\"" + sUrl + "\");");
+			}
+			else if(iType == 1){
+				 var oComp = document.createElement("div");
+				 // oComp.setAttribute("acid","TemplateLoader");
+				 // oComp.setAttribute("appcomp_path","Gizmos/component.templateloader.xml");
+				 oComp.setAttribute("template",sUrl);
+				 this.getObjects().running_container.appendChild(oComp);
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				// this.getObjects().demo_buff.push("<div Template = \"" + sUrl + "\" acid = \"TemplateLoader\" appcomp_path = \"Gizmos/component.templateloader.xml\"></div>");
+				this.getObjects().demo_buff.push("<div template = \"" + sUrl + "\"></div>");
+				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+			}
+			this.FlushDemoBuff();
+		},
+		RunApplicationComponent : function(sId, sPartId, sText, sUrl, iType){
+			this.ResetContainer(iType);
+			Hemi.log("Run Component: " + sId + " via Type: " + iType);
+			if(iType == 0){
+				this.getObjects().running_component.importComponentDefinition(sText, sId, sPartId);
+				this.getObjects().demo_buff.push("// Import the code fragment");
+				this.getObjects().demo_buff.push("oA.importComponentDefinition(sText, \"" + sId + "\", \"" + sPartId + "\");");
+			}
+			else if(iType ==1){
+
+				 var oComp = document.createElement("div");
+					oComp.setAttribute("acid",sId);
+				 oComp.setAttribute("appcomp_path",sUrl);
+				 this.getObjects().running_container.appendChild(oComp);
+
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				this.getObjects().demo_buff.push("<div acid = \"" + sId + "\" appcomp_path = \"" + sUrl + "\"></div>");
+				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+
+			}
+			this.FlushDemoBuff();
+		},
+		RunTestModule : function(sId, sText, sUrl, iType){
+			this.ResetContainer((iType == 0 ? 4 : iType));
+			  if(!sUrl){
+				Hemi.log("Invalid URL");
+				return;
+			  }
+			// Cut off the file name
+			//
+			sUrl = sUrl.substring(0,sUrl.lastIndexOf("/") + 1);
+			Hemi.log("Run Module: " + sId + " via Type " + iType + " from " + sUrl);
+			if(iType == 0){
+				this.getObjects().running_module_name = sId;
+				this.getObjects().running_module = Hemi.app.module.test.service.NewTest(sId,this.getObjects().running_container,0,0,sUrl);
+        
+				if(this.getObjects().running_module) this.getObjects().running_module.RunTests();
+				this.getObjects().demo_buff.push("// Create the test suite");
+				this.getObjects().demo_buff.push("var oTest = Hemi.app.module.test.service.NewTest(\"" + sId + "\",{obj},\"" + sUrl + "\");");
+				this.getObjects().demo_buff.push("// Run all tests");
+				this.getObjects().demo_buff.push("oTest.RunTests();");
+			}
+			else if(iType ==1){
+				///
+
+				Hemi.app.module.test.service.UnloadTest(sId);
+				 var oComp = document.createElement("div");
+                oComp.setAttribute("component","testable");
+                oComp.setAttribute("test-path",sUrl);
+                oComp.setAttribute("tests",sId);
+                oComp.appendChild(document.createTextNode("[ Node to Test ]"));
+                this.getObjects().running_container.appendChild(oComp);
+
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+
+				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				this.getObjects().demo_buff.push("<div component = \"testable\" test-path = \"" + sUrl + "\" tests = \"" + sId + "\">[ Node to Test ]</div>");
+				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
+
+			}
+			this.FlushDemoBuff();
+		},
+		RunModule : function(sId, sText, sUrl, iType){
+			this.ResetContainer((iType == 0 ? 4 : iType));
+
+			// Cut off the file name
+			//
+			sUrl = sUrl.substring(0,sUrl.lastIndexOf("/") + 1);
+			
+			Hemi.log("Run Module: " + sId + " via Type: " + iType);
+
+			if(iType == 0){
+				this.getObjects().running_module_name = sId;
+				this.getObjects().running_module = Hemi.app.module.service.NewModule(sId,this.getObjects().running_container,sText,0,1);
+				this.getObjects().demo_buff.push("// Create the module by feeding in the script directly");
+				this.getObjects().demo_buff.push("var oModule = Hemi.app.module.service.NewModule(\"" + sId + "\",{obj},\"{script}\",0,1);");
+			}
+			else if(iType ==1){
+				this.getObjects().running_module_name = sId;
+				this.getObjects().running_module = Hemi.app.module.service.NewModule(sId,this.getObjects().running_container,sUrl);
+				this.getObjects().demo_buff.push("// Create the module by providing a URL");
+				this.getObjects().demo_buff.push("var oModule = Hemi.app.module.service.NewModule(\"" + sId + "\",{obj},\"" + sUrl + "\");");
+			}
+			this.FlushDemoBuff();
+		},
+		FlushDemoBuff : function(){
+				this.GetElementByRID("running_info").value = this.getObjects().demo_buff.join("\n");
+		},
+		ResetContainer : function(iType){
+			try{
+				this.RemoveContainer();
+			}
+			catch(e){
+				 alert("Error resetting container: " + (e.message ? e.message : e.description));
+			}
+			this.AddContainer(iType);
+		},
+		AddContainer : function(iType){
+
+			Hemi.xml.clearCache();
+
+			// iType == 0
+			//
+			if(this.getObjects().running_container) return;
+			var oDiv = document.createElement("div");
+			oDiv.appendChild(document.createTextNode(""));
+			this.GetElementByRID("running_body").appendChild(oDiv);
+			oDiv.style.cssText = "background-color:#FFFFFF;border:1px solid #000000;";
+
+			this.getObjects().running_container = oDiv;
+			this.getProperties().running_space = 0;
+			// Scripted ... Add a component directly to the container
+			//
+			if(iType == 0){
+				var oX = Hemi.object.xhtml.newInstance(oDiv,1,"container_node",this.getTemplateSpace().space_id);
+				var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);
+				this.getObjects().demo_buff.push("var oDiv = document.createElement(\"div\");");
+				this.getObjects().demo_buff.push("document.body.appendChild(oDiv);");
+				this.getObjects().demo_buff.push("// Bind the DIV to an XHTMLComponent;");
+				this.getObjects().demo_buff.push("var oX = Hemi.object.xhtml.newInstance(oDiv,1,\"container_node\");");
+				this.getObjects().demo_buff.push("// Create a new ApplicationComponent for the XHTMLComponent");
+				this.getObjects().demo_buff.push("var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);");
+
+				this.getObjects().running_component = oA;
+			}
+			// Declarative ... Add an engine, let the implementor add content then start the engine
+			else if(iType == 1){
+	
+				oDiv.setAttribute("space-id","running-space");
+				oDiv.setAttribute("space-config","self");
+				oDiv.setAttribute("is-space","1");
+				this.getProperties().running_space = 1;
+						
+				this.getObjects().demo_buff.push("<" + "!-- The is-space attribute is used to define application space boundaries --" + ">");
+				this.getObjects().demo_buff.push("<div is-space = \"1\">");
+			}
+			else if(iType == 2){
+				this.getObjects().running_task_service = new Hemi.task.serviceImpl();
+				this.getObjects().running_task_service.returnDependency("dom_event_window_load");
+				this.getObjects().demo_buff.push("var oService = Hemi.task.service;");
+				this.getObjects().demo_buff.push("/// 'dom_event_window_load' dependency is returned for example purposes");
+			}
+			// DWAC
+			else if(iType == 3){
+				this.getObjects().demo_buff.push("var oDiv = document.createElement(\"div\");");
+				this.getObjects().demo_buff.push("document.body.appendChild(oDiv);");
+				this.getObjects().demo_buff.push("// Bind the DIV to an XHTMLComponent;");
+				this.getObjects().demo_buff.push("var oX = Hemi.object.xhtml.newInstance(oDiv,1,\"container_node\");");
+				this.getObjects().demo_buff.push("// Create a new DWAC Component for the XHTMLComponent");
+			}
+			// Blank
+			else if (iType == 4){
+			}
+		},
+		RemoveContainer : function(){
+			if(!this.getObjects().running_container) return;
+			if(this.getObjects().running_component){
+				this.getObjects().running_component.destroy();
+				var oX = Hemi.registry.service.getObject(this.getObjects().running_component.getContainerId());
+				if(oX){
+					oX.destroy();
+				}
+			}
+
+			if(this.getObjects().running_module_name){
+				if(this.getObjects().running_module && this.getObjects().running_module.getObjectType().match(/^test_module$/)){
+					Hemi.log("Cleanup test module '" + this.getObjects().running_module_name + "'");
+					Hemi.app.module.test.service.UnloadTest(this.getObjects().running_module_name);
+				}
+				else{
+					Hemi.log("Cleanup module '" + this.getObjects().running_module_name + "'");
+					Hemi.app.module.service.UnloadModule(this.getObjects().running_module_name);
+				}
+				this.getObjects().running_module = 0;
+				this.getObjects().running_module_name = 0;
+			}
+			if(this.getProperties().running_space){
+				 var oE = Hemi.app.space.service.getSpace("running-space");
+					Hemi.app.space.service.clearAppSpace(oE);
+			}
+			if(this.getObjects().running_task_service){
+				this.getObjects().running_task_service.destroy();
+			}
+			Hemi.xml.removeChildren(this.GetElementByRID("running_body"));			
+			this.getObjects().running_component = 0;
+			this.getObjects().running_container = 0;
+			this.getObjects().running_task_service = 0;
+			this.getObjects().demo_buff = [];
+			this.getProperties().running_space = 0;
+		},
+		SendToActiveSource : function(){
+			this.OpenFrameworkProfiler(this._prehandle_running_profiler_open);
+		},
+		OpenFrameworkProfiler : function(fHandler){
+			var oW = Hemi.app.createWindow(0, "Templates/FrameworkProfiler.xml", "Templates/FrameworkProfiler.xml", Hemi.app.space.service.getPrimarySpace(),0,[],fHandler);
+			if(!oW && fHandler) fHandler(Hemi.app.getWindowManager().GetWindowByName("Templates/FrameworkProfiler.xml"));
+		},
+		_handle_running_profiler_open : function(oWin){
+			this.UpdateActiveSource(oWin);
+		},
+		UpdateActiveSource : function(oWin){
+				oWin.ShowTab("Active Source");
+				
+				var oSource = oWin.GetElementByRID("oSource");
+				var oEval = oWin.GetElementByRID("oEval");
+				var oObj = this.getProperties().running_space ? Hemi.app.space.service.getSpace("running-space") : this.getObjects().running_component;
+				if(!oObj && this.getObjects().running_task_service) oObj = this.getObjects().running_task_service;
+				if(!oObj && this.getObjects().running_module) oObj = this.getObjects().running_module;
+				var sCont = "";
+				ActiveObjects.valContainer = 0;
+				ActiveObjects.valReference = 0;
+				ActiveObjects.valBridge = 0;
+				ActiveObjects.valComponent = 0;
+				
+				/// Can't trust object type for modules as they are customizable
+				///
+				/*
+				if(typeof oObj.LoadModule == "function"){
+					ActiveObjects.valContainer = oObj.Container;
+				}
+				*/
+				if(typeof oObj.getReferenceId == "function"){
+					var oC = Hemi.app.space.service.getSpace(oObj.getReferenceId());
+					if(oC){
+						sCont = "\nSpace Reference " + oC.space_name + "(" + oC.space_id + ") as unregistered 'SpaceObject' with ActiveObjects.valReference";
+						ActiveObjects.valReference = oC;
+					}
+				}
+				if(typeof oObj.getContainerId == "function"){
+					var oC = Hemi.registry.service.getObject(oObj.getContainerId());
+					if(oC){
+						sCont = "\nAccess Container Bridge " + oC.getObjectId() + " as " + oC.getObjectType() + " with ActiveObjects.valBridge";
+						ActiveObjects.valBridge = oC;
+					}
+				}
+				if(typeof oObj.getComponentId == "function" && oObj.getComponentId()){
+					sCont = "\nComponent Id: " + oObj.getComponentId();
+				}
+				if(typeof oObj.getApplicationComponent == "function"){
+					var oC = oObj.getApplicationComponent();
+					if(oC){
+						sCont = "\nComponent Bridge " + oC.getObjectId() + " as " + oC.getObjectType() + " with ActiveObjects.valComponent";
+						ActiveObjects.valComponent = oC;
+					}
+				}
+				if(typeof oObj.getContainer == "function"){
+					var oC = oObj.getContainer();
+					if(oC && oC.nodeType == 1){
+						sCont = "\nAccess Container " + oC.nodeName + " with ActiveObjects.valContainer\n" + oWin.PrototypeElement(oC);
+						ActiveObjects.valContainer = oC;
+					}
+				}
+				var sId = "##";
+				if(typeof oObj.getObjectId == "function") sId = oObj.getObjectId();
+				else if(oObj.space_id) sId = oObj.space_id;
+				else if(oObj.id) sId = oObj.id;
+				oSource.value = 
+					"Active Object " + sId + (typeof oObj.getObjectType == "function" ? " as " + oObj.getObjectType() + "(v " + oObj.getObjectVersion() + ")" : "")
+					+"\nAccess with ActiveObjects.val"
+					+ sCont
+				;
+				oEval.value = "ActiveObjects.val";
+				ActiveObjects.val = oObj;
+	    },
+		local_handle_close : function(oWin){
+			// if hosted by the window component, and set to destroy on close, then clean up the runtime space.
+			if(this.getHideOnClose && !this.getHideOnClose()){
+				this.RemoveContainer();
+			}
+            var oOpener = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oOpener && typeof oOpener.getFocus == "function") oOpener.getFocus();
+
+		}
+  ]]>
+	</embedded-script>
+</html-fragment>

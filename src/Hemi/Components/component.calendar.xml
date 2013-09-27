@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-components>
+	<application-component id="calendar">
+		<![CDATA[
+		component_init:function(){
+			// Create a contex-sensitive handler
+			//
+
+		},
+		_handle_sync_value : function(s, v){
+			this.synchronizeValue();
+		},
+		buildCalendar : function(){
+			if(this.getProperties().build) return;
+			this.getProperties().build = 1;
+			if(this.getContainer().nodeName && this.getContainer().nodeName.match(/^input$/gi) && this.getContainer().type.match(/^date/gi)) return;
+			Hemi.include("hemi.ui.util");
+			Hemi.include("hemi.ui.calendar");
+			Hemi.css.loadStyleSheet("Styles/caltasche.css","caltasche");
+			this.scopeHandler("calendar_click",0,0,1);
+			this.scopeHandler("sync_value",0,0,1);
+			this.getProperties().local_calendar_click = this.getContainer().getAttribute("localcalendarclick");
+
+			var fp = this._prehandle_calendar_click;
+			var o = document.createElement("div");
+			o.className = "caltasche_container";
+			document.body.appendChild(o);
+			this.getObjects().calendar_container = o;
+			
+			/// Set a bit for the UI util to recognize this as an alignable control
+			///
+			this.getProperties().can_request = 1;
+			this.getObjects().calendar = Hemi.ui.calendar.newInstance(o);
+			this.getObjects().calendar.setDayLabels("Sun,Mon,Tue,Wed,Thu,Fri,Sat");
+			this.getObjects().calendar.render();
+			Hemi.message.service.subscribe(this,"ondatechanged",fp, this.getObjects().calendar);
+			Hemi.message.service.subscribe(this,"onselectdate",fp, this.getObjects().calendar);
+			Hemi.message.service.subscribe(this,"onsynchronizevalue",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
+			
+			this.synchronizeValue();
+		},
+		synchronizeValue : function(){
+			var o = new Date(this.getContainer().value);
+			if(!isNaN(o.getTime())){
+				Hemi.log("Synchronizing calendar to " + this.getContainer().value);
+				this.getObjects().calendar.setDate(o);
+			}
+			else{
+				Hemi.log("Invalid calendar value: " + this.getContainer().value);
+			}
+		},
+		_handle_click : function(){
+			Hemi.log("Handle cal field click");
+			this.buildCalendar();
+			if(this.getObjects().calendar){
+				if(Hemi.ui.util.getIsRequested(this)){
+					Hemi.log("returning control");
+					Hemi.ui.util.endRequest(this, this.getObjects().calendar_container);
+					this.getObjects().calendar.hideCalendar();
+				}
+				else{
+					Hemi.log("requesting control");
+					Hemi.ui.util.request(this, this.getContainer(),this.getObjects().calendar_container);
+					this.getObjects().calendar.showCalendar();
+				}
+			}
+			else{
+				Hemi.log("Don't know what to do");
+			}
+		},
+		component_destroy : function(){
+			if(this.getObjects().calendar != null){
+				Hemi.message.service.unsubscribe(this,"ondatechanged", this._prehandle_calendar_click, this.getObjects().calendar);
+				Hemi.message.service.unsubscribe(this,"onsynchronizevalue",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
+				this.getObjects().calendar.destroy();
+				document.body.removeChild(this.getObjects().calendar_container);
+			}
+			
+			this._prehandle_calendar_click = 0;
+		},
+		_handle_calendar_click : function(v, b){
+			this.getContainer().value =  (this.getObjects().calendar.getCurrentMonth() + 1) + "/" + this.getObjects().calendar.getCurrentDay() + "/" + this.getObjects().calendar.getCurrentYear();
+			if(this.getProperties().local_calendar_click){
+				eval(this.getProperties().local_calendar_click)(v, b);
+			}
+			if(v.match(/^onselectdate$/gi)){
+				Hemi.ui.util.endRequest(this, this.getObjects().calendar_container);
+				this.getObjects().calendar.hideCalendar();
+			}
+		},
+		getCalendarContainer : function(){
+			return this.getObjects().calendar_container;
+		},
+		getCalendar : function(){
+			return this.getObjects().calendar;
+		}
+		]]>
+	</application-component>
+</application-components>

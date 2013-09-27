@@ -1,0 +1,9 @@
+﻿2011/04/12 - IE 9 Bugs
+
+1) Interface not defined for serializing DOMDocuments.
+   FIXED: Changed serialize method to swap check for .xml property, showing preference to .xml
+
+2) AJAX on FileSystem not working
+	NOTE: This is probably from using the ActiveX object for IE on FS
+
+3) 

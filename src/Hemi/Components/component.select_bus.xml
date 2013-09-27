@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<application-components>
+	<application-component id = "select_bus" participant-id ="iobus">
+		<![CDATA[
+         component_init:function(){
+				Hemi.include("hemi.data.io");
+				if(!this.getContainer().nodeName.match(/^select$/i)) return;
+				this.getContainer().options.length = 0;
+				var aB = Hemi.data.io.service.getBusType();
+				for(var i in aB){
+					if(i.match(/^any$/i) && this.getContainer().getAttribute("NoAny") == "1") continue;
+					this.getContainer().options[this.getContainer().options.length] = new Option(i,aB[i]);
+				}
+				if(Hemi.data.io.service.getSubject().isAuthenticated){
+					this.getContainer().value = aB.ONLINE;
+				}
+				else this.getContainer().value = aB.STATIC;
+				this._handle_change();
+			},
+			component_destroy : function(){
+						 
+			},
+			getBusType : function(){
+				return parseInt(this.getContainer().value);
+			},
+			_handle_change : function(e){
+				this._handle_change_bus();
+			},
+
+			_handle_change_bus : function(s, v){
+				if(typeof v != "undefined"){
+					this.getContainer().value = v.data.src;
+				}
+				else{
+					this.serveTransaction("change_bus", parseInt(this.getContainer().value));
+				}
+				
+			},
+		]]>
+	</application-component>
+</application-components>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id ="form" Title = "Example Form">
+	<p>
+		Begin Example Template: Import a fragment.
+	</p>
+	<import-xml src = "dwac:Fragments/contact" id = "ContactFragment" />
+	<p>
+		End Example Template
+	</p>
+</Template>

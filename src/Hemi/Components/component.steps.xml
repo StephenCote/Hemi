@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<application-components>
+	<application-component id = "steps" participant-id = "printer-friendly">
+		<![CDATA[
+			component_init : function(){
+
+				this.getObjects().steps = [];
+				this.getObjects().step_panes = [];
+				this.scopeHandler("stepclick",0,0,1);
+				
+				var strip = document.createElement("div");
+				var oC = this.getContainer();
+				if(oC.firstChild) oC.insertBefore(strip,oC.firstChild);
+				else oC.appendChild(strip);
+				this.getObjects().step_strip = strip;
+				strip.className += " stepstrip";
+
+				
+			},
+			component_post_init : function(){
+				this.Setup();
+			},
+			component_destroy : function(){
+				this.getObjects().steps = [];
+				this.getObjects().step_panes = [];
+			},
+			GetElementByRID : function(n){
+				var o = Hemi.app.space.getSpace(this.getReferenceId()).getSpaceObjectByName(n);
+				if(!o || !o.object) return o;
+				o = o.object;
+				if(typeof o.getContainer == "function") o = o.getContainer();
+				return o;
+			},
+			Setup : function(){
+			
+				var a = this.getContainer().childNodes,it=0;
+				for(var i = 1; i < a.length; i++){
+					if(a[i].nodeType == 1){
+						this.getObjects().step_panes[this.getObjects().step_panes.length] = a[i];
+						it++;
+					}
+				}
+				
+				if(it > 0){
+					this.SetupSteps(it);
+					this.DiagramStep(0);
+				}
+			},
+			_handle_printerfriendly : function(s, p){
+				this.getObjects().step_strip.style.display = "none";
+				var a= this.getObjects().step_panes;
+				for(var i= 0; i < a.length; i++){
+					a[i].style.display = "block";
+					a[i].removeChild(a[i].lastChild);
+				}
+			},
+			SetupSteps : function(iTotal){
+				var oDiag = this.getObjects().step_strip;
+
+				if(!oDiag) return;
+				for(var i = 0; i < iTotal; i++){
+					var oS = document.createElement("span");
+					oS.className = "step step_inactive";
+					this.getObjects().step_strip.appendChild(oS);
+					Hemi.xml.setInnerXHTML(oS, "" + (i + 1));
+					oS.step_index = i;
+					oS.onclick = this._prehandle_stepclick;
+					this.getObjects().steps[this.getObjects().steps.length] = oS;
+					var oD = document.createElement("div");
+					this.getObjects().step_panes[i].appendChild(oD);
+					if(i > 0){
+						oS = document.createElement("input");
+						oS.setAttribute("type","button");
+						oS.value = "Prev";
+						oS.step_index = (i - 1);
+						oS.onclick = this._prehandle_stepclick;
+						oD.appendChild(oS);
+					}
+					if(i < (iTotal - 1)){
+						oS = document.createElement("input");
+						oS.setAttribute("type","button");
+						oS.value = "Next";
+						oS.step_index = (i + 1);
+						oS.onclick = this._prehandle_stepclick;
+						oD.appendChild(oS);
+					}
+				
+				}
+			},
+			_handle_stepclick : function(e){
+				var o = Hemi.event.getEventSource(e);
+
+				if(o && typeof o.step_index == "number") this.DiagramStep(o.step_index);
+			},
+			DiagramStep : function(iMark){
+				var aS = this.getObjects().steps;
+				var oDiag = this.getObjects().step_strip;
+				if(!oDiag) return;
+
+				for(var i = 0; i < aS.length; i++){
+					this.getObjects().step_panes[i].style.display = "none";
+					
+					if(i < iMark){
+						aS[i].className = "step";
+					}
+					else if( i == iMark){
+						aS[i].className = "step step_active";
+						this.getObjects().step_panes[i].style.display = "block";
+					}
+					else{
+						aS[i].className = "step step_inactive";
+					}
+				}
+			}
+		]]>
+	</application-component>
+</application-components>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<import-style src ="Styles/Designer.css" id ="designer" />
+	<import-style src ="Styles/GridStyle.css" id ="grid" />
+	<div class = "buttons_bar" rid = "buttons-bar">
+		<input type="button" rid = "button_refresh" class = "designer_button refresh_button" button-action = "Refresh" />
+		<input type="button" rid = "button_new" class = "designer_button new_button" button-action = "New" />
+		<input type="button" rid = "button_open" class = "designer_button open_button" button-action = "Open"  />
+		<input type="button" style ="display:none;" rid = "button_save" class = "designer_button save_button" button-action = "Save" />
+		<input type="button" rid = "button_delete" class = "designer_button delete_button" button-action = "Delete"  />
+		<div class = "designer_button_spacer"></div>
+		<input type="button" rid = "button_move_first" disabled = "true" class = "designer_button" button-action = "MoveFirst" value = "&lt;&lt;" />
+		<input type="button" rid = "button_move_prev" disabled = "true" class = "designer_button" button-action = "MovePrev" value = "&lt;" />
+		<input type="button" rid = "button_move_next" disabled = "true" class = "designer_button" button-action = "MoveNext" value = "&gt;" />
+		<input type="button" rid = "button_move_last" disabled = "true" class = "designer_button" button-action = "MoveLast" value = "&gt;&gt;" />
+		<div class = "designer_button_label" rid = "record_label"></div>
+	</div>
+	<div rid = "grid-header">
+	</div>
+	<div rid = "grid-items">
+	</div>
+	<div rid = "grid-footer">
+	</div>
+	<!--
+	Members:
+		InitializeIOGrid
+		LoadIOGrid
+		SetTotalItemCount
+		ToggleIOGridSelectItem
+		
+	Virtuals:
+		CreateNewItem
+		SaveSelectedItem
+		OpenListItem
+		DeleteSelectedItem
+		RefreshList
+		DrawIOGridItem
+		DrawIOGridHeader
+		DrawIOGridFooter
+	-->
+	<embedded-script>
+		<![CDATA[
+		InitializeIOGrid : function(){
+
+			this.getProperties().start_record = 0;
+			this.getProperties().record_count = 10;
+			
+			this.scopeHandler("iogrid_load",0,0,1);
+			this.scopeHandler("iogrid_highlight",0,0,1);
+			this.scopeHandler("iogrid_open",0,0,1);
+			this.scopeHandler("iogrid_toggle",0,0,1);
+			this.scopeHandler("iogrid_show_profile",0,0,1);
+		},
+		embedded_init : function(){
+		
+		},
+		embedded_destroy : function(){
+			this._prehandle_iogrid_load = 0;
+			this._prehandle_iogrid_highlight = 0;
+			this._prehandle_iogrid_open = 0;
+			this._prehandle_iogrid_toggle = 0;
+			this._prehandle_iogrid_showprofile = 0;
+		},
+		ShowButton : function(n){
+				var o = this.GetElementByRID("button_" + n);
+				if(o) o.style.display = "";
+		},
+		HideButton : function(n){
+				var o = this.GetElementByRID("button_" + n);
+				if(o) o.style.display = "none";
+		},
+		_handle_exec_button : function(e){
+			var o = Hemi.event.getEventSource(e);
+			var d = this.get_frame("designer");
+			var s = o.getAttribute("button-action");
+			var bRM = this.getProperties().response_mode;
+			
+			switch(s){
+				case "New":
+					if(typeof this.CreateNewItem == "function") this.CreateNewItem();
+					break;
+				case "Save":
+					if(typeof this.SaveSelectedItem == "function") this.SaveSelectedItem();
+					break;
+				case "MoveLast":
+					this.getProperties().start_record = this.getProperties().total_count - this.getProperties().record_count;
+					if(typeof this.RefreshList == "function") this.RefreshList();
+					break;
+				case "MoveFirst":
+					this.getProperties().start_record = 0;
+					if(typeof this.RefreshList == "function") this.RefreshList();
+					break;
+				case "MovePrev":
+					this.getProperties().start_record -= this.getProperties().record_count;
+					if(this.getProperties().start_record < 0) this.getProperties().start_record = 0;
+					if(typeof this.RefreshList == "function") this.RefreshList();
+					break;
+				case "MoveNext":
+					this.getProperties().start_record += this.getProperties().record_count;
+					if(this.getProperties().total_count > 0 && this.getProperties().start_record >= this.getProperties().total_count){
+						this.getProperties().start_record = this.getProperties().total_count - this.getProperties().record_count;
+					}
+					if(typeof this.RefreshList == "function") this.RefreshList();
+					break;
+				case "Refresh":
+					if(typeof this.RefreshList == "function") this.RefreshList();
+					break;
+				case "Open":
+					if(!this.getProperties().item_toggled) return;
+					if(typeof this.OpenListItem == "function") this.OpenListItem(this.getProperties().item_toggled);
+					break;
+				case "Delete":
+					if(!this.getProperties().item_toggled) return;
+						if(confirm("Delete this item?") && typeof this.DeleteSelectedItem == "function" && this.DeleteSelectedItem(this.getProperties().item_toggled)){
+							this.DisableButton("button_delete");
+							if(typeof this.RefreshList == "function") this.RefreshList();
+							return;
+						}
+						else{
+							if(typeof this.setStatus == "function") this.setStatus("Did not delete item");
+						}
+					break;
+			}
+		},
+		DisableButtons : function(){
+			this.DisableButton("button_delete");
+			this.DisableButton("button_open");
+			this.DisableButton("button_move_first");
+			this.DisableButton("button_move_last");
+			this.DisableButton("button_move_next");
+			this.DisableButton("button_move_prev");		
+		},
+		/// _p.current_bus, _p.current_application, "Data", sReq, sId
+		LoadIOGrid : function(iBus, sApp, sCat, sReq, sId){
+			this.DisableButtons();
+			var _p = this.getProperties();
+			_p.item_toggled =0;
+			
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"), "Loading ...");
+			
+			Hemi.xml.removeChildren(this.GetElementByRID("grid-header"));
+			Hemi.xml.removeChildren(this.GetElementByRID("grid-footer"));
+			Hemi.xml.removeChildren(this.GetElementByRID("grid-items"));
+			var oInstruction = Hemi.data.io.service.newIOInstruction(1, _p.start_record, _p.record_count, 0, 0);
+            var oRequest = Hemi.data.io.service.newIORequest(
+                iBus,
+                sApp,
+                sCat,
+                sReq,
+                "List", 
+                sId,
+                0, // name
+                1, // details only
+                1, // async
+                0, // cache
+                oInstruction
+            );
+			Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, this._prehandle_iogrid_load);
+		},
+		SetTotalItemCount : function(i){
+			this.getProperties().total_count = i;
+			if(this.getProperties().start_record > 0){
+				this.GetElementByRID("button_move_prev").disabled = false;
+				this.GetElementByRID("button_move_first").disabled = false;
+			}
+			
+			if((this.getProperties().start_record + this.getProperties().record_count) < this.getProperties().total_count){
+				this.GetElementByRID("button_move_next").disabled = false;
+				this.GetElementByRID("button_move_last").disabled = false;
+			}
+
+			if(this.getProperties().total_count > 0) Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),(this.getProperties().start_record + 1) + "-" + (this.getProperties().start_record + this.getProperties().record_count) + " of " + this.getProperties().total_count);
+			else Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),"0 of 0");
+
+		},
+		_handle_iogrid_open : function(e){
+			var o = this.GetIOGridItemFromEvent(e);
+			if(typeof this.OpenListItem == "function") this.OpenListItem(o);
+		},
+		_handle_iogrid_toggle : function(e){
+			var o = this.GetIOGridItemFromEvent(e);
+			this.ToggleIOGridItem(o);
+		},
+		GetIOGridItemFromEvent : function(e){
+			var o = Hemi.event.getEventSource(e);
+			e = Hemi.event.getEvent(e);
+			while(o && !o.item_id && !o.avoid) o = o.parentNode;
+			if(o.avoid) return 0;
+			return o;
+		},
+		ToggleIOGridItem : function(o){
+			if(this.getProperties().item_toggled && this.getProperties().item_toggled != o){
+				this.ToggleIOGridItem(this.getProperties().item_toggled);
+			}
+			if(o.toggled){
+				o.className = "grid_item";
+				o.toggled = 0;
+				this.getProperties().item_toggled = 0;
+				this.DisableButton("button_delete");
+				this.DisableButton("button_open");
+			}
+			else{
+				o.className = "grid_item grid_item_toggle";
+				o.toggled = 1;
+				this.getProperties().item_toggled = o;
+
+				if(!o.policy || o.policy.del) this.EnableButton("button_delete");
+				if(!o.policy || o.policy.read) this.EnableButton("button_open");
+			}
+			
+		},
+
+
+		_handle_iogrid_highlight : function(e){
+			var o = Hemi.event.getEventSource(e);
+			e = Hemi.event.getEvent(e);
+			while(o && !o.item_id && !o.avoid) o = o.parentNode;
+			if(!o || !o.item_id || o.toggled || o.avoid) return;
+			if(e.type == "mouseover")
+				o.className = "grid_item grid_item_highlight";
+			else
+				o.className = "grid_item";
+		},
+		_handle_iogrid_load : function(oService, oSubject, oRequest, oResponse){
+			if(oResponse.authenticationRequired){
+				this.ShowLogin();
+				return;
+			}
+			
+			var aDataList = oResponse.responseData;
+			Hemi.log("Handle data: " + aDataList.length);
+
+			var iCount = oResponse.instruction.totalCount;
+			if(!isNaN(iCount)) this.SetTotalItemCount(iCount);
+
+			
+			var oList = this.GetElementByRID("grid-items");
+			if(typeof this.DrawIOGridHeader == "function") this.DrawIOGridHeader(oService, oSubject, oRequest, oResponse, this.GetElementByRID("grid-header"));
+			for(var i = 0; i < aDataList.length; i++){
+				var oItem = document.createElement("div");
+				oItem.item_id = aDataList[i].id;
+				oItem.group_id = aDataList[i].group;
+				oItem.item_name = aDataList[i].name;
+				oItem.item_date = aDataList[i].createdDate;
+				oItem.policy = (aDataList[i].policies.length?aDataList[i].policies[0]:0);
+				oItem.item_description = aDataList[i].description;
+				oItem.className = "grid_item";
+
+				if(typeof this.DrawIOGridItem == "function") this.DrawIOGridItem(oService, oSubject, oRequest, oResponse,aDataList[i], oItem);
+				
+				oList.appendChild(oItem);
+				oItem.onmouseover = this._prehandle_iogrid_highlight;
+				oItem.onmouseout = this._prehandle_iogrid_highlight;
+				oItem.onclick = this._prehandle_iogrid_toggle;
+				oItem.ondblclick = this._prehandle_iogrid_open;
+			}
+			
+			if(typeof this.DrawIOGridFooter == "function") this.DrawIOGridFooter(oX, oDataList, aItems, this.GetElementByRID("grid-footer"));
+
+		},
+		_handle_iogrid_show_profile : function(e){
+			var o = Hemi.event.getEventSource(e);
+			if(!o.user_id) return;
+			Hemi.app.createWindow(0,g_application_path + 'ActionForms/Profile.xml','Profile-' + o.user_id,'oWindowManager',0,{user_id:o.user_id});
+		}
+
+	]]></embedded-script>
+</html-fragment>

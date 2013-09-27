@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<application-components>
+	<application-component id = "drag-tracker">
+	<![CDATA[
+		component_init : function(){
+			Hemi.include("hemi.css");
+			var _s = this.getProperties();
+			_s.zindex_dragitem = 121;
+			_s.zindex_screen = 120;
+			_s.zindex_last = 0;
+			this.scopeHandler("mousemove",0,0,1);
+			this.scopeHandler("mouseup",0,0,1);
+			Hemi.event.addEventListener(document.documentElement,"mousemove",this._prehandle_mousemove);
+			Hemi.event.addEventListener(document.documentElement,"mouseup",this._prehandle_mouseup);
+			// Communicate to draggable items (items with participant-id = "draggable") that the tracker has loaded
+			//
+			this.serveTransaction('trackerload',0,1,"draggable");
+		},
+			component_destroy:function(){
+				//Hemi.event.removeEventListener(this.getContainer(),"mousemove",this._prehandle_mousemove);
+			},
+		_handle_mouseup : function(n, d){
+			if(this.getProperties().is_capturing) this.ReleaseDraggable(this.getObjects().captured);
+		},
+
+		_handle_trackerload : function(s, p){
+
+		},
+		IsCapturing : function(){
+			return this.getProperties().is_capturing;
+		},
+		GetCaptured : function(){
+			return this.getObjects().captured;
+		},
+		GetDropping : function(){
+			return this.getObjects().drop_target;
+		},
+		RequestDroppable : function(o){
+
+			var _s = this.getProperties(), _p = this.getObjects();
+			if(_s.is_dropping) this.ReleaseDroppable();
+			_s.is_dropping = 1;
+			_p.drop_target = o;
+			_p.drop_frame = document.createElement("div");
+			document.body.appendChild(_p.drop_frame);
+			_p.drop_frame.style.position = "absolute";
+			_p.drop_frame.style.width = o.getContainer().offsetWidth + "px";
+			_p.drop_frame.style.height = o.getContainer().offsetHeight + "px";
+			var iX2 = Hemi.css.getAbsoluteLeft(o.getContainer());
+			var iY2 = Hemi.css.getAbsoluteTop(o.getContainer());
+			_p.drop_frame.style.border = "1px solid #CFCFCF";
+			_p.drop_frame.style.top = iY2 + "px";
+			_p.drop_frame.style.left = iX2 + "px";
+			_p.drop_frame.style.zIndex = _s.zindex_dragitem;
+		},
+		ReleaseDroppable : function(){
+			var _s = this.getProperties(), _p = this.getObjects();
+			_s.is_dropping = 0;
+			_p.drop_target = 0;
+			if(_p.drop_frame){
+				_p.drop_frame.parentNode.removeChild(_p.drop_frame);
+				_p.drop_frame = 0;
+			}
+		},
+		ReleaseDraggable : function(o){
+			var _s = this.getProperties(), _p = this.getObjects();
+			_s.is_capturing = 0;
+			_p.captured = 0;
+			if(o.getObjects().drag_frame){
+				o.getObjects().drag_frame.parentNode.removeChild(o.getObjects().drag_frame);
+				o.getObjects().drag_frame = 0;
+			}
+			this.ReleaseDroppable();
+			this.ReturnScreen();
+		},
+
+		CaptureDraggable : function(o, l, t){
+			var _s = this.getProperties(), _p = this.getObjects(), _cp = o.getObjects(), i;
+			t = (typeof t == "number") ? t : 0;
+			l = (typeof l == "number") ? l : 0;
+			if(_s.is_capturing) this.ReleaseDraggable(_p.captured);
+			_s.is_capturing = 1;
+			_p.captured = o;
+			_cp.drag_frame = document.createElement("div");
+            _cp.drag_frame.className = "drag_frame";
+            var aT = [];
+            
+             Hemi.xml.setInnerXHTML(_cp.drag_frame,Hemi.xml.getInnerText(o.getContainer(),1));
+			document.body.appendChild(_cp.drag_frame);
+			_cp.drag_frame.style.width = Math.min(o.getContainer().offsetWidth,300) + "px";
+			_cp.drag_frame.style.height = o.getContainer().offsetHeight + "px";
+			var iX2 = Hemi.css.getAbsoluteLeft(o.getContainer());
+			var iY2 = Hemi.css.getAbsoluteTop(o.getContainer());
+			_cp.drag_frame.style.top = (iY2 + t - 10) + "px";
+			_cp.drag_frame.style.left = (iX2 + l + 10) + "px";
+			_cp.drag_frame.style.zIndex = _s.zindex_dragitem;
+			_s.track_x = l;
+			_s.track_y = t;	
+
+		},
+		
+			_handle_mousemove:function(e){
+				if(!this.getProperties().is_capturing) return;
+				var evt=Hemi.event.getEvent(e);
+				
+					
+					var iX = evt.clientX;
+					var iY = evt.clientY;
+					
+					var o = this.getObjects().captured;
+
+					var oFr = o.getObjects().drag_frame;
+
+					var oObj= document.documentElement;
+
+					var iX2 = Hemi.css.getAbsoluteLeft(oObj) + oObj.clientWidth;
+					var iY2 = Hemi.css.getAbsoluteTop(oObj) + oObj.clientHeight;
+
+					iX=(iX < 0)?0:(iX > iX2)?iX2:iX;
+					iY=(iY < 0)?0:(iY > iY2)?iY2:iY;
+          /*
+					var iNewX=iX - this.getProperties().track_x;
+					var iNewY=iY - this.getProperties().track_y;
+					*/
+					var iNewX=iX  + 10;
+					var iNewY=iY - 10;
+          
+					var iLeft1=oFr.offsetLeft + oObj.offsetLeft;
+					var iLeft2=oObj.offsetLeft;
+					var iLeft3=iLeft1 + oFr.offsetWidth;
+					var iLeft4=iLeft2 + oObj.offsetWidth;
+					var iTop1=oFr.offsetTop + oObj.offsetTop;
+					var iTop2=Hemi.css.getAbsoluteTop(oObj);
+					var iTop3=iTop1 + oFr.offsetHeight;
+					var iTop4=iTop2 + oObj.offsetHeight;
+					if((iLeft1>=iLeft2)&&(iLeft3<=iLeft4)){
+						var iCheckFarLeft=oObj.offsetWidth - oFr.offsetWidth - this.getProperties().mod_x;
+						if(iNewX<0){
+							iNewX=0;
+						}
+						if(iNewX>iCheckFarLeft){
+							iNewX=iCheckFarLeft;
+						}
+						oFr.style.left = iNewX + "px";
+					}
+					else{
+						if(iLeft3>iLeft4){
+							oFr.style.left = (iLeft4 - iLeft2 - oFr.offsetWidth) + "px";
+						}
+					}
+					if((iTop1>=iTop2)&&(iTop3<=iTop4)){
+						var iCheckFarTop=oObj.offsetHeight - oFr.offsetHeight - this.getProperties().mod_y;
+						if(iNewY<0){
+							iNewY = 0;
+						}
+						if(iNewY>iCheckFarTop){
+							iNewY = iCheckFarTop;
+						}
+						oFr.style.top = iNewY + "px";
+					}
+					else{
+						if(iTop3>iTop4){
+							oFr.style.top=(iTop4 - iTop2 - oFr.offsetHeight) + "px";
+						}
+					}			
+
+
+
+			},
+
+		/// The following code mimicks the code from component.manager.xml, and could be refactored
+		/// into a common location
+		///
+			
+		 ReturnScreen: function(b){
+        var _p = this.getObjects();
+        this.getProperties().frame_screening = 0;
+        if(!b && _p.frame_screen) _p.frame_screen.style.display = "none";
+      },
+			
+      RequestScreen : function(){
+        var _p = this.getObjects();
+        this.ReturnScreen(1);
+        if(!_p.frame_screen){
+          _p.frame_screen = document.createElement("div");
+          _p.frame_screen.style.position = "absolute";
+          _p.frame_screen.style.display = "block";
+          _p.frame_screen.style.zIndex = this.getProperties().zindex_screen;
+          _p.frame_screen.style.top = "0px";
+          _p.frame_screen.style.left = "0px";
+          // _p.frame_screen.style.backgroundColor = "#CFCFCF";
+          _p.frame_screen.onselectstart = function(){return false;};
+          _p.frame_screen.onmousedown = function(){return false;};
+	        document.body.appendChild(_p.frame_screen);
+        }
+        _p.frame_screen.style.display = "block";
+        this.getProperties().frame_screening = 1;
+        this.RepositionFrameScreen();
+      
+      },
+      
+      RepositionFrameScreen : function(){
+        if(!this.getProperties().frame_screening) return;
+        var _p = this.getObjects();
+        var de = document.documentElement;
+        _p.frame_screen.style.width = "1px";
+        _p.frame_screen.style.height = "1px";
+        _p.frame_screen.style.width = ((de.scrollWidth > de.offsetWidth ? de.scrollWidth : de.offsetWidth) - 20) + "px";
+        _p.frame_screen.style.height = ((de.scrollHeight > de.offsetHeight ? de.scrollHeight : de.offsetHeight) - 20) + "px";
+
+      }
+	]]>
+	</application-component>
+</application-components>

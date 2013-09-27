@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Template id="Hierarchy Example">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<p>
+		<input rid ="action_button" type ="button" value ="Do Action" onclick ="${this}.DoAction()" />
+	</p>
+	<p rid ="example_label"></p>
+
+	<embedded-script><![CDATA[
+		embedded_init : function(){
+
+		},
+		DoAction : function(){
+		
+		}
+
+		
+	]]></embedded-script>
+</Template>

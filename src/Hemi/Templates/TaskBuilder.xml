@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title ="Task Builder">
+	<import-style src ="Styles/jsprof.css" id ="jsprof" />
+	<import-style src ="Styles/wideselect.css" id ="wideselect" />
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<import-xml src = "Fragments/BuilderControls.xml" id = "BuilderControls" />
+
+	<div class="title">Task List Description</div>
+		<div>
+			<select rid ="run_task_as"><option>Scripted</option><!--<option>Declarative</option>--></select>
+			<input type ="button" onclick ="${this}.RunTask()" value ="Run" />
+			<span rid ="task_info">[ Volatile Task ]</span>
+		</div>
+	<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "task_name" />
+			<input type = "hidden" value ="0" rid = "task_id" />
+		</div>
+	</div>
+	
+	<div class ="field">
+		<div class = "field_label">
+			Description: (<i>optional</i>)
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "task_description" />
+		</div>
+	</div>
+
+	<div id ="oDebug" style = "clear:both;width:50%;float:left;">
+		<div class="title">Tasks</div>
+		<div ___pointer_marker = "never" component = "wideselect" rid = "task_list">
+		</div>
+	</div>
+	<div style = "width:50%;float:left;">
+		<div class="title">Dependencies</div>
+		<div ___pointer_marker = "never" component = "wideselect" rid = "dependency_list">
+		</div>
+	</div>
+	<div style ="clear:left;">
+		<input type = "button" value = "Import" onclick ="${this}.LoadTaskText()" />
+		<select onchange ="${this}.BuildTaskList()" rid = "build_task"><option>Task List XML</option><option>Task XML</option></select>
+		<input type ="button" value ="New Task" onclick ="${this}.NewTask();" />
+		<span rid ="task_model_controls" style ="display:none;">
+			<input type ="button" value ="Add Dependency" onclick ="${this}.AddTaskDependency()" />
+			<input type ="button" value ="Remove Dependency" onclick ="${this}.RemoveTaskDependency()" />
+			<input type ="button" value ="Update" onclick ="${this}.UpdateTaskMember()" />
+			<input type ="button" value ="Remove Task" onclick ="${this}.RemoveTaskMember()" />
+		</span>
+		<br />
+		<textarea rid ="task_text" wrap ="off" style ="border:0px;margin:0px;width:100%;height:250px;"></textarea>
+	</div>
+	<embedded-script>
+        <![CDATA[
+		template_init : function (){
+			Hemi.include("hemi.text");
+			this.scopeHandler("tasklistclick",0,0,1);
+			this.setupButtons("task-buttons-bar");
+			this.scopeHandler("task_load",0,0,1);
+			this.scopeHandler("task_picker_open",0,0,1);
+			this.scopeHandler("task_picker_choose",0,0,1);
+			this.getObjects().task_construct = 0;
+			this.GetTaskList().setResultHandler( this._prehandle_tasklistclick);
+			this.refreshBuilderUI();
+			this.RefreshTaskBuilder();
+			this.getProperties().builder_title = "Task Builder";
+		},
+		RefreshTaskBuilder : function(){
+			var b = (this.getObjects().task_construct ? 1 : 0);
+			this.GetElementByRID("task_name").disabled = (b ? false : true);
+			this.GetElementByRID("task_description").disabled = (b ? false : true);
+			this.GetElementByRID("build_task").disabled = (b ? false : true);
+		},
+		template_destroy : function(){
+			this._prehandle_task_load = 0;
+			this._prehandle_tasklistclick = 0;
+			this._prehandle_task_picker_open = 0;
+			this._prehandle_task_picker_choose = 0;
+		},
+		RunTask : function(s){
+			if(!this.getObjects().task_construct) return;
+			var oTask = this.GetTaskList().getActiveItem();
+			var aItems = this.GetTaskList().getItems();
+			if(!oTask && aItems.length != 1){
+				this.SetLabel("Select a task to run as the primary.");
+				return;
+			}
+			if(!oTask) oTask = aItems[0];
+
+			var aBuff = [];
+			// Get the XHTML value
+			//
+			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.BuildTaskList();
+			aBuff.push(this.GetElementByRID("task_text").value);
+
+			var aParams = [this.GetElementByRID("task_name").value, oTask.name, aBuff.join("\n"),"dwac:" + this.GetDataPath(),this.GetElementByRID("run_task_as").selectedIndex];
+			this.RunControl("RunApplicationTaskList", aParams);
+		},
+
+		LoadObject : function(i){
+			this.SetLabel("Loading ...");
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"[ Volatile Task ]");
+			this.getProperties().task_id = i;
+			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.ReadData(0, i, this._prehandle_task_load);
+		},
+		_handle_task_load : function(oService, oSubject, oRequest, oResponse){
+			this.SetLabel("");
+			if(!oResponse.responseData.length){
+				 this.SetLabel("Failed to load task list");
+				 return;
+			}
+			var oData = oResponse.responseData[0];
+			var sVal = unescape(oData.value);
+
+			this.GetElementByRID("task_text").value = sVal;
+
+			if(this.LoadTaskText()){
+				this.GetElementByRID("task_name").value = oData.name;
+				this.GetElementByRID("task_description").value = oData.description;
+
+				this.getObjects().task_construct.id = this.getProperties().task_id;
+				this.RefreshTaskBuilder();
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + this.getProperties().task_id + " / Path: " + oData.path);
+				this.SetDataPath(oData.path);
+			}
+
+			this.GetElementByRID("task_id").value = this.getProperties().task_id + "";
+	
+		},
+
+		DeleteCurrentObject : function(){
+			var id = this.getProperties().task_id;
+			if(typeof id != "number"){
+				 this.SetLabel("Invalid task data id");
+				 return;
+			}
+			if(!confirm("Are you sure you want to delete this task list?")) return;
+			var oResp = this.DeleteData(["task_id"], id);
+			if(oResp.status == true){
+					this.ClearTaskList();
+					///this.RefreshDWACLists();
+			}
+			else{
+				 this.SetLabel("Failed to delete data #" + id);
+			}
+		},
+		ClearTaskList : function(){
+				this.GetElementByRID("build_task").selectedIndex = 0;
+				this.GetElementByRID("task_text").value = "";
+				this.GetElementByRID("task_id").value = "0";
+				this.GetElementByRID("task_name").value = "";
+				this.GetElementByRID("task_description").value = "";
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"[ Volatile Task ]");
+				this.getObjects().task_construct = 0;
+				this.getProperties().task_id = 0;
+				this.GetTaskList().clearItems();
+				this.GetDependencyList().clearItems();
+				this.SetLabel("");
+				this.RefreshTaskBuilder();
+		},
+		SaveCurrentObject : function(){
+			if(
+				 !this.getObjects().task_construct
+				 ||
+					(
+						this.getObjects().task_construct.changes == 0
+						&&
+						!confirm("No changes detected.  Save anyway?")
+					)
+			){				 
+				 this.SetLabel("Didn't save - Nothing to do");
+				 return;
+			}
+			if(this.GetElementByRID("build_task").selectedIndex != 0){
+				this.GetElementByRID("build_task").selectedIndex = 0;
+				this.BuildTaskList();
+			}
+			var sName = this.GetElementByRID("task_name").value;
+			var oResp = this.GetNameExists(["task_name","task_id"], sName);
+			if(oResp.status == true){
+				Hemi.log("Resp Status=" + oResp.status);
+				this.SetLabel("The task '" + sName + "' already exists");
+				return;
+			}
+			
+			var sTemp = this.GetElementByRID("task_text").value;
+			this.GetElementByRID("task_text").value = escape(sTemp);
+			
+			
+			var aF = ["task_name","task_description","task_text","task_id"];
+			oResp = 0;
+			if(this.getObjects().task_construct.id > 0){
+				oResp = this.EditData(aF, this.getObjects().task_construct.id);
+			}
+			else{
+				oResp = this.AddData(aF);
+			}
+			if(oResp.status){
+				this.getObjects().task_construct.changes = 0;
+				var sId = oResp.responseId;
+				if(!sId || sId.length == 0){
+						this.SetLabel("Error retrieving data id");
+						this.getObjects().task_construct.id = 0;
+				}
+				else{
+					this.getObjects().task_construct.id = parseInt(sId);	
+					this.GetElementByRID("task_id").value = sId;
+					///this.RefreshDWACLists();
+					this.SetLabel("Saved!");
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + sId + " / Path: " + oResp.responsePath);
+					this.SetDataPath(oResp.responsePath);
+				}
+			}
+			else{
+					this.SetLabel("Failed to save task list");
+			}
+			this.GetElementByRID("task_text").value = sTemp;
+		},
+		NewTask : function(){
+				var oW = Hemi.app.createWindow(0,"Templates/NewTask.xml","NewTask-" + (new Date()).getTime(),0,0,{opener_id:this.getObjectId()});
+				oW.resizeTo(500,350);
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+		},
+		CreateNewObject : function(){
+				if(this.getObjects().task_construct && this.getObjects().task_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
+
+				var oW = Hemi.app.createWindow(0,"Templates/NewTaskList.xml","NewTaskList-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
+				oW.resizeTo(500,350);
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+				//this.SetLabel("New Task List - Remember to Save!");
+		},
+
+		BuildTaskList : function(vTask){
+			if(!this.getObjects().task_construct){
+				this.SetLabel("Invalid task construct");
+				return;	 
+			}
+			var sName = Hemi.text.trim(this.GetElementByRID("task_name").value);
+			this.getObjects().task_construct.name = sName;
+			
+			var aBuff = [];	
+			var iIndex = this.GetElementByRID("build_task").selectedIndex;
+			var bXml = (iIndex == 0 ? 1 : 0);
+			var bTaskXml = (iIndex == 1 ? 1 : 0);
+			var bEmbScr = (iIndex == 2 ? 1 : 0);
+			if(bEmbScr || bTaskXml){
+				 this.GetElementByRID("task_model_controls").style.display = "inline";
+			}
+			else{
+				 this.GetElementByRID("task_model_controls").style.display = "none";
+			}
+			if(bXml){
+				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasks>\n");
+			}
+			if(bXml || bTaskXml) aBuff.push(this.getObjects().task_construct.xhtml_content);
+			if(bXml || bTaskXml){
+				var aTasks = (vTask ? [this.getObjects().task_construct.tasks[vTask]] : this.getObjects().task_construct.tasks);
+				for(var i in aTasks){
+					aBuff.push("\t<task id = \"" + aTasks[i].id + "\"");
+					aBuff.push(" action-type = \"" + aTasks[i].action_type + "\"");
+					aBuff.push(" action = \"" + (aTasks[i].action_type == "script" ? "#cdata" : aTasks[i].action) + "\"");
+					
+					aBuff.push(" handler-type = \"" + aTasks[i].handler_type + "\"");
+					aBuff.push(" handler = \"" + (aTasks[i].handler_type == "script" ? "#cdata" : aTasks[i].handler) + "\"");
+					aBuff.push(">");
+					if(aTasks[i].action_type == "script" || aTasks[i].handler_type == "script"){
+						aBuff.push("\n<" + "![CD" + "ATA[\n");
+						aBuff.push((aTasks[i].action_type == "script" ? aTasks[i].action : aTasks[i].handler));
+						aBuff.push("\n]" + "]>");
+					}
+					for(var d in aTasks[i].depends){
+						var oD = aTasks[i].depends[d];
+						aBuff.push("\n\t\t");
+						aBuff.push(oD.named_dependency ? "<depends" : "<task");
+						aBuff.push(" rid = \"" + oD.rid + "\"");
+						if(oD.auto_execute && !oD.named_dependency) aBuff.push(" auto-execute = \"1\"");
+						aBuff.push(" />");
+					}
+
+					for(var d in aTasks[i].params){
+						var oP = aTasks[i].params[d];
+						aBuff.push("\n\t\t");
+						aBuff.push("<param" + (oP.eval ? " eval = \"1\"" : "") + "><" + "![CD" + "ATA[");
+						aBuff.push(oP.value + "]" + "]></param>");
+					}
+
+					aBuff.push("\n\t</task>");
+				}
+			}
+
+			if(bXml){
+				aBuff.push("</tasks>\n"); 
+			}
+			var sText = aBuff.join("");
+
+			this.GetElementByRID("task_text").value = sText;
+		},
+		GetDependencyList : function(){
+			 return this.GetComponentByRID("dependency_list").GetWideSelect();
+		},
+		GetTaskList : function(){
+
+			return this.GetComponentByRID("task_list").GetWideSelect();
+		},
+		NewTaskFunction : function(){
+				this.NewFunction(this.getObjects().task_construct);
+				this.SetLabel("New Function - Remember to Save!");
+		},
+
+		UpdateTaskMember : function(){
+			var iIndex = this.GetElementByRID("build_task").selectedIndex;
+			var oItem = this.GetTaskList().getActiveItem();
+			if(iIndex == 0 || !oItem){
+				alert("Item not specified");
+				return;
+			}
+					 
+			if(iIndex == 1){
+				var sXhtml = this.GetElementByRID("task_text").value;
+				var oX = 0;
+				try{
+						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
+				}
+				catch(e){
+				}
+				if((oX == null || oX.documentElement == null || oX.documentElement.nodeName == "parsererror") && !confirm("Warning - content is not valid XHTML/XML.  Continue updating?")) return;
+				
+				var oTask = oX.getElementsByTagName("task");
+				if(oTask.length == 0){
+					alert("Invalid Task XML Construct");
+					return;			
+				}
+				oTask = oTask[0];
+				var sId = oTask.getAttribute("id");
+				if(sId != oItem.name && this.getObjects().task_construct[sId] && !confirm("Task " + sId + " already exists. Replace it?")) return;
+				this.GetTaskList().clearItem(oItem.index);
+				this.ImportTaskFromXml(oTask);
+				this.getObjects().task_construct.changes++;
+				if(oX) this.SetLabel("Updated Member - Remember to Save!");
+				else this.SetLabel("Updated Member - The content is invalid!");
+			}
+
+		},
+		_handle_tasklistclick : function(sEvent,oItem){
+			this.GetDependencyList().clearItems();
+			if(!oItem || typeof oItem.data != "string" || !this.getObjects().task_construct){
+				 this.GetElementByRID("task_text").value = "";
+				 return;
+			}
+			var vTask = this.getObjects().task_construct.tasks[oItem.name];
+			if(!vTask){
+				this.GetElementByRID("task_text").value = "Task '" + oItem.name + "' is not constructed.";
+				return;
+			}
+			this.GetElementByRID("task_model_controls").style.display = "inline";
+			this.GetElementByRID("build_task").selectedIndex = 1;
+			this.BuildTaskList(oItem.name);
+			this.RefreshTaskDependencyList();
+			
+		},
+		RefreshTaskDependencyList : function(){
+			this.GetDependencyList().clearItems();
+			var oItem = this.GetTaskList().getActiveItem();
+			if(!oItem || !this.getObjects().task_construct.tasks[oItem.name]) return;
+			var oTask = this.getObjects().task_construct.tasks[oItem.name];
+			for(var i in oTask.depends){
+				var oDepend = oTask.depends[i];
+				var sName = (oDepend.named_dependency ? "Named Dependency " : "")
+					+ oDepend.rid
+					+ (oDepend.auto_execute ? " runs automatically" : "")
+				;
+				this.GetDependencyList().addItem(sName, oDepend.rid);
+			}
+		},
+		LoadTaskText : function(){
+
+			var bXml = (this.GetElementByRID("build_task").selectedIndex == 0 ? 1 : 0);
+			if(this.getObjects().task_construct && this.getObjects().task_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
+
+			if(!bXml){
+				this.SetLabel("Parsing only available for full tasks XML file format.  Select Task List XML.");
+				return 0;
+			}
+			
+			var oXml = null;
+			var sTaskText = this.GetElementByRID("task_text").value
+			try{
+				 oXml = Hemi.xml.parseXmlDocument(sTaskText);
+			}
+			catch(e){
+				 //alert("Error parsing XML");
+				 //return 0;
+			}
+			if(oXml == null || oXml.documentElement == null){
+				this.SetLabel("Failed to parse Task XML");
+				return 0;
+			}
+
+			var aAppComp = oXml.getElementsByTagName("tasks");
+			if(aAppComp.length == 0){
+				this.SetLabel("No tasks definitions found");
+				return 0;
+			}
+			
+			this.GetTaskList().clearItems();
+			var sXhtmlContent = "";
+
+			if(aAppComp.length > 1){
+				this.SetLabel("Multiple tasks definitions found.  Displaying the first tasks only.  Saving any changes will only save the one tasks list.");
+			}
+			var oComp = aAppComp[0];
+			var n;
+
+			this.GetElementByRID("task_description").value = "";
+			this.GetElementByRID("task_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			
+			this.getObjects().task_construct = this.ParseConstruct(this.GetTaskList(), "");
+			this.getObjects().task_construct.xhtml_content = "";
+
+			for(var i = 0; i < oComp.childNodes.length; i++){
+				if(oComp.childNodes[i].nodeType != 1 || oComp.childNodes[i].nodeName != "task") continue;
+				var oTask = oComp.childNodes[i];
+				this.ImportTaskFromXml(oTask);
+			}
+			this.RefreshTaskBuilder();
+			this.RefreshTaskDependencyList();
+	 		return 1;
+		},
+		ImportTaskFromXml : function(oTaskNode){
+
+			var sId = oTaskNode.getAttribute("id");
+			var sAction = oTaskNode.getAttribute("action");
+			var sActionType = oTaskNode.getAttribute("action-type");
+			var sHandler = oTaskNode.getAttribute("handler");
+			var sHandlerType = oTaskNode.getAttribute("handler-type");
+			if(sAction == "#cdata") sAction = Hemi.text.trim(Hemi.xml.getCDATAValue(oTaskNode));
+			if(sHandler == "#cdata") sHandler = Hemi.text.trim(Hemi.xml.getCDATAValue(oTaskNode));
+
+			var vTask = this.AddTaskConstruct(this.getObjects().task_construct, sId, sActionType, sAction, sHandlerType, sHandler);
+			
+			for(var c = 0; c < oTaskNode.childNodes.length; c++){
+				if(oTaskNode.childNodes[c].nodeType != 1) continue;
+				var oDepend = oTaskNode.childNodes[c];
+                if(oDepend.nodeName == "param"){
+                    var sEval = oDepend.getAttribute("eval");
+                    this.AddTaskParameterConstruct(this.getObjects().task_construct, sId, Hemi.xml.getInnerText(oDepend), ((sEval == "1" || sEval == "true") ? 1 : 0));
+                }
+                else{
+				    var sRid = oDepend.getAttribute("rid");
+				    var sAuto = oDepend.getAttribute("auto-execute");
+				    this.AddTaskDependencyConstruct(this.getObjects().task_construct, sId, sRid, (oDepend.nodeName == "depends" ? 1 : 0), (sAuto != null && (sAuto == "1" || sAuto == "true") ? 1 : 0));
+                }
+			}
+		},
+		RemoveTaskMember : function(){
+			if(this.GetElementByRID("build_task").selectedIndex != 1) return;
+			var o = this.GetTaskList().getActiveItem();
+			var oConstruct = this.getObjects().task_construct;
+			if(!o || !oConstruct || !oConstruct.tasks[o.data]){
+					this.SetLabel("Remove Task Member - Nothing to do");
+					return;
+			}
+			delete oConstruct.tasks[o.data];
+			this.GetTaskList().clearItem(o.index);
+			oConstruct.changes++;
+			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.BuildTaskList();
+			this.SetLabel("Removed Member - Remember to Save!");
+		},
+		AddTaskDependency : function(){
+			var o = this.GetTaskList().getActiveItem();
+			if(!o) return;
+			Hemi.app.createWindow("Dependency Picker","Templates/Picker.xml","DependencyPicker",0,0,[],this._prehandle_task_picker_open);
+		},
+		RemoveTaskDependency : function(){
+			var oT = this.GetTaskList().getActiveItem();
+			var oD = this.GetDependencyList().getActiveItem();
+			if(!oT || !oD){
+				alert("Invalid task and dependency selection");
+				return;
+			}
+			var vTask = this.getObjects().task_construct.tasks[oT.name];
+			delete vTask.depends[oD.data];
+			this.GetDependencyList().clearItem(oD.index);
+			this.RefreshTaskDependencyList();
+				
+			
+		},
+		_handle_task_picker_open : function(oW){
+			var o = this.GetTaskList().getActiveItem();
+			oW.setCanResize(0);
+			oW.resizeTo(300,300);
+			Hemi.app.getWindowManager().CenterWindow(oW);
+			oW.setIsModal(1);
+			
+			oW.SetPickerHandler(this._prehandle_task_picker_choose);
+			var aItems = this.GetTaskList().getItems();
+			
+			oW.GetPickerList().addItem("Named Dependency","__prompt_depends__");
+			oW.GetPickerList().addItem("Framework Task: load_application_config","named:load_application_config");
+			oW.GetPickerList().addItem("Framework Task: dom_event_window_load","named:dom_event_window_load");
+			oW.GetPickerList().addItem("Framework Task: space_driver","named:space_driver");
+			for(var i = 0; i < aItems.length; i++){
+				if(aItems[i].data != o.data) oW.GetPickerList().addItem(aItems[i].name,aItems[i].data);
+			}
+			oW.setHideOnClose(0);
+			
+		},
+		_handle_task_picker_choose : function(oPicker, oItem){
+			oPicker.Close();
+			var aCurrent = this.GetDependencyList().getItems();
+			if(oItem.data == "__prompt_depends__"){
+				var sP = prompt("Enter named dependency");
+				if(sP == null || sP.length == "") return;
+				oItem.data = "named:" + sP;
+				
+			}
+			var bCheck = 0;
+			for(var i = 0; i < aCurrent.length; i++){
+				if(aCurrent[i].data == oItem.data){
+						bCheck = 1;
+						break;
+				}
+			}
+			if(bCheck){
+				 this.SetLabel("Dependency '" + oItem.data + "' is already included");
+			}
+			else{
+				var o = this.GetTaskList().getActiveItem();
+				var bNamed = 0;
+				if(oItem.data.match(/^named:/)){
+					oItem.data = oItem.data.replace(/^named:/,"");
+					bNamed = 1;
+				}
+				this.AddTaskDependencyConstruct(this.getObjects().task_construct,o.name,oItem.data,bNamed,1);
+				this.getObjects().task_construct.changes++;
+				this.RefreshTaskDependencyList();
+				this.BuildTaskList(o.name);
+			}
+		}
+
+	]]></embedded-script>
+</Template>

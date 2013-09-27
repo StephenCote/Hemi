@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>Hemi - JavaScript Framework - Examples</title>
+		<link rel="stylesheet" href="/Styles/PageStyles2.css" type="text/css" title = "noauth" />
+		<link id = "oAuthStyle" rel="alternate stylesheet" href="/Styles/PageStyles2Auth.css" type="text/css" title = "auth" />
+		<link rel="stylesheet" href="/Hemi/Styles/hemi.css" type="text/css" />
+        <link rel="stylesheet" href="/Hemi/Styles/tabs.css" type="text/css" />
+		<script type = "text/javascript" src = "/Hemi/hemi.js"></script>
+		<script type = "text/javascript" src = "/Scripts/PageScripts2.js"></script>
+		<script type = "text/javascript">
+		/*
+			Hemi.include("hemi.app.module");
+			var oDwac = Hemi.app.module.service.NewModule("dwac.offline.helper");		
+		*/
+		</script>
+	</head>
+	<body>
+
+		<h1>Hemi - JavaScript Framework - Examples</h1>
+		<h3>AJAX, Monitoring, Portal Sevices, Templates, HTML-Code-Behind - Since 2002</h3>
+		<ul class = "menu">
+			<li class = "home"><a href = "/">Home</a></li>
+			<li class = "hemi"><a href = "/Hemi">Hemi</a></li>
+			<li class = "projects"><a href = "/projects/">Projects</a></li>
+			<li class = "forum"><a href = "/Forum/">Forum</a></li>
+			<li class = "documents"><a href = "/documents/">Documents</a></li>
+			<li class = "contact"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/FeedbackForm.xml">Contact</a></li>
+			<li class = "signup"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">Signup</a></li>
+			<li class = "infomercial"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/Infomercial.xml">Special Note</a></li>
+			<li class = "login">
+				<form action = "/Login.aspx" method = "post">
+					<input type = "text" value = "" name = "UserName" /> 
+					<input type = "password" value = "" name = "Password" />
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Login" />
+				</form>
+			</li>
+			<li class = "session">
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/Profile.xml" class = "profile" title = "My Profile" href = "#">My Profile</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/BlogAdmin.xml" class = "blog" href = "#">My Blog</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/MediaAdmin.xml" class = "media" href = "#">My Media</a>
+				<form action = "/Login.aspx?logout=1" method = "post">
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Logout" />
+				</form>
+			</li>
+			<li class = "tools">
+				<a component = "/Gizmos/component.window_control.xml" template = "Templates/FrameworkProfiler.xml" title = "Developer Tools" class = "tools" href = "#">Tools</a>
+			</li>
+
+		</ul>
+		<div template = "ToolBar">&nbsp;</div>
+		<div>
+            <div  class = "tabstrip">
+                <div class = "tab"><a href = "index.html">Hemi Framework</a></div>
+                <div class = "tab"><a href = "downloads.html">Downloads</a></div>
+                <div class = "tab"><a href = "documentation.html">Documentation</a></div>
+                <div class = "tab"><a href = "studies.html">Case Studies</a></div>
+                <div class = "tab tab_active">Examples</div>
+            </div>
+
+			<div class = "tab_pane content_container">
+                <h2>Example Explorer</h2>
+
+		        <div  template = "ExampleExplorer"></div>
+
+				<h2>Guided Examples</h2>
+				<div class = "content_data">
+                    <h3><a href = "Examples/GetStarted_TDD.html">Get started with Hemi and TDD</a></h3>
+                    <p>
+                        <i>For those who prefer Test-Driven Development up-front and all of the time.</i>
+                    </p>
+                    <p>
+                        Hemi includes framework-level unit testing capabilities with the <a href = "api/hemi.app.module.test.html">Test Module</a> and on-demand performance testing with <a href = "/documents/html/technical/dhtml/funmon.html">JavaScript Function Monitor</a>.
+                        The included <i>Test Suite</i> Template and Fragment make it very easy to write in-page unit tests for existing applications, or to implement Hemi while following TDD best practices.
+                    </p>
+					<p>
+						<p><a href = "Examples/GetStarted_TDD.html">Get started with Hemi and TDD</a></p>
+					</p>
+				</div>
+				<div class = "content_data">
+                    <h3><a href = "Examples/GetStarted_UnitTest.html">Get started with Hemi and Unit Testing</a></h3>
+                    <p>
+                        <i>For developers interested in in-page unit testing.</i>
+                    </p>
+                    <p>
+                        Hemi includes node-level unit testing capabilities with the <a href = "Components/component.testable.xml">testable</a> <a href = "api/hemi.app.comp.html">Application Component</a>.
+						Building on the whole-page testing approach introduced in <i>Get started with Hemi and TDD</i>, applying unit tests to HTML nodes with the <i>testable</i> component demonstrates how tests can target specific portions of a page.
+                    </p>
+					<p>
+						<p><a href = "Examples/GetStarted_UnitTest.html">Get started with Hemi and Unit Testing</a></p>
+					</p>
+				</div>
+				<div class = "content_data">
+                    <h3><a href = "Examples/GetStarted_DWAC.html">Get started with DWAC</a></h3>
+                    <p>
+                        <i>For those who prefer using GUI builder tools to try out an unfamiliar technology.</i>
+                    </p>
+                    <p>
+                        A <i>Distributed Web Application Component</i> (DWAC) is a composite, self-contained project.
+                        At present, a DWAC may contain <i>Fragments</i>, <i>Templates</i>, <i>Tasks</i>, <i>Components</i>.
+                        The <i>DWAC Designer</i> is a GUI for working with the <i>Hemi JavaScript Framework</i>,
+                        and includes builders for each of these components, a builder for projects, a project publisher, and persistence for your project files.
+                    </p>
+                    <p><a href = "Examples/GetStarted_DWAC.html">Get started with Hemi and DWAC</a></p>
+				</div>
+
+			</div>
+		
+		</div>
+    	<p class="copyright">[ Stephen W. Cote, 2011 - <a href = "hemi.license.txt">BSD</a> ]</p>
+	</body>
+</html>

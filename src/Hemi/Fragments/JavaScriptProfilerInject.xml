@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+
+<JavaScriptProfiler>
+			<![CDATA[
+{
+	___pointer_marker : "never",
+	version : "2.1.04222009",
+	srcFile : null,
+	globalVariants : [],
+	globalStatements : [],
+	functionList : [],
+	functionIndex : [],
+	srcData : [],
+	downloadTimeA : [],
+	extFiles : 0,
+	extBytes : 0,
+	extFunctions : 0,
+	intBlocks : 0,
+	intBytes : 0,
+	intFunctions : 0,
+	intModels : 0,
+	totalBytes : 0,
+	pathHash : [],
+	downloadTime : 0,
+	activeFunction : null,
+	/// Current window
+	///
+	window : 0,
+	/// Scripted windows
+	///
+	windows : [],
+	cancelled : 0,
+	xmlhttp : 0,
+	unloadEvents : 0,
+	ScriptsList : 0,
+	FunctionsList : 0,
+	ModelsList : 0,
+	TextArea : 0,
+	ScriptsProfiled : 0,
+	ModelsProfiled : 0,
+	/// When enabled, returns a string representing the hierarchical model that was explored
+	///
+	DebugMode : 0,
+	/// Potential global variable names to inspect for each frame
+	///
+	PotentialModels : [],
+	PotentialCount : 0,
+	GlobalObjects : ["Object","String","Boolean","Date","Array"],
+	
+	runModelProfiler : function(){
+		if(JavaScriptProfiler.ModelsProfiled) return;
+		if(!JavaScriptProfiler.ModelsList || !JavaScriptProfiler.FunctionsList){
+			alert("JavaScriptProfiler is not configured correctly.");
+			return;
+		}
+		JavaScriptProfiler.ModelsProfiled = 1;
+		JavaScriptProfiler._runProfile(1);
+		if(JavaScriptProfiler.intModels == 0) JavaScriptProfiler.ModelsList.addItem("No models were made in discovered windows and frames");
+		JavaScriptProfiler.PrintStats();
+	},
+	
+	runFilesProfiler : function(){
+		if(JavaScriptProfiler.ScriptsProfiled) return;
+
+		if(!JavaScriptProfiler.ScriptsList || !JavaScriptProfiler.FunctionsList){
+			alert("JavaScriptProfiler is not configured correctly.");
+			return;
+		}
+		JavaScriptProfiler.ScriptsProfiled = 1;
+		/// Fix: newXmlHttpObject is obfuscated, but should not be internal
+		///
+		JavaScriptProfiler.xmlhttp = Hemi.xml.newXmlHttpObject();
+		JavaScriptProfiler._runProfile();
+		if(JavaScriptProfiler.intFunctions == 0) JavaScriptProfiler.ScriptsList.addItem("No script files or blocks were discovered.");
+		JavaScriptProfiler.PrintStats();
+	},
+	_runProfile : function(bModelMode){
+		
+		JavaScriptProfiler.window = (typeof g_window != "undefined" ? g_window : window);
+		if(typeof JavaScriptProfiler.window.g_pointer_marker == "undefined") JavaScriptProfiler.window.g_pointer_marker = "___pointer_marker_" + (new Date().getTime());
+		try{
+			while(JavaScriptProfiler.window.parent != JavaScriptProfiler.window){
+				var probe_denial = JavaScriptProfiler.window.document;
+				JavaScriptProfiler.window = JavaScriptProfiler.window.parent;
+			}
+		}
+		catch(e){
+			//alert(e.message);
+			if(JavaScriptProfiler.DebugMode) (bModelMode ? JavaScriptProfiler.ModelsList : JavaScriptProfiler.ScriptsList).addItem("Error accessing window: " + e.message);
+		}
+		
+		if(JavaScriptProfiler.DebugMode) (bModelMode ? JavaScriptProfiler.ModelsList : JavaScriptProfiler.ScriptsList).addItem("Analyzing " + JavaScriptProfiler.window.document.URL);
+
+		if(JavaScriptProfiler.window.onunload || JavaScriptProfiler.window.document.body.onunload) JavaScriptProfiler.unloadEvents++;
+		if(!bModelMode) JavaScriptProfiler.getScripts(JavaScriptProfiler.window, 0);
+		else JavaScriptProfiler.ModelDrill(JavaScriptProfiler.window, 0, JavaScriptProfiler.modelCallback);
+		JavaScriptProfiler.getFrames(JavaScriptProfiler.window, 1, bModelMode);
+	},
+	getFrames : function(oWin, iFrameIndex, bModelMode){
+		var aFrames = oWin.frames;
+		if(typeof iFrameIndex != "number") iFrameIndex = 1;
+		if(aFrames.length){
+			for(var i=0;i<aFrames.length;i++){
+				try{
+					if(JavaScriptProfiler.DebugMode) (bModelMode ? JavaScriptProfiler.ModelsList : JavaScriptProfiler.ScriptsList).addItem("Analyzing " + aFrames[i].document.URL);
+					if(!bModelMode) JavaScriptProfiler.getScripts(aFrames[i],++iFrameIndex);
+					else JavaScriptProfiler.ModelDrill(aFrames[i], ++iFrameIndex, JavaScriptProfiler.modelCallback);
+					if(aFrames[i].onunload || aFrames[i].document.body.onunload) JavaScriptProfiler.unloadEvents++;
+					if(aFrames[i].frames.length) JavaScriptProfiler.getFrames(aFrames[i], iFrameIndex, bModelMode);
+				}
+				catch(e){
+					// ... access denied for cross-domains
+				}
+			}
+		}
+	},
+	getScripts : function(oWin, iFrameIndex){
+		try{
+			Hemi.include("hemi.util.url");
+			var aScripts=oWin.document.getElementsByTagName("script");
+			for(var s=0;s<aScripts.length;s++){
+				var oScript=aScripts[s];
+				if(oScript.src){
+					var sUrl;
+					if(!oScript.src.match(/^http(s)?:/i)){
+						var sTemp=oScript.src;
+						var vBase = Hemi.util.url.newInstance(oWin.document.URL);
+						sUrl = vBase.qualify(sTemp);
+					}
+					else{
+						sUrl=oScript.src;
+					}
+					
+					try{
+						var oStart=new Date();
+						JavaScriptProfiler.xmlhttp.open("GET",sUrl, false);
+						JavaScriptProfiler.xmlhttp.send(null);
+						var sText = JavaScriptProfiler.xmlhttp.responseText;
+						JavaScriptProfiler.extBytes += sText.length;
+						JavaScriptProfiler.extFiles++;
+						var iFetch = ((new Date()).getTime() - oStart.getTime());
+						JavaScriptProfiler.downloadTime += iFetch;
+						JavaScriptProfiler.profileText(oWin,sUrl,sText,iFetch,1, iFrameIndex);
+					}
+					catch(e){
+						JavaScriptProfiler.FunctionsList.addItem("Error accessing: " + sUrl + " / " + e.description);
+					}
+				}
+				else{
+					var vBase = Hemi.util.url.newInstance(oWin.document.URL);
+					var sFile = vBase.getFile();
+					if(!sFile) sFile = "";
+					var sPath = vBase.getDomain() + vBase.getPath() + sFile;
+					var sText = oScript.innerHTML;
+					JavaScriptProfiler.intBytes += sText.length;
+					JavaScriptProfiler.intBlocks++;
+					JavaScriptProfiler.profileText(oWin,sPath,sText,0,2, iFrameIndex);
+				}
+			}
+		}
+		catch(e){
+			JavaScriptProfiler.FunctionsList.addItem("Access Error: " + e.description);
+		}
+	},
+	profileText : function(oWin, sParent, sText, iFetch, iSrcType, iFrameIndex){
+		
+		JavaScriptProfiler.totalBytes+=sText.length;
+
+		if(!JavaScriptProfiler.srcData[sParent]){
+			JavaScriptProfiler.srcData[sParent]=sText;
+			JavaScriptProfiler.downloadTimeA[sParent]=iFetch;
+		}
+		else{
+			JavaScriptProfiler.srcData[sParent]+="\n\n" + sText;
+		}
+		
+		// GLOBAL INSPECTION
+		//
+		var sGP = "window{" + iFrameIndex + "} global prototypes";
+		var iGP = 0;
+		JavaScriptProfiler.srcFile=sGP;
+		for(var i = 0; i < JavaScriptProfiler.GlobalObjects.length; i++){
+			var g = JavaScriptProfiler.GlobalObjects[i];
+			for(var p in oWin[g].prototype){
+				iGP++;
+				JavaScriptProfiler.incFuncCount(iSrcType);
+				JavaScriptProfiler.add(oWin,oWin[g].prototype[p],p,0,g);
+			}
+		}
+		if(iGP && !JavaScriptProfiler.pathHash[sGP]){
+			if(!JavaScriptProfiler.srcData[sGP]) JavaScriptProfiler.srcData[sGP]=sParent;
+			else JavaScriptProfiler.srcData[sGP]+= "\n" + sParent;
+			JavaScriptProfiler.downloadTimeA[sGP]=0;
+			JavaScriptProfiler.ScriptsList.addItem("Frame " + iFrameIndex + " Global Script Prototypes",sGP);
+			JavaScriptProfiler.pathHash[sGP]=1;
+		}
+		JavaScriptProfiler.srcFile=sParent;
+		// FUNCTION INSPECTION
+	
+		// var sLine=aLines[l];
+		// function syntax: function\s+fnName\s*(...
+		var aM=sText.match(/function\s*([A-Za-z0-9_$]+)\s*\(/gi);
+		if(aM && aM.length){
+			for(var i=0;i<aM.length;i++){
+				try{
+					var sFP=aM[i];
+					sFP=sFP.match(/^\s*function\s*([^\s\(]*)/)[1];
+					
+					if(sFP && typeof oWin[sFP] == "function"){
+						JavaScriptProfiler.incFuncCount(iSrcType);
+						JavaScriptProfiler.add(oWin,oWin[sFP],sFP,0);
+					}
+					else{
+						if(JavaScriptProfiler.DebugMode) JavaScriptProfiler.FunctionsList.addItem("Function '" + sFP + "' in " + sParent + " was invalid.");
+					}
+				}
+				catch(e){
+					JavaScriptProfiler.FunctionsList.addItem("Error in function " + sFP + ": " + e.message);
+				}
+
+			}
+		}
+		
+		// function syntax: Object.prototype.fnName=function
+		aM = sText.match(/[A-Za-z0-9_\.]*\.prototype\.\w*\s*=\s*function/gi);
+		if(aM && aM.length){
+			for(var i= 0; i < aM.length; i++){
+				try{
+					var oM = aM[i].match(/([A-Za-z0-9_\.]*)\.prototype\.(\w*)\s*=\s*function/i);
+					var vFP = oWin[oM[1]].prototype[oM[2]];
+					//= eval("oWin." + oM[1] + ".prototype." + oM[2]);
+					//alert(vFP + "\n" + oM[1] + ":" + oM[2]);
+					if(vFP){
+						JavaScriptProfiler.incFuncCount(iSrcType);
+						JavaScriptProfiler.add(oWin,vFP,oM[2],0,oM[1]);
+					}
+					else{
+						JavaScriptProfiler.FunctionsList.addItem(oM[1] + ".prototype." + oM[2] + " was invalid");
+					}
+				}
+				catch(e){
+					JavaScriptProfiler.FunctionsList.addItem("Error in function " + sFP + ": " + e.message);
+				}
+
+			}
+		}
+		
+		// OBJECT INSPECTION
+		//
+		
+		// Looking for sName = {, sName = new Object, sName= [, sName = new Array
+		//
+	
+		JavaScriptProfiler.ModelPotentials(oWin, sText, /[A-Za-z0-9_$]+\s*=\s*\{/gi, /([A-Za-z0-9_$]+)\s*=\s*\{/i);
+		JavaScriptProfiler.ModelPotentials(oWin, sText, /[A-Za-z0-9_$]+\s*=\s*new\s*Object/gi, /([A-Za-z0-9_$]+)\s*=\s*new\s*Object/i);
+		JavaScriptProfiler.ModelPotentials(oWin, sText, /[A-Za-z0-9_$]+\s*=\s*new\s*Array/gi, /([A-Za-z0-9_$]+)\s*=\s*new\s*Array/i);
+		JavaScriptProfiler.ModelPotentials(oWin, sText, /[A-Za-z0-9_$]+\s*=\s*\[/gi, /([A-Za-z0-9_$]+)\s*=\s*\[/i);
+		JavaScriptProfiler.ModelPotentials(oWin, sText, /var\s+[A-Za-z0-9_$]+\s*[=;]/gi, /var\s+([A-Za-z0-9_$]+)\s*[=;]/i);
+
+
+		if(!JavaScriptProfiler.pathHash[sParent]){
+			var sType=(iSrcType==1)?"external file":"internal block";
+			JavaScriptProfiler.ScriptsList.addItem("Source: " + sParent + " as " + sType,sParent);
+			JavaScriptProfiler.pathHash[sParent]=1;
+		}
+	},
+	ModelPotentials : function(oWindow, sText, g_reg, l_reg){
+		var aM = sText.match(g_reg);
+		//alert(g_reg + "\n" + sText + "\n" + aM);
+		if(aM && aM.length){
+			for(var i= 0; i < aM.length; i++){
+				try{
+					var oM = aM[i].match(l_reg);
+					if(oM){
+						
+						if(oM[1].match(/^name$/i) || oM[1].match(/^event$/i) || oM[1].match(/^self$/i) || oM[1].match(/^parent$/i) || oM[1].match(/^top$/i) || oM[1].match(/^location$/i)) continue;
+						
+						if(!JavaScriptProfiler.PotentialModels[oM[1]] && typeof oWindow[oM[1]] != "undefined" && oWindow[oM[1]] != null){
+							
+							JavaScriptProfiler.PotentialModels[oM[1]] = 1;
+							JavaScriptProfiler.PotentialCount++;
+						}
+					}
+				}
+				catch(e){
+					JavaScriptProfiler.FunctionsList.addItem("Error in function " + sFP + ": " + e.message);
+				}
+
+			}
+		}
+	},
+	incFuncCount : function(iType){
+		switch(iType){
+			case 1:
+				JavaScriptProfiler.extFunctions++;
+				break;
+			case 2:
+				JavaScriptProfiler.intFunctions++;
+				break;
+		}
+	},
+
+	add : function(oWin,vFP,sName,iLine,sProtoParent){
+		if(!sProtoParent) sProtoParent=null;
+		var sFName = JavaScriptProfiler.srcFile + "::" + (sProtoParent != null ? sProtoParent + "::" : "") + sName;
+		if(!JavaScriptProfiler.functionList[sFName])
+			JavaScriptProfiler.functionIndex[JavaScriptProfiler.functionIndex.length] = sFName;
+		
+		JavaScriptProfiler.functionList[sFName]={"window":oWin,"pointer":vFP,"srcFile":JavaScriptProfiler.srcFile,"name":sName,"line":iLine,"proto":sProtoParent};
+	},
+	addModel : function(oWin, iWin, vFP, sName, sProtoParent){
+		if(!sProtoParent) sProtoParent=null;
+		var wName = "window";
+		if(oWin.name) wName = oWin.name;
+		var sPName = "__Model-" + iWin + "-";
+		var sFName = sPName + wName + "::" + sName;
+		if(!JavaScriptProfiler.functionList[sFName])
+			JavaScriptProfiler.functionIndex[JavaScriptProfiler.functionIndex.length] = sFName;
+
+		try{
+			JavaScriptProfiler.functionList[sFName]={"window":oWin,findex:iWin,"pointer":vFP,"srcFile":wName,"name":sName,"line":0,"proto":sProtoParent};
+			if(!JavaScriptProfiler.pathHash[sPName]){
+				JavaScriptProfiler.ModelsList.addItem("Window '" + wName + "' (" + iWin + ")",sPName);
+				JavaScriptProfiler.pathHash[sPName]=1;
+				JavaScriptProfiler.intModels++;
+			}
+		}
+		catch(e){
+			JavaScriptProfiler.FunctionsList.addItem("Error " + e.message);
+		}
+		
+	},
+	modelCallback : function(window, frame_index, parent_path, object_name, object_pointer, depth){
+		JavaScriptProfiler.addModel(window, frame_index, object_pointer, ("" != parent_path ? parent_path + "." : "") + object_name);
+	},
+	UpdateFunction : function(){
+		if(JavaScriptProfiler.activeFunction!=null){
+			try{
+				var FP=JavaScriptProfiler.activeFunction;
+				if(FP.proto){
+					var sName = JavaScriptProfiler.resolveName(FP);
+					FP.window.eval(sName + "=" + JavaScriptProfiler.TextArea.value);
+					FP.pointer = eval("FP.window." + sName);
+				}
+				else{
+					var sName=FP.name;
+					FP.window.eval(JavaScriptProfiler.TextArea.value);
+					
+					// Reset the pointer
+					FP.pointer = FP.window[sName];
+				}
+			}
+			catch(e){
+				alert("Update Error: " + e.description);
+			}
+		}
+	},
+	resolveName : function(FP){
+		var sRet="";
+		if(FP.proto){
+			sRet = FP.proto + ".prototype." + FP.name;
+		}
+		else{
+			sRet = FP.name;
+		}
+		return sRet;
+	},
+	PrintStats : function(){
+		JavaScriptProfiler.activeFunction=null;
+		var s="OVERVIEW\n\t" + JavaScriptProfiler.functionIndex.length + " functions were profiled.\n\tTotal Size: " + JavaScriptProfiler.totalBytes + " bytes\n\n";
+		s += "MODEL\n\t" + JavaScriptProfiler.PotentialCount + " object model inspection points were discovered\n";
+		var a = [];
+		for(var i in JavaScriptProfiler.PotentialModels) a.push(i);
+		s+= "\t" + a.join(", ") + "\n\n";
+		if(JavaScriptProfiler.intBlocks){
+			s+="INTERNAL BLOCKS\n\tSize: " + JavaScriptProfiler.intBytes + " bytes\n\tBlocks: " + JavaScriptProfiler.intBlocks + "\n\tFunctions: " + JavaScriptProfiler.intFunctions + "\n\n";
+		}
+		if(JavaScriptProfiler.extFiles){
+			s+="EXTERNAL FILES\n\tSize: " + JavaScriptProfiler.extBytes + " bytes\n\tFiles: " + JavaScriptProfiler.extFiles + "\n\tFunctions: " + JavaScriptProfiler.extFunctions + "\n\tDownload Time: " + JavaScriptProfiler.downloadTime + "\n\n";
+		}	
+		if(JavaScriptProfiler.windows.length){
+			s+="CHILD WINDOWS\n\tCount: " + JavaScriptProfiler.windows.length + "\n\t(use bonk to close them)\n\n";
+		}
+		if(JavaScriptProfiler.unloadEvents>0){
+			s+="EVENT WARNING\n\tUnload Events: " + JavaScriptProfiler.unloadEvents + "\n\n";
+		}
+		/*
+		var sMets="\n" + FunctionMonitor.getAllMetrics();
+		sMets=sMets.replace(/\n/g,"\n\t");
+		s+="DEBUG TOOL METRICS:\n\t(FunMon)\n--------------------\n" + sMets + "\n--------------------\n\n";
+		*/
+		JavaScriptProfiler.TextArea.value=s;
+	},
+
+
+	/// discovery_callback (window, frame_index, parent_path, object name, object pointer, depth) 
+	///
+	ModelDrill : function(w, x, f, o, d, p, z){
+
+		/*
+			w = window
+			x = frame index
+			f = discovery_callback
+			o = parent object
+			
+			/// recursive params
+			///
+			d = depth
+			p = path
+			
+			z = skip check for potential models
+		*/
+		
+		
+		if(!d) d = 0;
+		if( (o == null || (typeof o != "object" && typeof o != "function")) && d != 0) return "";
+		if(!o || o == null) o = w;
+		if(!p) p = "";
+
+		/// u = undefined
+		///
+		var u,
+			s,
+			v,
+			i,
+			q = JavaScriptProfiler.DebugMode
+		;
+		if(q) s = [];
+		if(d == 0 && !z){
+			z = 1;
+			for(i in JavaScriptProfiler.PotentialModels){
+				if(typeof w[i] != "undefined" && w[i] != null
+					// && (w[i] instanceof w.Object || w[i] instanceof w.Array || w[i] instanceof w.Function)
+				){
+					if(q){
+						JavaScriptProfiler.FunctionsList.addItem("Potential: '" + i + "'");
+						s.push("potential: " + i);
+					}
+					v = JavaScriptProfiler.ModelDrill(w, x, f, w[i], 1, i, 1);
+					if(q) s.push(v);
+					
+				}
+			}
+		}
+
+		for(i in o){
+			try{
+				if(
+					// w.Object is undefined if there is no <script /> in the frame 
+					//
+					typeof w.Object == "undefined"
+					||
+					(i.match(/^___pointer_marker/) && o[i] == "never")
+					||
+					o[i] == null
+					||
+					typeof o[i] == "undefined"
+					||
+					(typeof XMLHttpRequest != "undefined" && o[i] instanceof XMLHttpRequest)
+					||
+					(typeof XMLDocument != "undefined" && o[i] instanceof XMLDocument)
+					||
+					(
+						!(o[i] instanceof w.Object)
+						&&
+						!(o[i] instanceof w.Array)
+						&&
+						!(o[i] instanceof w.Function)
+					)
+				){
+					if(q) s.push(JavaScriptProfiler.Pad(d) + "skip 1 " + i);
+					continue;
+				}
+
+				var t = typeof (o[i]);
+
+				/// Remove legacy pointer markers
+				///
+				if(i.match(/^___pointer_marker_/) && i != g_pointer_marker){
+					o[i] = u;
+					continue;
+				}
+				
+				if(
+					(o == w && i == "event")
+					||
+					i == g_pointer_marker
+				){
+					if(q) s.push(JavaScriptProfiler.Pad(d) + "skip 2 " + i);
+					continue;
+				}
+				var sL = 0;
+
+				if(typeof o[i] == "object" && o[i][g_pointer_marker]) sL = 1;
+
+				if(q) s.push(JavaScriptProfiler.Pad(d) + i + " (" + typeof(o[i]) + ")" + (sL ? " (Pointer)" : (typeof o[i].nodeType == "number" ? " (Node)" : "")));
+				
+				if(typeof o[i] == "function" && typeof f == "function") f(w, x, p, i, o[i], d);
+				var up = p;
+				if(o instanceof w.Array){
+					if(i.match(/^\d+$/gi)) up += "[" + i + "]";
+					else up += "[\"" + i + "\"]";
+				}
+				else up += (up.length > 0 ? "." : "") + i;
+				if(!sL && typeof o[i] == "object" && o[i] != null){
+					//g_pointer_hash[o[i].toString()] = i;
+					o[i][g_pointer_marker] = 1;
+					//s.push(Drill(w, o[i],d+1, p, f));
+					v = JavaScriptProfiler.ModelDrill(w, x, f, o[i], d + 1, up, 1);
+					if(q) s.push(v);
+				}
+			}
+			catch(e){
+				if(q) s.push(JavaScriptProfiler.Pad(d) + "Error for " + i + " = " + e.message);
+				JavaScriptProfiler.FunctionsList.addItem("Error for " + p + " --> " + i + " (" + (typeof o[i]) + ") = " + e.message);
+			}
+
+		} // end for;
+		
+		
+		
+		if(JavaScriptProfiler.DebugMode) return s.join("\n");
+	},
+	Pad : function(i){
+		var s = "";
+		for(var c = 0; c < i; c++) s += "   ";
+		return s;
+	}
+
+
+}
+]]>
+</JavaScriptProfiler>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template>
+  <p>Example fragment</p>
+
+  <embedded-script>
+    <![CDATA[
+    embedded_init : function(){
+      
+    }
+   ]]>
+  </embedded-script>
+
+</Template>

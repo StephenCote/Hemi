@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>Hemi - JavaScript Framework - Test Suite</title>
+		<link rel="stylesheet" href="/Styles/PageStyles2.css" type="text/css" title = "noauth" />
+		<link id = "oAuthStyle" rel="alternate stylesheet" href="/Styles/PageStyles2Auth.css" type="text/css" title = "auth" />
+		<link rel="stylesheet" href="/Hemi/Styles/hemi.css" type="text/css" />
+		<script type = "text/javascript" src = "/Hemi/hemi.comp.js"></script>
+		<script type = "text/javascript" src = "/Scripts/PageScripts2.js"></script>
+        <script type = "text/javascript">
+            Hemi.include("hemi.data.io");
+            Hemi.include("hemi.worker");
+            Hemi.include("hemi.app.module");
+            Hemi.include("hemi.app.module.test");
+            Hemi.include("hemi.framework.io.provider");
+            Hemi.message.service.subscribe("ontemplateload", function (s, v) {
+            	if (v.getContainerComponentId() != "TestSuite") return;
+            	var oReq = Hemi.data.io.service.getList(Hemi.data.io.service.getBusType().STATIC, "HemiFramework", "Data", "Tests", "List", LoadTests);
+            	var oResp = Hemi.data.io.service.getResponseByName(oReq.responseId);
+            	var a = [];
+            	for (var i = 0; i < oResp.responseData.length; i++) a.push(oResp.responseData[i].value);
+
+            	v.setTests(a);
+            });
+            function LoadTests(oService, oSubject, oRequest, oResponse) {
+                //alert(oResponse.responseData.length);
+                //var a = [];
+                //for (var i = 0; i < oResponse.responseData.length; i++) a.push(oResponse.responseData[i].value);
+            }
+
+            Hemi.message.service.subscribe("onspaceconfigload", function (s, v) {
+            	if (!v.is_primary) return;
+            	var oSpace = Hemi.app.space.service.getPrimarySpace();
+            	/// Encoded CSS Parser
+            	/// {#HF_DEV_WebUnit{demo_prop:0}}
+
+            	for (var i in oSpace.space_css_map) {
+            		if (!i) continue;
+            		var oObj = Hemi.css.decodeJSON(i);
+            		if (oObj) ApplyEmbeddedConfiguration(oObj, oSpace.getSpaceObjectsByClass(i));
+            	}
+            });
+            function ApplyEmbeddedConfiguration(oConfig, aObjects) {
+            	if (oConfig.WebUnit) {
+            		for (var i = 0; i < aObjects.length; i++) {
+            			var oComp = Hemi.app.createApplicationComponent("testable");
+            			oComp.getProperties().tests = oConfig.WebUnit.tests;
+            			oComp.getProperties().autoTest = oConfig.WebUnit.autoTest;
+            			oComp.getProperties().testPath = oConfig.WebUnit.testPath;
+            			oComp.getProperties().testTarget = (aObjects[i].object && aObjects[i].object.getContainer ? aObjects[i].object.getContainer() : aObjects[i]);
+            			oComp.setupTests();
+
+            		}
+            	}
+            }
+
+        </script>
+	</head>
+	<body>
+
+		<h1>Hemi - JavaScript Framework - Test Suite</h1>
+		<h3>AJAX, Monitoring, Portal Sevices, Templates, HTML-Code-Behind - Since 2002</h3>
+		<ul class = "menu">
+			<li class = "home"><a href = "/">Home</a></li>
+			<li class = "hemi"><a href = "/Hemi">Hemi</a></li>
+			<li class = "projects"><a href = "/projects/">Projects</a></li>
+			<li class = "forum"><a href = "/Forum/">Forum</a></li>
+			<li class = "documents"><a href = "/documents/">Documents</a></li>
+			<li class = "contact"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/FeedbackForm.xml">Contact</a></li>
+			<li class = "signup"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">Signup</a></li>
+			<li class = "infomercial"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/Infomercial.xml">Special Note</a></li>
+			<li class = "login">
+				<form action = "/Login.aspx" method = "post">
+					<input type = "text" value = "" name = "UserName" /> 
+					<input type = "password" value = "" name = "Password" />
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Login" />
+				</form>
+			</li>
+			<li class = "session">
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/Profile.xml" class = "profile" title = "My Profile" href = "#">My Profile</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/BlogAdmin.xml" class = "blog" href = "#">My Blog</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/MediaAdmin.xml" class = "media" href = "#">My Media</a>
+				<form action = "/Login.aspx?logout=1" method = "post">
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Logout" />
+				</form>
+			</li>
+			<li class = "tools">
+				<a component = "/Gizmos/component.window_control.xml" template = "Templates/FrameworkProfiler.xml" title = "Developer Tools" class = "tools" href = "#">Tools</a>
+			</li>
+
+		</ul>
+		<div class = "content_container">
+			<h2>Hemi - JavaScript Framework - Test Suite</h2>
+		</div>
+		 <p class = "{#HF_WebUnit{autoTest:1,testPath:'Tests/',tests:'test.xml,test.message'}}">
+         Test
+         </p>
+		<!--
+		<div auto-test = "1" component = "testable" tests = "test.xml,test.message">Testable 1</div>
+
+		<div component = "testable" test-path = "/Hemi/Tests/" tests = "test.xml,test.message">Testable 2</div>
+		<div component = "testable" test-target = "oTestTarget3" tests = "test.xml,test.message">Testable 3 Source</div>
+		<div id = "oTestTarget3">Testable 3 Target</div>
+		<script type = "text/javascript">
+			AddToStartup(function () {
+				Hemi.include("hemi.app");
+				var oComp = Hemi.app.createApplicationComponent("testable");
+				oComp.getProperties().tests = "test.xml,test.message";
+				oComp.getProperties().testPath = "Tests/";
+				oComp.getProperties().testTarget = "oTestTarget4";
+				oComp.setupTests();
+			});
+		</script>
+		-->
+		<div id = "oTestTarget4">Testable 4 Target</div>
+
+		<div class = "content_container">
+            <div template = "TestSuite" rid = "TestSuite" class = "content_data">
+			</div>
+			<div module = "Console.Output" class = "content_data">
+			</div>
+		</div>
+		<p class="copyright">[ Stephen W. Cote, 2010 - <a href = "hemi.license.txt">BSD</a> ]</p>
+	</body>
+</html>

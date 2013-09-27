@@ -1,0 +1,69 @@
+/*
+	Engine for Web Applications
+	Copyright 2000 - 2008. All Rights Reserved.
+	Author: Stephen W. Cote
+	Email: sw.cote@gmail.com
+	Project: http://www.whitefrost.com/projects/engine/
+	License: http://www.whitefrost.com/projects/engine/code/engine.license.txt
+*/
+
+.wideselect_container{
+	/*width:100%;*/
+	height:200px;
+	border:0px solid #555500;
+	overflow:auto;
+	position:absolute;
+	display:none;
+	/*z-index:20;*/
+	background-color: #FFFFFF;
+	margin:0px;
+}
+
+.wideselect_item
+{
+	font: 8pt Arial;
+	/*background-color:#999900;*/
+	/*color: #FFFF99;*/
+	cursor:pointer;
+	border:1px solid #FFFFFF;
+	border-width: 1px;
+	margin:0px;
+	
+}
+.wideselect_item_blocked{
+	background-color:#FFFFFF;
+	color:#FFA0A0;
+	/*text-decoration:"line-through";*/
+	cursor:pointer;
+	border:1px solid #FFFFFF;
+	
+	
+}
+.wideselect_item_hover{
+	background-color:#EEEEFF;
+	color: #333300;
+	cursor:pointer;
+	border:1px solid #FFFFFF;
+}
+.wideselect_item_active{
+	background-color:#AAAAFF;
+	cursor:pointer;
+	border:1px inset #FFFF00;
+	color: #333300;
+}
+
+.wideselect_field{
+	position:relative;
+	border:1px solid #000000;
+	padding:2px;
+}
+
+.wideselect_field_toggle{
+	font: 8pt Arial;
+	border:1px solid #000000;
+	padding-left:2px;
+	padding-right:2px;
+	cursor:pointer;
+	margin-left:1px;
+	margin-right:0px;
+}

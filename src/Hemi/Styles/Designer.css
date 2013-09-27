@@ -1,0 +1,87 @@
+﻿/* Designer Buttons */
+.style_bar
+{
+	background-color: #999900;
+	clear:both;
+
+}
+.buttons_bar
+{
+	background-color: #AAAADD;
+	clear:right;
+	height:30px;
+	padding-left:5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:  5px;
+	border-bottom: 1px solid #CFCFCF;
+}
+.designer_button
+{
+	width:25px;
+	height:25px;
+	border:1px solid #AAAADD;
+	background-color: #AAAADD;
+	background-repeat:no-repeat;
+	float:left;
+}
+
+.designer_button_highlight
+{
+	border: 1px outset #000055;
+	background-color: #CCCCFF;
+}
+
+.designer_button_spacer
+{
+	height:25px;
+	width:1px;
+	margin-right: 5px;
+	border-left: 0px inset #909090;
+	border-right: 1px inset #909090;
+	float:left;
+}
+.designer_button_label
+{
+	margin-top:5px;
+	height:25px;
+	width:100px;
+	float:left;
+}
+
+.refresh_button
+{
+	background-image: url(../Graphics/refresh_ico.gif);
+}
+.new_button
+{
+	background-image: url(../Graphics/blankdoc2_ico.gif);
+}
+.manager_button
+{
+	background-image: url(../Graphics/insert_table.gif);
+}
+
+.delete_button
+{
+	background-image: url(../Graphics/cancel2.gif);
+}
+.open_button
+{
+	background-image: url(../Graphics/open_ico2.gif);
+}
+.save_button
+{
+	background-image: url(../Graphics/save_ico.gif);
+}
+.publish_button
+{
+	background-image: url(../Graphics/gnome-talk.gif);
+}
+.buttons_bar .link_button
+{
+	display:block;
+	text-decoration:none;
+	text-align: center;
+	padding-top: 3px;
+	height:22px;
+}

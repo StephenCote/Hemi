@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+        <title>Hemi JavaScript Framework - v3.1.9</title>
+	    <link rel="stylesheet" href="Styles/hemi.css" type="text/css" />
+	    <link rel = "shortcut icon" href="favicon.ico">
+	    <script type = "text/javascript">
+		    // Run Hemi from within the Hemi project
+		    // Note the default hemi_base assumes Hemi is located in a child 'Hemi' directory
+		    //
+		    HemiConfig = { hemi_base: (location.protocol.match(/^file/i) ? "file://" + location.pathname.substring(0, location.pathname.lastIndexOf("/Hemi/") + 6) : "/") };
+	    </script>
+	    <script type = "text/javascript" src = "hemi.js"></script>
+
+	    <style type = "text/css">
+		    html
+		    {
+				    /*height:auto;*/
+				
+				    overflow:auto;
+				    background-color: #FFFFFF;
+				    height:100%;
+		    }
+		    body{
+
+			    color: #000000;
+			    margin: 5px 0px 0px 0px;
+			    padding:0px;
+			    min-height:100%;
+		    }
+		    div.header
+		    {
+		        height: 86px;
+		        background:url(Graphics/Hemi_Logo_2_2.png) #FFFFFF no-repeat;
+		    }
+
+	        h1,h2 {
+		        margin: 0px 0px 0px 80px;
+		        font-family: Verdana;
+	        }
+
+	    </style>
+	    <script type = "text/javascript">
+		    var g_application_path = "/";
+		    Hemi.include("hemi.app");
+		    Hemi.include("hemi.app.dwac");
+		    Hemi.include("hemi.css");
+		    Hemi.include("hemi.app.space");
+		    Hemi.include("hemi.app.comp");
+		    Hemi.include("hemi.app.module");
+		    Hemi.include("hemi.app.module.test");
+		    Hemi.include("hemi.storage");
+			Hemi.include("hemi.text");
+			Hemi.include("hemi.data.io");
+			Hemi.include("hemi.framework.io.offline.provider");
+			
+		    window.onload = function(){
+		    	Hemi.data.io.proxy.service.setBusType(Hemi.data.io.service.getBusType().OFFLINE);
+		    	
+			};
+		    
+	    </script>
+    </head>
+    <body>
+        <div class = "header">
+            <h1>Hemi JavaScript Framework - v3.1.9</h1>
+            <h2>Services - AJAX - Monitoring - Templates - Since 2002</h2>
+        </div>
+        <div template = "ToolBar">&nbsp;</div>
+       <p>
+
+        </p>
+
+        
+        <div id = "oContainer"></div>
+        <textarea id = "xsl_text" style = "width:100%;height:150px;">
+<?xml version="1.0" encoding="utf-8" ?>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" >
+
+<xsl:output omit-xml-declaration = "yes" cdata-section-elements = "cdata-section" />
+<xsl:template match = "field">
+<p>
+<xsl:value-of select = "@title" />
+:
+<xsl:choose>
+<xsl:when test="@type == 'input'">
+<input><xsl:attribute name = "type"><xsl:value-of select = "@type" /></xsl:attribute>
+<xsl:attribute name = "name"><xsl:value-of select = "@name" /></xsl:attribute>
+</input>
+</xsl:when>
+<xsl:otherwise>
+<select>
+<xsl:attribute name = "name"><xsl:value-of select = "@name" /></xsl:attribute>
+<xsl:for-each select = "option">
+<option>
+<xsl:attribute name = "name"><xsl:value-of select = "@name" /></xsl:attribute>
+<xsl:value-of select = "text()" />
+</option>
+</xsl:for-each>
+</select>
+</xsl:otherwise>
+</xsl:choose>
+</p>
+</xsl:template>
+<xsl:template match="Template">
+<xsl:param name = "form_list" />
+<Template>
+<xsl:attribute name = "id"><xsl:value-of select = "@id" /></xsl:attribute>
+<xsl:attribute name = "Title"><xsl:value-of select = "@Title" /></xsl:attribute>
+<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+<xsl:apply-templates select = "field" />
+<p>Form</p>
+<div rid = "nav"></div>
+
+<embedded-script>&amp;lt;![CDATA[
+template_init : function(){
+	this.getProperties().formId = "<xsl:value-of select = "@id" />";
+	this.getObjects().forms = [{id:"main",title:"Main"}<xsl:if test = "$form_list">,</xsl:if><xsl:value-of select = "$form_list" />];
+	this.scopeHandler("navclick",0,0,1);
+	this.rebuildNav();
+
+},
+rebuildNav : function(){
+	var a = this.getObjects().forms,
+		oA,ii=0;
+	;
+	for(var i = 0; i &amp;lt; a.length;i++){
+		if(a[i].id != "main" &amp;amp;&amp;amp; this.GetFormValue("chk_" + a[i].id) == false) continue;
+		if(a[i].id == this.getProperties().formId) continue;
+		if(ii &amp;gt; 0) this.GetElementByRID("nav").appendChild(document.createTextNode(" | "));
+		ii++;
+		oA = document.createElement("a");
+		oA.onclick = this._prehandle_navclick;
+		oA.formId = a[i].id;
+
+		oA.appendChild(document.createTextNode(a[i].title));
+		this.GetElementByRID("nav").appendChild(oA);
+	}
+},
+_handle_navclick : function(e){
+	var o = Hemi.event.getEventSource(e);
+	this.navTo(o.formId);
+},
+navTo : function(i){
+	this.loadTemplate(this.GetDwacTemplatePath(),i);
+}
+]]&amp;gt;</embedded-script>
+
+</Template>
+</xsl:template>
+<xsl:template match="/Templates">
+<xsl:variable name="form_count" select="count(Template)" />
+<xsl:variable name = "form_list"><xsl:for-each select = "Template"><xsl:if test = "position() > 1">,</xsl:if>{title:"<xsl:value-of select = "@Title" />",id:"<xsl:value-of select = "@id" />"}</xsl:for-each></xsl:variable>
+
+<DWAC>
+<Templates>
+<xsl:apply-templates select = "Template">
+<xsl:with-param name="form_list" select="$form_list"/>
+</xsl:apply-templates>
+<Template id = "main">
+<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+<p>Path: ${dwac.path}</p>
+<ol>
+<xsl:for-each select = "Template">
+<li>
+<input type = "checkbox">
+<xsl:attribute name="rid">chk_<xsl:value-of select = "@id" /></xsl:attribute>
+<xsl:attribute name = "onchange">${this}.rebuildNav();</xsl:attribute>
+</input>
+: <xsl:value-of select = "@Title" />
+</li>
+</xsl:for-each>
+</ol>
+<div rid = "nav"></div>
+
+<embedded-script>&amp;lt;![CDATA[
+template_init : function(){
+	//alert('init - ' + this.GetDwacTemplatePath());
+	var iLen = <xsl:value-of select = "$form_count" />;
+	this.getObjects().forms = [<xsl:value-of select = "$form_list" />];
+	this.scopeHandler("navclick",0,0,1);
+	this.rebuildNav();
+
+},
+rebuildNav : function(){
+	var a = this.getObjects().forms,
+		oA,ii=0
+	;
+	Hemi.xml.removeChildren(this.GetElementByRID("nav"));
+	for(var i = 0; i &amp;lt; a.length;i++){
+		if(this.GetFormValue("chk_" + a[i].id) == false) continue;
+		if(ii &amp;gt; 0) this.GetElementByRID("nav").appendChild(document.createTextNode(" | "));
+		ii++;
+		oA = document.createElement("a");
+		oA.onclick = this._prehandle_navclick;
+		oA.formId = a[i].id;
+
+		oA.appendChild(document.createTextNode(a[i].title));
+		this.GetElementByRID("nav").appendChild(oA);
+	}
+},
+_handle_navclick : function(e){
+	var o = Hemi.event.getEventSource(e);
+
+	this.navTo(o.formId);
+},
+navTo : function(i){
+	this.loadTemplate(this.GetDwacTemplatePath(),i);
+}
+]]&amp;gt;</embedded-script>
+
+</Template>
+</Templates>
+</DWAC>
+</xsl:template>
+</xsl:stylesheet>
+        </textarea>
+        <textarea id = "form_text" style = "width:100%;height:150px;">
+<?xml version="1.0" encoding="utf-8" ?> 
+<Templates>
+<Template Title = "Foo Form" id = "foo">
+<field name = "cid" title = "Contractor Id" type = "text" />
+<field name = "notes" title = "Notes" type = "text" />
+</Template>
+<Template Title = "Foo Form 2" id = "foo2">
+<field name = "cid" title = "Contractor Id" type = "text" />
+</Template>
+<Template Title = "Foo Form 3" id = "foo3">
+<field name = "cid" title = "Contractor Id" type = "text" />
+<field name = "role" title = "Role" type = "select">
+<option name="role1">Role 1</option>
+<option name="role2">Role 2</option>
+<option name="role3">Role 3</option>
+<option name="role4">Role 4</option>
+</field>
+</Template>
+</Templates>
+        </textarea>
+ <textarea id = "output_text" style = "width:100%;height:150px;"></textarea>
+ <p>
+ <input type = "button" value = "XForm" onclick = "doTransform()" />
+ <script type = "text/javascript">
+function doTransform(){
+	var oX = Hemi.xml.parseXmlDocument(Hemi.text.trim(document.getElementById("form_text").value).replace(/\t/gi,"    "));
+	var oXS = Hemi.xml.parseXmlDocument(Hemi.text.trim(document.getElementById("xsl_text").value.replace(/\t/gi,"    ")));
+	var oR = Hemi.xml.transformNode(oX, oXS, 0, 0, 0, 0, 1);
+	var s = oR.replace(/&lt;!\[CDATA\[/gi,"<![CDATA[").replace(/\]\]&gt;/gi,"]]>").replace(/<template/gi,"<Template").replace(/<\/template/gi,"</Template").replace(/&lt;/gi,"<").replace(/&gt;/gi,">").replace(/&amp;/gi,"&");
+	document.getElementById("output_text").value = s;
+	refreshDWAC();
+	runDWAC();
+}
+
+function runDWAC(){
+	var aParams = [
+				"dynaforms",
+				0,
+				"main",
+				"dwac:Pub/dynaforms",
+				1
+			];
+			RunControl("RunApplicationProject", aParams);
+}
+function RunControl(sInvoke, aParams){
+	var oProps = {show_example:0,opener_id:0,local_invoke: sInvoke, local_invoke_params:aParams};
+	var oW = Hemi.app.createWindow("Runtime", "Templates/RuntimeContainer.xml", "Runtime-" + Hemi.guid(), 0, 0, oProps, handle_template_loaded);
+    if (oW) {
+    	oW.resizeTo(650, 650);
+    	Hemi.app.getWindowManager().CenterWindow(oW);
+    	// Destroy the window when closed
+    	//
+    	oW.setHideOnClose(0);
+    }
+}
+function handle_template_loaded (v) {
+    if (v && v.getProperties().local_invoke) {
+    	if (v.getProperties().local_invoke_params) v[v.getProperties().local_invoke].apply(v, v.getProperties().local_invoke_params);
+    	else v[v.getProperties().local_invoke]();
+    	v.getProperties().local_invoke = 0;
+    	v.getProperties().local_invoke_params = 0;
+    }
+}
+function refreshDWAC(){
+	
+	var sName = "dynaforms";
+	var bAdd = 1;
+	Hemi.log("Checking name ...");
+	var oResp = GetNameExists(sName, "Pub");
+	if(oResp.status == true){
+		bAdd = 0;
+	}
+
+	var bOut = 0;
+	var oD = GetNewData(sName, null, document.getElementById("output_text").value);
+	var oResp = 0;
+	if(!bAdd){
+		Hemi.log("Editing Project ...");
+		oResp = EditData(oD, sName, 0, "Pub");
+	}
+	else{
+		Hemi.log("Adding Project ...");
+		oResp = AddData(oD, "Pub");
+	}
+	if(oResp.status){
+		var sId = oResp.responseId;
+		if(!sId || sId.length == 0){
+				Hemi.logError("Error retrieving publication id");
+		}
+		else{
+			/// if(!bSkipRefresh) this.RefreshDWACLists();
+			Hemi.log("Published!");
+			///Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Pub Id: " + sId + " / Path: " + oResp.responsePath);
+			///this.getProperties().pub_data_path = oResp.responsePath;
+			bOut = 1;
+		}
+	}
+	else{
+		Hemi.logError("Failed to publish");
+	}
+	
+}
+
+function ReadData(sName, sId, fHandler, sMime){
+	return queryData("Read", 0, 0, 0, sId, 1, 1, sMime, fHandler);
+}
+function DeleteData(oD, sName, sId){
+	return queryData("Delete", oD, 0, sName, sId);
+}
+function GetNameExists(sName, sCtx){
+	var oD = GetNewData(sName);
+	return queryData("CheckName", oD, sCtx, sName);
+}
+function EditData(oD, sName, sId, sCtx){
+	return queryData("Edit", oD, sCtx, sName, sId);
+}
+function AddData(oD, sCtx){
+	return queryData("Add", oD, sCtx);
+}
+function ListData(sName, fHandler){
+	return queryDataList("Directory", sName, fHandler);
+}
+function queryDataList(sCtx, sName, fHandler){
+
+	var oRequest = Hemi.data.io.service.newIORequest(
+        3,
+        "DWAC",
+		sCtx,
+        sName,
+		"List", //action
+		0, // id
+		0, // name
+		0, // details only
+		(fHandler ? 1 : 0), // async
+		0, // cache
+		0 // instruction
+	);
+	///Hemi.log("BuilderControls queryDataList: " + _p.busType + " / " + _p.application + " / " + sCtx + " / " + sName + " / List");
+	Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
+	return Hemi.data.io.service.getResponseByName(oRequest.responseId);
+}
+function queryData(sAct, oD, sCtx, sName, sId, bFull, bAsync, sMime, fHandler){
+	//var _p = this.getProperties();
+	//var oD = 0;
+
+	if(!sCtx) sCtx = "Pub";
+	var oRequest = Hemi.data.io.service.newIORequest(
+        3,
+        "DWAC",
+		sCtx,
+        0,
+		sAct, //action
+		(sId ? sId : 0), // id
+		(sName ? sName : 0), // name
+		(bFull ? 0 : 1), // details only
+		(bAsync ? 1 : 0), // async
+		0, // cache
+		0 // instruction
+	);
+	if(sMime) oRequest.mimeType = sMime;
+	if(oD) oRequest.requestData.push(oD);
+	Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
+	var oResponse = Hemi.data.io.service.getResponseByName(oRequest.responseId);
+	return oResponse;
+}
+
+function GetNewData(sName, sId, sData){
+	var oData = Hemi.data.io.service.newData();
+	oData.postData = 1;
+	oData.name = sName;
+	if(sId) oData.id = sId;
+	oData.mimeType = "application/xml";
+	oData.value = sData;
+	return oData;
+}
+
+
+ </script>
+ </p>
+        <div module = "Console.Output"></div>
+
+	
+
+
+    </body>
+</html>

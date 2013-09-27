@@ -1,0 +1,94 @@
+﻿<DWAC>
+
+	<fragments>
+		<fragment id = "Frag1">
+			<p>Fragment 1</p>
+		</fragment>
+
+	</fragments>
+	<tasks>
+		<!--
+			The .apply is used because the task implementation currently evaluates the function as a string
+		-->
+		<task id="dwac_driver" action-type="default" action="[nothing]" handler-type="function" handler="${this}.handle_dwac_task.apply(${this})" />
+	</tasks>
+
+	 <Templates>
+		 <Template Title ="DWAC Designer" id = "DWACDesigner">
+					<import-style src ="Styles/wideselect.css" id ="WideSelect" />
+					<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+			 		<import-xml src = "Fragments/MemberModelTools.xml" id = "MemberModelTools" />
+					<import-xml src = "Fragments/TabTools.xml" id = "TabTools" />
+					<div rid = "dwac_explorer">
+						<div class = "title">DWAC Explorer</div>
+						<import-xml src = "Fragments/FrameworkExplorer.xml" id = "DWACExplorer" />
+					</div>
+					
+					<!--
+					<div rid = "task_builder">
+						<import-xml src = "/Templates/TaskBuilder.xml" id = "TaskBuilder" />
+					</div>
+					<div rid = "project_builder">
+						<import-xml src = "/Templates/ProjectBuilder.xml" id = "ProjectBuilder" />
+					</div>
+					<div rid = "fragment_builder">
+						<import-xml src = "/Templates/FragmentBuilder.xml" id = "FragmentBuilder" />
+					</div>
+					<div rid = "component_builder">
+						<import-xml src = "/Templates/ComponentBuilder.xml" id = "ComponentBuilder" />
+					</div>
+					<div rid = "template_builder">
+						<import-xml src = "/Templates/TemplateBuilder.xml" id = "TemplateBuilder" />
+					</div>
+					<div rid = "running_container">
+						<import-xml src = "/Templates/RuntimeContainer.xml" id = "RunningContainer" />
+					</div>
+					-->
+ 				<embedded-script>
+						<![CDATA[
+						template_init : function(){
+
+							this.AddTab("dwac_explorer","Explorer");
+							/*
+							this.AddTab("project_builder","Projects");
+							this.AddTab("task_builder","Task Lists");
+							this.AddTab("fragment_builder","Fragments");
+							this.AddTab("component_builder","Components");
+							this.AddTab("template_builder","Templates");
+							this.AddTab("running_container","Running");
+							*/
+							this.ShowTab(0);
+						},
+
+					 ]]>
+					</embedded-script>
+			</Template>
+		 <Template id = "DWACTest2">
+	 			<embedded-script>
+						<![CDATA[
+						template_init : function(){
+							
+						},
+						ChangeTemplate : function(){
+							/// this.loadTemplate(this.GetDwacTemplatePath(),"DWACTest1");
+						}
+					 ]]>
+					</embedded-script>
+			</Template>
+
+		 </Templates>
+	<application-components>
+			<application-component id = "DwacClickComponent1">
+			<![CDATA[
+				component_init : function(){
+
+				},
+				_handle_click : function(){
+					alert('click 1');
+				}
+			]]>
+			</application-component>
+
+	</application-components>
+
+</DWAC>

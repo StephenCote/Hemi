@@ -1,0 +1,1017 @@
+package org.cote.pkglib.config;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.jempbox.impl.XMLUtil;
+import org.apache.log4j.Logger;
+import org.cote.accountmanager.util.CalendarUtil;
+import org.cote.accountmanager.util.FileUtil;
+import org.cote.accountmanager.util.JAXBUtil;
+import org.cote.accountmanager.util.StreamUtil;
+import org.cote.accountmanager.util.XmlUtil;
+import org.cote.pkglib.factories.EncoderFactory;
+import org.cote.pkglib.factories.PackageVersionFactory;
+import org.cote.pkglib.objects.EncodedType;
+import org.cote.pkglib.objects.PackageFileType;
+import org.cote.pkglib.objects.PackageVersionType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+
+/*
+ * TODO: This is a legacy configuration mechanism - It needs to be completely swapped out for a consistent configuration format to match the PackageObjects schema
+ * There are two configuration files at play here:
+ * 1) The package file, which describes all of the source content prior to being encoded
+ *    a) the encoding process makes a first expression pass across individual files, strips out embedded documentation, ond compresses the individual sources
+ * 2) The configuration file describes how individual source files are combined together
+ *    a) The configuration file includes source link resolution, such that if File C includes File B, and File B includes File A, the linker will properly order the merged set and then remove the include statements.
+ *    b) The config file also includes some fancy property and feature configurations that have since been excised out of the javascript projects this was used for, so currently it's not used
+ * 
+ */
+
+
+public class ScriptPackageConfigurator {
+
+		public static final Logger logger = Logger.getLogger(ScriptPackageConfigurator.class.getName());
+		
+		private String application_name = "ScriptPackageConfigurator";
+		private String application_version = "2.0 Beta";
+		private String application_developer = "Stephen Core";
+		
+		private String applicationConfig = null;
+		private String deployDir = null;
+		private boolean decodeOnly = false;
+		private boolean configOnly = false;
+
+		private String context_path = "./";
+
+		private Document config = null;
+
+		private Map<String,Pattern> patterns = null;
+		private boolean configInitialized = false;
+	
+		private boolean unescape_patterns = true;
+	
+		private EncodedType encodedFile = null;
+		private String configName = null;
+		private ScriptPackageConfigReader configReader = null;
+		private String data = null;
+		
+		public ScriptPackageConfigurator(){
+			//
+			// TODO: Add constructor logic here
+			//
+			patterns = new HashMap<String,Pattern>();
+		}
+		
+		
+		
+		public boolean isConfigInitialized() {
+			return configInitialized;
+		}
+
+
+
+		public void setConfigInitialized(boolean configInitialized) {
+			this.configInitialized = configInitialized;
+		}
+
+
+
+		public String getConfigName() {
+			return configName;
+		}
+
+
+
+		public void setConfigName(String configName) {
+			this.configName = configName;
+		}
+
+
+
+		public boolean initializeEncoded(String encodedFilePath, String config_name, String config_path){
+			boolean out_bool = false;
+			EncodedType enc = null;
+			try {
+				enc = JAXBUtil.importObject(EncodedType.class, new String(StreamUtil.fileToBytes(encodedFilePath),"UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(enc == null){
+				logger.error("Encoder is null from " + encodedFilePath);
+				return false;
+			}
+			try {
+				if(initializeEncoded(enc, config_name, config_path)){
+					out_bool = initialize();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return out_bool;
+		}
+		public boolean initializeEncoded(EncodedType enc, String config_name, String config_path) throws IOException{
+			File cfg = new File(config_path);
+			if(cfg.exists() == false){
+				if(EncoderFactory.emitEncodedComponent(enc, config_name, config_path)){
+					logger.error("Failed to emit file " + config_path);
+					return false;
+				}
+				cfg = new File(config_path);
+			}
+			encodedFile = enc;
+			applicationConfig = config_path;
+			configName = config_name;
+			return initializeConfig();
+		}
+	
+		private boolean initializeConfig() throws IOException{
+			configInitialized = false;
+			if(decodeOnly == false){
+				config = XMLUtil.parse(applicationConfig);
+				if(config == null){
+					logger.error("Invalid config file: " + applicationConfig);
+					config = null;
+					return false;
+				}
+			}
+			else{
+				if(configName == null) return false;
+				config = XMLUtil.parse(new ByteArrayInputStream(EncoderFactory.getEncodedComponentValue(encodedFile, configName)));
+				if(config == null){
+					logger.error("Invalid config file: " + applicationConfig);
+					config = null;
+					return false;
+				}
+			}
+			configInitialized = true;
+			return true;
+		}
+
+		public boolean initialize(){
+			//patterns = new Hashtable();
+			this.configReader = null;
+			
+			try {
+				if(!configInitialized && !initializeConfig()){
+					logger.error("Unable to initialize configuration '" + applicationConfig + "'");
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+
+			Element deploy_path_el = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/stage");
+			if(deploy_path_el == null){
+				logger.info("Null distribution path.");
+				return false;
+			}
+
+			String deploy_path = deploy_path_el.getAttribute("path");
+			
+			if(
+				decodeOnly == false
+				&&
+				FileUtil.makePath(context_path + deploy_path) == false
+			){
+				logger.info("Unable to setup deploy directory");
+				return false;
+			}
+			deployDir = context_path + deploy_path;
+
+			this.configReader = new ScriptPackageConfigReader(this);
+			
+			return true;
+		}
+		
+
+
+		private List<PackageFileType> fileLinker() throws Exception
+		{
+			List<PackageFileType> out_list = new ArrayList<PackageFileType>();
+			List<PackageFileType> work_list = new ArrayList<PackageFileType>();
+			Map<String,Integer> list_map = new HashMap<String,Integer>();
+			//Dictionary<string, int> list_map = new Dictionary<string, int>();
+
+            boolean use_linker = false;
+            boolean remove_artifacts = false;
+            NodeList file_nodes = XmlUtil.selectNodes(config, "/jsconfig/script-files/file");
+            Element linker = (Element)XmlUtil.selectSingleNode(config,"/jsconfig/linker");
+            Pattern reg = null;
+            if (linker != null)
+            {
+                String use_linker_el = XmlUtil.GetElementText(linker, "linker-enabled");
+                String remove_links_el = XmlUtil.GetElementText(linker, "remove-artifacts");
+                String link_el = XmlUtil.GetElementText(linker, "link-artifact");
+                if (use_linker_el != null && Boolean.parseBoolean(use_linker_el) == true && link_el != null)
+                {
+                    use_linker = true;
+                    //"HemiEngine\\.include\\(\"([\\S][^\"]+)\"\\)"
+                    reg = Pattern.compile(link_el, Pattern.MULTILINE);
+                    if (remove_links_el != null && Boolean.parseBoolean(remove_links_el))
+                    {
+                        remove_artifacts = true;
+                    }
+                }
+            }
+			
+			
+			for (int i = 0; i < file_nodes.getLength(); i++)
+			{
+				Element file_element = (Element)file_nodes.item(i);
+
+				PackageFileType file_data = new PackageFileType();
+				file_data.setName(file_element.getAttribute("name"));
+				file_data.setClassName(file_data.getName().replaceAll("\\.js$", ""));
+				file_data.setEncodedName(file_element.getAttribute("encoded-name"));
+				file_data.setLinkBase(Boolean.parseBoolean(file_element.getAttribute("link-base")));
+                file_data.setEmit(Boolean.parseBoolean(file_element.getAttribute("emit")));
+                file_data.setWrap(Boolean.parseBoolean(file_element.getAttribute("wrap")));
+                file_data.setSourcePath(deployDir + "/" + file_data.getName());
+                
+                byte[] data = new byte[0];
+                File sourceFile = new File(file_data.getSourcePath());
+                
+                if (decodeOnly == true || sourceFile.exists() == false)
+                {
+
+
+                    if (encodedFile == null || file_data.getEncodedName() == null)
+                    {
+                        logger.error("File '" + deployDir + "/" + file_data.getName() + "' does not exist and no encoded version specified.");
+                        continue;
+                    }
+                    data = EncoderFactory.getEncodedComponentValue(encodedFile, file_data.getEncodedName());
+                    file_data.setEncoded(true);
+                    if (data.length == 0)
+                    {
+                        logger.error("Failed to restore encoded data for '" + file_data.getEncodedName() + "'");
+                        continue;
+                    }
+
+
+                    if (decodeOnly == false && file_data.getEmit() == true)
+                    {
+                        /* emit if needed, but don't overwrite */
+                        if (FileUtil.emitFile(file_data.getSourcePath(), data) == false)
+                        {
+                            logger.info("Decoder failed to emit file: " + file_data.getName());
+                        }
+                        else
+                        {
+                            logger.info("Emitting file: " + file_data.getName());
+                        }
+                    }
+                } // end if emit file
+                else
+                {
+                    data = FileUtil.getFile(file_data.getSourcePath());
+                }
+
+			    String data_str = new String(data,"UTF-8");
+				file_data.setRawData(data);
+                if (use_linker)
+                {
+                    Matcher match = reg.matcher(data_str);
+                    while (match.find())
+                    {
+                    	logger.info("Match: " + match.group(1));
+                    	file_data.getRequireLinks().add(match.group(1));
+                    }
+                    if (remove_artifacts)
+                    {
+                    	data_str = match.replaceAll("");
+                    }
+                }
+				file_data.setData(data_str.getBytes("UTF-8"));
+				work_list.add(file_data);
+				if(file_data.getLinkBase()) out_list.add(file_data);
+            }
+
+			/// Pre-populate the files with no dependencies
+			/// 
+			for (int i = 0; i < work_list.size(); i++)
+			{
+				if(work_list.get(i).getRequireLinks().size() ==0 && work_list.get(i).getLinkBase() == false){
+					out_list.add(work_list.get(i));
+					list_map.put(work_list.get(i).getClassName(),out_list.size() -1);
+				}
+			}
+			for (int i = 0; i < work_list.size(); i++)
+			{
+                linkFile(out_list, work_list, list_map, i);
+
+			}
+
+			return out_list;
+		}
+        private void linkFile(List<PackageFileType> out_list, List<PackageFileType> work_list, Map<String, Integer> list_map, int work_index) throws Exception
+        {
+        	PackageFileType work = work_list.get(work_index);
+            if (list_map.containsKey(work.getClassName()) || work.getLinkBase() == true) return;
+            for (int k = 0; k < work.getRequireLinks().size(); k++)
+            {
+                /// if the required link is  in the master order list
+                /// then continue
+                ///
+                if (list_map.containsKey(work.getRequireLinks().get(k)) == true)
+                {
+                    continue;
+                }
+                /// Find the required link in the work list, and recurse into that node
+                int m = -1;
+                for (int z = 0; z < work_list.size(); z++)
+                {
+                    if (z != work_index && work_list.get(z).getClassName().equals(work.getRequireLinks().get(k)))
+                    {
+                        m = z;
+                        break;
+                    }
+                }
+                if (m == -1) throw new Exception("Unlinked reference: " + work.getRequireLinks().get(k) + " was not found");
+                linkFile(out_list, work_list, list_map, m);
+            }
+            /// All required links at work_index should be resolved
+            /// If the link does not exist in the master list, add it
+            /// 
+            if (list_map.containsKey(work.getClassName()) == false)
+            {
+            	list_map.put(work.getClassName(), out_list.size());
+                out_list.add(work);
+            }
+
+
+        }
+		private boolean configure() throws Exception{
+			if(config == null) return false;
+
+			boolean encountered_error = false;
+
+			/*
+				Unescaped patterns for escaped-value should only apply to the value of the 'replace' attribute
+			*/
+			/*
+			if(this.unescape_patterns == true){
+				NodeList massage_patterns = XmlUtil.selectNodes(config, "* /pattern[@escaped-value = '1']");
+				Element massage_element = null;
+				String massage_value = null;
+				for(int i = 0; i < massage_patterns.getLength(); i++){
+					massage_element = (Element)massage_patterns.item(i);
+					massage_value = massage_element.getAttribute("replace");
+					massage_value = Pattern.Unescape(massage_value);
+					massage_element.setAttribute("replace",massage_value);
+				}
+			}
+			*/
+
+			Element datasetid_el = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/dataset-id");
+			int dataset_id = 0;
+			if(datasetid_el != null && datasetid_el.getAttribute("value") != null){
+
+				dataset_id = Integer.parseInt(datasetid_el.getAttribute("value"));
+				if(dataset_id < 0) dataset_id = 0;
+			
+			}
+		
+			Element document_cfgel = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/document-list");
+			if(document_cfgel == null){
+				logger.info("Null document list configuration entry");
+				return false;
+			}
+
+			String dlist = document_cfgel.getAttribute("path");
+			if(dlist == null){
+				logger.info("Null document list configuration entry");
+				return false;
+			}
+
+			//File test = new File(context_path + dlist);
+			File fdList = new File(context_path + dlist);
+			Document document_list = null;
+			if(fdList.exists() == false){
+				document_list = XmlUtil.GetDocumentFromBytes("<jsdlist />".getBytes("UTF-8"));
+			}
+			else{
+				
+				document_list = XmlUtil.GetDocumentFromBytes(StreamUtil.fileHandleToBytes(fdList));
+				if(document_list == null){
+					logger.error("Invalid document list file " + dlist);
+					return false;
+				}
+			}
+		
+		
+			Element output_el = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/output-file");
+			if(output_el == null || output_el.getAttribute("path") == null){
+				logger.info("Invalid output path");
+				return false;
+			}
+			String output_path = output_el.getAttribute("path");
+			File output_file = new File(output_path);
+			try{
+				if(output_file.exists()) output_file.delete();
+			}
+			catch(Exception e){
+				logger.error("Exception: " + e.getMessage());
+				return false;
+				
+			}
+
+			StringBuffer wrapper = new StringBuffer();
+			StringBuffer data = new StringBuffer();
+
+
+			/*
+			 * 
+			 * Script files are processed separately from template files
+			 * because the script files are combined into a single source
+			 * while the template files should be output separately.
+			 * 
+			 */
+
+			String encoded_name = null;
+			String emit_file_str = null;
+			boolean value_encoded = false;
+			String src = null;
+			List<PackageFileType> file_list = fileLinker();
+			PackageVersionType av = new PackageVersionType();
+			
+			//for(int i = 0;i< files.size() ;i++){
+            for (int i = 0; i < file_list.size(); i++)
+            {
+            	
+				if(decodeOnly == false){
+					av.setMajorVersion(0);
+					av.setMinorVersion(0);
+					av.setBuildVersion(0);
+				}
+
+				File info = new File(output_path);
+				if(file_list.get(i).getName().equals(info.getName())){
+					logger.info("Skip output file entry: " + file_list.get(i).getName());
+					continue;
+				}
+			
+				Date last_modified = new Date();
+				Date compare_last = last_modified;
+				if(value_encoded == false) last_modified = new Date(info.lastModified());
+			
+				
+
+                Element file_node = (Element)XmlUtil.selectSingleNode(document_list, "/jsdlist/document[@filename='" + file_list.get(i).getName() + "']");
+				if(file_node == null){
+                    logger.info("Add new entry: " + file_list.get(i).getName());
+					file_node = document_list.createElement("document");
+					document_list.getDocumentElement().appendChild(file_node);
+                    file_node.setAttribute("filename", file_list.get(i).getName());
+					if(value_encoded == false) file_node.setAttribute("last-modified",CalendarUtil.exportDateAsString(last_modified));
+				}
+			
+			
+				String compare_last_str = file_node.getAttribute("last-modified");
+				if(compare_last_str != null && compare_last_str.length() > 0){
+					compare_last = CalendarUtil.importDateFromString(compare_last_str);
+				}
+				boolean file_changed = (last_modified.getTime() > compare_last.getTime())?true:false;
+
+                file_list.get(i).setData(applyPatternsToPackageFileType(file_list.get(i).getData(), file_list.get(i).getName(), av, file_changed, config));
+				file_list.get(i).setRawData(applyPatternsToPackageFileType(file_list.get(i).getRawData(), file_list.get(i).getName(), av, file_changed, config));
+
+				if(file_changed) file_node.setAttribute("last-modified",CalendarUtil.exportDateAsString(last_modified));
+			
+				file_node.setAttribute("file-version",PackageVersionFactory.getVersion(av));
+
+                logger.info("Script File " + file_list.get(i).getName() + " (" + last_modified + ")");
+			
+				if(file_list.get(i).getWrap()){
+					wrapper.append("\r\n" + (new String(file_list.get(i).getData(),"UTF-8")));
+				}
+				else{
+					data.append("\r\n" + (new String(file_list.get(i).getData(),"UTF-8")));
+				}
+			} // end for files loop
+
+			/*
+			 * Handle code wrapping / embedding
+			 */
+			String config_data = data.toString();
+			String wrapper_data = wrapper.toString();
+			String wrapper_token = "%WRAP_CODE%";
+			if(wrapper_data.length() > 0){
+			
+				//Pattern expr = GetBufferPattern(wrapper_token);
+				Matcher m = GetBufferMatcher(wrapper_token,wrapper_data);
+				if(m.find()){
+				
+					config_data = m.replaceAll(config_data);
+					wrapper_data = null;
+				}
+			}
+			/* clear out data buffer */
+		
+			data = null;
+
+
+			config_data = applyPropertyConfiguration(config_data);
+			config_data = applyPropertySetConfiguration(config_data);
+			config_data = applyPropertyStructsConfiguration(config_data, dataset_id);
+			config_data = applyFilePatterns(config_data);
+			config_data = applyFileHeaderFooter(output_path,av,config_data);
+			config_data = applySpecialTokens(config_data);
+			this.data = config_data;
+			if(configOnly == false){
+				if(WriteFile(output_path,config_data, true) == false){
+					logger.info("Failed to Write " + output_path);
+				}
+			}
+		
+		
+			Element template_path_element = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/template-output-path");
+			String template_path = null;
+			if(template_path_element != null){
+				template_path = template_path_element.getAttribute("path");
+			}
+			//if(decodeOnly == false){
+				//NodeList files = XmlUtil.selectNodes(config,"/jsconfig/template-files/file");
+
+
+				/*
+				* 
+				* Template files are processed independently
+				* 
+				*/
+				//for(int i = 0;i<files.size();i++){
+				for(int i = 0; i < file_list.size(); i++){
+					String out_path = file_list.get(i).getSourcePath();
+					String raw_data = new String(file_list.get(i).getRawData(), "UTF-8");
+					raw_data = applyPropertyConfiguration(raw_data);
+					raw_data = applyPropertySetConfiguration(raw_data);
+					raw_data = applyPropertyStructsConfiguration(raw_data, dataset_id);
+					raw_data = applyFilePatterns(raw_data);
+					raw_data = applyFileHeaderFooter(output_path, av, raw_data);
+					raw_data = applySpecialTokens(raw_data);
+					FileUtil.emitFile(out_path, raw_data);
+
+				} // end for template files loop
+			//}  // end if decodeOnly == false
+			if(encountered_error == true) return false;
+		
+			if(decodeOnly == false) FileUtil.emitFile(context_path  + dlist, XmlUtil.GetStringFromDoc(document_list));
+			return true;
+		}
+		
+		public boolean WriteFile(String output_path, String data, boolean overwrite){
+			logger.info("Writing " + output_path);
+			return FileUtil.emitFile(output_path, data);
+		}
+	
+		private byte[] applyPatternsToPackageFileType(byte[] file_data_bytes, String name, PackageVersionType av,boolean file_changed,Document config) throws UnsupportedEncodingException{
+			String file_data = new String(file_data_bytes,"UTF-8");
+			if(decodeOnly == false){
+				Pattern expr = GetBufferPattern("%FILE_VERSION%");
+				Matcher matcher = GetBufferMatcher("%FILE_VERSION%",file_data);
+				
+				String version_name = context_path + "config/versions/" + name + ".public.xml";
+				if(matcher.find() == true){
+					PackageVersionFactory.importIntoPackageVersion(av, version_name);
+					if(file_changed){
+						logger.info("Increment build version for " + name);
+						av.setBuildVersion(av.getBuildVersion() + 1);
+					}
+					
+					av.setName(name);
+					PackageVersionFactory.exportPackageVersion(av, version_name);
+					matcher.replaceAll(PackageVersionFactory.getVersion(av));
+				}
+			}
+
+			NodeList nl = XmlUtil.selectNodes(config,"/jsconfig/features/feature");
+
+			for(int i = 0; i < nl.getLength(); i++){
+				Element feature_el = (Element)nl.item(i);
+				String feature_name = feature_el.getAttribute("name");
+				String feature_enabled_str = feature_el.getAttribute("enabled");
+			
+				if(
+					feature_name != null
+					&& feature_name.length() > 0
+					&& feature_enabled_str != null
+					&& feature_enabled_str.length() > 0
+					){
+			
+					boolean feature_enabled = (feature_enabled_str.equals("1") || feature_enabled_str.toLowerCase().equals("true"))?true:false;
+					String feature_token = feature_name.toUpperCase();
+				
+					String module = feature_el.getAttribute("module");
+					if(module == null) module = "";
+					else{
+						module = module.toUpperCase() + "_";
+					}
+
+					//String feature_start = "%" + module + "STARTCOMPONENT_" + feature_token + "%";
+					//String feature_stop = "%" + module + "STOPCOMPONENT_" + feature_token + "%";
+
+					String feature_start = "%START_" + feature_token + "%";
+					String feature_stop = "%STOP_" + feature_token + "%";
+
+					if(feature_enabled){
+						//					logger.info("Enable Feature: " + feature_token);
+						Matcher m = GetBufferMatcher(feature_start,file_data);
+						//Pattern e = GetBufferPattern(feature_start);
+						if(m.find()){
+							file_data = m.replaceAll("");
+						}
+						m = GetBufferMatcher(feature_stop,file_data);
+						//e = GetBufferPattern(feature_stop);
+						if(m.find()){
+							file_data = m.replaceAll("");
+						}
+					}
+					else{
+						// "(" + + ")"
+						//					logger.info("Disable Feature: " + feature_token);
+						String match_pattern = feature_start + ".*?" + feature_stop;
+						Matcher m = GetBufferMatcher(match_pattern,file_data);
+						//Pattern e = GetBufferPattern(match_pattern);
+						if(m.find()){
+							file_data = m.replaceAll("");
+
+						}
+						else{
+							//logger.info("Failed to match: " + match_pattern);
+						}
+					}
+				} // end feature check
+				else{
+					logger.info("JSConfig: Invalid Feature '" + feature_name + "'");
+				}
+			} // end for 
+
+			//		file_data = file_data.replaceAll("\\n\\n","\r\n");
+			//		file_data = file_data.replaceAll("\\r\\n\\r\\n","\r\n");
+
+			return file_data.getBytes("UTF-8");
+		}
+	
+		public String applyPropertySetConfiguration(String in_data){
+			NodeList nl = XmlUtil.selectNodes(config,"/jsconfig/properties/property-set");
+
+			for(int j = 0; j <nl.getLength(); j++){
+				Element property_set = (Element)nl.item(j);
+				String name_token;
+				String name_attr = property_set.getAttribute("name");
+				String key_delim_attr = property_set.getAttribute("key-delimiter");
+				if(key_delim_attr == null || key_delim_attr.length() == 0) key_delim_attr = "=";
+				String value_delim_attr = property_set.getAttribute("value-delimiter");
+				if(value_delim_attr == null || value_delim_attr.length() == 0) value_delim_attr = ",";
+			
+				String set_open = property_set.getAttribute("open-set");
+				String set_close = property_set.getAttribute("close-set");
+
+				if(set_open == null || set_close == null){
+					set_open = "";
+					set_close = "";
+				}
+			
+				if(
+					name_attr != null
+					&& name_attr.length() > 0
+					){
+					name_token = "%" + name_attr.toUpperCase() + "%";
+	
+					Matcher m = GetBufferMatcher(name_token,in_data);
+					//Pattern e = GetBufferPattern(name_token);
+					if(m.find()){
+						logger.info("Configure property-set: " + name_attr);
+						StringBuffer value_buff = new StringBuffer();
+						value_buff.append(set_open);
+						int prop_count = 0;
+						NodeList ps = XmlUtil.selectNodes(property_set,"property");
+						for(int i = 0; i < ps.size(); i++){
+							Element property = (Element)ps.get(i);
+						
+							String key_attr = property.getAttribute("key");
+							String value_attr = System.Web.HttpUtility.UrlDecode(property.getAttribute("value"));
+							if(value_attr != null){
+								if(prop_count > 0) value_buff.append(value_delim_attr);
+								if(key_attr != null && key_attr.length() > 0){
+									value_buff.append(key_attr + key_delim_attr + value_attr);
+								}
+								else{
+									value_buff.append(value_attr);
+								}
+								prop_count++;
+							}
+						}
+						value_buff.append(set_close);
+						in_data = e.Replace(in_data,value_buff.toString());
+					}
+
+				}	
+			}
+			return in_data;
+		}
+	
+		public String applyPropertyConfiguration(String in_data){
+			NodeList nl = XmlUtil.selectNodes(config,"/jsconfig/properties/property");
+			for(int j=0; j < nl.getLength(); j++){
+				Element property = (Element)nl[j];
+				String name_token;
+				String name_attr = property.getAttribute("name");
+				String value_attr = System.Web.HttpUtility.UrlDecode(property.getAttribute("value"));
+
+				if(
+					name_attr != null
+					&& name_attr.length() > 0
+					&& value_attr != null
+					//				&& value_attr.length() > 0
+					){
+					name_token = "%" + name_attr.toUpperCase() + "%";
+
+					
+					Matcher m = GetBufferMatcher(name_token,in_data);
+					Pattern e = GetBufferPattern(name_token);
+					if(m.Success){
+						logger.info("Configure property: " + name_attr);
+						in_data = e.Replace(in_data,value_attr);
+					}
+
+
+				}		
+			}
+			return in_data;
+		}
+	
+		public String applyPropertyStructsConfiguration(String in_data, int dataset_id){
+			NodeList nl = XmlUtil.selectNodes(config,"/jsconfig/properties/property-structs");
+			for(int j = 0; j <nl.getLength(); j++){
+				Element property_struct = (Element)nl[j];
+				String name_token;
+				String name_attr = property_struct.getAttribute("name");
+			
+				if(
+					name_attr != null
+					&& name_attr.length() > 0
+					){
+					name_token = "%" + name_attr.toUpperCase() + "%";
+
+					Matcher m = GetBufferMatcher(name_token,in_data);
+					Pattern e = GetBufferPattern(name_token);
+					if(m.Success){
+						logger.info("Configure property-struct: " + name_attr);
+						Element dataset_0 = (Element)property_struct.SelectSingleNode("dataset[@id = '0']");
+						Element dataset_n = null;
+
+						if(dataset_id > 0){
+							dataset_n = (Element)property_struct.SelectSingleNode("dataset[@id = '" + dataset_id + "']");
+							if(dataset_n == null){
+								logger.info("Invalid dataset id specification for '" + dataset_id + "'.  Skipping property-struct.");
+								continue;
+							}
+						}
+
+						StringBuffer value_buff = new StringBuffer();
+						int prop_count = 0;
+
+						if(dataset_0 != null && dataset_n != null){
+							NodeList prop_struct = dataset_n.SelectNodes("property-struct");
+							for(int s = 0; s < prop_struct.size(); s++){
+								Element ps_el = (Element)prop_struct[s];
+								String ps_id = ps_el.getAttribute("id");
+								if(ps_id == null){
+									logger.info("Null property struct id in " + name_attr);
+									continue;
+								}
+								Element mark_el = (Element)dataset_0.SelectSingleNode("property-struct[@id = '" + ps_id + "']");
+								/* mark the 0th dataset property structure with the same id as bubbled so it will be skipped */
+								if(mark_el != null) mark_el.getAttribute("bubbled","1");
+								NodeList prop_list = ps_el.SelectNodes("property[@key]");
+								StringBuffer sub_buff = new StringBuffer();
+								int sub_prop_count = 0;
+								for(int t = 0; t < prop_list.size(); t++){
+									Element prop = (Element)prop_list[t];
+									String pkey_attr = prop.getAttribute("key");
+									String pval_attr = prop.getAttribute("value");
+									if(pkey_attr != null && pkey_attr.length() > 0 && pval_attr != null){
+										if(pval_attr.equals("%JSC_PROPERTY_STRUCT_ID%")){
+											pval_attr = ps_id;
+										}
+										if(sub_prop_count > 0) sub_buff.append(",");
+										sub_buff.append(pkey_attr + ":" + pval_attr);
+										sub_prop_count++;
+									}
+								}
+								if(sub_prop_count > 0){
+									if(prop_count > 0) value_buff.append(",");
+									value_buff.append("{" + sub_buff.toString() + "}");
+									prop_count++;
+								}
+							} // end loop through dataset_n structs
+					
+						} // end check for dataset n
+					
+						if(dataset_0 != null){
+							NodeList prop_struct = dataset_0.SelectNodes("property-struct[not(@bubbled)]");
+							for(int s = 0; s < prop_struct.size(); s++){
+								Element ps_el = (Element)prop_struct[s];
+								String ps_id = ps_el.getAttribute("id");
+								if(ps_id == null){
+									logger.info("Null property struct id in " + name_attr);
+									continue;
+								}
+	
+								NodeList prop_list = ps_el.SelectNodes("property[@key]");
+								StringBuffer sub_buff = new StringBuffer();
+								int sub_prop_count = 0;
+								for(int t = 0; t < prop_list.size(); t++){
+									Element prop = (Element)prop_list[t];
+									String pkey_attr = prop.getAttribute("key");
+									String pval_attr = prop.getAttribute("value");
+									if(pkey_attr != null && pkey_attr.length() > 0 && pval_attr != null){
+										if(pval_attr.equals("%JSC_PROPERTY_STRUCT_ID%")){
+											pval_attr = ps_id;
+										}
+										if(sub_prop_count > 0) sub_buff.append(",");
+										sub_buff.append(pkey_attr + ":" + pval_attr);
+										sub_prop_count++;
+									}
+								}
+								if(sub_prop_count > 0){
+									if(prop_count > 0) value_buff.append(",");
+									value_buff.append("{" + sub_buff.toString() + "}");
+									prop_count++;
+								}
+							} // end loop through non-bubbled dataset_0 structs
+						} // end check for dataset_0;
+						in_data = e.Replace(in_data,value_buff.toString());
+					}
+
+
+				}	
+			}
+
+			return in_data;
+		}
+	
+		public String applyFilePatterns(String data){
+			String in_data = data;
+			NodeList nl = XmlUtil.selectNodes(config,"/jsconfig/file-patterns/pattern");
+			for(int i = 0; i < nl.getLength(); i++){
+				Element pattern_el = (Element)nl.item(i);
+				String pattern = pattern_el.getAttribute("match");
+				String replace = pattern_el.getAttribute("replace");
+			
+				if(
+					pattern != null
+					&& pattern.length() > 0
+					&& replace != null
+					){
+					if(pattern.equals("%JSC_STRIP_SPACE_AROUND_SPECIAL_CHAR%")){
+						pattern = "\\s*([,:?+\\*\\-=;()<>&!|{])\\s*";
+					}
+					if(pattern.equals("%JSC_STRIP_SPACE_AROUND_CONDITIONS%")){
+						pattern = "\\s*\\}[ \\t\\r\\f]*";
+					}
+					if(pattern.equals("%JSC_STRIP_EXTRA_SPACE%")){
+						pattern = "(\\s)+";
+					}
+				
+					if(replace.equals("%JSC_NEWLINE%")){
+						replace = "\n";
+					}
+					if(replace.equals("%JSC_NEWLINE_HASHFUNCTION%")){
+						replace = ":\nfunction";
+					}
+					
+					Pattern e = GetBufferPattern(pattern);
+					//Matcher m = getBufferMatcher(pattern,in_data);
+					if(e.Match(in_data).Success){
+						in_data = e.Replace(in_data,replace);
+					}
+					else{
+						logger.info("Didn't match " + pattern);
+					}
+				}
+			}
+			return in_data;
+		}
+	
+		public String applyFileHeaderFooter(String output_path,PackageVersionType av,String in_data){
+
+			Element file_header_el = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/output-header");
+			File info = new File(output_path);
+			String file_header = null;
+			if(file_header_el != null && file_header_el.hasChildNodes() && file_header_el.getFirstChild().getNodeValue() != null){
+				file_header = file_header_el.getFirstChild().getNodeValue();
+			}
+			else{
+				file_header = 
+					"/*\n\t"
+					+ info.getName().toUpperCase() + " (deployment_version: %FILE_VERSION%)"
+					+ "\n\n\t"
+					+ "Created with " + application_name + " (v. " + application_version + "), "
+					+ "Copright " + application_developer + ", 2002 - 2013\n"
+					+ "*/\n\n"
+					;
+			}
+
+			String name_token = "%OUTPUT_FILE%";
+			Matcher match = GetBufferMatcher(name_token,file_header);
+			//Pattern expr = GetBufferPattern(name_token);
+			if(match.find()){
+				file_header = match.replaceAll(info.getName());
+			}
+
+			Element file_footer_el = (Element)XmlUtil.selectSingleNode(config, "/jsconfig/distribution/output-footer");
+			String file_footer = "";
+			if(file_footer_el != null && file_footer_el.hasChildNodes() && file_footer_el.getFirstChild().getNodeValue() != null){
+				file_footer = file_footer_el.getFirstChild().getNodeValue();
+			}
+			else{
+				file_footer = 
+					"\n/* "
+					+ "Created with " + application_name + " (v. " + application_version + "), "
+					+ "Copright " + application_developer + ", 2002 - 2013 "
+					+ "*/\n"
+					;
+			}
+		
+			file_header = applyPatternsToPackageFileType(file_header, info.getName(), av, true, config);
+		
+			return (file_header + in_data + file_footer);
+
+		}
+	
+		public String applySpecialTokens(String in_data){
+			String tmp_token = "%CDATA_START%";
+			//Pattern expr = GetBufferPattern(tmp_token);
+			Matcher match = GetBufferMatcher(tmp_token,in_data);
+			if(match.find()){
+				in_data = match.replaceAll("<![CDATA[");
+			}
+		
+			tmp_token = "%CDATA_STOP%";
+			//expr = GetBufferPattern(tmp_token);
+			match = GetBufferMatcher(tmp_token,in_data);
+			if(match.find()){
+				in_data = match.replaceAll("]]>");
+			}
+
+			tmp_token = "%FILE_SIZE%";
+			//expr = GetBufferPattern(tmp_token);
+			match = GetBufferMatcher(tmp_token,in_data);
+			if(match.find()){
+				in_data = match.replaceAll(Integer.toString(in_data.length()));				
+			}
+		
+			return in_data;
+
+		}
+	
+		public Matcher GetBufferMatcher(String pattern,String data){
+			Pattern new_pattern = GetBufferPattern(pattern);
+			if(new_pattern == null) return null;
+			return new_pattern.matcher(data);
+		}
+	
+		public Pattern GetBufferPattern(String pattern){
+			Pattern new_pattern = GetPattern(pattern);
+			if(new_pattern == null){
+				new_pattern = SetPattern(pattern);
+			}
+			return new_pattern;
+		}
+	
+		public Pattern SetPattern(String pattern){
+			/// why not multipline?
+			Pattern new_pattern = Pattern.compile(pattern);
+			patterns.put(pattern,new_pattern);
+			return new_pattern;
+		}
+	
+		public Pattern GetPattern(String pattern){
+			if(patterns.containsKey(pattern)){
+				return patterns.get(pattern);
+			}
+			return null;
+		}		
+
+		
+	
+	
+}

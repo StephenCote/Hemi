@@ -1,0 +1,327 @@
+package org.cote.pkglib.config;
+
+public class ScriptPackageConfigReader {
+	public static String ELEMENT_SCRIPT_FILES = "script-files";
+	public static String ELEMENT_FILE = "file";
+	
+	public static String ELEMENT_OUTPUT_FILE = "output-file";
+	public static String ELEMENT_TEMPLATE_OUTPUT_PATH = "template-output-path";
+	public static String ELEMENT_DISTRIBUTION = "distribution";
+	public static String ELEMENT_FEATURES = "features";
+	public static String ELEMENT_FEATURE = "feature";
+
+	public static String ELEMENT_PROPERTIES = "properties";
+	public static String ELEMENT_PROPERTY = "property";
+	public static String ELEMENT_PROPERTYSET = "property-set";
+	
+	public static String ATTRIBUTE_PATH = "path";
+	public static String ATTRIBUTE_NAME = "name";
+	public static String ATTRIBUTE_VALUE = "value";
+	public static String ATTRIBUTE_ENABLED = "enabled";
+	
+	public static String FEATURE_NAME_DEBUG = "debugger";
+	//public static String FEATURE_NAME_FRAMESTATE = "multipleframestate";
+	public static String FEATURE_NAME_OVERCLOCK = "framesetoverclock";
+	public static String FEATURE_NAME_UNDERCLOCK = "framesetunderclock";
+	public static String FEATURE_NAME_RESPONSE_TRIGGER = "responsetrigger";
+
+	public static String PROPERTYSET_NAME_RUM_CONFIG = "rum_userconfig";
+
+	public static String PROPERTY_NAME_RESPONSE_TRIGGER_SUBVALUE = "rum_component_responsetrigger_subvalue";
+	public static String PROPERTY_NAME_DATA_URL = "rum_data_url";
+	public static String PROPERTY_NAME_MONITOR_URL = "rum_monitor_url";
+	
+	//<file name="debug.monitor.js" encoded-name = "DebugMonitor" />
+	
+	private int ready_state = 0;
+	private String config_path = null;
+	private ScriptPackageConfigurator config = null;
+	
+	public ScriptPackageConfigReader(ScriptPackageConfigurator cfg){
+		config = cfg;
+		if(config.isConfigInitialized()== true){
+			this.ready_state = 4;
+			this.config_path = this.config.GetConfigPath();
+		}
+	}
+	
+	public void setConfigPath(String p){
+		this.config_path = p;
+	}
+	
+	public int getReadyState(){
+		return this.ready_state;
+	}
+	
+	public boolean save(){
+		if(this.ready_state != 4) return false;
+		return this.config.GetConfig().SaveDocument(this.config_path);
+	}
+	
+	public boolean setPropertyValue(String property_name, String property_value){
+		Element property = getPropertyElement(property_name);
+		if(property == null) return false;
+		property.SetAttribute(ATTRIBUTE_VALUE,property_value);
+		return true;
+	}
+	
+	public String getPropertyValue(String property_name){
+		Element property = getPropertyElement(property_name);
+		if(property == null) return null;
+		return property.getAttribute(ATTRIBUTE_VALUE);
+	}
+
+	public boolean setPropertySetValue(String propertyset_name,String property_name, String property_value){
+		/* get the property set */
+		Element propertyset = getPropertySetElement(propertyset_name);
+		if(propertyset == null) return false;
+		/* get a list of the properties for the property set */
+		NodeList properties = propertyset.GetElementsByTagName(ELEMENT_PROPERTY);
+		/* get the specific property */
+		Element property = getElementByName(properties, property_name);
+		if(property == null) return false;
+		/* apply the new value */
+		property.SetAttribute(ATTRIBUTE_VALUE,property_value);
+		return true;
+	}
+	
+	public String getPropertySetValue(String propertyset_name,String property_name){
+		/* get the property set */
+		Element propertyset = getPropertySetElement(propertyset_name);
+		if(propertyset == null) return null;
+		/* get a list of the properties for the property set */
+		NodeList properties = propertyset.GetElementsByTagName(ELEMENT_PROPERTY);
+		/* get the specific property */
+		Element property = getElementByName(properties, property_name);
+		if(property == null) return null;
+		/* apply the new value */
+		return property.getAttribute(ATTRIBUTE_VALUE);
+	}
+	
+	public Element getPropertyElement(String property_name){
+		NodeList property_nodes = getPropertyNodes();
+		return getElementByName(property_nodes,property_name);
+	}
+
+	public Element getPropertySetElement(String propertyset_name){
+		NodeList propertyset_nodes = getPropertySetNodes();
+		return getElementByName(propertyset_nodes,propertyset_name);
+		
+	}
+	private Element getElementByName(NodeList node_list, String element_name){
+		if(element_name == null || node_list == null) return null;
+		Element out_element = null;
+
+		String check_name = null;
+		int len = node_list.Count;
+		for(int i = 0; i < len; i++){
+			check_name = ((Element)node_list[i]).getAttribute(ATTRIBUTE_NAME);
+			if(check_name != null && check_name.Equals(element_name)){
+				out_element = (Element)node_list[i];
+				break;
+			}
+		}
+		return out_element;
+	}
+
+	
+	
+	public boolean enableFeature(String feature_name, boolean enabled){
+		/* make sure the name is not null */
+		if(feature_name == null) return false;
+
+		/* make sure the feature is valid by trying to toggle it */
+		if(setFeatureEnabled(feature_name,enabled) == false) return false;
+
+		/* address known relationships between features and other config settings */
+		if(feature_name.Equals(FEATURE_NAME_DEBUG)){
+			/* must add/remove debug.monitor.js file */
+			/* make sure the element exists */
+			if(enabled){
+				Element debug_file = getScriptFileByName("debug.monitor.js");
+				if(debug_file == null){
+					debug_file = config.GetConfig().CreateElement(ELEMENT_FILE);
+					debug_file.SetAttribute("encoded-name","DebugMonitor");
+					debug_file.SetAttribute(ATTRIBUTE_NAME,"debug.monitor.js");
+					getElement(ELEMENT_SCRIPT_FILES).AppendChild(debug_file);
+				}
+			}
+			else{
+				Element debug_file = getScriptFileByName("debug.monitor.js");
+				if(debug_file != null){
+					debug_file.ParentNode.RemoveChild(debug_file);
+				}
+			}
+		}
+		else if(feature_name.Equals(FEATURE_NAME_OVERCLOCK) || feature_name.Equals(FEATURE_NAME_UNDERCLOCK)){
+			/* if they are both disabled, turn on underclocking */
+			if(getFeatureEnabled(FEATURE_NAME_OVERCLOCK) == false && getFeatureEnabled(FEATURE_NAME_UNDERCLOCK)==false){
+				setFeatureEnabled(FEATURE_NAME_UNDERCLOCK,true);
+			}
+			/* if turning on overclock, force underclock to be turned off */
+			else if(feature_name.Equals(FEATURE_NAME_OVERCLOCK) && enabled == true){
+				setFeatureEnabled(FEATURE_NAME_UNDERCLOCK,false);
+			}
+			/* if turning on underclock, force overclock to be turned off */
+			else if(feature_name.Equals(FEATURE_NAME_UNDERCLOCK) && enabled == true){
+				setFeatureEnabled(FEATURE_NAME_OVERCLOCK,false);
+			}
+		}
+		else if(feature_name.Equals(FEATURE_NAME_RESPONSE_TRIGGER)){
+			if(enabled){
+				setPropertyValue(PROPERTY_NAME_RESPONSE_TRIGGER_SUBVALUE,"");
+			}
+			else{
+				setPropertyValue(PROPERTY_NAME_RESPONSE_TRIGGER_SUBVALUE,"1");
+			}
+		}
+		
+			
+		return true;
+	}
+	
+	public Element getFeatureElement(String feature_name){
+		NodeList feature_nodes = getFeatureNodes();
+		if(feature_name == null || feature_nodes == null) return null;
+		Element out_element = null;
+		//Element check_element = null;
+		String check_name = null;
+		int len = feature_nodes.Count;
+		for(int i = 0; i < len; i++){
+			check_name = ((Element)feature_nodes[i]).getAttribute(ATTRIBUTE_NAME);
+			if(check_name != null && check_name.Equals(feature_name)){
+				out_element = (Element)feature_nodes[i];
+				break;
+			}
+		}
+		return out_element;
+	}
+	
+	public String[] getFeatureList(){
+		String[] out_features = new String[0];
+		NodeList feature_nodes = getFeatureNodes();
+		if(feature_nodes == null) return out_features;
+		int len = feature_nodes.Count;
+		out_features = new String[len];
+		
+		for(int i = 0;i < len; i++){
+			out_features[i] = ((Element)feature_nodes[i]).getAttribute(ATTRIBUTE_NAME);
+		}
+		
+		return out_features;
+	}
+
+	
+	public boolean setOutputFile(String value){
+		Element output = getDistributionElement(ELEMENT_OUTPUT_FILE);
+		if(output == null) return false;
+		output.SetAttribute(ATTRIBUTE_PATH, value);
+		return true;
+	}
+	
+	public String getOutputFile(){
+		Element output = getDistributionElement(ELEMENT_OUTPUT_FILE);
+		if(output == null) return null;
+		return output.getAttribute(ATTRIBUTE_PATH);
+	}
+	
+	public boolean setTemplateOutputPath(String value){
+		Element output = getDistributionElement(ELEMENT_TEMPLATE_OUTPUT_PATH);
+		if(output == null) return false;
+		output.SetAttribute(ATTRIBUTE_PATH, value);
+		return true;
+	}
+	
+	public String getTemplateOutputPath(){
+		Element output = getDistributionElement(ELEMENT_TEMPLATE_OUTPUT_PATH);
+		if(output == null) return null;
+		return output.getAttribute(ATTRIBUTE_PATH);
+	}
+	
+	private Element getElement(String element_name){
+		return getElement(null, element_name);
+	}
+	
+	private Element getElement(Element parent_element, String element_name){
+		return getElement(parent_element, element_name, null, null);
+	}
+	
+	private Element getElement(Element parent_element, String element_name, String attribute_name, String attribute_value){
+		if(this.ready_state != 4) return null;
+		if(parent_element == null) parent_element = config.GetConfig().DocumentElement;
+		NodeList nodes = parent_element.GetElementsByTagName(element_name);
+		int len = nodes.Count;
+		if(len == 0) return null;
+		if(attribute_name == null || attribute_value == null) return (Element)nodes[0];
+		
+		Element out_element = null;
+		Element check_el = null;
+		String check_attr = null;
+		for(int i = 0;i < len; i++){
+			check_el = (Element)nodes[i];
+			check_attr = check_el.getAttribute(attribute_name);
+			if(check_attr != null && check_attr.Equals(attribute_value)){
+				out_element = check_el; 
+			}
+		}
+		return out_element;
+	}
+
+	
+	private Element getDistributionElement(String element_name){
+		if(this.ready_state != 4) return null;
+		
+		Element distribution = getElement(ELEMENT_DISTRIBUTION);
+		if(distribution == null) return null;
+		
+		return getElement(distribution, element_name);
+
+	}
+
+	private Element getScriptFileByName(String file_name){
+		if(this.ready_state != 4) return null;
+		
+		Element script_files = getElement(ELEMENT_SCRIPT_FILES);
+		if(script_files == null) return null;
+		
+		return getElement(script_files, ELEMENT_FILE,ATTRIBUTE_NAME,file_name);
+
+	}
+
+	
+	private NodeList getFeatureNodes(){
+		Element feature_element = getElement(ELEMENT_FEATURES);
+		if(feature_element == null) return null;
+		return feature_element.GetElementsByTagName(ELEMENT_FEATURE);
+	}
+
+	private NodeList getPropertyNodes(){
+		Element property_element = getElement(ELEMENT_PROPERTIES);
+		if(property_element == null) return null;
+		return property_element.GetElementsByTagName(ELEMENT_PROPERTY);
+	}
+	
+	private NodeList getPropertySetNodes(){
+		Element property_element = getElement(ELEMENT_PROPERTIES);
+		if(property_element == null) return null;
+		return property_element.GetElementsByTagName(ELEMENT_PROPERTYSET);
+	}
+
+
+	private boolean setFeatureEnabled(String feature_name, boolean enabled){
+		Element feature_element = getFeatureElement(feature_name);
+		if(feature_element == null) return false;
+		feature_element.SetAttribute(ATTRIBUTE_ENABLED,(enabled ? "1" : "0"));
+		return true;
+	}
+	
+	public boolean getFeatureEnabled(String feature_name){
+		Element feature_element = getFeatureElement(feature_name);
+		if(feature_element == null) return false;
+		String check_enabled = feature_element.getAttribute(ATTRIBUTE_ENABLED);
+		if(check_enabled != null && (check_enabled.Equals("1") || check_enabled.Equals("true"))){
+			return true;
+		}
+		return false;
+	}
+}

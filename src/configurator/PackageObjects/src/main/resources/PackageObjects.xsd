@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.cote.org/pkglib/objects" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.cote.org/pkglib/objects">
+
+    <complexType name="ResourceType">
+    	<sequence>
+    		<element name="sourceFile" type="string"></element>
+    		<element name="name" type="string"></element>
+    		<element name="mimeType" type="string"></element>
+    	</sequence>
+    	<attribute name="dataSize" type="long" default="0"></attribute>
+    	<attribute name="dataExists" type="boolean" default="false"></attribute>
+    </complexType>
+
+    <complexType name="DeployedResourceType">
+    	<sequence>
+    		<element name="name" type="string"></element>
+    		<element name="deploymentUri" type="string"></element>
+    	</sequence>
+    	<attribute name="isWrapped" type="boolean" default="false"></attribute>
+    	<attribute name="isWrapParent" type="boolean" default="false"></attribute>
+    	<attribute name="isMerged" type="boolean" default="false"></attribute>
+    	<attribute name="isMergeParent" type="boolean" default="false"></attribute>
+    	<attribute name="mergeId" type="string" default="false"></attribute>
+    	<attribute name="deployType" type="tns:DeployEnumType" default="UNKNOWN"></attribute>
+    </complexType>
+
+    <simpleType name="DeployEnumType">
+    	<restriction base="string">
+    		<enumeration value="UNKNOWN"></enumeration>
+    		<enumeration value="RESOURCE"></enumeration>
+    		<enumeration value="PATTERNSET"></enumeration>
+    	</restriction>
+    </simpleType>
+
+    <complexType name="PatternType">
+    	<sequence>
+    		<element name="match" type="string"></element>
+    		<element name="replace" type="string"></element>
+    		<element name="volatileReplace" type="string"></element>
+    		<element name="volatileMatch" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="PatternSetType">
+    	<sequence>
+    		<element name="patterns" type="tns:PatternType" minOccurs="0" maxOccurs="unbounded"></element>
+    		<element name="resources" type="tns:ResourceType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="DeploymentType">
+    	<sequence>
+    		<element name="uri" type="string"></element>
+    		<element name="deployedResources" type="tns:DeployedResourceType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="hasWrap" type="boolean" default="false"></attribute>
+    </complexType>
+    
+
+    <complexType name="PackageType">
+    	<sequence>
+    		<element name="fileName" type="string"></element>
+    		<element name="resources" type="tns:ResourceType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="patternsets" type="tns:PatternSetType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="deployments" type="tns:DeploymentType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="configPath" type="string"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="createdDate" type="dateTime"></attribute>
+    	<attribute name="modifiedDate" type="dateTime"></attribute>
+    	<attribute name="majorVersion" type="int" default="0"></attribute>
+    	<attribute name="minorVersion" type="int" default="0"></attribute>
+    	<attribute name="buildVersion" type="int" default="0"></attribute>
+    	<attribute name="fileSize" type="long" default="0"></attribute>
+    	<attribute name="changed" type="boolean" default="false"></attribute>
+    	<attribute name="isScriptPackage" type="boolean" default="false"></attribute>
+    </complexType>
+
+    <complexType name="EncodedType">
+    	<sequence>
+    		<element name="description" type="string"></element>
+    		<element name="components" type="tns:EncodedComponentType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="version" type="string"></attribute>
+    </complexType>
+
+    <complexType name="EncodedComponentType">
+    	<sequence>
+    		<element name="data" type="base64Binary" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PackageFileType">
+    	<sequence>
+    		<element name="sourcePath" type="string"></element>
+    		<element name="data" type="base64Binary" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="rawData" type="base64Binary" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="requireLinks" type="string" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="encoded" type="boolean" default="false"></attribute>
+    	<attribute name="emit" type="boolean" default="false"></attribute>
+    	<attribute name="wrap" type="boolean" default="false"></attribute>
+    	<attribute name="encodedName" type="string"></attribute>
+    	<attribute name="linkBase" type="boolean" default="false"></attribute>
+    	<attribute name="className" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PackageVersionType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="majorVersion" type="int" default="0"></attribute>
+    	<attribute name="minorVersion" type="int" default="0"></attribute>
+    	<attribute name="buildVersion" type="int" default="0"></attribute>
+    </complexType>
+
+    <complexType name="ScriptConfigType">
+    	<sequence>
+    		<element name="distribution" type="tns:DistributionType"></element>
+    		<element name="linker" type="tns:LinkerType"></element>
+    		<element name="scriptFiles" type="tns:ScriptFileType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="features" type="tns:FeatureType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="properties" type="tns:PropertyType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="patterns" type="tns:PatternType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="propertySets" type="tns:PropertySetType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="propertyStructures" type="tns:PropertyStructureCollectionType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="DistributionType">
+    	<sequence>
+    		<element name="documentListFile" type="string"></element>
+    		<element name="stagePath" type="string"></element>
+    		<element name="outputFile" type="string"></element>
+    		<element name="template" type="tns:TemplateConfigType"></element>
+    		<element name="outputHeader" type="string"></element>
+    		<element name="outputFooter" type="string"></element>
+    	</sequence>
+
+    	<attribute name="datasetId" type="int" default="0"></attribute>
+    </complexType>
+
+    <complexType name="TemplateConfigType">
+    	<sequence>
+    		<element name="label" type="string"></element>
+    		<element name="description" type="string"></element>
+    		<element name="path" type="string"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="ScriptFileType">
+    	<attribute name="encodedName" type="string"></attribute>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="linkBase" type="boolean" default="false"></attribute>
+    	<attribute name="emit" type="boolean" default="false"></attribute>
+    	<attribute name="wrap" type="boolean" default="false"></attribute>
+    </complexType>
+
+    <complexType name="FeatureType">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="enabled" type="boolean" default="false"></attribute>
+    </complexType>
+
+    <complexType name="PropertyType">
+    	<sequence>
+    		<element name="description" type="string"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="value" type="string"></attribute>
+    	<attribute name="key" type="string"></attribute>
+    	<attribute name="label" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PropertySetType">
+    	<sequence>
+    		<element name="properties" type="tns:PropertyType"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="keyDelimeter" type="string"></attribute>
+    	<attribute name="valueDelimiter" type="string"></attribute>
+    	<attribute name="openSet" type="string"></attribute>
+    	<attribute name="closeSet" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PropertyStructureCollectionType">
+    	<sequence>
+    		<element name="datasets" type="tns:PropertyDataSetType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PropertyDataSetType">
+    	<sequence>
+    		<element name="propertyStructures" type="tns:PropertyStructureType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="id" type="int"></attribute>
+    </complexType>
+
+    <complexType name="PropertyStructureType">
+    	<sequence>
+    		<element name="properties" type="tns:PropertyType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="id" type="int"></attribute>
+    	<attribute name="bubbled" type="boolean" default="false"></attribute>
+    </complexType>
+
+
+    <complexType name="LinkerType">
+    	<sequence>
+    		<element name="linkArtifact" type="string"></element>
+    	</sequence>
+    	<attribute name="enabled" type="boolean" default="false"></attribute>
+    	<attribute name="removeArtifacts" type="boolean"
+    		default="false">
+    	</attribute>
+    </complexType>
+
+    <complexType name="DocumentListType">
+    	<sequence>
+    		<element name="documents" type="tns:DocumentType" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+    <complexType name="DocumentType">
+    	<sequence>
+    		<element name="fileName" type="string"></element>
+    		<element name="lastModified" type="dateTime"></element>
+    	</sequence>
+    	<attribute name="version" type="string"></attribute>
+    </complexType>
+
+    <complexType name="DocumentIndexType">
+    	<sequence>
+    		<element name="path" type="string"></element>
+    		<element name="xmlPath" type="string"></element>
+    		<element name="sourcePath" type="string"></element>
+    		<element name="description" type="string"></element>
+    		<element name="subDescription" type="string"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+</schema>

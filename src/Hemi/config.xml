@@ -17,9 +17,8 @@
 	Composite file "%OUTPUT_FILE%" release: %FILE_VERSION%
 	Copyright 2002 - 2013. All Rights Reserved.
 	Author: Stephen W. Cote
-	Email: sw.cote@gmail.com
-	Project: http://www.whitefrost.com/Hemi/
-	BSD License: http://www.whitefrost.com/Hemi.license.txt
+	Project: https://github.com/StephenCote/Hemi
+	BSD License File: hemi.license.txt
 */
 		</outputHeader>
 		<outputFooter>
@@ -73,6 +72,9 @@
 		  <scriptFiles encodedName = "WiresPrimitive" name = "hemi.wires.primitive.js" />
 		  <scriptFiles encodedName = "UtilUrl" name = "hemi.util.url.js" />
 		  <scriptFiles encodedName = "UIUtil" name = "hemi.ui.util.js" />
+		  <scriptFiles encodedName = "JSONRPC" name = "hemi.json.rpc.js" />
+		  <scriptFiles encodedName = "JSONRPCCache" name = "hemi.json.rpc.cache.js" />
+		  
 
 		<features name = "debug_message" enabled = "0" />
 		<features name = "catch_error" enabled = "1" />

@@ -742,7 +742,7 @@ public class ScriptPackageConfigurator {
                 }
                 data = EncoderFactory.getEncodedComponentValue(encodedFile, file_data.getEncodedName());
                 file_data.setEncoded(true);
-                if (data.length == 0)
+                if (data == null || data.length == 0)
                 {
                     logger.error("Failed to restore encoded data for '" + file_data.getEncodedName() + "'");
                     continue;

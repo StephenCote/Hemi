@@ -59,7 +59,8 @@
          <resource name="UtilConfig" />
          <resource name="Transaction" />
          <resource name="Worker" />
-
+		<resource name="JSONRPC" />
+		<resource name="JSONRPCCache" />
 
          <pattern match="/\*[\S\s]*?\*/" replace="" />
          <!-- 
@@ -404,6 +405,10 @@
 <![CDATA[Framework/hemi.framework.io.offline.provider.js]]>      </param>
 <param name="UIUtil" value="#cdata" mime-type="text/javascript">
 <![CDATA[Framework/hemi.ui.util.js]]>      </param>
+<param name="JSONRPC" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.json.rpc.js]]>      </param>
+<param name="JSONRPCCache" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.json.rpc.cache.js]]>      </param>
       <param name="Hemi" value="#cdata" mime-type="text/javascript">
 <![CDATA[hemi.js]]>      </param>
       <param name="FrameworkConfig" value="#cdata" mime-type="text/xml">

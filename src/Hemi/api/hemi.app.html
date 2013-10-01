@@ -1,29 +1,220 @@
-﻿
 <html>
 <head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>API Hemi.app Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css" />
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
 </head>
 <body>
-<h1>Hemi JavaScript Framework</h1><h2>Hemi.app</h2><ul class="top-nav"><li><a href="/Hemi/">Hemi JavaScript Framework Project</a></li><li><a href="Hemi_api.html">API Index</a></li></ul><h3>Description</h3><p>Helper utilities for creating Application Spaces, Application Components, XHTML Components, and loading Window components.</p><a name="app"> </a><h3 class="membertitle"><i>static </i>Hemi.app</h3><h4>version 3.1.9</h4><p class="desc">Convenience methods for instrumenting the Hemi.app.* libraries.</p><p class="desc"></p><h3>Index</h3><a name="appmethodindex"> </a><h4>Method Index</h4><ul class="index"><li>public <a href="#createApplicationComponent">createApplicationComponent</a>: Creates a new application component..</li><li>public <a href="#createApplicationSpace">createApplicationSpace</a>: Creates a new application space at the specified location.</li><li>public <a href="#createComponent">createComponent</a>: Creates a new XHTML Component.</li><li>public <a href="#createWindow">createWindow</a>: Creates and/or restores a new window as an instance of component.window.xml for the specified name.</li><li>public <a href="#getPrimarySpace">getPrimarySpace</a>: Returns the primary Application Space object.  The primary space is loaded if not already done so.</li><li>public <a href="#getWindowManager">getWindowManager</a>: Returns a global instance of the component.manager.xml component, dynamically creating it if it does not already exist in the registry.</li></ul><h3>Methods</h3><a name="createApplicationComponent"></a><h3 class="membertitle">createApplicationComponent</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new application component..</p><h4>Syntax</h4><p class="methodsyntax">oComponent = createApplicationComponent(
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.app</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>Helper utilities for creating Application Spaces, Application Components, XHTML Components, and loading Window components.</p>
+<a name="app"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.app</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Convenience methods for instrumenting the Hemi.app.* libraries.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="appmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#createApplicationComponent">createApplicationComponent</a>: Creates a new application component..</li>
+<li>public <a href="#createApplicationSpace">createApplicationSpace</a>: Creates a new application space at the specified location.</li>
+<li>public <a href="#createComponent">createComponent</a>: Creates a new XHTML Component.</li>
+<li>public <a href="#createWindow">createWindow</a>: Creates and/or restores a new window as an instance of component.window.xml for the specified name.</li>
+<li>public <a href="#getPrimarySpace">getPrimarySpace</a>: Returns the primary Application Space object.  The primary space is loaded if not already done so.</li>
+<li>public <a href="#getWindowManager">getWindowManager</a>: Returns a global instance of the component.manager.xml component, dynamically creating it if it does not already exist in the registry.</li>
+</ul>
+<h3>Methods</h3>
+<a name="createApplicationComponent"></a>
+<h3 class="membertitle">createApplicationComponent</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new application component..</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oComponent = createApplicationComponent(
 <i>sComponentName</i>, <i>oElement</i>, <i>oSpace</i>, <i>sRid</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sComponentName</b> as String <i>(optional)</i>: Name of the component to load.  If the name does not end with .xml, the component will be loaded from Hemi/Components/component.{sComponentName}.xml</li><li><b>oElement</b> as Node <i>(optional)</i>: XHTML Node to which the application component will be bound.</li><li><b>oSpace</b> as SpaceObject <i>(optional)</i>: Application space in which this component will operate.</li><li><b>sRid</b> as String <i>(optional)</i>: Reference id for addressing this object through the registry service or within the application space.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oComponent</b> as ApplicationComponent: A new application component.</p><a name="createApplicationSpace"></a><h3 class="membertitle">createApplicationSpace</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new application space at the specified location.</p><h4>Syntax</h4><p class="methodsyntax">oSpace = createApplicationSpace(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sComponentName</b> as String <i>(optional)</i>: Name of the component to load.  If the name does not end with .xml, the component will be loaded from Hemi/Components/component.{sComponentName}.xml</li>
+<li>
+<b>oElement</b> as Node <i>(optional)</i>: XHTML Node to which the application component will be bound.</li>
+<li>
+<b>oSpace</b> as SpaceObject <i>(optional)</i>: Application space in which this component will operate.</li>
+<li>
+<b>sRid</b> as String <i>(optional)</i>: Reference id for addressing this object through the registry service or within the application space.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oComponent</b> as ApplicationComponent: A new application component.</p>
+<a name="createApplicationSpace"></a>
+<h3 class="membertitle">createApplicationSpace</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new application space at the specified location.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oSpace = createApplicationSpace(
 <i>oElement</i>, <i>oParent</i>, <i>oSibling</i>, <i>fCallback</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>oElement</b> as Node <i>(optional)</i>: XHTML Node in which the space will be created.</li><li><b>oParent</b> as Node <i>(optional)</i>: XHTML Parent of oElement.</li><li><b>oSibling</b> as Node <i>(optional)</i>: XHTML Sibling of oElement, used for node adjacency insertion.</li><li><b>fCallback</b> as function <i>(optional)</i>: Callback function to be invoked after the space is initialized.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oSpace</b> as SpaceObject: A new application space object.</p><a name="createComponent"></a><h3 class="membertitle">createComponent</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new XHTML Component.</p><h4>Syntax</h4><p class="methodsyntax">oComponent = createComponent(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oElement</b> as Node <i>(optional)</i>: XHTML Node in which the space will be created.</li>
+<li>
+<b>oParent</b> as Node <i>(optional)</i>: XHTML Parent of oElement.</li>
+<li>
+<b>oSibling</b> as Node <i>(optional)</i>: XHTML Sibling of oElement, used for node adjacency insertion.</li>
+<li>
+<b>fCallback</b> as function <i>(optional)</i>: Callback function to be invoked after the space is initialized.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oSpace</b> as SpaceObject: A new application space object.</p>
+<a name="createComponent"></a>
+<h3 class="membertitle">createComponent</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new XHTML Component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oComponent = createComponent(
 oElement, <i>oSpace</i>, <i>sRid</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>oElement</b> as Node : XHTML Node for which the XHTML Component will be created.</li><li><b>oSpace</b> as SpaceObject <i>(optional)</i>: Application space in which the component will exist.</li><li><b>sRid</b> as String <i>(optional)</i>: Reference id for addressing this object through the registry service or within the application space.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oComponent</b> as XHTMLComponent: A new XHTML Component.</p><a name="createWindow"></a><h3 class="membertitle">createWindow</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Creates and/or restores a new window as an instance of component.window.xml for the specified name.</p><h4>Syntax</h4><p class="methodsyntax">oWindow = createWindow(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oElement</b> as Node : XHTML Node for which the XHTML Component will be created.</li>
+<li>
+<b>oSpace</b> as SpaceObject <i>(optional)</i>: Application space in which the component will exist.</li>
+<li>
+<b>sRid</b> as String <i>(optional)</i>: Reference id for addressing this object through the registry service or within the application space.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oComponent</b> as XHTMLComponent: A new XHTML Component.</p>
+<a name="createWindow"></a>
+<h3 class="membertitle">createWindow</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates and/or restores a new window as an instance of component.window.xml for the specified name.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oWindow = createWindow(
 <i>sTitle</i>, <i>sTemplate</i>, <i>sName</i>, <i>vSpace</i>, <i>bNotBound</i>, <i>aArguments</i>, <i>fLocalInit</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sTitle</b> as String <i>(optional)</i>: Title of the window component.</li><li><b>sTemplate</b> as String <i>(optional)</i>: Template to use for the window contents.</li><li><b>sName</b> as String <i>(optional)</i>: Name of the window, used to retrieve a reference from the Window Manager component.</li><li><b>vSpace</b> as variant <i>(optional)</i>: Name of or reference to an Application Space.</li><li><b>bNotBound</b> as bool <i>(optional)</i>: Bit indicating whether the window component is free to move beyond the boundary of the Window Manager.</li><li><b>aArguments</b> as hash <i>(optional)</i>: Property hash that will be copied into the Application Component properties member.</li><li><b>fLocalInit</b> as function <i>(optional)</i>: Callback function to be invoked when the window and any dependent templates are loaded.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oWindow</b> as ApplicationComponent: A new application component if created. If the named object exists, the object is restored but not returned.</p><a name="getPrimarySpace"></a><h3 class="membertitle">getPrimarySpace</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Returns the primary Application Space object.  The primary space is loaded if not already done so.</p><h4>Syntax</h4><p class="methodsyntax">oSpace = getPrimarySpace(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sTitle</b> as String <i>(optional)</i>: Title of the window component.</li>
+<li>
+<b>sTemplate</b> as String <i>(optional)</i>: Template to use for the window contents.</li>
+<li>
+<b>sName</b> as String <i>(optional)</i>: Name of the window, used to retrieve a reference from the Window Manager component.</li>
+<li>
+<b>vSpace</b> as variant <i>(optional)</i>: Name of or reference to an Application Space.</li>
+<li>
+<b>bNotBound</b> as bool <i>(optional)</i>: Bit indicating whether the window component is free to move beyond the boundary of the Window Manager.</li>
+<li>
+<b>aArguments</b> as hash <i>(optional)</i>: Property hash that will be copied into the Application Component properties member.</li>
+<li>
+<b>fLocalInit</b> as function <i>(optional)</i>: Callback function to be invoked when the window and any dependent templates are loaded.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oWindow</b> as ApplicationComponent: A new application component if created. If the named object exists, the object is restored but not returned.</p>
+<a name="getPrimarySpace"></a>
+<h3 class="membertitle">getPrimarySpace</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the primary Application Space object.  The primary space is loaded if not already done so.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oSpace = getPrimarySpace(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>oSpace</b> as ApplicationSpace: An Application Space.</p><a name="getWindowManager"></a><h3 class="membertitle">getWindowManager</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#app">app</a></li><li><a href="#appmethodindex">Methods</a></li></ul><p class="methoddesc">Returns a global instance of the component.manager.xml component, dynamically creating it if it does not already exist in the registry.</p><h4>Syntax</h4><p class="methodsyntax">oManager = getWindowManager(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oSpace</b> as ApplicationSpace: An Application Space.</p>
+<a name="getWindowManager"></a>
+<h3 class="membertitle">getWindowManager</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#app">app</a>
+</li>
+<li>
+<a href="#appmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a global instance of the component.manager.xml component, dynamically creating it if it does not already exist in the registry.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oManager = getWindowManager(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>oManager</b> as ApplicationComponent: An instance of the component.manager.xml component.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2011. ]</p>
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oManager</b> as ApplicationComponent: An instance of the component.manager.xml component.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
 </body>
 </html>

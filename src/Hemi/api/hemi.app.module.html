@@ -1,36 +1,362 @@
-﻿
 <html>
 <head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>API Hemi.app.module Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css" />
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
 </head>
 <body>
-<h1>Hemi JavaScript Framework</h1><h2>Hemi.app.module</h2><ul class="top-nav"><li><a href="/Hemi/">Hemi JavaScript Framework Project</a></li><li><a href="Hemi_api.html">API Index</a></li></ul><h3>Description</h3><p>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the Application Component Tests includes several unit tests for vetting the Application Component class.</p><a name="classindex"> </a><h3>Class Index</h3><ul class="index"><li><a href="#service"><i>static </i>Hemi.app.module.service</a>: Static implementation of the hemi.app.module.serviceImpl class.</li><li><a href="#serviceImpl">Hemi.app.module.serviceImpl</a>: The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</li></ul><a name="service"> </a><h3 class="membertitle"><i>static </i>Hemi.app.module.service</h3><h4>version 3.1.9</h4><p class="desc">Static implementation of the hemi.app.module.serviceImpl class.</p><p class="desc"></p><a name="serviceImpl"> </a><h3 class="membertitle">Hemi.app.module.serviceImpl</h3><h4>version 3.1.9</h4><p class="desc">The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</p><p class="desc"></p><h3>Index</h3><a name="serviceImplobjectindex"> </a><h4>Object Index</h4><ul class="index"><li>public <a href="#Module">Module</a>: A Module encapsulates the imported JavaScript and an API for operating within the framework.</li><li>public <a href="#ModuleBase">ModuleBase</a>: The ModuleBase is the raw definition from which a Module implementation is created.</li></ul><a name="serviceImplmethodindex"> </a><h4>Method Index</h4><ul class="index"><li>virtual <a href="#DecorateModuleContent">DecorateModuleContent</a>: Decorates a module content.</li><li>virtual <a href="#DecorateModuleHeader">DecorateModuleHeader</a>: Decorates a module header.</li><li>public <a href="#LoadModule">LoadModule</a> (<b>internal</b>): Loads a Module definition.</li><li>public <a href="#NewModule">NewModule</a>: Creates a new Module object.</li><li>public <a href="#Register">Register</a> (<b>internal</b>): Registers a Module object.</li><li>public <a href="#UnloadModule">UnloadModule</a>: Unloads the specified module.</li><li>public <a href="#UnloadModuleImplementations">UnloadModuleImplementations</a>: Destroys all module implementations for the specified module.</li></ul><h3>Objects</h3><a name="Module"></a><h3 class="membertitle">Module</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplobjectindex">Objects</a></li></ul><p class="objectdesc">A Module encapsulates the imported JavaScript and an API for operating within the framework.</p><h4>Properties</h4><ul class="methodparams"><li><b>Component</b> as XHTMLComponent: A pointer to an underlying XHTMLComponent, if the module is bound to an HTML element via an XHTMLComponent.</li><li><b>name</b> as String: The name of the module.</li><li><b>Module</b> as Module: An anonymous pointer to the Module instance, for refering to the instance from the anonymous scope enclosure.</li><li><b>Container</b> as Node: A pointer to the XHTML Node for which the module was loaded.</li><li><b>Component</b> as XHTMLComponent: A pointer to the XHTMLComponent created for any Container, if a Container was used.</li></ul><h4>Methods</h4><ul class="methodparams"><li>void <b>Initialize</b>(
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.app.module</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the Application Component Tests includes several unit tests for vetting the Application Component class.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#service"><i>static </i>Hemi.app.module.service</a>: Static implementation of the hemi.app.module.serviceImpl class.</li>
+<li>
+<a href="#serviceImpl">Hemi.app.module.serviceImpl</a>: The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</li>
+</ul>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.app.module.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static implementation of the hemi.app.module.serviceImpl class.</p>
+<p class="desc"></p>
+<a name="serviceImpl"> </a>
+<h3 class="membertitle">Hemi.app.module.serviceImpl</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="serviceImplobjectindex"> </a>
+<h4>Object Index</h4>
+<ul class="index">
+<li>public <a href="#Module">Module</a>: A Module encapsulates the imported JavaScript and an API for operating within the framework.</li>
+<li>public <a href="#ModuleBase">ModuleBase</a>: The ModuleBase is the raw definition from which a Module implementation is created.</li>
+</ul>
+<a name="serviceImplmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>virtual <a href="#DecorateModuleContent">DecorateModuleContent</a>: Decorates a module content.</li>
+<li>virtual <a href="#DecorateModuleHeader">DecorateModuleHeader</a>: Decorates a module header.</li>
+<li>public <a href="#LoadModule">LoadModule</a> (<b>internal</b>): Loads a Module definition.</li>
+<li>public <a href="#NewModule">NewModule</a>: Creates a new Module object.</li>
+<li>public <a href="#Register">Register</a> (<b>internal</b>): Registers a Module object.</li>
+<li>public <a href="#UnloadModule">UnloadModule</a>: Unloads the specified module.</li>
+<li>public <a href="#UnloadModuleImplementations">UnloadModuleImplementations</a>: Destroys all module implementations for the specified module.</li>
+</ul>
+<h3>Objects</h3>
+<a name="Module"></a>
+<h3 class="membertitle">Module</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">A Module encapsulates the imported JavaScript and an API for operating within the framework.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>Component</b> as XHTMLComponent: A pointer to an underlying XHTMLComponent, if the module is bound to an HTML element via an XHTMLComponent.</li>
+<li>
+<b>name</b> as String: The name of the module.</li>
+<li>
+<b>Module</b> as Module: An anonymous pointer to the Module instance, for refering to the instance from the anonymous scope enclosure.</li>
+<li>
+<b>Container</b> as Node: A pointer to the XHTML Node for which the module was loaded.</li>
+<li>
+<b>Component</b> as XHTMLComponent: A pointer to the XHTMLComponent created for any Container, if a Container was used.</li>
+</ul>
+<h4>Methods</h4>
+<ul class="methodparams">
+<li>void <b>Initialize</b>(
 )
-<p class="messagedesc">Invoked when the module is loaded.</p></li><li>void <b>Unload</b>(
+<p class="messagedesc">Invoked when the module is loaded.</p>
+</li>
+<li>void <b>Unload</b>(
 )
-<p class="messagedesc">Invoked when the module is unloaded or destroyed.</p></li></ul><a name="ModuleBase"></a><h3 class="membertitle">ModuleBase</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplobjectindex">Objects</a></li></ul><p class="objectdesc">The ModuleBase is the raw definition from which a Module implementation is created.</p><h4>Properties</h4><ul class="methodparams"><li><b>Impls</b> as String[]: An array of object ids representing instances of this ModuleBase.</li></ul><h3>Methods</h3><a name="DecorateModuleContent"></a><h3 class="membertitle">DecorateModuleContent</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Decorates a module content. Method is virtual and can be overridden.</p><h4>Syntax</h4><p class="methodsyntax">sDecoration = DecorateModuleContent(
+<p class="messagedesc">Invoked when the module is unloaded or destroyed.</p>
+</li>
+</ul>
+<a name="ModuleBase"></a>
+<h3 class="membertitle">ModuleBase</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">The ModuleBase is the raw definition from which a Module implementation is created.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>Impls</b> as String[]: An array of object ids representing instances of this ModuleBase.</li>
+</ul>
+<h3>Methods</h3>
+<a name="DecorateModuleContent"></a>
+<h3 class="membertitle">DecorateModuleContent</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Decorates a module content. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">sDecoration = DecorateModuleContent(
 sName, sPath, sRaw
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sName</b> as String : Name of the Module</li><li><b>sPath</b> as String : Path to the Module</li><li><b>sRaw</b> as String : The raw imported text of the module.</li></ul><h4>Returns</h4><p class="returnvalue"><b>sDecoration</b> as String: A value to be included in the module prior to the module being instantiated.</p><a name="DecorateModuleHeader"></a><h3 class="membertitle">DecorateModuleHeader</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Decorates a module header. Method is virtual and can be overridden.</p><h4>Syntax</h4><p class="methodsyntax">sDecoration = DecorateModuleHeader(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sName</b> as String : Name of the Module</li>
+<li>
+<b>sPath</b> as String : Path to the Module</li>
+<li>
+<b>sRaw</b> as String : The raw imported text of the module.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>sDecoration</b> as String: A value to be included in the module prior to the module being instantiated.</p>
+<a name="DecorateModuleHeader"></a>
+<h3 class="membertitle">DecorateModuleHeader</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Decorates a module header. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">sDecoration = DecorateModuleHeader(
 sName, sPath, sRaw
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sName</b> as String : Name of the Module</li><li><b>sPath</b> as String : Path to the Module</li><li><b>sRaw</b> as String : The raw imported text of the module.</li></ul><h4>Returns</h4><p class="returnvalue"><b>sDecoration</b> as String: A value to be included in the module header prior to the module being instantiated.</p><a name="LoadModule"></a><h3 class="membertitle">LoadModule</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Loads a Module definition.</p><h4>Syntax</h4><p class="methodsyntax">oModule = LoadModule(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sName</b> as String : Name of the Module</li>
+<li>
+<b>sPath</b> as String : Path to the Module</li>
+<li>
+<b>sRaw</b> as String : The raw imported text of the module.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>sDecoration</b> as String: A value to be included in the module header prior to the module being instantiated.</p>
+<a name="LoadModule"></a>
+<h3 class="membertitle">LoadModule</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Loads a Module definition.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oModule = LoadModule(
 sName, <i>sPath</i>, <i>sDecoration</i>, <i>bPathIsContent</i>, <i>sType</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sName</b> as String : Name of the Module</li><li><b>sPath</b> as String <i>(optional)</i>: Path to the modules directory.</li><li><b>sDecoration</b> as String <i>(optional)</i>: Additional script to include in the module prior to the module being instantiated.</li><li><b>bPathIsContent</b> as boolean <i>(optional)</i>: Bit indicating that the path is the text of the module to load.</li><li><b>sType</b> as String <i>(optional)</i>: Alternate module type for reference implementations.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oModule</b> as Module: A new Module object.</p><a name="NewModule"></a><h3 class="membertitle">NewModule</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new Module object.</p><h4>Syntax</h4><p class="methodsyntax">oModule = NewModule(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sName</b> as String : Name of the Module</li>
+<li>
+<b>sPath</b> as String <i>(optional)</i>: Path to the modules directory.</li>
+<li>
+<b>sDecoration</b> as String <i>(optional)</i>: Additional script to include in the module prior to the module being instantiated.</li>
+<li>
+<b>bPathIsContent</b> as boolean <i>(optional)</i>: Bit indicating that the path is the text of the module to load.</li>
+<li>
+<b>sType</b> as String <i>(optional)</i>: Alternate module type for reference implementations.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oModule</b> as Module: A new Module object.</p>
+<a name="NewModule"></a>
+<h3 class="membertitle">NewModule</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new Module object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oModule = NewModule(
 sName, <i>oContainer</i>, <i>sPath</i>, <i>oModuleService</i>, <i>bPathIsContent</i>, <i>sType</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sName</b> as String : Name of the Module</li><li><b>oContainer</b> as XHTMLComponent <i>(optional)</i>: XHTML Component acting as a container for the module.</li><li><b>sPath</b> as String <i>(optional)</i>: Path where the module resides.</li><li><b>oModuleService</b> as FrameworkObject <i>(optional)</i>: A framework object for which a </li><li><b>bPathIsContent</b> as boolean <i>(optional)</i>: Bit indicating that the path is the text of the module to load.</li><li><b>sType</b> as String <i>(optional)</i>: Alternate module type for reference implementations.</li></ul><h4>Returns</h4><p class="returnvalue"><b>oModule</b> as Module: A new Module object.</p><a name="Register"></a><h3 class="membertitle">Register</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Registers a Module object.</p><h4>Syntax</h4><p class="methodsyntax">object = Register(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sName</b> as String : Name of the Module</li>
+<li>
+<b>oContainer</b> as XHTMLComponent <i>(optional)</i>: XHTML Component acting as a container for the module.</li>
+<li>
+<b>sPath</b> as String <i>(optional)</i>: Path where the module resides.</li>
+<li>
+<b>oModuleService</b> as FrameworkObject <i>(optional)</i>: A framework object for which a </li>
+<li>
+<b>bPathIsContent</b> as boolean <i>(optional)</i>: Bit indicating that the path is the text of the module to load.</li>
+<li>
+<b>sType</b> as String <i>(optional)</i>: Alternate module type for reference implementations.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oModule</b> as Module: A new Module object.</p>
+<a name="Register"></a>
+<h3 class="membertitle">Register</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Registers a Module object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">object = Register(
 sName, vContent
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sName</b> as String : Name of the Module</li><li><b>vContent</b> as Hash : Object hash representing the module API.</li></ul><h4>Returns</h4><p class="returnvalue"><b>object</b> as object: Internal module object.</p><a name="UnloadModule"></a><h3 class="membertitle">UnloadModule</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Unloads the specified module.</p><h4>Syntax</h4><p class="methodsyntax">bRemoved = UnloadModule(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sName</b> as String : Name of the Module</li>
+<li>
+<b>vContent</b> as Hash : Object hash representing the module API.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>object</b> as object: Internal module object.</p>
+<a name="UnloadModule"></a>
+<h3 class="membertitle">UnloadModule</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Unloads the specified module.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bRemoved = UnloadModule(
 sModule
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sModule</b> as String : Name of the Test Module</li></ul><h4>Returns</h4><p class="returnvalue"><b>bRemoved</b> as boolean: Bit indicating whether the module was removed.</p><a name="UnloadModuleImplementations"></a><h3 class="membertitle">UnloadModuleImplementations</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#serviceImpl">serviceImpl</a></li><li><a href="#serviceImplmethodindex">Methods</a></li></ul><p class="methoddesc">Destroys all module implementations for the specified module.</p><h4>Syntax</h4><p class="methodsyntax">bRemoved = UnloadModuleImplementations(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sModule</b> as String : Name of the Test Module</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bRemoved</b> as boolean: Bit indicating whether the module was removed.</p>
+<a name="UnloadModuleImplementations"></a>
+<h3 class="membertitle">UnloadModuleImplementations</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Destroys all module implementations for the specified module.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bRemoved = UnloadModuleImplementations(
 sModule
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sModule</b> as String : Name of the Module</li></ul><h4>Returns</h4><p class="returnvalue"><b>bRemoved</b> as boolean: Bit indicating whether the module implementations were removed.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2011. ]</p>
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sModule</b> as String : Name of the Module</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bRemoved</b> as boolean: Bit indicating whether the module implementations were removed.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
 </body>
 </html>

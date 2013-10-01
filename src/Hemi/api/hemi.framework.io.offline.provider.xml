@@ -1,4 +1,25 @@
-<source><name>Hemi.framework.io.offline.provider</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework Project</url-title><url>/Hemi/</url></project><package><path>Hemi.framework.io.offline.provider</path><library>Hemi</library><description>Data provider for offline storage for use with Hemi Framework projects files.</description><static-class><name>service</name><version>3.1.9</version><description>Static implementation of the hemi.framework.io.offline.provider.serviceImpl class.</description></static-class><class><name>serviceImpl</name><version>3.1.9</version><description>The framework provider is a <i>hemi.data.io</i> provider for serving requests for offline filesets related to the HemiFramework.</description>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.framework.io.offline.provider</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.framework.io.offline.provider</path>
+<library>Hemi</library>
+<description>Data provider for offline storage for use with Hemi Framework projects files.</description>
+<static-class>
+<name>service</name>
+<version>3.5.1</version>
+<description>Static implementation of the hemi.framework.io.offline.provider.serviceImpl class.</description>
+</static-class>
+<class>
+<name>serviceImpl</name>
+<version>3.5.1</version>
+<description>The framework provider is a <i>hemi.data.io</i> provider for serving requests for offline filesets related to the HemiFramework.</description>
 
 If the URI is shortened, eg: Components/test.xml instead of /DWAC/[User]/Components/test.xml, then prepend a stub
 Scrub off the online CoreWeb ID- prefix
@@ -21,4 +42,6 @@ else if (ctx == "Data") {
 }
 For group lists, defer to the static values
 
-</class></package><index><description>Data provider for offline storage for use with Hemi Framework projects files.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+</class>
+</package>
+<index><description>Data provider for offline storage for use with Hemi Framework projects files.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

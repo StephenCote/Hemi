@@ -1,1 +1,47 @@
-<source><name>Hemi.util</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework Project</url-title><url>/Hemi/</url></project><package><path>Hemi</path><library>Hemi</library><description>The utility class includes node and object help functions.</description><static-class><name>util</name><version>3.1.9</version><description>Hemi framework utilities</description><method><name>getDate</name><param name="i" type="bit">Bit indicating whether to return the date as the time, or the date object.</param><return-value name="d" type="vDate">Returns the date</return-value><description>Returns the current date.</description></method><method><name>evaluateElementHandler</name><param name="e" type="Node">An XHTML Node.</param><param name="h" type="String">The name of an attribute that includes JavaScript.</param><description>Evaluates an attribute on an XHTML Node (e.g.: onclick)</description></method><method private="1"><name>merge</name><param name="o" type="object">Target object to merge features..</param><param name="n" type="String">Name of merge features.</param><param name="s" type="String">String representing merge features.</param><return-value type="String" name="h">A hash of the specified value.</return-value><description>Merges an internal object into the specified.</description></method><method><name>absorb</name><param name="a" type="array">Source array.</param><param name="b" type="array">Target array.</param><description>Copies the source array into the target array.</description></method></static-class></package><index><description>The utility class includes node and object help functions.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.util</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi</path>
+<library>Hemi</library>
+<description>The utility class includes node and object help functions.</description>
+<static-class>
+<name>util</name>
+<version>3.5.1</version>
+<description>Hemi framework utilities</description>
+<method>
+<name>getDate</name>
+<param name="i" type="bit">Bit indicating whether to return the date as the time, or the date object.</param>
+<return-value name="d" type="vDate">Returns the date</return-value>
+<description>Returns the current date.</description>
+</method>
+<method>
+<name>evaluateElementHandler</name>
+<param name="e" type="Node">An XHTML Node.</param>
+<param name="h" type="String">The name of an attribute that includes JavaScript.</param>
+<description>Evaluates an attribute on an XHTML Node (e.g.: onclick)</description>
+</method>
+<method private="1">
+<name>merge</name>
+<param name="o" type="object">Target object to merge features..</param>
+<param name="n" type="String">Name of merge features.</param>
+<param name="s" type="String">String representing merge features.</param>
+<return-value name="h" type="String">A hash of the specified value.</return-value>
+<description>Merges an internal object into the specified.</description>
+</method>
+
+<method>
+<name>absorb</name>
+<param name="a" type="array">Source array.</param>
+<param name="b" type="array">Target array.</param>
+<description>Copies the source array into the target array.</description>
+</method>
+</static-class>
+</package>
+<index><description>The utility class includes node and object help functions.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

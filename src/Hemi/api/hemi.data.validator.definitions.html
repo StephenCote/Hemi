@@ -1,14 +1,92 @@
-﻿
 <html>
 <head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>API Hemi.data.validator.definitions Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css" />
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
 </head>
 <body>
-<h1>Hemi JavaScript Framework</h1><h2>Hemi.data.validator.definitions</h2><ul class="top-nav"><li><a href="/Hemi/">Hemi JavaScript Framework Project</a></li><li><a href="Hemi_api.html">API Index</a></li></ul><h3>Description</h3><p>Data Validator Definitions define validation patterns for verifying form field and custom control (e.g.: Hemi.ui.wideselect) input matches expected patterns and allowable characters.  Patterns may be chained together and defined with a meaningful description for end users.</p><a name="classindex"> </a><h3>Class Index</h3><ul class="index"><li><a href="#service"><i>static </i>Hemi.data.validator.definitions.service</a>: Static implementation of hemi.data.validator.definitions.serviceImpl</li><li><a href="#service">Hemi.data.validator.definitions.service</a>: This service defines validation patterns for use by the Hemi Data Form Service.</li></ul><a name="service"> </a><h3 class="membertitle"><i>static </i>Hemi.data.validator.definitions.service</h3><h4>version 3.1.9</h4><p class="desc">Static implementation of hemi.data.validator.definitions.serviceImpl</p><p class="desc"></p><a name="service"> </a><h3 class="membertitle">Hemi.data.validator.definitions.service</h3><h4>version 3.1.9</h4><p class="desc">This service defines validation patterns for use by the Hemi Data Form Service.</p><p class="desc"></p><h3>Index</h3><a name="servicemethodindex"> </a><h4>Method Index</h4><ul class="index"><li>public <a href="#addNewPattern">addNewPattern</a>: Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</li></ul><h3>Methods</h3><a name="addNewPattern"></a><h3 class="membertitle">addNewPattern</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#service">service</a></li><li><a href="#servicemethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</p><h4>Syntax</h4><p class="methodsyntax">object = addNewPattern(
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.data.validator.definitions</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>Data Validator Definitions define validation patterns for verifying form field and custom control (e.g.: Hemi.ui.wideselect) input matches expected patterns and allowable characters.  Patterns may be chained together and defined with a meaningful description for end users.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#service"><i>static </i>Hemi.data.validator.definitions.service</a>: Static implementation of hemi.data.validator.definitions.serviceImpl</li>
+<li>
+<a href="#service">Hemi.data.validator.definitions.service</a>: This service defines validation patterns for use by the Hemi Data Form Service.</li>
+</ul>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.data.validator.definitions.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static implementation of hemi.data.validator.definitions.serviceImpl</p>
+<p class="desc"></p>
+<a name="service"> </a>
+<h3 class="membertitle">Hemi.data.validator.definitions.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">This service defines validation patterns for use by the Hemi Data Form Service.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="servicemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#addNewPattern">addNewPattern</a>: Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</li>
+</ul>
+<h3>Methods</h3>
+<a name="addNewPattern"></a>
+<h3 class="membertitle">addNewPattern</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#service">service</a>
+</li>
+<li>
+<a href="#servicemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">object = addNewPattern(
 sId, sType, <i>sComp</i>, sMatch, <i>sReplace</i>, <i>bNull</i>, <i>sError</i>, <i>aIncludes</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>sId</b> as String : Validation pattern id.</li><li><b>sType</b> as String : The type of validation: bool, replace, or none.</li><li><b>sComp</b> as String <i>(optional)</i>: For validation type of bool, the comparison value may be "true" or "false".</li><li><b>sMatch</b> as String : Regular expression to use to match the input value.</li><li><b>sReplace</b> as String <i>(optional)</i>: Replacement value to use for the matched expression.</li><li><b>bNull</b> as boolean <i>(optional)</i>: Bit indicating whether null values are allowed.</li><li><b>sError</b> as String <i>(optional)</i>: Error message to describe the expected pattern. e.g.: Phone numbers should be numbers and hyphens only.</li><li><b>aIncludes</b> as array <i>(optional)</i>: Array of pattern ids that should be executed prior to this pattern. e.g.: The trim-ends pattern has a comparison of none and includes the trim-start and trim-end patterns.</li></ul><h4>Returns</h4><p class="returnvalue"><b>object</b> as object: A new internal space definition.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2011. ]</p>
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sId</b> as String : Validation pattern id.</li>
+<li>
+<b>sType</b> as String : The type of validation: bool, replace, or none.</li>
+<li>
+<b>sComp</b> as String <i>(optional)</i>: For validation type of bool, the comparison value may be "true" or "false".</li>
+<li>
+<b>sMatch</b> as String : Regular expression to use to match the input value.</li>
+<li>
+<b>sReplace</b> as String <i>(optional)</i>: Replacement value to use for the matched expression.</li>
+<li>
+<b>bNull</b> as boolean <i>(optional)</i>: Bit indicating whether null values are allowed.</li>
+<li>
+<b>sError</b> as String <i>(optional)</i>: Error message to describe the expected pattern. e.g.: Phone numbers should be numbers and hyphens only.</li>
+<li>
+<b>aIncludes</b> as array <i>(optional)</i>: Array of pattern ids that should be executed prior to this pattern. e.g.: The trim-ends pattern has a comparison of none and includes the trim-start and trim-end patterns.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>object</b> as object: A new internal space definition.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
 </body>
 </html>

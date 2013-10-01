@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Template>
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<p>Failed to do something</p>
+	<embedded-script>
+		<![CDATA[
+			template_init: function(){
+				
+			}
+		]]>
+	</embedded-script>
+</Template>

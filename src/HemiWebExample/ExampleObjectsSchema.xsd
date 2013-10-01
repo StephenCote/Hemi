@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.cote.org/example/objects" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.cote.org/example/objects">
+
+    <complexType name="ExampleType">
+    	<complexContent>
+    		<extension base="tns:ExampleBaseType"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="ExampleCollectionType">
+    	<complexContent>
+    		<extension base="tns:ExampleBaseType">
+    			<sequence>
+    				<element name="examples" type="tns:ExampleType" minOccurs="0" maxOccurs="unbounded"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="ExampleBaseType">
+    	<sequence>
+    		<element name="description" type="string"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="id" type="long"></attribute>
+    	<attribute name="created" type="dateTime"></attribute>
+    	<attribute name="modified" type="dateTime"></attribute>
+    </complexType>
+</schema>

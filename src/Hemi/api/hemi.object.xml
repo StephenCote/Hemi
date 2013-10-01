@@ -1,5 +1,112 @@
-<source><name>Hemi.object</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework</url-title><url>/Hemi/</url></project><package><path>Hemi</path><library>Hemi</library><description>The object utility class includes an API decorator for object mapping.</description><static-class><name>object</name><version>3.1.9</version><description>Convenience methods for instrumenting object array mapping and retrieval.</description><example><description>Add an object accessor for conveniently storing and retrieving other objects.</description><name>Instrumentation Example</name><code>var oSomeObject = {};</code><code>// Instrument oSomeObject with the object accessor API</code><code>Hemi.object.addObjectAccessor(oSomeObject, "demo");</code><code>var oChildObject = {};</code><code>// Add the chid object as "child1"</code><code>oSomeObject.addNewDemo(oChildObject, "child1");</code><code>// Retrieve the object reference</code><code>var oLookup = oSomeObject.getDemoByName("child1");</code></example><property type="array" internal="1" get="1"><name>accessors</name><description>An array of variant values.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description></property><property type="array" internal="1" get="1"><name>accessornames</name><description>A hash of variant names whose value is the index of <i>accessors</i>.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description></property><property type="object" internal="1" get="1"><name>objects</name><description>The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</description></property><property type="array" internal="1" get="1"><name>accessorindex</name><description>A hash of variant identifiers whose value is the index of <i>accessors</i>.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description></property><method internal="1"><name>isAccessor</name><parameter name="v" type="variant">Int or string used to determine if accessor exists.</parameter><return-value name="b" type="boolean">Bit indicating whether the accessor exists.</return-value><description>Returns true if the accessor exists.  The method is created for an object with <i>implementsObjectAccessor</i>.</description></method><method internal="1"><name>getAccessor</name><parameter name="i" type="int">Index of the accessor.</parameter><return-value name="v" type="variant">The value of the accessor.</return-value><description>Returns the accessor for the given index.  The method is created for an object with <i>implementsObjectAccessor</i>.</description></method><method internal="1"><name>addNewAccessor</name><parameter name="o" type="object">Object to add to the accessor array.</parameter><parameter name="i" type="String">Identifier of the object.</parameter><return-value name="b" type="boolean">Bit indicating whether the object was added.</return-value><description>Adds the object to the accessor array.</description></method><method internal="1"><name>clearAccessors</name><description>Clears all arrays and array maps.</description></method><method internal="1"><name>removeAccessor</name><parameter name="o" type="object">Object that is stored in the accessor array.</parameter><description>Removes the specified object from the accessor arrays.</description></method><method internal="1"><name>getAccessorByName</name><parameter name="s" type="String">Name of the value</parameter><return-value name="v" type="variant">The value of the accessor.</return-value><description>Returns the accessor based on the specified name.  The method is created for an object with <i>implementsObjectAccessor</i>.</description></method><method internal="1"><name>getAccessors</name><return-value name="a" type="array">The accessor array.</return-value><description>Returns the accessors array.  The method is created for an object with <i>implementsObjectAccessor</i>.</description></method><method internal="1"><name>addObjectAccessor</name><param name="o" type="object">Object for which the accessors will be created.</param><param name="s" type="String">Name of the accessor.</param><return-value type="boolean" name="b">Returns true if the accessors were created.</return-value><description>Creates object accessors, <b>get<i>Accessor</i>ByName</b>, <b>get<i>Accessor</i></b>, <b>get<i>Accessor</i>s</b>, and <b>is<i>Accessor</i></b> methods, and the <b><i>Accessor</i>s</b>, <b><i>Accessor</i>names</b>, and <b><i>Accessor</i>index</b> arrays on the <i>objects</i> sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</description></method><method internal="1"><name>addObjectDeconstructor</name><param name="o" type="object">Registered object for which the deconstructors will be created.</param><return-value type="boolean" name="b">Returns true if the accessors were created.</return-value><description>Creates the deconstructors <i>sigterm</i> and <i>destroy</i>.</description></method>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.object</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi</path>
+<library>Hemi</library>
+<description>The object utility class includes an API decorator for object mapping.</description>
+<static-class>
+<name>object</name>
+<version>3.5.1</version>
+<description>Convenience methods for instrumenting object array mapping and retrieval.</description>
+<example>
+<description>Add an object accessor for conveniently storing and retrieving other objects.</description>
+<name>Instrumentation Example</name>
+<code>var oSomeObject = {};</code>
+<code>// Instrument oSomeObject with the object accessor API</code>
+<code>Hemi.object.addObjectAccessor(oSomeObject, "demo");</code>
+<code>var oChildObject = {};</code>
+<code>// Add the chid object as "child1"</code>
+<code>oSomeObject.addNewDemo(oChildObject, "child1");</code>
+<code>// Retrieve the object reference</code>
+<code>var oLookup = oSomeObject.getDemoByName("child1");</code>
+</example>
+<property get="1" internal="1" type="array">
+<name>accessors</name>
+<description>An array of variant values.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description>
+</property>
+<property get="1" internal="1" type="array">
+<name>accessornames</name>
+<description>A hash of variant names whose value is the index of <i>accessors</i>.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description>
+</property>
+<property get="1" internal="1" type="object">
+<name>objects</name>
+<description>The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</description>
+</property>
+<property get="1" internal="1" type="array">
+<name>accessorindex</name>
+<description>A hash of variant identifiers whose value is the index of <i>accessors</i>.  The array is created for an object with <i>implementsObjectAccessor</i>, and is stored on the objects sub structure.</description>
+</property>
+<method internal="1">
+<name>isAccessor</name>
+<parameter name="v" type="variant">Int or string used to determine if accessor exists.</parameter>
+<return-value name="b" type="boolean">Bit indicating whether the accessor exists.</return-value>
+<description>Returns true if the accessor exists.  The method is created for an object with <i>implementsObjectAccessor</i>.</description>
+</method>
+<method internal="1">
+<name>getAccessor</name>
+<parameter name="i" type="int">Index of the accessor.</parameter>
+<return-value name="v" type="variant">The value of the accessor.</return-value>
+<description>Returns the accessor for the given index.  The method is created for an object with <i>implementsObjectAccessor</i>.</description>
+</method>
+<method internal="1">
+<name>addNewAccessor</name>
+<parameter name="o" type="object">Object to add to the accessor array.</parameter>
+<parameter name="i" type="String">Identifier of the object.</parameter>
+<return-value name="b" type="boolean">Bit indicating whether the object was added.</return-value>
+<description>Adds the object to the accessor array.</description>
+</method>
+<method internal="1">
+<name>clearAccessors</name>
+<description>Clears all arrays and array maps.</description>
+</method>
+<method internal="1">
+<name>removeAccessor</name>
+<parameter name="o" type="object">Object that is stored in the accessor array.</parameter>
+<description>Removes the specified object from the accessor arrays.</description>
+</method>
+<method internal="1">
+<name>getAccessorByName</name>
+<parameter name="s" type="String">Name of the value</parameter>
+<return-value name="v" type="variant">The value of the accessor.</return-value>
+<description>Returns the accessor based on the specified name.  The method is created for an object with <i>implementsObjectAccessor</i>.</description>
+</method>
+<method internal="1">
+<name>getAccessors</name>
+<return-value name="a" type="array">The accessor array.</return-value>
+<description>Returns the accessors array.  The method is created for an object with <i>implementsObjectAccessor</i>.</description>
+</method>
+<method internal="1">
+<name>addObjectAccessor</name>
+<param name="o" type="object">Object for which the accessors will be created.</param>
+<param name="s" type="String">Name of the accessor.</param>
+<return-value name="b" type="boolean">Returns true if the accessors were created.</return-value>
+<description>Creates object accessors, <b>get<i>Accessor</i>ByName</b>, <b>get<i>Accessor</i></b>, <b>get<i>Accessor</i>s</b>, and <b>is<i>Accessor</i></b> methods, and the <b><i>Accessor</i>s</b>, <b><i>Accessor</i>names</b>, and <b><i>Accessor</i>index</b> arrays on the <i>objects</i> sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</description>
+</method>
+
+<method internal="1">
+<name>addObjectDeconstructor</name>
+<param name="o" type="object">Registered object for which the deconstructors will be created.</param>
+<return-value name="b" type="boolean">Returns true if the accessors were created.</return-value>
+<description>Creates the deconstructors <i>sigterm</i> and <i>destroy</i>.</description>
+</method>
 
 Object must be a registered framework object
 
-<method internal="1"><name>sigterm</name><description>Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with <i>addObjectDeconstructor</i>.</description></method><method internal="1"><name>destroy</name><description>Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined <i>handle_destroy</i> handler and increments the internal <i>ready_state</i> to five (5).   The method is created for an object with <i>addObjectDeconstructor</i>.</description></method></static-class></package><index><description>The object utility class includes an API decorator for object mapping.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<method internal="1">
+<name>sigterm</name>
+<description>Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with <i>addObjectDeconstructor</i>.</description>
+</method>
+<method internal="1">
+<name>destroy</name>
+<description>Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined <i>handle_destroy</i> handler and increments the internal <i>ready_state</i> to five (5).   The method is created for an object with <i>addObjectDeconstructor</i>.</description>
+</method>
+</static-class>
+</package>
+<index><description>The object utility class includes an API decorator for object mapping.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

@@ -1,28 +1,329 @@
-<source><name>Hemi.app.comp</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework Project</url-title><url>/Hemi/</url></project><package><path>Hemi.app.comp</path><library>Hemi</library><description>The Application Component is a portable and reusable set of code that can act as code-behind for HTML elements, quickly instrument event handling, and quickly load external templates within their own Application Space.</description><static-class><name>ApplicationComponent</name><description>Static initializer for ApplicationComponentInstance objects.</description><version>3.1.9</version><method><name>bindComponent</name><param name="o" type="variant">HTML DOM Node or String id of registered XHTMLComponent.</param><param name="i" type="String">Identifier of the component to bind to.</param><param name="c" type="String">Path to the external XML file containing the component definition.</param><param name="p" type="String" optional="1" default="component id">Participant id.</param><param name="a" type="boolean" optional="1" default="false">Load synchronously.</param><description>Binds the specified HTML Node or XHTMLComponent object to the specified Application Component, and returns the Application Component.</description><return-value name="a" type="ApplicationComponentInstance">Instance of an ApplicationComponent.</return-value></method><method><name>newInstance</name><param name="i" type="String">Identifier of the component to create.</param><param name="o" type="variant">XHTML/HTML Node or function pointer.</param><param name="c" type="String" optional="1">Container identifier.</param><param name="f" type="function" optional="1">Load handler.  Handler is invoke with two parameters: The string "onloadappcomp", and the ApplicationComponentInstance object that was loaded.</param><param name="p" type="String" optional="1" default="component id">Participant id.</param><param name="b" type="boolean" optional="1" default="false">Bit indicating whether the application component should bind to its XHTMLComponent container.</param><description>Creates a new ApplicationComponentInstance object.</description><return-value name="a" type="ApplicationComponentInstance">Instance of an ApplicationComponent.</return-value></method></static-class><class><name>ApplicationComponentInstance</name><version>3.1.9</version><description>A code fragment in a private scope that may be bound to HTML Nodes, and/or XHTMLComponent objects, and which provides a controlled environment for code execution and management.</description><example><description>Demonstrate how an ApplicationComponent can be used to bind an HTML Node to a external code.</description><name>Bind HTML Node to Application Component #1</name><code><![CDATA[<!-- XML Component File -->]]></code><code><![CDATA[<application-components>]]></code><code><![CDATA[   <application-component id = "demo_ac1">]]></code><code><![CDATA[      <![]]>CDATA[</code><code>         component_init:function(){</code><code>            alert('loaded');</code><code>         },</code><code>         component_destroy:function(){</code><code>         },</code><code>         _handle_click:function(e){</code><code>            alert('click');</code><code>         }</code><code>      ]]<![CDATA[>]]></code><code><![CDATA[   </application-component>]]></code><code><![CDATA[</application-components>]]></code><code><![CDATA[<!-- HTML Page -->]]></code><code><![CDATA[<p id = "oTest">This is a test</p>]]></code><code><![CDATA[<script type = "text/javascript">]]></code><code>window.onload = init;</code><code>function init(){</code><code>   var oAC = Hemi.app.comp.ApplicationComponent;</code><code>   var oComponent = oAC.bindComponent(document.getElementById("oTest"),"demo_ac1","/path/to/file.xml");</code><code>}</code><code><![CDATA[</script>]]></code></example><message><name>ontemplateload</name><param name="o" type="ApplicationComponent">The application component for which the template was recently loaded and initialized.</param><description>Message published to all subscribers when a template has been loaded.</description></message><message><name>oncomponentload</name><param name="o" type="ApplicationComponent">The application component that was just loaded.</param><description>Message published to all subscribers when a component has been loaded.</description></message><property type="String" get="1" internal="1"><name>object_id</name><description>Unique instance identifier.</description></property><property type="String" get="1" internal="1"><name>object_version</name><description>Version of the object class.</description></property><property type="String" get="1" internal="1"><name>object_type</name><description>The type of this object.</description></property><property type="int" get="1" internal="1"><name>ready_state</name><description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description></property><property type="object" get="1" internal="1"><name>object_config</name><description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description></property><method><name>getObjectId</name><return-value name="i" type="String">The unique object instance id.</return-value><description>Returns the unique id of the object.</description></method><method><name>getObjectType</name><return-value name="t" type="String">The type of the object instance.</return-value><description>Returns the type of the object.</description></method><method><name>getObjectVersion</name><return-value name="v" type="String">The version of the object instance.</return-value><description>Returns the version of the object.</description></method><method><name>getReadyState</name><return-value name="s" type="int">The object ready state.</return-value><description>Returns the state of the object.</description></method><method><name>getStatus</name><return-value name="o" type="object">The object_config.status substructure.</return-value><description>Returns the object_config.status sub structure.</description></method><method><name>getPointers</name><return-value name="o" type="object">The object_config.pointers substructure.</return-value><description>Returns the object_config.pointers sub structure.</description></method>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.app.comp</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.app.comp</path>
+<library>Hemi</library>
+<description>The Application Component is a portable and reusable set of code that can act as code-behind for HTML elements, quickly instrument event handling, and quickly load external templates within their own Application Space.</description>
+<static-class>
+<name>ApplicationComponent</name>
+<description>Static initializer for ApplicationComponentInstance objects.</description>
+<version>3.5.1</version>
+<method>
+<name>bindComponent</name>
+<param name="o" type="variant">HTML DOM Node or String id of registered XHTMLComponent.</param>
+<param name="i" type="String">Identifier of the component to bind to.</param>
+<param name="c" type="String">Path to the external XML file containing the component definition.</param>
+<param default="component id" name="p" optional="1" type="String">Participant id.</param>
+<param default="false" name="a" optional="1" type="boolean">Load synchronously.</param>
+<description>Binds the specified HTML Node or XHTMLComponent object to the specified Application Component, and returns the Application Component.</description>
+<return-value name="a" type="ApplicationComponentInstance">Instance of an ApplicationComponent.</return-value>
+</method>
+<method>
+<name>newInstance</name>
+<param name="i" type="String">Identifier of the component to create.</param>
+<param name="o" type="variant">XHTML/HTML Node or function pointer.</param>
+<param name="c" optional="1" type="String">Container identifier.</param>
+<param name="f" optional="1" type="function">Load handler.  Handler is invoke with two parameters: The string "onloadappcomp", and the ApplicationComponentInstance object that was loaded.</param>
+<param default="component id" name="p" optional="1" type="String">Participant id.</param>
+<param default="false" name="b" optional="1" type="boolean">Bit indicating whether the application component should bind to its XHTMLComponent container.</param>
+<description>Creates a new ApplicationComponentInstance object.</description>
+<return-value name="a" type="ApplicationComponentInstance">Instance of an ApplicationComponent.</return-value>
+</method>
+</static-class>
+<class>
+<name>ApplicationComponentInstance</name>
+<version>3.5.1</version>
+<description>A code fragment in a private scope that may be bound to HTML Nodes, and/or XHTMLComponent objects, and which provides a controlled environment for code execution and management.</description>
+<example>
+<description>Demonstrate how an ApplicationComponent can be used to bind an HTML Node to a external code.</description>
+<name>Bind HTML Node to Application Component #1</name>
+<code><![CDATA[<!-- XML Component File -->]]></code>
+<code><![CDATA[<application-components>]]></code>
+<code><![CDATA[   <application-component id = "demo_ac1">]]></code>
+<code><![CDATA[      <![]]>CDATA[</code>
+<code>         component_init:function(){</code>
+<code>            alert('loaded');</code>
+<code>         },</code>
+<code>         component_destroy:function(){</code>
+<code>         },</code>
+<code>         _handle_click:function(e){</code>
+<code>            alert('click');</code>
+<code>         }</code>
+<code>      ]]<![CDATA[>]]></code>
+<code><![CDATA[   </application-component>]]></code>
+<code><![CDATA[</application-components>]]></code>
+<code><![CDATA[<!-- HTML Page -->]]></code>
+<code><![CDATA[<p id = "oTest">This is a test</p>]]></code>
+<code><![CDATA[<script type = "text/javascript">]]></code>
+<code>window.onload = init;</code>
+<code>function init(){</code>
+<code>   var oAC = Hemi.app.comp.ApplicationComponent;</code>
+<code>   var oComponent = oAC.bindComponent(document.getElementById("oTest"),"demo_ac1","/path/to/file.xml");</code>
+<code>}</code>
+<code><![CDATA[</script>]]></code>
+</example>
+<message>
+<name>ontemplateload</name>
+<param name="o" type="ApplicationComponent">The application component for which the template was recently loaded and initialized.</param>
+<description>Message published to all subscribers when a template has been loaded.</description>
+</message>
+<message>
+<name>oncomponentload</name>
+<param name="o" type="ApplicationComponent">The application component that was just loaded.</param>
+<description>Message published to all subscribers when a component has been loaded.</description>
+</message>
+<property get="1" internal="1" type="String">
+<name>object_id</name>
+<description>Unique instance identifier.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_version</name>
+<description>Version of the object class.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_type</name>
+<description>The type of this object.</description>
+</property>
+<property get="1" internal="1" type="int">
+<name>ready_state</name>
+<description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description>
+</property>
+<property get="1" internal="1" type="object">
+<name>object_config</name>
+<description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description>
+</property>
+<method>
+<name>getObjectId</name>
+<return-value name="i" type="String">The unique object instance id.</return-value>
+<description>Returns the unique id of the object.</description>
+</method>
+
+<method>
+<name>getObjectType</name>
+<return-value name="t" type="String">The type of the object instance.</return-value>
+<description>Returns the type of the object.</description>
+</method>
+
+<method>
+<name>getObjectVersion</name>
+<return-value name="v" type="String">The version of the object instance.</return-value>
+<description>Returns the version of the object.</description>
+</method>
+
+<method>
+<name>getReadyState</name>
+<return-value name="s" type="int">The object ready state.</return-value>
+<description>Returns the state of the object.</description>
+</method>
+
+<method>
+<name>getStatus</name>
+<return-value name="o" type="object">The object_config.status substructure.</return-value>
+<description>Returns the object_config.status sub structure.</description>
+</method>
+
+<method>
+<name>getPointers</name>
+<return-value name="o" type="object">The object_config.pointers substructure.</return-value>
+<description>Returns the object_config.pointers sub structure.</description>
+</method>
 
 beans
-<method virtual="1"><name>_handle_event</name><param name="e" type="event">Event object.  This is determined cross browser, so there should be no need to query for the global event object in browsers such as Internet Explorer.</param><description>Handler for a specific event, where <i>event</i> is one of the following: change, focus, blur, mouseover, mouseout, click.  When binding a component with one of these handlers, the event instrumentation is done automatically.</description></method><method><name>sigterm</name><description>Sends a termination signal to the ApplicationComponent.</description></method><method virtual="1"><name>local_handle_xhtml_token</name><param name="i" type="int">Integer representing the nodeType.</param><param name="s" type="String">String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</param><description>Virtual token pre-processor to be implemented as needed for substituting tokenized values (eg: ${this})</description><return-value type="String" name="r">The substituted value</return-value></method><method><name>_handle_xhtml_token</name><param name="i" type="int">Integer representing the nodeType.</param><param name="s" type="String">String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</param><description>Token pre-processor.  Tokens include: ${this} returns a string representing a request to the registry for the context object, ${this.id} represents the running object id, ${hemi.hemi_base} represents the framework base path, and ${form.[name]} may be used to access virtual form fields.</description><return-value type="String" name="r">The substituted value</return-value></method>
+<method virtual="1">
+<name>_handle_event</name>
+<param name="e" type="event">Event object.  This is determined cross browser, so there should be no need to query for the global event object in browsers such as Internet Explorer.</param>
+<description>Handler for a specific event, where <i>event</i> is one of the following: change, focus, blur, mouseover, mouseout, click.  When binding a component with one of these handlers, the event instrumentation is done automatically.</description>
+</method>
+<method>
+<name>sigterm</name>
+<description>Sends a termination signal to the ApplicationComponent.</description>
+</method>
+<method virtual="1">
+<name>local_handle_xhtml_token</name>
+<param name="i" type="int">Integer representing the nodeType.</param>
+<param name="s" type="String">String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</param>
+<description>Virtual token pre-processor to be implemented as needed for substituting tokenized values (eg: ${this})</description>
+<return-value name="r" type="String">The substituted value</return-value>
+</method>
+<method>
+<name>_handle_xhtml_token</name>
+<param name="i" type="int">Integer representing the nodeType.</param>
+<param name="s" type="String">String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</param>
+<description>Token pre-processor.  Tokens include: ${this} returns a string representing a request to the registry for the context object, ${this.id} represents the running object id, ${hemi.hemi_base} represents the framework base path, and ${form.[name]} may be used to access virtual form fields.</description>
+<return-value name="r" type="String">The substituted value</return-value>
+</method>
 reuse b
 Force a sync-out on any backing form
 This is required because the token is processed before any current template is unloaded
 And if the bean is bound to a form element, the element hasn't been synchronized-out yet
 
 r = r[f](b2, b[m[2]]);
-<method virtual="1"><name>component_destroy</name><description>Invoked when the ApplicationComponent destroy method is invoked, but before internal references are removed or cleaned up.</description></method><method><name>destroy</name><description>Prepares the ApplicationComponent to be destroyed.  Removes all tokens created for this object, removes this object from participating in any transactions, removes it from the registry, and invokes the <i>component_destroy</i> method.</description></method>
+<method virtual="1">
+<name>component_destroy</name>
+<description>Invoked when the ApplicationComponent destroy method is invoked, but before internal references are removed or cleaned up.</description>
+</method>
+<method>
+<name>destroy</name>
+<description>Prepares the ApplicationComponent to be destroyed.  Removes all tokens created for this object, removes this object from participating in any transactions, removes it from the registry, and invokes the <i>component_destroy</i> method.</description>
+</method>
 Destroy any container object, too
 2007/02/03
 Destroy  any template space service
 
-<method><name>setBean</name><param name="o" type="object">A JavaScript object.</param><param name="n" type="String">The name to assign to the object.</param><return-value name="b" type="boolean">Bit indicating whether the bean was set.</return-value><description>Creates a local reference to the specified object.  The object will be prepared and registered as a framework object if it is not already.  All bean objects will be cleaned up and removed from the registry when the component is destroyed.</description></method>
+<method>
+<name>sanitizeBean</name>
+<param name="s" type="object">The bean object.</param>
+<param name="t" type="object">A new object with the expected properties.</param>
+<return-value name="o" type="object">A copy of the bean object including only the properties identified in the reference object.</return-value>
+<description>Returns a version of the bean with only the expected properties, stripping out any framework related properties.</description>
+</method>
+var o = new t();
+<method>
+<name>clearBean</name>
+<param name="v" type="variant">The object or object_id of the locally referenced object.</param>
+<return-value name="b" type="boolean">Bit indicating whether the bean was cleared.</return-value>
+<description>Clears a local reference to the specified object.  Otherwise, the object will be cleaned up and removed from the registry when the component is destroyed.</description>
+</method>
+<method>
+<name>setBean</name>
+<param name="o" type="object">A JavaScript object.</param>
+<param name="n" type="String">The name to assign to the object.</param>
+<return-value name="b" type="boolean">Bit indicating whether the bean was set.</return-value>
+<description>Creates a local reference to the specified object.  The object will be prepared and registered as a framework object if it is not already.  All bean objects will be cleaned up and removed from the registry when the component is destroyed.</description>
+</method>
 if (!o.object_id) {
 }
 if (!_o.b[n]) {
 }
-<method><name>getBean</name><param name="n" type="String">The name assigned to the object.</param><return-value name="o" type="object">A JavaScript object.</return-value><description>Retrieves the named object.</description></method><method><name>getDataStack</name><description>Returns the StackStack used by this component.</description><return-value type="StackStack" name="t">DataStack object.</return-value></method><method><name>setAsync</name><param name="b" type="boolean">Bit indicating whether load operations should be asynchronous.</param><description>Specify whether load operations should be handled asynchronously.</description></method><method><name>release</name><description>Releases the ApplicationComponent object so that it can be reinitialized with another definition.</description></method><method internal="1"><name>post_init</name><param name="x" type="XHTMLComponent">XHTMLComponent object representing an HTML Form Element.</param><param name="ri" type="String" optional="1">Reference id for field containment.</param><description>Invokes a post initialization after the component has been initialized, and after any child content and objects have been added and initialized.  Automatically invoked by Space servire through XHTMLComponent. Or, can be manually invoked as needed.  Causes any virtual <i>component_post_init</i> function to be invoked.</description></method><method><name>setTemplateIsSpace</name><param name="b" type="boolean">Bit indicating whether to treate the template container as an engine.</param><description>Specifies whether to instrument a template container as an Application Space.  Note: When a component is set as a space, the space-id attribute artifact is stripped.  The space-id attribute is used as a processing boundary by the Application Space service.  If the marker is not removed, the spaces will overlap and may result in errors due to expected objects not existing in the expected spaces.</description></method><method><name>getTemplateSpace</name><return-value name="e" type="SpaceObject">Space object created for the template container.</return-value><description>Returns the Space object created for the template container.  Used when setTemplateIsSpace is set to 1.</description></method><method><name>setBindingEnabled</name><param name="b" type="boolean">Bit indicating whether the component should bind to any specified XHTMLComponent.</param><description>Specify whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</description></method><method><name>getBindingEnabled</name><return-value name="b" type="boolean">Bit indicating whether the component should bind to any specified XHTMLComponent.</return-value><description>Bit indicating whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</description></method><method deprecated="1"><name>getDefinitionId</name><return-value name="i" type="String">Application component definition id.</return-value><description>Returns the definition id, which is the code executed to construct the component.</description></method><method><name>setContainerId</name><param name="i" type="String">Identifier of the registered object to which this application component belongs.</param><description>Specifies the container id, which is the object to which the component belongs.</description></method><method><name>getContainerId</name><return-value name="i" type="String">Identifier of the registered object to which this application component belongs.</return-value><description>Returns the container id, which is the object to which the component belongs.</description></method><method><name>getComponentName</name><return-value name="i" type="String">The name of the component.</return-value><description>Returns the container name.</description></method><method><name>getContainer</name><return-value name="o" type="object">The object that contains the application component.</return-value><description>Returns the object that contains the application component.</description></method><method><name>loadComponent</name><param name="l" type="String">The identifier of the component to load.</param><param name="c" type="String">Path to the external XML file containing the component definitions.</param><description>Loads the specified component definition.</description></method>
+<method>
+<name>getBean</name>
+<param name="n" type="String">The name assigned to the object.</param>
+<return-value name="o" type="object">A JavaScript object.</return-value>
+<description>Retrieves the named object.</description>
+</method>
+<method>
+<name>getDataStack</name>
+<description>Returns the StackStack used by this component.</description>
+<return-value name="t" type="StackStack">DataStack object.</return-value>
+</method>
+<method>
+<name>setAsync</name>
+<param name="b" type="boolean">Bit indicating whether load operations should be asynchronous.</param>
+<description>Specify whether load operations should be handled asynchronously.</description>
+</method>
+<method>
+<name>release</name>
+<description>Releases the ApplicationComponent object so that it can be reinitialized with another definition.</description>
+</method>
+<method internal="1">
+<name>post_init</name>
+<param name="x" type="XHTMLComponent">XHTMLComponent object representing an HTML Form Element.</param>
+<param name="ri" optional="1" type="String">Reference id for field containment.</param>
+<description>Invokes a post initialization after the component has been initialized, and after any child content and objects have been added and initialized.  Automatically invoked by Space servire through XHTMLComponent. Or, can be manually invoked as needed.  Causes any virtual <i>component_post_init</i> function to be invoked.</description>
+</method>
+<method>
+<name>setTemplateIsSpace</name>
+<param name="b" type="boolean">Bit indicating whether to treate the template container as an engine.</param>
+<description>Specifies whether to instrument a template container as an Application Space.  Note: When a component is set as a space, the space-id attribute artifact is stripped.  The space-id attribute is used as a processing boundary by the Application Space service.  If the marker is not removed, the spaces will overlap and may result in errors due to expected objects not existing in the expected spaces.</description>
+</method>
+<method>
+<name>getTemplateSpace</name>
+<return-value name="e" type="SpaceObject">Space object created for the template container.</return-value>
+<description>Returns the Space object created for the template container.  Used when setTemplateIsSpace is set to 1.</description>
+</method>
+<method>
+<name>setBindingEnabled</name>
+<param name="b" type="boolean">Bit indicating whether the component should bind to any specified XHTMLComponent.</param>
+<description>Specify whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</description>
+</method>
+<method>
+<name>getBindingEnabled</name>
+<return-value name="b" type="boolean">Bit indicating whether the component should bind to any specified XHTMLComponent.</return-value>
+<description>Bit indicating whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</description>
+</method>
+<method deprecated="1">
+<name>getDefinitionId</name>
+<return-value name="i" type="String">Application component definition id.</return-value>
+<description>Returns the definition id, which is the code executed to construct the component.</description>
+</method>
+<method>
+<name>setContainerId</name>
+<param name="i" type="String">Identifier of the registered object to which this application component belongs.</param>
+<description>Specifies the container id, which is the object to which the component belongs.</description>
+</method>
+<method>
+<name>getContainerId</name>
+<return-value name="i" type="String">Identifier of the registered object to which this application component belongs.</return-value>
+<description>Returns the container id, which is the object to which the component belongs.</description>
+</method>
+<method>
+<name>getComponentName</name>
+<return-value name="i" type="String">The name of the component.</return-value>
+<description>Returns the container name.</description>
+</method>
+<method>
+<name>getContainer</name>
+<return-value name="o" type="object">The object that contains the application component.</return-value>
+<description>Returns the object that contains the application component.</description>
+</method>
+<method>
+<name>loadComponent</name>
+<param name="l" type="String">The identifier of the component to load.</param>
+<param name="c" type="String">Path to the external XML file containing the component definitions.</param>
+<description>Loads the specified component definition.</description>
+</method>
 2011/04/10
 Restricting XML handler scope
 2009/09/21 - why not cache this? -- !(_s.a)
-<method internal="1"><name>init</name><param name="o" type="object">Application Component definition node.  This should be an XML node.</param><description>Initializes the Application Component with the specified definition node.</description></method><method internal="1"><name>importNodeDefinition</name><param name="o" type="object">Application Component definition node.  This should be an XML node.</param><description>Imports the definition node.</description></method><method virtual="1"><name>component_init</name><description>Invoked when the component has been initialized and is ready to be used.</description></method><method virtual="1"><name>component_post_init</name><description>Invoked after the component and any children have been initialized.</description></method><method internal="1"><name>importComponentDefinition</name><param name="s" type="String">The Application Component code.</param><param name="i" type="String">The component identifier.</param><param name="pn" type="String" optional="1">The transaction name this component should participate in.</param><description>Imports the definition node.  Invokes the handler specified in <i>newInstance</i> with the String "onloadappcomp" and the ApplicationComponentInstance object.  Invokes the <i>component_init</i> method if it was defined.</description></method><method internal="1"><name>_handle_template_processor</name><param name="o" type="Space">A Space object.</param><param name="v" type="variant">An XHTML Node, or string.</param><description>Buffered handler for Space Processor override.</description></method><method><name>importEmbeddedScript</name><param name="n" type="XML node">An XML node.</param><param name="b" type="bool">Bit indicating whether the embedded script element should be preserved in the parent node.  The default action is to remove it.</param><description>Imports embedded-script elements from an XML document.</description></method><method><name>loadTemplateFromNode</name><param name="o" type="Node">Xml node representing the template to load.</param><description>Loads the specified template node into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</description></method>
+<method internal="1">
+<name>init</name>
+<param name="o" type="object">Application Component definition node.  This should be an XML node.</param>
+<description>Initializes the Application Component with the specified definition node.</description>
+</method>
+<method internal="1">
+<name>importNodeDefinition</name>
+<param name="o" type="object">Application Component definition node.  This should be an XML node.</param>
+<description>Imports the definition node.</description>
+</method>
+<method virtual="1">
+<name>component_init</name>
+<description>Invoked when the component has been initialized and is ready to be used.</description>
+</method>
+<method virtual="1">
+<name>component_post_init</name>
+<description>Invoked after the component and any children have been initialized.</description>
+</method>
+<method internal="1">
+<name>importComponentDefinition</name>
+<param name="s" type="String">The Application Component code.</param>
+<param name="i" type="String">The component identifier.</param>
+<param name="pn" optional="1" type="String">The transaction name this component should participate in.</param>
+<description>Imports the definition node.  Invokes the handler specified in <i>newInstance</i> with the String "onloadappcomp" and the ApplicationComponentInstance object.  Invokes the <i>component_init</i> method if it was defined.</description>
+</method>
+<method internal="1">
+<name>_handle_template_processor</name>
+<param name="o" type="Space">A Space object.</param>
+<param name="v" type="variant">An XHTML Node, or string.</param>
+<description>Buffered handler for Space Processor override.</description>
+</method>
+<method>
+<name>importEmbeddedScript</name>
+<param name="n" type="XML node">An XML node.</param>
+<param name="b" type="bool">Bit indicating whether the embedded script element should be preserved in the parent node.  The default action is to remove it.</param>
+<description>Imports embedded-script elements from an XML document.</description>
+</method>
+<method>
+<name>loadTemplateFromNode</name>
+<param name="o" type="Node">Xml node representing the template to load.</param>
+<description>Loads the specified template node into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</description>
+</method>
 Import any embedded-script elements
 
 check for any spaces in the loaded templates
@@ -30,16 +331,79 @@ check for any spaces in the loaded templates
 alert(b);
 HemiEngine.app.space.service.loadSpaces(0,o.parentNode,this._prehandle_template_processor, this._handle_xhtml_token);
 alert(oSpace.space_id);
-<method virtual="1"><name>getTemplateObjectByName</name><description>Returns an object reference from the current template.  Used when setTemplateIsSpace is set to true.</description><return-value type="object" name="o">XHTML object.</return-value></method><method virtual="1" internal="1"><name>setTitle</name><param name="s" type="String">Text of the title.</param><description>Invoked by _handle_load_template, and sets a title for a component based on a loaded template.</description></method><method virtual="1"><name>getTemplateContainer</name><description>Returns the XHTML object into which a template is copied.</description><return-value type="object" name="o">XHTML object.</return-value></method><method virtual="1"><name>embedded_init</name><description>Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_init method is unique to the object, there can be any number of embedded_init declarations.</description></method><method virtual="1"><name>embedded_destroy</name><description>Invoked prior to a template being loaded, or the containing object being destroyed. This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_destroy method is unique to the object, there can be any number of embedded_destroy declarations.</description></method><method virtual="1"><name>local_template_init</name><param name="o" type="ApplicationComponent">The application component.</param><description>Invoked after template_init and all embedded_init functions.  Used for specifying load handlers.</description></method><method virtual="1"><name>template_init</name><description>Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each template must define it in order for it to be invoked.</description></method><method virtual="1"><name>template_destroy</name><description>Invoked prior to a template being loaded, or the containing object being destroyed.</description></method><method><name>loadTemplate</name><param name="s" type="String">Path to the XML file containing the template data.</param><param name="i" type="String" optional="1">Optional id of the template to load.</param><description>Loads the specified template into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</description></method>
+<method virtual="1">
+<name>getTemplateObjectByName</name>
+<description>Returns an object reference from the current template.  Used when setTemplateIsSpace is set to true.</description>
+<return-value name="o" type="object">XHTML object.</return-value>
+</method>
+<method internal="1" virtual="1">
+<name>setTitle</name>
+<param name="s" type="String">Text of the title.</param>
+<description>Invoked by _handle_load_template, and sets a title for a component based on a loaded template.</description>
+</method>
+<method virtual="1">
+<name>getTemplateContainer</name>
+<description>Returns the XHTML object into which a template is copied.</description>
+<return-value name="o" type="object">XHTML object.</return-value>
+</method>
+<method virtual="1">
+<name>embedded_init</name>
+<description>Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_init method is unique to the object, there can be any number of embedded_init declarations.</description>
+</method>
+<method virtual="1">
+<name>embedded_destroy</name>
+<description>Invoked prior to a template being loaded, or the containing object being destroyed. This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_destroy method is unique to the object, there can be any number of embedded_destroy declarations.</description>
+</method>
+<method virtual="1">
+<name>local_template_init</name>
+<param name="o" type="ApplicationComponent">The application component.</param>
+<description>Invoked after template_init and all embedded_init functions.  Used for specifying load handlers.</description>
+</method>
+<method virtual="1">
+<name>template_init</name>
+<description>Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each template must define it in order for it to be invoked.</description>
+</method>
+<method virtual="1">
+<name>template_destroy</name>
+<description>Invoked prior to a template being loaded, or the containing object being destroyed.</description>
+</method>
+<method>
+<name>loadTemplate</name>
+<param name="s" type="String">Path to the XML file containing the template data.</param>
+<param name="i" optional="1" type="String">Optional id of the template to load.</param>
+<description>Loads the specified template into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</description>
+</method>
 Use path for cache
 
 ,s, 1
-<method><name>cleanTemplate</name><description>Invokes virtual template_destroy and embedded_destroy methods, and removes embedded script that had been loaded.  This will not remove any XHTMLComponent or Space objects, or clear the XHTML contents.</description></method>
+<method>
+<name>cleanTemplate</name>
+<description>Invokes virtual template_destroy and embedded_destroy methods, and removes embedded script that had been loaded.  This will not remove any XHTMLComponent or Space objects, or clear the XHTML contents.</description>
+</method>
 HemiEngine.logDebug may not exist anymore during final cleanup
 
 Remove any embedded scripts loaded from a previous template
 
-<method deprecated="1"><name>evaluateWireReference</name><param name="b" type="boolean">Bit indicating whether only the wire action should be evaluated.</param><param name="n" type="String" optional="1">Wire name to supercede the hardcoded definition.</param><param name="a" type="array" optional="1">Argument array.</param><return-value name="w" type="boolean">Returns true if the wire was evaluated, false otherwise.</return-value><description>Evaluates the wire reference. Deprecated.</description></method>
+<method deprecated="1">
+<name>evaluateWireReference</name>
+<param name="b" type="boolean">Bit indicating whether only the wire action should be evaluated.</param>
+<param name="n" optional="1" type="String">Wire name to supercede the hardcoded definition.</param>
+<param name="a" optional="1" type="array">Argument array.</param>
+<return-value name="w" type="boolean">Returns true if the wire was evaluated, false otherwise.</return-value>
+<description>Evaluates the wire reference. Deprecated.</description>
+</method>
 Must be an XHTML Component; check node type
 erid is auto-added by XHTMLComponent
-<method><name>getReferenceId</name><return-value name="s" type="String">Identifier of the component container.</return-value><description>Returns the specified identifier of the component container, such as the containing Space identifier.</description></method><method><name>getContainerComponentId</name><return-value name="s" type="String">Identifier of the component's container component.</return-value><description>Returns the specified identifier of the component's container component.</description></method></class></package><index><description>The Application Component is a portable and reusable set of code that can act as code-behind for HTML elements, quickly instrument event handling, and quickly load external templates within their own Application Space.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<method>
+<name>getReferenceId</name>
+<return-value name="s" type="String">Identifier of the component container.</return-value>
+<description>Returns the specified identifier of the component container, such as the containing Space identifier.</description>
+</method>
+<method>
+<name>getContainerComponentId</name>
+<return-value name="s" type="String">Identifier of the component's container component.</return-value>
+<description>Returns the specified identifier of the component's container component.</description>
+</method>
+</class>
+</package>
+<index><description>The Application Component is a portable and reusable set of code that can act as code-behind for HTML elements, quickly instrument event handling, and quickly load external templates within their own Application Space.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

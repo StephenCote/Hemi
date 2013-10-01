@@ -1,52 +1,383 @@
-﻿
 <html>
 <head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>API Hemi.object Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css" />
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
 </head>
 <body>
-<h1>Hemi JavaScript Framework</h1><h2>Hemi.object</h2><ul class="top-nav"><li><a href="/Hemi/">Hemi JavaScript Framework</a></li><li><a href="Hemi_api.html">API Index</a></li></ul><h3>Description</h3><p>The object utility class includes an API decorator for object mapping.</p><a name="object"> </a><h3 class="membertitle"><i>static </i>Hemi.object</h3><h4>version 3.1.9</h4><p class="desc">Convenience methods for instrumenting object array mapping and retrieval.</p><p class="desc"></p><h3>Index</h3><a name="objectexampleindex"> </a><h4>Example Index</h4><ul class="index"><li><a href="#Instrumentation Example">Instrumentation Example</a>: Add an object accessor for conveniently storing and retrieving other objects.</li></ul><a name="objectpropertyindex"> </a><h4>Property Index</h4><ul class="index"><li>public <a href="#accessorindex">accessorindex</a> (<b>internal</b>): A hash of variant identifiers whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li><li>public <a href="#accessornames">accessornames</a> (<b>internal</b>): A hash of variant names whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li><li>public <a href="#accessors">accessors</a> (<b>internal</b>): An array of variant values.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li><li>public <a href="#objects">objects</a> (<b>internal</b>): The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</li></ul><a name="objectmethodindex"> </a><h4>Method Index</h4><ul class="index"><li>public <a href="#addNewAccessor">addNewAccessor</a> (<b>internal</b>): Adds the object to the accessor array.</li><li>public <a href="#addObjectAccessor">addObjectAccessor</a> (<b>internal</b>): Creates object accessors, getAccessorByName, getAccessor, getAccessors, and isAccessor methods, and the Accessors, Accessornames, and Accessorindex arrays on the objects sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</li><li>public <a href="#addObjectDeconstructor">addObjectDeconstructor</a> (<b>internal</b>): Creates the deconstructors sigterm and destroy.</li><li>public <a href="#clearAccessors">clearAccessors</a> (<b>internal</b>): Clears all arrays and array maps.</li><li>public <a href="#destroy">destroy</a> (<b>internal</b>): Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined handle_destroy handler and increments the internal ready_state to five (5).   The method is created for an object with addObjectDeconstructor.</li><li>public <a href="#getAccessor">getAccessor</a> (<b>internal</b>): Returns the accessor for the given index.  The method is created for an object with implementsObjectAccessor.</li><li>public <a href="#getAccessorByName">getAccessorByName</a> (<b>internal</b>): Returns the accessor based on the specified name.  The method is created for an object with implementsObjectAccessor.</li><li>public <a href="#getAccessors">getAccessors</a> (<b>internal</b>): Returns the accessors array.  The method is created for an object with implementsObjectAccessor.</li><li>public <a href="#isAccessor">isAccessor</a> (<b>internal</b>): Returns true if the accessor exists.  The method is created for an object with implementsObjectAccessor.</li><li>public <a href="#removeAccessor">removeAccessor</a> (<b>internal</b>): Removes the specified object from the accessor arrays.</li><li>public <a href="#sigterm">sigterm</a> (<b>internal</b>): Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with addObjectDeconstructor.</li></ul><h3>Examples</h3><a name="Instrumentation Example"></a><h3 class="membertitle">Instrumentation Example</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectexampleindex">Examples</a></li></ul><p class="exampledesc">Add an object accessor for conveniently storing and retrieving other objects.</p><h4>Example Code</h4><pre class="example">
-var oSomeObject = {};
-// Instrument oSomeObject with the object accessor API
-Hemi.object.addObjectAccessor(oSomeObject, "demo");
-var oChildObject = {};
-// Add the chid object as "child1"
-oSomeObject.addNewDemo(oChildObject, "child1");
-// Retrieve the object reference
-var oLookup = oSomeObject.getDemoByName("child1");</pre><h3>Properties</h3><a name="accessorindex"></a><h3 class="membertitle">accessorindex</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectpropertyindex">Properties</a></li></ul><p class="propertydesc">A hash of variant identifiers whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p><h4>Syntax</h4><p class="propertysyntax">array = Hemi.object.accessorindex</p><a name="accessornames"></a><h3 class="membertitle">accessornames</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectpropertyindex">Properties</a></li></ul><p class="propertydesc">A hash of variant names whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p><h4>Syntax</h4><p class="propertysyntax">array = Hemi.object.accessornames</p><a name="accessors"></a><h3 class="membertitle">accessors</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectpropertyindex">Properties</a></li></ul><p class="propertydesc">An array of variant values.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p><h4>Syntax</h4><p class="propertysyntax">array = Hemi.object.accessors</p><a name="objects"></a><h3 class="membertitle">objects</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectpropertyindex">Properties</a></li></ul><p class="propertydesc">The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</p><h4>Syntax</h4><p class="propertysyntax">object = Hemi.object.objects</p><h3>Methods</h3><a name="addNewAccessor"></a><h3 class="membertitle">addNewAccessor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Adds the object to the accessor array.</p><h4>Syntax</h4><p class="methodsyntax">b = addNewAccessor(
-
-)
-</p><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the object was added.</p><a name="addObjectAccessor"></a><h3 class="membertitle">addObjectAccessor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Creates object accessors, getAccessorByName, getAccessor, getAccessors, and isAccessor methods, and the Accessors, Accessornames, and Accessorindex arrays on the objects sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</p><h4>Syntax</h4><p class="methodsyntax">b = addObjectAccessor(
-o, s
-)
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>o</b> as object : Object for which the accessors will be created.</li><li><b>s</b> as String : Name of the accessor.</li></ul><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Returns true if the accessors were created.</p><a name="addObjectDeconstructor"></a><h3 class="membertitle">addObjectDeconstructor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Creates the deconstructors sigterm and destroy.</p><h4>Syntax</h4><p class="methodsyntax">b = addObjectDeconstructor(
-o
-)
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>o</b> as object : Registered object for which the deconstructors will be created.</li></ul><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Returns true if the accessors were created.</p><a name="clearAccessors"></a><h3 class="membertitle">clearAccessors</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Clears all arrays and array maps.</p><h4>Syntax</h4><p class="methodsyntax">void clearAccessors(
-
-)
-</p><a name="destroy"></a><h3 class="membertitle">destroy</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined handle_destroy handler and increments the internal ready_state to five (5).   The method is created for an object with addObjectDeconstructor.</p><h4>Syntax</h4><p class="methodsyntax">void destroy(
-
-)
-</p><a name="getAccessor"></a><h3 class="membertitle">getAccessor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Returns the accessor for the given index.  The method is created for an object with implementsObjectAccessor.</p><h4>Syntax</h4><p class="methodsyntax">v = getAccessor(
-
-)
-</p><h4>Returns</h4><p class="returnvalue"><b>v</b> as variant: The value of the accessor.</p><a name="getAccessorByName"></a><h3 class="membertitle">getAccessorByName</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Returns the accessor based on the specified name.  The method is created for an object with implementsObjectAccessor.</p><h4>Syntax</h4><p class="methodsyntax">v = getAccessorByName(
-
-)
-</p><h4>Returns</h4><p class="returnvalue"><b>v</b> as variant: The value of the accessor.</p><a name="getAccessors"></a><h3 class="membertitle">getAccessors</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Returns the accessors array.  The method is created for an object with implementsObjectAccessor.</p><h4>Syntax</h4><p class="methodsyntax">a = getAccessors(
-
-)
-</p><h4>Returns</h4><p class="returnvalue"><b>a</b> as array: The accessor array.</p><a name="isAccessor"></a><h3 class="membertitle">isAccessor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Returns true if the accessor exists.  The method is created for an object with implementsObjectAccessor.</p><h4>Syntax</h4><p class="methodsyntax">b = isAccessor(
-
-)
-</p><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the accessor exists.</p><a name="removeAccessor"></a><h3 class="membertitle">removeAccessor</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Removes the specified object from the accessor arrays.</p><h4>Syntax</h4><p class="methodsyntax">void removeAccessor(
-
-)
-</p><a name="sigterm"></a><h3 class="membertitle">sigterm</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#object">object</a></li><li><a href="#objectmethodindex">Methods</a></li></ul><p class="methoddesc">Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with addObjectDeconstructor.</p><h4>Syntax</h4><p class="methodsyntax">void sigterm(
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.object</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The object utility class includes an API decorator for object mapping.</p>
+<a name="object"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.object</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Convenience methods for instrumenting object array mapping and retrieval.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="objectexampleindex"> </a>
+<h4>Example Index</h4>
+<ul class="index">
+<li>
+<a href="#Instrumentation Example">Instrumentation Example</a>: Add an object accessor for conveniently storing and retrieving other objects.</li>
+</ul>
+<a name="objectpropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#accessorindex">accessorindex</a> (<b>internal</b>): A hash of variant identifiers whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li>
+<li>public <a href="#accessornames">accessornames</a> (<b>internal</b>): A hash of variant names whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li>
+<li>public <a href="#accessors">accessors</a> (<b>internal</b>): An array of variant values.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</li>
+<li>public <a href="#objects">objects</a> (<b>internal</b>): The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</li>
+</ul>
+<a name="objectmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#addNewAccessor">addNewAccessor</a> (<b>internal</b>): Adds the object to the accessor array.</li>
+<li>public <a href="#addObjectAccessor">addObjectAccessor</a> (<b>internal</b>): Creates object accessors, getAccessorByName, getAccessor, getAccessors, and isAccessor methods, and the Accessors, Accessornames, and Accessorindex arrays on the objects sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</li>
+<li>public <a href="#addObjectDeconstructor">addObjectDeconstructor</a> (<b>internal</b>): Creates the deconstructors sigterm and destroy.</li>
+<li>public <a href="#clearAccessors">clearAccessors</a> (<b>internal</b>): Clears all arrays and array maps.</li>
+<li>public <a href="#destroy">destroy</a> (<b>internal</b>): Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined handle_destroy handler and increments the internal ready_state to five (5).   The method is created for an object with addObjectDeconstructor.</li>
+<li>public <a href="#getAccessor">getAccessor</a> (<b>internal</b>): Returns the accessor for the given index.  The method is created for an object with implementsObjectAccessor.</li>
+<li>public <a href="#getAccessorByName">getAccessorByName</a> (<b>internal</b>): Returns the accessor based on the specified name.  The method is created for an object with implementsObjectAccessor.</li>
+<li>public <a href="#getAccessors">getAccessors</a> (<b>internal</b>): Returns the accessors array.  The method is created for an object with implementsObjectAccessor.</li>
+<li>public <a href="#isAccessor">isAccessor</a> (<b>internal</b>): Returns true if the accessor exists.  The method is created for an object with implementsObjectAccessor.</li>
+<li>public <a href="#removeAccessor">removeAccessor</a> (<b>internal</b>): Removes the specified object from the accessor arrays.</li>
+<li>public <a href="#sigterm">sigterm</a> (<b>internal</b>): Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with addObjectDeconstructor.</li>
+</ul>
+<h3>Examples</h3>
+<a name="Instrumentation Example"></a>
+<h3 class="membertitle">Instrumentation Example</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectexampleindex">Examples</a>
+</li>
+</ul>
+<p class="exampledesc">Add an object accessor for conveniently storing and retrieving other objects.</p>
+<h4>Example Code</h4>
+<pre class="example">var oSomeObject = {};// Instrument oSomeObject with the object accessor APIHemi.object.addObjectAccessor(oSomeObject, "demo");var oChildObject = {};// Add the chid object as "child1"oSomeObject.addNewDemo(oChildObject, "child1");// Retrieve the object referencevar oLookup = oSomeObject.getDemoByName("child1");</pre>
+<h3>Properties</h3>
+<a name="accessorindex"></a>
+<h3 class="membertitle">accessorindex</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">A hash of variant identifiers whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">array = Hemi.object.accessorindex</p>
+<a name="accessornames"></a>
+<h3 class="membertitle">accessornames</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">A hash of variant names whose value is the index of accessors.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">array = Hemi.object.accessornames</p>
+<a name="accessors"></a>
+<h3 class="membertitle">accessors</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">An array of variant values.  The array is created for an object with implementsObjectAccessor, and is stored on the objects sub structure.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">array = Hemi.object.accessors</p>
+<a name="objects"></a>
+<h3 class="membertitle">objects</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The objects property is used throughout the Hemi JavaScript Framework to store object pointers.  This property as created if it does not exist.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">object = Hemi.object.objects</p>
+<h3>Methods</h3>
+<a name="addNewAccessor"></a>
+<h3 class="membertitle">addNewAccessor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Adds the object to the accessor array.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = addNewAccessor(
 
 )
 </p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2011. ]</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the object was added.</p>
+<a name="addObjectAccessor"></a>
+<h3 class="membertitle">addObjectAccessor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates object accessors, getAccessorByName, getAccessor, getAccessors, and isAccessor methods, and the Accessors, Accessornames, and Accessorindex arrays on the objects sub structure.  It is up to the implementing class to specify the property values jointly in order for the method values to resolve.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = addObjectAccessor(
+o, s
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Object for which the accessors will be created.</li>
+<li>
+<b>s</b> as String : Name of the accessor.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Returns true if the accessors were created.</p>
+<a name="addObjectDeconstructor"></a>
+<h3 class="membertitle">addObjectDeconstructor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates the deconstructors sigterm and destroy.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = addObjectDeconstructor(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Registered object for which the deconstructors will be created.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Returns true if the accessors were created.</p>
+<a name="clearAccessors"></a>
+<h3 class="membertitle">clearAccessors</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears all arrays and array maps.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearAccessors(
+
+)
+</p>
+<a name="destroy"></a>
+<h3 class="membertitle">destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined handle_destroy handler and increments the internal ready_state to five (5).   The method is created for an object with addObjectDeconstructor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void destroy(
+
+)
+</p>
+<a name="getAccessor"></a>
+<h3 class="membertitle">getAccessor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the accessor for the given index.  The method is created for an object with implementsObjectAccessor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getAccessor(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as variant: The value of the accessor.</p>
+<a name="getAccessorByName"></a>
+<h3 class="membertitle">getAccessorByName</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the accessor based on the specified name.  The method is created for an object with implementsObjectAccessor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getAccessorByName(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as variant: The value of the accessor.</p>
+<a name="getAccessors"></a>
+<h3 class="membertitle">getAccessors</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the accessors array.  The method is created for an object with implementsObjectAccessor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">a = getAccessors(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>a</b> as array: The accessor array.</p>
+<a name="isAccessor"></a>
+<h3 class="membertitle">isAccessor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns true if the accessor exists.  The method is created for an object with implementsObjectAccessor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = isAccessor(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the accessor exists.</p>
+<a name="removeAccessor"></a>
+<h3 class="membertitle">removeAccessor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes the specified object from the accessor arrays.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void removeAccessor(
+
+)
+</p>
+<a name="sigterm"></a>
+<h3 class="membertitle">sigterm</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#object">object</a>
+</li>
+<li>
+<a href="#objectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a termination signal to the object.   This automatically invokes the destroy method.  The method is created for an object with addObjectDeconstructor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void sigterm(
+
+)
+</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
 </body>
 </html>

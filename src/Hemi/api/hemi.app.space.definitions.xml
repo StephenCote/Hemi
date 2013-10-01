@@ -1,4 +1,41 @@
-<source><name>Hemi.app.space.definitions</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework Project</url-title><url>/Hemi/</url></project><package><path>Hemi.app.space.definitions</path><library>Hemi</library><description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description><static-class><name>service</name><version>3.1.9</version><description>Static implementation of hemi.app.space.definitions.serviceImpl</description></static-class><class><name>service</name><version>3.1.9</version><description>This service defines space implementations for use by the Hemi Space Service.</description><method><name>clearDefinitions</name><description>Clears all definitions.</description></method><method><name>newDefinition</name><param name="aMatchNodes" type="array">Array of node names that should match the specified constructor.</param><param name="sNameSpace" type="String" optional="1">JavaScript Class namespace, such as MyCompany.MyLibrary.  If the value is "abstract", the definition is treated as a pass-through.</param><param name="sConstructor" type="String" optional="1">JavaScript Class constructor, such as MyClass.</param><param name="aParams" type="array" optional="1">Array of parameters to pass to the constructor.  The parameter values can use the Object Request Alias (ORA) for passing in node attribute values from the container (ora:attr_{name}), or object references such as the Space (space_element or space_object).  Refer to the internal Space _parseORAParam function for details.</param><param name="bSwitchContext" type="boolean" optional="1">Bit indicating that an XML or XHTML node is returned from the constructor, and that the Space service should continue processing into the new object context.</param><param name="sContextPath" type="String" optional="1">XPath to use to find the object context to switch into.</param><param name="sSwapName" type="String" optional="1">Element name to use (e.g.: span) to swap a custom node, such is import-xml, to contain valid XHTML markup.</param><return-value type="object" name="object">A new internal space definition.</return-value><description>Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</description></method>
-t.logDebug("Load definitions '" + a.match_ids.length + "'");
-this.logDebug("Defining '" + a.match_ids[i] + "'");
-</class></package><index><description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.app.space.definitions</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.app.space.definitions</path>
+<library>Hemi</library>
+<description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description>
+<static-class>
+<name>service</name>
+<version>3.5.1</version>
+<description>Static implementation of hemi.app.space.definitions.serviceImpl</description>
+</static-class>
+<class>
+<name>service</name>
+<version>3.5.1</version>
+<description>This service defines space implementations for use by the Hemi Space Service.</description>
+<method>
+<name>clearDefinitions</name>
+<description>Clears all definitions.</description>
+</method>
+<method>
+<name>newDefinition</name>
+<param name="aMatchNodes" type="array">Array of node names that should match the specified constructor.</param>
+<param name="sNameSpace" optional="1" type="String">JavaScript Class namespace, such as MyCompany.MyLibrary.  If the value is "abstract", the definition is treated as a pass-through.</param>
+<param name="sConstructor" optional="1" type="String">JavaScript Class constructor, such as MyClass.</param>
+<param name="aParams" optional="1" type="array">Array of parameters to pass to the constructor.  The parameter values can use the Object Request Alias (ORA) for passing in node attribute values from the container (ora:attr_{name}), or object references such as the Space (space_element or space_object).  Refer to the internal Space _parseORAParam function for details.</param>
+<param name="bSwitchContext" optional="1" type="boolean">Bit indicating that an XML or XHTML node is returned from the constructor, and that the Space service should continue processing into the new object context.</param>
+<param name="sContextPath" optional="1" type="String">XPath to use to find the object context to switch into.</param>
+<param name="sSwapName" optional="1" type="String">Element name to use (e.g.: span) to swap a custom node, such is import-xml, to contain valid XHTML markup.</param>
+<return-value name="object" type="object">A new internal space definition.</return-value>
+<description>Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</description>
+</method>
+</class>
+</package>
+<index><description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

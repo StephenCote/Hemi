@@ -1,1 +1,113 @@
-<source><name>Hemi.data.validator</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework</url-title><url>/Hemi/</url></project><package><path>Hemi.data.validator</path><library>Hemi</library><description>The Data Validator service applies patterns defined by Data Validator Definitions, and may be used for Virtual Forms from the Data Form service to validate against field values whose nodes may or may not exist.</description><static-class><name>service</name><description>Static instance of XHTMLValidatorImpl.</description><version>3.1.9</version></static-class><class><name>serviceImpl</name><description>A service for managing asynchronous and dependency-driven actions.</description><version>3.1.9</version><example implementation="1"><name>Example Implementation</name><description>This is an example of using the validator service to validate a form field.</description><code><![CDATA[<input type = "text" id = "oText" value = "my@ email.com" />]]></code><code><![CDATA[<script type = "text/javascript">]]></code><code>   var oT = document.getElementById("oText");</code><code>   // validate oText against the "email-address pattern</code><code>   var bValid = Hemi.data.validator.service.validateField(oT,"email-address");</code><code>   // obtain the error text for the "email-address" pattern.</code><code>   var sE = Hemi.data.validator.service.getValidationErrorText("email-address");</code><code>}</code><code><![CDATA[</script>]]></code></example><property type="String" get="1" internal="1"><name>object_id</name><description>Unique instance identifier.</description></property><property type="String" get="1" internal="1"><name>object_version</name><description>Version of the object class.</description></property><property type="String" get="1" internal="1"><name>object_type</name><description>The type of this object.</description></property><property type="int" get="1" internal="1"><name>ready_state</name><description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description></property><property type="object" get="1" internal="1"><name>object_config</name><description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description></property><method><name>getObjectId</name><return-value name="i" type="String">The unique object instance id.</return-value><description>Returns the unique id of the object.</description></method><method><name>getObjectType</name><return-value name="t" type="String">The type of the object instance.</return-value><description>Returns the type of the object.</description></method><method><name>getObjectVersion</name><return-value name="v" type="String">The version of the object instance.</return-value><description>Returns the version of the object.</description></method><method><name>getReadyState</name><return-value name="s" type="int">The object ready state.</return-value><description>Returns the state of the object.</description></method><method><name>getStatus</name><return-value name="o" type="object">The object_config.status substructure.</return-value><description>Returns the object_config.status sub structure.</description></method><method><name>getPointers</name><return-value name="o" type="object">The object_config.pointers substructure.</return-value><description>Returns the object_config.pointers sub structure.</description></method><method><name>getValidationErrorText</name><param type="variant" name="o">DOM Node the defines a <i>pattern-id</i> attribute, or a String representing a pattern identifier.</param><description>Returns the validation error text for the specified pattern id or based on the specified DOM Node.</description><return-value name="s" type="String">Validation error text.</return-value></method><method><name>getIsWebSafe</name><param type="object" name="o">DOM Node</param><description>Returns true if the field value validates against the <i>web-safe</i> pattern.</description><return-value name="b" type="boolean">Bit indicating whether the specified field value validated against the <i>web-safe</i> pattern.</return-value></method><method><name>validateField</name><param type="variant" name="o">DOM Node.  Any defined <i>pattern-id</i> attribute is used if a pattern id is not specified.</param><param type="String" name="i" optional="1">Pattern identifier.  If not specified, the DOM Node must define a <i>pattern-id</i>, or the field cannot be validated.</param><description>Returns true if the field value validates against the specified pattern, and returns true if no pattern is specified; otherwise returns false.</description><return-value name="b" type="boolean">Bit indicating whether the specified field value validated against the specified pattern.</return-value></method></class></package><index><description>The Data Validator service applies patterns defined by Data Validator Definitions, and may be used for Virtual Forms from the Data Form service to validate against field values whose nodes may or may not exist.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.data.validator</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.data.validator</path>
+<library>Hemi</library>
+<description>The Data Validator service applies patterns defined by Data Validator Definitions, and may be used for Virtual Forms from the Data Form service to validate against field values whose nodes may or may not exist.</description>
+<static-class>
+<name>service</name>
+<description>Static instance of XHTMLValidatorImpl.</description>
+<version>3.5.1</version>
+</static-class>
+<class>
+<name>serviceImpl</name>
+<description>A service for managing asynchronous and dependency-driven actions.</description>
+<version>3.5.1</version>
+<example implementation="1">
+<name>Example Implementation</name>
+<description>This is an example of using the validator service to validate a form field.</description>
+<code><![CDATA[<input type = "text" id = "oText" value = "my@ email.com" />]]></code>
+<code><![CDATA[<script type = "text/javascript">]]></code>
+<code>   var oT = document.getElementById("oText");</code>
+<code>   // validate oText against the "email-address pattern</code>
+<code>   var bValid = Hemi.data.validator.service.validateField(oT,"email-address");</code>
+<code>   // obtain the error text for the "email-address" pattern.</code>
+<code>   var sE = Hemi.data.validator.service.getValidationErrorText("email-address");</code>
+<code>}</code>
+<code><![CDATA[</script>]]></code>
+</example>
+<property get="1" internal="1" type="String">
+<name>object_id</name>
+<description>Unique instance identifier.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_version</name>
+<description>Version of the object class.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_type</name>
+<description>The type of this object.</description>
+</property>
+<property get="1" internal="1" type="int">
+<name>ready_state</name>
+<description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description>
+</property>
+<property get="1" internal="1" type="object">
+<name>object_config</name>
+<description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description>
+</property>
+<method>
+<name>getObjectId</name>
+<return-value name="i" type="String">The unique object instance id.</return-value>
+<description>Returns the unique id of the object.</description>
+</method>
+
+<method>
+<name>getObjectType</name>
+<return-value name="t" type="String">The type of the object instance.</return-value>
+<description>Returns the type of the object.</description>
+</method>
+
+<method>
+<name>getObjectVersion</name>
+<return-value name="v" type="String">The version of the object instance.</return-value>
+<description>Returns the version of the object.</description>
+</method>
+
+<method>
+<name>getReadyState</name>
+<return-value name="s" type="int">The object ready state.</return-value>
+<description>Returns the state of the object.</description>
+</method>
+
+<method>
+<name>getStatus</name>
+<return-value name="o" type="object">The object_config.status substructure.</return-value>
+<description>Returns the object_config.status sub structure.</description>
+</method>
+
+<method>
+<name>getPointers</name>
+<return-value name="o" type="object">The object_config.pointers substructure.</return-value>
+<description>Returns the object_config.pointers sub structure.</description>
+</method>
+
+<method>
+<name>getValidationErrorText</name>
+<param name="o" type="variant">DOM Node the defines a <i>pattern-id</i> attribute, or a String representing a pattern identifier.</param>
+<description>Returns the validation error text for the specified pattern id or based on the specified DOM Node.</description>
+<return-value name="s" type="String">Validation error text.</return-value>
+</method>
+<method>
+<name>getIsWebSafe</name>
+<param name="o" type="object">DOM Node</param>
+<description>Returns true if the field value validates against the <i>web-safe</i> pattern.</description>
+<return-value name="b" type="boolean">Bit indicating whether the specified field value validated against the <i>web-safe</i> pattern.</return-value>
+</method>
+<method>
+<name>validateField</name>
+<param name="o" type="variant">DOM Node.  Any defined <i>pattern-id</i> attribute is used if a pattern id is not specified.</param>
+<param name="i" optional="1" type="String">Pattern identifier.  If not specified, the DOM Node must define a <i>pattern-id</i>, or the field cannot be validated.</param>
+<description>Returns true if the field value validates against the specified pattern, and returns true if no pattern is specified; otherwise returns false.</description>
+<return-value name="b" type="boolean">Bit indicating whether the specified field value validated against the specified pattern.</return-value>
+</method>
+</class>
+</package>
+<index><description>The Data Validator service applies patterns defined by Data Validator Definitions, and may be used for Virtual Forms from the Data Form service to validate against field values whose nodes may or may not exist.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

@@ -1,78 +1,670 @@
-﻿
 <html>
 <head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>API Hemi.util.thread Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css" />
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
 </head>
 <body>
-<h1>Hemi JavaScript Framework</h1><h2>Hemi.util.thread</h2><ul class="top-nav"><li><a href="/Hemi/">Hemi JavaScript Framework</a></li><li><a href="Hemi_api.html">API Index</a></li></ul><h3>Description</h3><p>The Thread class provides a psuedo-thread implementation for Framework Objects.  Each thread is sensitive to the object lifecycle, and can stop itself when the object is destroyed or when the framework is shutdown.</p><a name="classindex"> </a><h3>Class Index</h3><ul class="index"><li><a href="#Thread"><i>static </i>Hemi.util.thread.Thread</a>: Creates a psuedo asynchronous thread.</li><li><a href="#ThreadInstance">Hemi.util.thread.ThreadInstance</a>: A psuedo thread that is created by invoking the static thread class newInstance method.</li></ul><a name="Thread"> </a><h3 class="membertitle"><i>static </i>Hemi.util.thread.Thread</h3><h4>version </h4><p class="desc">Creates a psuedo asynchronous thread.</p><p class="desc">
-See <a href="#Example Thread #1">Example Thread #1</a> for an example of implementating the script on a page. </p><h3>Index</h3><a name="Threadexampleindex"> </a><h4>Example Index</h4><ul class="index"><li><a href="#Example Thread #1">Example Thread #1</a>: Demonstrate how to use the Thread component.</li></ul><a name="Threadmethodindex"> </a><h4>Method Index</h4><ul class="index"><li>public <a href="#newInstance">newInstance</a>: Creates a new instance of a psuedo thread.  The thread is bound to the object lifetime of the specified object, so that when the object is explicitly destroyed or removed from the ObjectRegistry, the thread will also terminate.</li></ul><h3>Examples</h3><a name="Example Thread #1"></a><h3 class="membertitle">Example Thread #1</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#Thread">Thread</a></li><li><a href="#Threadexampleindex">Examples</a></li></ul><p class="exampledesc">Demonstrate how to use the Thread component.</p><h4>Example Code</h4><pre class="example">
-var MyThreadedObject = {
-   handle_thread_run : function(oThread){
-      /* basic demo */
-      document.title = (new Date()).getTime();
-   }
-};
-/* Prepare the MyThreadedObject for use with Engine */
-Hemi.prepareObject("CustomThread","1.0",true,MyThreadedObject);
-/* Create a new thread for MyThreadedObject*/
-var oThread = Hemi.util.thread.newInstance(MyThreadedObject);
-/* run the thread every 5 seconds */
-oThread.run(5000);</pre><h3>Methods</h3><a name="newInstance"></a><h3 class="membertitle">newInstance</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#Thread">Thread</a></li><li><a href="#Threadmethodindex">Methods</a></li></ul><p class="methoddesc">Creates a new instance of a psuedo thread.  The thread is bound to the object lifetime of the specified object, so that when the object is explicitly destroyed or removed from the ObjectRegistry, the thread will also terminate.</p><h4>Syntax</h4><p class="methodsyntax">t = newInstance(
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.util.thread</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Thread class provides a psuedo-thread implementation for Framework Objects.  Each thread is sensitive to the object lifecycle, and can stop itself when the object is destroyed or when the framework is shutdown.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#Thread"><i>static </i>Hemi.util.thread.Thread</a>: Creates a psuedo asynchronous thread.</li>
+<li>
+<a href="#ThreadInstance">Hemi.util.thread.ThreadInstance</a>: A psuedo thread that is created by invoking the static thread class newInstance method.</li>
+</ul>
+<a name="Thread"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.util.thread.Thread</h3>
+<h4>version </h4>
+<p class="desc">Creates a psuedo asynchronous thread.</p>
+<p class="desc">
+See <a href="#Example Thread #1">Example Thread #1</a> for an example of implementating the script on a page. </p>
+<h3>Index</h3>
+<a name="Threadexampleindex"> </a>
+<h4>Example Index</h4>
+<ul class="index">
+<li>
+<a href="#Example Thread #1">Example Thread #1</a>: Demonstrate how to use the Thread component.</li>
+</ul>
+<a name="Threadmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#newInstance">newInstance</a>: Creates a new instance of a psuedo thread.  The thread is bound to the object lifetime of the specified object, so that when the object is explicitly destroyed or removed from the ObjectRegistry, the thread will also terminate.</li>
+</ul>
+<h3>Examples</h3>
+<a name="Example Thread #1"></a>
+<h3 class="membertitle">Example Thread #1</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#Thread">Thread</a>
+</li>
+<li>
+<a href="#Threadexampleindex">Examples</a>
+</li>
+</ul>
+<p class="exampledesc">Demonstrate how to use the Thread component.</p>
+<h4>Example Code</h4>
+<pre class="example">var MyThreadedObject = {   handle_thread_run : function(oThread){      /* basic demo */      document.title = (new Date()).getTime();   }};/* Prepare the MyThreadedObject for use with Engine */Hemi.prepareObject("CustomThread","1.0",true,MyThreadedObject);/* Create a new thread for MyThreadedObject*/var oThread = Hemi.util.thread.newInstance(MyThreadedObject);/* run the thread every 5 seconds */oThread.run(5000);</pre>
+<h3>Methods</h3>
+<a name="newInstance"></a>
+<h3 class="membertitle">newInstance</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#Thread">Thread</a>
+</li>
+<li>
+<a href="#Threadmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new instance of a psuedo thread.  The thread is bound to the object lifetime of the specified object, so that when the object is explicitly destroyed or removed from the ObjectRegistry, the thread will also terminate.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = newInstance(
 o
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>o</b> as object : A registered object.</li></ul><h4>Returns</h4><p class="returnvalue"><b>t</b> as Thread: A new ThreadInstance.</p><a name="ThreadInstance"> </a><h3 class="membertitle">Hemi.util.thread.ThreadInstance</h3><h4>version </h4><p class="desc">A psuedo thread that is created by invoking the static thread class newInstance method.</p><p class="desc"></p><h3>Index</h3><a name="ThreadInstancepropertyindex"> </a><h4>Property Index</h4><ul class="index"><li>public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: object_config.pointers and object_config.status.</li><li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li><li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li><li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li><li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li></ul><a name="ThreadInstancemethodindex"> </a><h4>Method Index</h4><ul class="index"><li>public <a href="#allStop">allStop</a>: Invokes the stop method and prevents the thread from further execution.</li><li>public <a href="#destroy">destroy</a>: Prepares the object for destruction.</li><li>public <a href="#getIsRunnable">getIsRunnable</a>: Returns true if the thread can be run.</li><li>public <a href="#getIsRunning">getIsRunning</a>: Returns true if the thread is running, false otherwise.</li><li>public <a href="#getLastInterval">getLastInterval</a>: Returns the delay interval used to start the thread.</li><li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li><li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li><li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li><li>public <a href="#getPointers">getPointers</a>: Returns the object_config.pointers sub structure.</li><li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li><li>public <a href="#getStatus">getStatus</a>: Returns the object_config.status sub structure.</li><li>virtual <a href="#handle_thread_run">handle_thread_run</a>: Invoked when the thread is running an iteration.</li><li>virtual <a href="#handle_thread_start">handle_thread_start</a>: Invoked when the thread is starting.</li><li>virtual <a href="#handle_thread_stop">handle_thread_stop</a>: Invoked when the thread is shutting down.</li><li>public <a href="#restart">restart</a>: Restarts the thread interval.</li><li>public <a href="#run">run</a>: Runs the thread with the specifed delay.</li><li>public <a href="#stop">stop</a>: Stops the thread.</li></ul><h3>Properties</h3><a name="object_config"></a><h3 class="membertitle">object_config</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancepropertyindex">Properties</a></li></ul><p class="propertydesc">Object API structure for storing sub structures: object_config.pointers and object_config.status.</p><h4>Syntax</h4><p class="propertysyntax">object = <i>object</i>.object_config</p><a name="object_id"></a><h3 class="membertitle">object_id</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancepropertyindex">Properties</a></li></ul><p class="propertydesc">Unique instance identifier.</p><h4>Syntax</h4><p class="propertysyntax">String = <i>object</i>.object_id</p><a name="object_type"></a><h3 class="membertitle">object_type</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancepropertyindex">Properties</a></li></ul><p class="propertydesc">The type of this object.</p><h4>Syntax</h4><p class="propertysyntax">String = <i>object</i>.object_type</p><a name="object_version"></a><h3 class="membertitle">object_version</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancepropertyindex">Properties</a></li></ul><p class="propertydesc">Version of the object class.</p><h4>Syntax</h4><p class="propertysyntax">String = <i>object</i>.object_version</p><a name="ready_state"></a><h3 class="membertitle">ready_state</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancepropertyindex">Properties</a></li></ul><p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p><h4>Syntax</h4><p class="propertysyntax">int = <i>object</i>.ready_state</p><h3>Methods</h3><a name="allStop"></a><h3 class="membertitle">allStop</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Invokes the stop method and prevents the thread from further execution.</p><h4>Syntax</h4><p class="methodsyntax">void allStop(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A registered object.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as Thread: A new ThreadInstance.</p>
+<a name="ThreadInstance"> </a>
+<h3 class="membertitle">Hemi.util.thread.ThreadInstance</h3>
+<h4>version </h4>
+<p class="desc">A psuedo thread that is created by invoking the static thread class newInstance method.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="ThreadInstancepropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: object_config.pointers and object_config.status.</li>
+<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
+<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
+<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
+<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
+</ul>
+<a name="ThreadInstancemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#allStop">allStop</a>: Invokes the stop method and prevents the thread from further execution.</li>
+<li>public <a href="#destroy">destroy</a>: Prepares the object for destruction.</li>
+<li>public <a href="#getIsRunnable">getIsRunnable</a>: Returns true if the thread can be run.</li>
+<li>public <a href="#getIsRunning">getIsRunning</a>: Returns true if the thread is running, false otherwise.</li>
+<li>public <a href="#getLastInterval">getLastInterval</a>: Returns the delay interval used to start the thread.</li>
+<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
+<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
+<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
+<li>public <a href="#getPointers">getPointers</a>: Returns the object_config.pointers sub structure.</li>
+<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
+<li>public <a href="#getStatus">getStatus</a>: Returns the object_config.status sub structure.</li>
+<li>virtual <a href="#handle_thread_run">handle_thread_run</a>: Invoked when the thread is running an iteration.</li>
+<li>virtual <a href="#handle_thread_start">handle_thread_start</a>: Invoked when the thread is starting.</li>
+<li>virtual <a href="#handle_thread_stop">handle_thread_stop</a>: Invoked when the thread is shutting down.</li>
+<li>public <a href="#restart">restart</a>: Restarts the thread interval.</li>
+<li>public <a href="#run">run</a>: Runs the thread with the specifed delay.</li>
+<li>public <a href="#stop">stop</a>: Stops the thread.</li>
+</ul>
+<h3>Properties</h3>
+<a name="object_config"></a>
+<h3 class="membertitle">object_config</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object API structure for storing sub structures: object_config.pointers and object_config.status.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">object = <i>object</i>.object_config</p>
+<a name="object_id"></a>
+<h3 class="membertitle">object_id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique instance identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_id</p>
+<a name="object_type"></a>
+<h3 class="membertitle">object_type</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The type of this object.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_type</p>
+<a name="object_version"></a>
+<h3 class="membertitle">object_version</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Version of the object class.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_version</p>
+<a name="ready_state"></a>
+<h3 class="membertitle">ready_state</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">int = <i>object</i>.ready_state</p>
+<h3>Methods</h3>
+<a name="allStop"></a>
+<h3 class="membertitle">allStop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes the stop method and prevents the thread from further execution.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void allStop(
 
 )
-</p><a name="destroy"></a><h3 class="membertitle">destroy</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Prepares the object for destruction.</p><h4>Syntax</h4><p class="methodsyntax">void destroy(
+</p>
+<a name="destroy"></a>
+<h3 class="membertitle">destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Prepares the object for destruction.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void destroy(
 
 )
-</p><a name="getIsRunnable"></a><h3 class="membertitle">getIsRunnable</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns true if the thread can be run.</p><h4>Syntax</h4><p class="methodsyntax">b = getIsRunnable(
+</p>
+<a name="getIsRunnable"></a>
+<h3 class="membertitle">getIsRunnable</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns true if the thread can be run.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getIsRunnable(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the thread can be run.</p><a name="getIsRunning"></a><h3 class="membertitle">getIsRunning</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns true if the thread is running, false otherwise.</p><h4>Syntax</h4><p class="methodsyntax">b = getIsRunning(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the thread can be run.</p>
+<a name="getIsRunning"></a>
+<h3 class="membertitle">getIsRunning</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns true if the thread is running, false otherwise.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getIsRunning(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the thread is running.</p><a name="getLastInterval"></a><h3 class="membertitle">getLastInterval</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the delay interval used to start the thread.</p><h4>Syntax</h4><p class="methodsyntax">i = getLastInterval(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the thread is running.</p>
+<a name="getLastInterval"></a>
+<h3 class="membertitle">getLastInterval</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the delay interval used to start the thread.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getLastInterval(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>i</b> as int: The interval in milliseconds used to start the thread.</p><a name="getObjectId"></a><h3 class="membertitle">getObjectId</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the unique id of the object.</p><h4>Syntax</h4><p class="methodsyntax">i = getObjectId(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as int: The interval in milliseconds used to start the thread.</p>
+<a name="getObjectId"></a>
+<h3 class="membertitle">getObjectId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the unique id of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getObjectId(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>i</b> as String: The unique object instance id.</p><a name="getObjectType"></a><h3 class="membertitle">getObjectType</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the type of the object.</p><h4>Syntax</h4><p class="methodsyntax">t = getObjectType(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The unique object instance id.</p>
+<a name="getObjectType"></a>
+<h3 class="membertitle">getObjectType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the type of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getObjectType(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>t</b> as String: The type of the object instance.</p><a name="getObjectVersion"></a><h3 class="membertitle">getObjectVersion</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the version of the object.</p><h4>Syntax</h4><p class="methodsyntax">v = getObjectVersion(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as String: The type of the object instance.</p>
+<a name="getObjectVersion"></a>
+<h3 class="membertitle">getObjectVersion</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the version of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getObjectVersion(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>v</b> as String: The version of the object instance.</p><a name="getPointers"></a><h3 class="membertitle">getPointers</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the object_config.pointers sub structure.</p><h4>Syntax</h4><p class="methodsyntax">o = getPointers(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as String: The version of the object instance.</p>
+<a name="getPointers"></a>
+<h3 class="membertitle">getPointers</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object_config.pointers sub structure.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getPointers(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>o</b> as object: The object_config.pointers substructure.</p><a name="getReadyState"></a><h3 class="membertitle">getReadyState</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the state of the object.</p><h4>Syntax</h4><p class="methodsyntax">s = getReadyState(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object_config.pointers substructure.</p>
+<a name="getReadyState"></a>
+<h3 class="membertitle">getReadyState</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the state of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReadyState(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>s</b> as int: The object ready state.</p><a name="getStatus"></a><h3 class="membertitle">getStatus</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Returns the object_config.status sub structure.</p><h4>Syntax</h4><p class="methodsyntax">o = getStatus(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as int: The object ready state.</p>
+<a name="getStatus"></a>
+<h3 class="membertitle">getStatus</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object_config.status sub structure.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getStatus(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>o</b> as object: The object_config.status substructure.</p><a name="handle_thread_run"></a><h3 class="membertitle">handle_thread_run</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Invoked when the thread is running an iteration. Method is virtual and can be overridden.</p><h4>Syntax</h4><p class="methodsyntax">void handle_thread_run(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object_config.status substructure.</p>
+<a name="handle_thread_run"></a>
+<h3 class="membertitle">handle_thread_run</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when the thread is running an iteration. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_thread_run(
 t
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>t</b> as ThreadInstance : An instance of a pseudo thread.</li></ul><a name="handle_thread_start"></a><h3 class="membertitle">handle_thread_start</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Invoked when the thread is starting. Method is virtual and can be overridden.</p><h4>Syntax</h4><p class="methodsyntax">void handle_thread_start(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>t</b> as ThreadInstance : An instance of a pseudo thread.</li>
+</ul>
+<a name="handle_thread_start"></a>
+<h3 class="membertitle">handle_thread_start</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when the thread is starting. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_thread_start(
 t
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>t</b> as ThreadInstance : An instance of a pseudo thread.</li></ul><a name="handle_thread_stop"></a><h3 class="membertitle">handle_thread_stop</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Invoked when the thread is shutting down. Method is virtual and can be overridden.</p><h4>Syntax</h4><p class="methodsyntax">void handle_thread_stop(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>t</b> as ThreadInstance : An instance of a pseudo thread.</li>
+</ul>
+<a name="handle_thread_stop"></a>
+<h3 class="membertitle">handle_thread_stop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when the thread is shutting down. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_thread_stop(
 t
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>t</b> as ThreadInstance : An instance of a pseudo thread.</li></ul><a name="restart"></a><h3 class="membertitle">restart</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Restarts the thread interval.</p><h4>Syntax</h4><p class="methodsyntax">b = restart(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>t</b> as ThreadInstance : An instance of a pseudo thread.</li>
+</ul>
+<a name="restart"></a>
+<h3 class="membertitle">restart</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Restarts the thread interval.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = restart(
 
 )
-</p><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the thread was restarted.</p><a name="run"></a><h3 class="membertitle">run</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Runs the thread with the specifed delay.</p><h4>Syntax</h4><p class="methodsyntax">b = run(
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the thread was restarted.</p>
+<a name="run"></a>
+<h3 class="membertitle">run</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Runs the thread with the specifed delay.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = run(
 <i>d</i>, <i>b</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>d</b> as int <i>(optional)</i>: Delay in execution between thread iterations.</li><li><b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the virtual handle_thread_stop method should be suppressed.</li></ul><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the thread started running.</p><a name="stop"></a><h3 class="membertitle">stop</h3><ul class="nav"><li><a href="#">Top</a></li><li><a href="#classindex">Class Index</a></li><li><a href="#ThreadInstance">ThreadInstance</a></li><li><a href="#ThreadInstancemethodindex">Methods</a></li></ul><p class="methoddesc">Stops the thread.</p><h4>Syntax</h4><p class="methodsyntax">b = stop(
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>d</b> as int <i>(optional)</i>: Delay in execution between thread iterations.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the virtual handle_thread_stop method should be suppressed.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the thread started running.</p>
+<a name="stop"></a>
+<h3 class="membertitle">stop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ThreadInstance">ThreadInstance</a>
+</li>
+<li>
+<a href="#ThreadInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Stops the thread.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = stop(
 <i>b</i>
 )
-</p><h4>Parameters</h4><ul class="methodparams"><li><b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the virtual handle_thread_stop method should be suppressed.</li></ul><h4>Returns</h4><p class="returnvalue"><b>b</b> as boolean: Bit indicating whether the thread was stopped.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2011. ]</p>
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the virtual handle_thread_stop method should be suppressed.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the thread was stopped.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
 </body>
 </html>

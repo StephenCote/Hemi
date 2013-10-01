@@ -1,1 +1,33 @@
-<source><name>Hemi.text</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework Project</url-title><url>/Hemi/</url></project><package><path>Hemi</path><library>Hemi</library><description>The text class includes Text node and String manipulation utilities.</description><static-class><name>text</name><version>3.1.9</version><description>Hemi framework utilities</description><method><name>trim</name><param name="sString" type="String">Input text value.</param><return-value name="sTrimmed" type="String">Trimmed text value.</return-value><description>Trims whitespace from the beginning and end of the input string value.</description></method></static-class></package><index><description>The text class includes Text node and String manipulation utilities.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.text</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi</path>
+<library>Hemi</library>
+<description>The text class includes Text node and String manipulation utilities.</description>
+<static-class>
+<name>text</name>
+<version>3.5.1</version>
+<description>Hemi framework utilities</description>
+<method>
+<name>trim</name>
+<param name="sString" type="String">Input text value.</param>
+<return-value name="sTrimmed" type="String">Trimmed text value.</return-value>
+<description>Trims whitespace from the beginning and end of the input string value.</description>
+</method>
+<method>
+<name>pad</name>
+<param name="intVal" type="int">Integer value</param>
+<param name="lengthVal" type="int">Length of the padded value</param>
+<return-value name="sPadded" type="String">A string representing the padded integer.</return-value>
+<description>Trims whitespace from the beginning and end of the input string value.</description>
+</method>
+</static-class>
+</package>
+<index><description>The text class includes Text node and String manipulation utilities.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

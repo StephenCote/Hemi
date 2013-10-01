@@ -1,4 +1,429 @@
-<source><name>Hemi.ui.wideselect</name><project><name>Hemi JavaScript Framework</name><url-title>Hemi JavaScript Framework</url-title><url>/Hemi/</url></project><package><path>Hemi.ui.wideselect</path><library>Hemi</library><description>The WideSelect control is a list control which supports buffered and paginated presentation.</description><static-class><name>WideSelect</name><version>3.1.9</version><description>Control for buffering and paging large sets of data for display.</description><version>3.1.9</version><method><name>newInstance</name><param name="o" type="HTMLNode">Parent HTML Node in which the control will be created.</param><param name="cf" type="function" optional="1">Click event handler.</param><param name="pf" type="function" optional="1">Paginate event handler.</param><description>Creates a new WideSelectInstance object.</description><return-value name="u" type="WideSelectInstance">Instance of a WideSelect control.</return-value></method></static-class><class><name>WideSelectItem</name><version>3.1.9</version><description>Object representing an item in the WideSelect control.</description><property type="String" get="1" set="1"><name>name</name><description>Visible name of the item.</description></property><property type="variant" get="1" set="1"><name>data</name><description>The data referenced or held by the item.</description></property><property type="HTMLNode" get="1" private="1" internal="1"><name>object</name><description>The HTML object used to display the item.</description></property><property type="String" get="1"><name>id</name><description>Unique identifier.</description></property><property type="integer" get="1"><name>index</name><description>Index of this item in the items array.</description></property></class><class><name>ImportPageItem</name><version>3.1.9</version><description>Object construct used to bulk load paginated items.</description><property type="String" get="1" set="1"><name>label</name><description>Name of the item.</description></property><property type="String" get="1" set="1"><name>id</name><description>Unique identifier</description></property><property type="variant" get="1" private="1" internal="1"><name>value</name><description>Value of the item.</description></property><property type="integer" get="1"><name>index</name><description>Index of this item in the items array.</description></property></class><class><name>WideSelectInstance</name><version>3.1.9</version><description>A buffering and pagination control for displaying large and incremental sets of data.</description><property type="String" get="1" internal="1"><name>object_id</name><description>Unique instance identifier.</description></property><property type="String" get="1" internal="1"><name>object_version</name><description>Version of the object class.</description></property><property type="String" get="1" internal="1"><name>object_type</name><description>The type of this object.</description></property><property type="int" get="1" internal="1"><name>ready_state</name><description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description></property><property type="object" get="1" internal="1"><name>object_config</name><description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description></property><method><name>getObjectId</name><return-value name="i" type="String">The unique object instance id.</return-value><description>Returns the unique id of the object.</description></method><method><name>getObjectType</name><return-value name="t" type="String">The type of the object instance.</return-value><description>Returns the type of the object.</description></method><method><name>getObjectVersion</name><return-value name="v" type="String">The version of the object instance.</return-value><description>Returns the version of the object.</description></method><method><name>getReadyState</name><return-value name="s" type="int">The object ready state.</return-value><description>Returns the state of the object.</description></method><message><name>onbuffercommitted</name><param name="o" type="WideSelectInstance">The WideSelect control for which the buffer was committed.</param><description>Message published to all subscribers when a buffered resultset was committed; being completely rendered and/or paginated.</description></message><message><name>onresultclick</name><param name="o" type="WideSelectInstance">The WideSelect control for which the item state was changed.</param><description>Message published to all subscribers when the state changes for a WideSelectItem object.</description></message><method virtual="1"><name>handle_pagenavigate</name><param name="s" type="String">Static parameter: <i>onpagenavigate</i>.</param><param name="i" type="integer">Current page index.</param><description>Handler is specified in the WideSelectInstance constructor; <i>newInstance</i>.</description></method><method><name>getPointers</name><return-value name="o" type="object">The object_config.pointers substructure.</return-value><description>Returns the object_config.pointers sub structure.</description></method><method><name>setMultiple</name><param name="b" type="boolean">Bit indicating whether multiple selection is enabled.</param><description>Sets whether multiple selection is enabled.</description></method><method><name>getMultiple</name><return-value name="b" type="boolean">Bit indicating whether multiple selection is enabled.</return-value><description>Returns whether multiple selection is enabled.</description></method><method><name>setMaximumItems</name><param name="i" type="integer">Maximum number of items supported by the control.</param><description>Sets the maximum number of items supported by the control.   Specify zero to indicate no limit.  Any items over the maximum when rollover is enabled will cause the top-most item to be removed.  When rollover is disabled, the addItem method will fail on the last item.</description></method><method><name>getMaximumItems</name><return-value name="i" type="integer">Maximum number of items supported by the control.  Zero indicates no limit.</return-value><description>Returns the maximum number of items supported by the control.</description></method><method><name>setMaximumPageItems</name><param name="i" type="integer">Maximum number of items to be displayed per page.</param><description>Sets the maximum number of items displayed per page, if paging is enabled.</description></method><method><name>getMaximumPageItems</name><return-value name="i" type="integer">Maximum number of items displayed per page.</return-value><description>Returns the maximum number of items to display per page, if paging is enabled.</description></method><method><name>getCurrentPageItemCount</name><return-value name="i" type="integer">Number of items in the current page.</return-value><description>Returns the number of items in the current page.</description></method><method><name>getContainer</name><return-value name="o" type="HTMLNode">HTML Node in which the control is created.</return-value><description>Returns the the HTML Node in which the control is created.</description></method><method><name>getBufferMark</name><return-value name="i" type="integer">Current insert position in the buffer.</return-value><description>Returns the current position in the buffer, after which additional items will be rendered.</description></method><method><name>setResultHandler</name><param name="f" type="function">Function pointer to click handler.</param><description>Specifies the handler to invoke when a result item is activated.</description></method><method><name>getBufferSize</name><return-value name="i" type="integer">Current size of the buffer.</return-value><description>Returns the current size of the buffer.</description></method><method><name>getItemSize</name><return-value name="i" type="integer">Count of all rendered and paginated items.</return-value><description>Returns the current size of all items in the control.</description></method><method><name>getItems</name><return-value name="a" type="Array">Array of WideSelectItem objects.</return-value><description>Returns an array of WideSelectItem objects.</description></method><method><name>getItem</name><param name="i" type="integer">Index of WideSelectItem in items array.</param><return-value name="o" type="WideSelectItem">WideSelectItem object.</return-value><description>Returns the WideSelectItem object at the specified index.</description></method><method><name>getActiveItem</name><return-value name="o" type="WideSelectItem">WideSelectItem object.</return-value><description>Returns the selected WideSelectItem object.</description></method><method><name>setCanRequest</name><param name="b" type="boolean">Bit indicating whether the control can be requested.</param><description>Specifies whether the WideSelect control can be requested.  The request featureset is used when the control is a pop-up or conditionally visible.</description></method><method><name>setIsPaging</name><param name="b" type="boolean">Bit indicating whether the control is in paging mode.</param><description>Specifies whether the WideSelect control is in paging mode.  Changing this value will clear paged items, and the control will need to be repopulated.</description></method><method><name>getIsPaging</name><return-value name="b" type="boolean">Bit indicating whether the control is in paging mode.</return-value><description>Returns whether the WideSelect control is in paging mode.</description></method><method><name>setPageStop</name><param name="b" type="boolean">Bit indicating whether the control should stop expecting more data.</param><description>Specifies whether the WideSelect control should stop expecting more data, when in paging mode.</description></method><method><name>getPageStop</name><return-value name="b" type="boolean">Bit indicating whether the control is no longer expecting additional data.</return-value><description>Returns whether the WideSelect control is no longer expecting data.</description></method><method><name>setAutoCommit</name><param name="b" type="boolean">Bit indicating whether the control will automatically render items as they are added.</param><description>Specifies whether the WideSelect control should render items as they are added.  If buffering is enabled, items will automatically begin rendering.</description></method><method><name>setAutoScroll</name><param name="b" type="boolean">Bit indicating whether the control will automatically scroll to the last rendered item.</param><description>Specifies whether the WideSelect control will automatically scroll to the last rendered item.</description></method><method><name>setAutoSelect</name><param name="b" type="boolean">Bit indicating whether the control will automatically select the last rendered item.</param><description>Specifies whether the WideSelect control will automatically select the last rendered item.</description></method><method><name>setMaximumRollover</name><param name="b" type="boolean">Bit indicating whether the control will rollover when the maximum number of items is reached.</param><description>Specifies whether the WideSelect control will rollover when the maximum number of items is reached; deleting the first item and adding the new item to the end.  If disabled and a maximum limit is stipulated, then new items won't be added.</description></method><method><name>deselectAllItems</name><description>Deselects all selected items in the WideSelect control.</description></method><method internal="1" private="1"><name>init</name><description>Initializes the WideSelect control.</description></method>
+<?xml version="1.0" encoding="UTF-16"?>
+<source>
+<name>Hemi.ui.wideselect</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.ui.wideselect</path>
+<library>Hemi</library>
+<description>The WideSelect control is a list control which supports buffered and paginated presentation.</description>
+<static-class>
+<name>WideSelect</name>
+<version>3.5.1</version>
+<description>Control for buffering and paging large sets of data for display.</description>
+<version>3.5.1</version>
+<method>
+<name>newInstance</name>
+<param name="o" type="HTMLNode">Parent HTML Node in which the control will be created.</param>
+<param name="cf" optional="1" type="function">Click event handler.</param>
+<param name="pf" optional="1" type="function">Paginate event handler.</param>
+<description>Creates a new WideSelectInstance object.</description>
+<return-value name="u" type="WideSelectInstance">Instance of a WideSelect control.</return-value>
+</method>
+</static-class>
+<class>
+<name>WideSelectItem</name>
+<version>3.5.1</version>
+<description>Object representing an item in the WideSelect control.</description>
+<property get="1" set="1" type="String">
+<name>name</name>
+<description>Visible name of the item.</description>
+</property>
+<property get="1" set="1" type="variant">
+<name>data</name>
+<description>The data referenced or held by the item.</description>
+</property>
+<property get="1" internal="1" private="1" type="HTMLNode">
+<name>object</name>
+<description>The HTML object used to display the item.</description>
+</property>
+<property get="1" type="String">
+<name>id</name>
+<description>Unique identifier.</description>
+</property>
+<property get="1" type="integer">
+<name>index</name>
+<description>Index of this item in the items array.</description>
+</property>
+</class>
+<class>
+<name>ImportPageItem</name>
+<version>3.5.1</version>
+<description>Object construct used to bulk load paginated items.</description>
+<property get="1" set="1" type="String">
+<name>label</name>
+<description>Name of the item.</description>
+</property>
+<property get="1" set="1" type="String">
+<name>id</name>
+<description>Unique identifier</description>
+</property>
+<property get="1" internal="1" private="1" type="variant">
+<name>value</name>
+<description>Value of the item.</description>
+</property>
+<property get="1" type="integer">
+<name>index</name>
+<description>Index of this item in the items array.</description>
+</property>
+</class>
+<class>
+<name>WideSelectInstance</name>
+<version>3.5.1</version>
+<description>A buffering and pagination control for displaying large and incremental sets of data.</description>
+<property get="1" internal="1" type="String">
+<name>object_id</name>
+<description>Unique instance identifier.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_version</name>
+<description>Version of the object class.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_type</name>
+<description>The type of this object.</description>
+</property>
+<property get="1" internal="1" type="int">
+<name>ready_state</name>
+<description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description>
+</property>
+<property get="1" internal="1" type="object">
+<name>object_config</name>
+<description>Object API structure for storing sub structures: object_config.pointers and object_config.status.</description>
+</property>
+<method>
+<name>getObjectId</name>
+<return-value name="i" type="String">The unique object instance id.</return-value>
+<description>Returns the unique id of the object.</description>
+</method>
+
+<method>
+<name>getObjectType</name>
+<return-value name="t" type="String">The type of the object instance.</return-value>
+<description>Returns the type of the object.</description>
+</method>
+
+<method>
+<name>getObjectVersion</name>
+<return-value name="v" type="String">The version of the object instance.</return-value>
+<description>Returns the version of the object.</description>
+</method>
+
+<method>
+<name>getReadyState</name>
+<return-value name="s" type="int">The object ready state.</return-value>
+<description>Returns the state of the object.</description>
+</method>
+
+<message>
+<name>onbuffercommitted</name>
+<param name="o" type="WideSelectInstance">The WideSelect control for which the buffer was committed.</param>
+<description>Message published to all subscribers when a buffered resultset was committed; being completely rendered and/or paginated.</description>
+</message>
+<message>
+<name>onresultclick</name>
+<param name="o" type="WideSelectInstance">The WideSelect control for which the item state was changed.</param>
+<description>Message published to all subscribers when the state changes for a WideSelectItem object.</description>
+</message>
+<method virtual="1">
+<name>handle_pagenavigate</name>
+<param name="s" type="String">Static parameter: <i>onpagenavigate</i>.</param>
+<param name="i" type="integer">Current page index.</param>
+<description>Handler is specified in the WideSelectInstance constructor; <i>newInstance</i>.</description>
+</method>
+<method>
+<name>getPointers</name>
+<return-value name="o" type="object">The object_config.pointers substructure.</return-value>
+<description>Returns the object_config.pointers sub structure.</description>
+</method>
+<method>
+<name>setMultiple</name>
+<param name="b" type="boolean">Bit indicating whether multiple selection is enabled.</param>
+<description>Sets whether multiple selection is enabled.</description>
+</method>
+<method>
+<name>getMultiple</name>
+<return-value name="b" type="boolean">Bit indicating whether multiple selection is enabled.</return-value>
+<description>Returns whether multiple selection is enabled.</description>
+</method>
+<method>
+<name>setMaximumItems</name>
+<param name="i" type="integer">Maximum number of items supported by the control.</param>
+<description>Sets the maximum number of items supported by the control.   Specify zero to indicate no limit.  Any items over the maximum when rollover is enabled will cause the top-most item to be removed.  When rollover is disabled, the addItem method will fail on the last item.</description>
+</method>
+<method>
+<name>getMaximumItems</name>
+<return-value name="i" type="integer">Maximum number of items supported by the control.  Zero indicates no limit.</return-value>
+<description>Returns the maximum number of items supported by the control.</description>
+</method>
+<method>
+<name>setMaximumPageItems</name>
+<param name="i" type="integer">Maximum number of items to be displayed per page.</param>
+<description>Sets the maximum number of items displayed per page, if paging is enabled.</description>
+</method>
+<method>
+<name>getMaximumPageItems</name>
+<return-value name="i" type="integer">Maximum number of items displayed per page.</return-value>
+<description>Returns the maximum number of items to display per page, if paging is enabled.</description>
+</method>
+<method>
+<name>getCurrentPageItemCount</name>
+<return-value name="i" type="integer">Number of items in the current page.</return-value>
+<description>Returns the number of items in the current page.</description>
+</method>
+<method>
+<name>getContainer</name>
+<return-value name="o" type="HTMLNode">HTML Node in which the control is created.</return-value>
+<description>Returns the the HTML Node in which the control is created.</description>
+</method>
+<method>
+<name>getBufferMark</name>
+<return-value name="i" type="integer">Current insert position in the buffer.</return-value>
+<description>Returns the current position in the buffer, after which additional items will be rendered.</description>
+</method>
+<method>
+<name>setResultHandler</name>
+<param name="f" type="function">Function pointer to click handler.</param>
+<description>Specifies the handler to invoke when a result item is activated.</description>
+</method>
+<method>
+<name>getBufferSize</name>
+<return-value name="i" type="integer">Current size of the buffer.</return-value>
+<description>Returns the current size of the buffer.</description>
+</method>
+<method>
+<name>getItemSize</name>
+<return-value name="i" type="integer">Count of all rendered and paginated items.</return-value>
+<description>Returns the current size of all items in the control.</description>
+</method>
+<method>
+<name>getItems</name>
+<return-value name="a" type="Array">Array of WideSelectItem objects.</return-value>
+<description>Returns an array of WideSelectItem objects.</description>
+</method>
+<method>
+<name>getItem</name>
+<param name="i" type="integer">Index of WideSelectItem in items array.</param>
+<return-value name="o" type="WideSelectItem">WideSelectItem object.</return-value>
+<description>Returns the WideSelectItem object at the specified index.</description>
+</method>
+<method>
+<name>getActiveItem</name>
+<return-value name="o" type="WideSelectItem">WideSelectItem object.</return-value>
+<description>Returns the selected WideSelectItem object.</description>
+</method>
+<method>
+<name>setCanRequest</name>
+<param name="b" type="boolean">Bit indicating whether the control can be requested.</param>
+<description>Specifies whether the WideSelect control can be requested.  The request featureset is used when the control is a pop-up or conditionally visible.</description>
+</method>
+<method>
+<name>setIsPaging</name>
+<param name="b" type="boolean">Bit indicating whether the control is in paging mode.</param>
+<description>Specifies whether the WideSelect control is in paging mode.  Changing this value will clear paged items, and the control will need to be repopulated.</description>
+</method>
+<method>
+<name>getIsPaging</name>
+<return-value name="b" type="boolean">Bit indicating whether the control is in paging mode.</return-value>
+<description>Returns whether the WideSelect control is in paging mode.</description>
+</method>
+<method>
+<name>setPageStop</name>
+<param name="b" type="boolean">Bit indicating whether the control should stop expecting more data.</param>
+<description>Specifies whether the WideSelect control should stop expecting more data, when in paging mode.</description>
+</method>
+<method>
+<name>getPageStop</name>
+<return-value name="b" type="boolean">Bit indicating whether the control is no longer expecting additional data.</return-value>
+<description>Returns whether the WideSelect control is no longer expecting data.</description>
+</method>
+<method>
+<name>setAutoCommit</name>
+<param name="b" type="boolean">Bit indicating whether the control will automatically render items as they are added.</param>
+<description>Specifies whether the WideSelect control should render items as they are added.  If buffering is enabled, items will automatically begin rendering.</description>
+</method>
+<method>
+<name>setAutoScroll</name>
+<param name="b" type="boolean">Bit indicating whether the control will automatically scroll to the last rendered item.</param>
+<description>Specifies whether the WideSelect control will automatically scroll to the last rendered item.</description>
+</method>
+<method>
+<name>setAutoSelect</name>
+<param name="b" type="boolean">Bit indicating whether the control will automatically select the last rendered item.</param>
+<description>Specifies whether the WideSelect control will automatically select the last rendered item.</description>
+</method>
+<method>
+<name>setMaximumRollover</name>
+<param name="b" type="boolean">Bit indicating whether the control will rollover when the maximum number of items is reached.</param>
+<description>Specifies whether the WideSelect control will rollover when the maximum number of items is reached; deleting the first item and adding the new item to the end.  If disabled and a maximum limit is stipulated, then new items won't be added.</description>
+</method>
+<method>
+<name>deselectAllItems</name>
+<description>Deselects all selected items in the WideSelect control.</description>
+</method>
+<method internal="1" private="1">
+<name>init</name>
+<description>Initializes the WideSelect control.</description>
+</method>
 Specify avoid so the Space service doesn't drill into the results
 
-<method internal="1" private="1"><name>_handle_window_destroy</name><description>Message subscription handler invoked when the host window is unloading.</description></method><method><name>setIsBuffered</name><param name="b" type="boolean">Bit indicating whether the control should buffer new items.</param><description>Specifies whether the control should buffer new items.  Buffered items are incrementally rendered.</description></method><method><name>setBufferOffset</name><param name="i" type="integer">Number of items to render at a time.</param><description>Specifies the number of items to be rendered at a time.</description></method><method><name>setBufferDelay</name><param name="i" type="integer">Number of milleseconds.</param><description>Specifies the number of milliseconds to pause between rendering the buffer offset.</description></method><method><name>destroy</name><description>Cleans up internal pointers, empties buffers, and removes HTML artifacts.  Invoked when the window is unloaded.</description></method><method><name>addItem</name><param name="n" type="String">Name of the item.  The name is used for the label.</param><param name="d" type="variant" optional="1">The value of the item.</param><description>Adds an item to the WideSelect control.  The item is displayed based on buffering, and maximum display settings and restrictions.  Use <i>pageItem</i> to add items for pagination.  Specify a value of "_avoid" to create non-selectable labels.</description></method><method internal="1" private="1"><name>_handle_buffer_check</name><description>Internal operation for testing the state of the buffer.</description></method><method><name>commitBuffer</name><description>Commits the buffer up to the next buffer offset.  Invoked automatically when AutoCommit is enabled.</description></method><method internal="1" private="1"><name>_handle_commit_buffer</name><description>Internal operation for committing the buffer into the WideSelectItem array.</description></method><method><name>pageItem</name><param name="n" type="String">Name of the item.  The name is used for the label.</param><param name="d" type="variant" optional="1">The value of the item.</param><description>Adds an item for pagination within the WideSelect control.  The item is displayed based on pagination settings.</description></method><method><name>updatePage</name><description>Renders the current page of WideSelectItem objects.</description></method><method internal="1" private="1"><name>_addItem</name><param name="n" type="String">Name of the item.  The name is used for the label.</param><param name="d" type="variant" optional="1">The value of the item.</param><description>Creates and renders a WideSelectItem object.</description></method><method internal="1" private="1"><name>_handle_mouseover</name><param name="e" type="event">Event object</param><description>Internal handler for mouseover event.</description></method><method internal="1" private="1"><name>_handle_mouseout</name><param name="e" type="event">Event object</param><description>Internal handler for mouseout event.</description></method><method><name>setActiveItem</name><param name="i" type="integer">Index of WideSelectItem to activate.</param><description>Selects the specified WideSelectItem .  Blocks publication of the <i>onresultclick</i> message.</description></method><method><name>selectItem</name><param name="i" type="integer">Index of WideSelectItem to activate.</param><param name="b" type="boolean" optional="1">Bit indicating whether to block the <i>onresultclick</i> message.</param><description>Selects the specified WideSelectItem.</description></method><method><name>scrollToItem</name><param name="i" type="integer">Index of WideSelectItem to activate.</param><description>Scrolls to control to the specified WideSelectItem.</description></method><method internal="1" private="1"><name>_handle_click</name><param name="v" type="variant">Overloaded variant which may be an event or index.</param><param name="b" type="boolean" optional="1">Bit indicating whether the "onresultclick" message should be suppressed.</param><description>Internal handler for mouseout event.</description></method><method><name>clearItem</name><param name="i" type="integer">Index of WideSelectItem to remove.</param><description>Removes the specified WideSelectItem.</description></method><method><name>clearItems</name><description>Removes all WideSelectItem objects.</description></method><method><name>clearPagingValues</name><description>Removes all paged WideSelectItem objects.</description></method><method><name>reset</name><description>Clears both paged and non-paged WideSelectItem objects, and ends any active request.</description></method><method><name>moveFirst</name><description>Moves the paginated result set to the first page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description></method><method><name>moveLast</name><description>Moves the paginated result set to the last page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description></method><method><name>getCanMoveNext</name><return-value name="b" type="boolean">Bit indicating whether there is an additional page.</return-value><description>Checks whether there is an additional page beyond the current.</description></method><method><name>getCanMovePrevious</name><return-value name="b" type="boolean">Bit indicating whether there is a previous page.</return-value><description>Checks whether there is a previous page prior to the current.</description></method><method><name>moveNext</name><param name="b" type="boolean" option="1">Bit indicating whether the operation is a test.</param><description>Moves the paginated result set to the next page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description></method><method><name>movePrevious</name><param name="b" type="boolean" option="1">Bit indicating whether the operation is a test.</param><description>Moves the paginated result set to the previous page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description></method><method><name>importPageItems</name><param name="a" type="Array">Array of ImportPageItem objects.</param><param name="b" type="boolean" option="1">Bit indicating whether this is the last page.</param><description>Imports a variant-length array of data into the paginated set of WideSelectItem objects.</description></method><method><name>getIsRequested</name><return-value name="b" type="boolean">Bit indicating whether the control is currently requested for display.</return-value><description>Returns a bit indicating whether or not the control is requested for display.</description></method><method><name>request</name><description>If requesting is enabled, displays and positions the WideSelectInstance control.</description></method><method><name>endRequest</name><description>Hides the WideSelectInstance control if requested.</description></method><method><name>alignControl</name><param name="o" type="HTMLNode">HTML Node to which the control should be aligned.</param><description>Aligns the WideSelectInstance to the bottom border of the specified HTML Node.</description></method></class></package><index><description>The WideSelect control is a list control which supports buffered and paginated presentation.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>
+<method internal="1" private="1">
+<name>_handle_window_destroy</name>
+<description>Message subscription handler invoked when the host window is unloading.</description>
+</method>
+<method>
+<name>setIsBuffered</name>
+<param name="b" type="boolean">Bit indicating whether the control should buffer new items.</param>
+<description>Specifies whether the control should buffer new items.  Buffered items are incrementally rendered.</description>
+</method>
+<method>
+<name>setBufferOffset</name>
+<param name="i" type="integer">Number of items to render at a time.</param>
+<description>Specifies the number of items to be rendered at a time.</description>
+</method>
+<method>
+<name>setBufferDelay</name>
+<param name="i" type="integer">Number of milleseconds.</param>
+<description>Specifies the number of milliseconds to pause between rendering the buffer offset.</description>
+</method>
+<method>
+<name>destroy</name>
+<description>Cleans up internal pointers, empties buffers, and removes HTML artifacts.  Invoked when the window is unloaded.</description>
+</method>
+<method>
+<name>addItem</name>
+<param name="n" type="String">Name of the item.  The name is used for the label.</param>
+<param name="d" optional="1" type="variant">The value of the item.</param>
+<description>Adds an item to the WideSelect control.  The item is displayed based on buffering, and maximum display settings and restrictions.  Use <i>pageItem</i> to add items for pagination.  Specify a value of "_avoid" to create non-selectable labels.</description>
+</method>
+<method internal="1" private="1">
+<name>_handle_buffer_check</name>
+<description>Internal operation for testing the state of the buffer.</description>
+</method>
+<method>
+<name>commitBuffer</name>
+<description>Commits the buffer up to the next buffer offset.  Invoked automatically when AutoCommit is enabled.</description>
+</method>
+<method internal="1" private="1">
+<name>_handle_commit_buffer</name>
+<description>Internal operation for committing the buffer into the WideSelectItem array.</description>
+</method>
+<method>
+<name>pageItem</name>
+<param name="n" type="String">Name of the item.  The name is used for the label.</param>
+<param name="d" optional="1" type="variant">The value of the item.</param>
+<description>Adds an item for pagination within the WideSelect control.  The item is displayed based on pagination settings.</description>
+</method>
+<method>
+<name>updatePage</name>
+<description>Renders the current page of WideSelectItem objects.</description>
+</method>
+<method internal="1" private="1">
+<name>_addItem</name>
+<param name="n" type="String">Name of the item.  The name is used for the label.</param>
+<param name="d" optional="1" type="variant">The value of the item.</param>
+<description>Creates and renders a WideSelectItem object.</description>
+</method>
+<method internal="1" private="1">
+<name>_handle_mouseover</name>
+<param name="e" type="event">Event object</param>
+<description>Internal handler for mouseover event.</description>
+</method>
+<method internal="1" private="1">
+<name>_handle_mouseout</name>
+<param name="e" type="event">Event object</param>
+<description>Internal handler for mouseout event.</description>
+</method>
+<method>
+<name>setActiveItem</name>
+<param name="i" type="integer">Index of WideSelectItem to activate.</param>
+<description>Selects the specified WideSelectItem .  Blocks publication of the <i>onresultclick</i> message.</description>
+</method>
+<method>
+<name>selectItem</name>
+<param name="i" type="integer">Index of WideSelectItem to activate.</param>
+<param name="b" optional="1" type="boolean">Bit indicating whether to block the <i>onresultclick</i> message.</param>
+<description>Selects the specified WideSelectItem.</description>
+</method>
+<method>
+<name>scrollToItem</name>
+<param name="i" type="integer">Index of WideSelectItem to activate.</param>
+<description>Scrolls to control to the specified WideSelectItem.</description>
+</method>
+<method internal="1" private="1">
+<name>_handle_click</name>
+<param name="v" type="variant">Overloaded variant which may be an event or index.</param>
+<param name="b" optional="1" type="boolean">Bit indicating whether the "onresultclick" message should be suppressed.</param>
+<description>Internal handler for mouseout event.</description>
+</method>
+<method>
+<name>clearItem</name>
+<param name="i" type="integer">Index of WideSelectItem to remove.</param>
+<description>Removes the specified WideSelectItem.</description>
+</method>
+<method>
+<name>clearItems</name>
+<description>Removes all WideSelectItem objects.</description>
+</method>
+<method>
+<name>clearPagingValues</name>
+<description>Removes all paged WideSelectItem objects.</description>
+</method>
+<method>
+<name>reset</name>
+<description>Clears both paged and non-paged WideSelectItem objects, and ends any active request.</description>
+</method>
+<method>
+<name>moveFirst</name>
+<description>Moves the paginated result set to the first page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description>
+</method>
+<method>
+<name>moveLast</name>
+<description>Moves the paginated result set to the last page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description>
+</method>
+<method>
+<name>getCanMoveNext</name>
+<return-value name="b" type="boolean">Bit indicating whether there is an additional page.</return-value>
+<description>Checks whether there is an additional page beyond the current.</description>
+</method>
+<method>
+<name>getCanMovePrevious</name>
+<return-value name="b" type="boolean">Bit indicating whether there is a previous page.</return-value>
+<description>Checks whether there is a previous page prior to the current.</description>
+</method>
+<method>
+<name>moveNext</name>
+<param name="b" option="1" type="boolean">Bit indicating whether the operation is a test.</param>
+<description>Moves the paginated result set to the next page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description>
+</method>
+<method>
+<name>movePrevious</name>
+<param name="b" option="1" type="boolean">Bit indicating whether the operation is a test.</param>
+<description>Moves the paginated result set to the previous page.  Invokes any specified <i>handle_pagenavigate</i> handler.</description>
+</method>
+<method>
+<name>importPageItems</name>
+<param name="a" type="Array">Array of ImportPageItem objects.</param>
+<param name="b" option="1" type="boolean">Bit indicating whether this is the last page.</param>
+<description>Imports a variant-length array of data into the paginated set of WideSelectItem objects.</description>
+</method>
+<method>
+<name>request</name>
+<description>If requesting is enabled, displays and positions the WideSelectInstance control.</description>
+</method>
+<method>
+<name>endRequest</name>
+<description>Hides the WideSelectInstance control if requested.</description>
+</method>
+<method>
+<name>alignControl</name>
+<param name="o" type="HTMLNode">HTML Node to which the control should be aligned.</param>
+<description>Aligns the WideSelectInstance to the bottom border of the specified HTML Node.</description>
+</method>
+</class>
+</package>
+<index><description>The WideSelect control is a list control which supports buffered and paginated presentation.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

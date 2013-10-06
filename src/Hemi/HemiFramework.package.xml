@@ -59,6 +59,7 @@
          <resource name="UtilConfig" />
          <resource name="Transaction" />
          <resource name="Worker" />
+         <resource name="Calendar" />
 		<resource name="JSONRPC" />
 		<resource name="JSONRPCCache" />
 
@@ -67,9 +68,11 @@
          <pattern match="\r\n\r\n" replace="%JSC_NEWLINE%" />
          <pattern match="\n\n" replace="%JSC_NEWLINE%" />
          -->
+         
          <pattern match="%JSC_STRIP_EXTRA_SPACE%" replace="$1" />
          <pattern match="%JSC_STRIP_SPACE_AROUND_SPECIAL_CHAR%" replace="$1" />
          <pattern match="%JSC_STRIP_SPACE_AROUND_CONDITIONS%" replace="}" />
+         
          <pattern match=":function" replace="%JSC_NEWLINE_HASHFUNCTION%" />
          <pattern match="oSubject" replace="sj" />
          <pattern match="oService" replace="sv" />
@@ -222,6 +225,7 @@
          <pattern match="request_hash" replace="qr" />
          <pattern match="request_object" replace="qo" />
          <pattern match="cell_label_clip_size" replace="cls" />
+         <!-- 
          <pattern match="clear_node" replace="cn" />
          <pattern match="class_container" replace="cc" />
          <pattern match="header_container" replace="hc" />
@@ -242,6 +246,7 @@
          <pattern match="calendar_cell_hover" replace="cch" />
          <pattern match="calendar_cell_label" replace="ccl" />
          <pattern match="calendar_cell" replace="ca" />
+         -->
          <pattern match="cell_count" replace="ce" />
          <pattern match="cell_rows" replace="cr" />
          <pattern match="cell_columns" replace="cl" />
@@ -405,6 +410,8 @@
 <![CDATA[Framework/hemi.framework.io.offline.provider.js]]>      </param>
 <param name="UIUtil" value="#cdata" mime-type="text/javascript">
 <![CDATA[Framework/hemi.ui.util.js]]>      </param>
+<param name="Calendar" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.ui.calendar.js]]>      </param>
 <param name="JSONRPC" value="#cdata" mime-type="text/javascript">
 <![CDATA[Framework/hemi.json.rpc.js]]>      </param>
 <param name="JSONRPCCache" value="#cdata" mime-type="text/javascript">

@@ -74,7 +74,7 @@
 		  <scriptFiles encodedName = "UIUtil" name = "hemi.ui.util.js" />
 		  <scriptFiles encodedName = "JSONRPC" name = "hemi.json.rpc.js" />
 		  <scriptFiles encodedName = "JSONRPCCache" name = "hemi.json.rpc.cache.js" />
-		  
+		  <scriptFiles encodedName = "Calendar" name = "hemi.ui.calendar.js" />
 
 		<features name = "debug_message" enabled = "0" />
 		<features name = "catch_error" enabled = "1" />
@@ -150,10 +150,10 @@
 		<properties name = "xml_http_pool_enabled" value = "1" />
 		<properties name = "xml_http_pool_size" value = "5" />
 		<properties name = "xml_http_pool_maxsize" value = "10" />
-		<!--
+		
 		<properties name = "xml_microsoft_activex_domdocument" value = "MSXML.DOMDocument" />
 		<properties name = "xml_microsoft_activex_xmlhttp" value = "MSXML2.XMLHTTP.3.0" />
-		-->
+		
 		<properties name = "task_serve_delay" value = "0" />
 		<properties name = "task_xpath_context" value = "" />
 		<properties name = "message_report_threshold" value = "1" />
@@ -187,6 +187,8 @@
 		<patterns><match><![CDATA[\r\n\r\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
 		<patterns><match><![CDATA[\n\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
 		-->
+		<!-- 
 		<patterns><match>%JSC_STRIP_EXTRA_SPACE%</match><replace>$1</replace></patterns>
+		-->
 
 </ScriptConfigType>

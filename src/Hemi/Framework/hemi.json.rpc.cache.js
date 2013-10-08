@@ -63,11 +63,11 @@
 				var c = t;
 				if(!c.objects.cache[sSvc]) return uObj;
 				if(typeof c.objects.cache[sSvc].names[sKey] == DATATYPES.TYPE_NUMBER){
-					t.log("Retrieve cached " + sSvc + " object by name " + sKey);
+					t.logDebug("Retrieve cached " + sSvc + " object by name " + sKey);
 					return c.objects.cache[sSvc].stack[c.objects.cache[sSvc].names[sKey]];
 				}
 				else if(typeof c.objects.cache[sSvc].altNames[sKey] == DATATYPES.TYPE_NUMBER){
-					t.log("Retrieve cached " + sSvc + " object by alternate name " + sKey);
+					t.logDebug("Retrieve cached " + sSvc + " object by alternate name " + sKey);
 					return c.objects.cache[sSvc].stack[c.objects.cache[sSvc].altNames[sKey]];
 				}
 				return uObj;
@@ -75,7 +75,7 @@
 			t.readById = function(sSvc, iId){
 				var c = t, uObj;
 				if(c.objects.cache[sSvc] && typeof c.objects.cache[sSvc].ids[iId] == DATATYPES.TYPE_NUMBER){
-					t.log("Retrieve cached " + sSvc + " object by id " + iId);
+					t.logDebug("Retrieve cached " + sSvc + " object by id " + iId);
 					return c.objects.cache[sSvc].stack[c.objects.cache[sSvc].ids[iId]];
 				}
 				return uObj;
@@ -83,7 +83,7 @@
 			t.updateToCache = function(sSvc, o){
 				var c = t;
 				if(!c.canCache(o)) return 0;
-				t.log("Update to " + sSvc + " cache " + o.name + " #" + o.id);
+				t.logDebug("Update to " + sSvc + " cache " + o.name + " #" + o.id);
 				if(c.isCached(sSvc,o)) c.removeFromCache(sSvc,o);
 				return c.addToCache(sSvc,o);
 			};
@@ -117,15 +117,15 @@
 				if(sKey) x.names[sKey] = iIdx;
 				if(sAltKey && sAltKey != o.name && sAltKey != sKey) x.altNames[sAltKey] = iIdx;
 				x.ids[o.id] = iIdx;
-				t.log("Add " + sSvc + " object to cache as " + sKey + " #" + o.id + " at index " + iIdx);
+				t.logDebug("Add " + sSvc + " object to cache as " + sKey + " #" + o.id + " at index " + iIdx);
 				return 1;
 			};
 			t.clearCache = function(){
-				t.log("Clear all service caches");
+				t.logDebug("Clear all service caches");
 				t.objects.cache = {};
 			};
 			t.clearServiceCache = function(sSvc){
-				t.log("Clear " + sSvc + " service cache");
+				t.logDebug("Clear " + sSvc + " service cache");
 				delete t.objects.cache[sSvc];
 			};
 			t.removeFromCache = function(sSvc, o){
@@ -153,7 +153,7 @@
 				}
 
 				delete c.objects.cache[sSvc].ids[o.id];
-				t.log("Removed cached " + sSvc + " object " + sKey + " #" + o.id + " at index " + iIdx);
+				t.logDebug("Removed cached " + sSvc + " object " + sKey + " #" + o.id + " at index " + iIdx);
 				
 			};
 			t.setCacheKeyResolver(t.defaulteCacheKeyResolver);

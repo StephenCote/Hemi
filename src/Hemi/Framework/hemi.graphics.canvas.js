@@ -347,18 +347,47 @@
 				return b;
 			};
 			/// <method>
+			/// 	<name>clearEventTrack</name>
+			/// 	<description>Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</description>
+			/// </method>
+			n.clearEventTrack = function(){
+				var _p = this.objects, _s = this.properties;
+				_p.shape_track_map = [];
+				_p.MouseDropShape = 0;
+				_p.MouseClickShape = 0;
+				_p.MouseDownShape = 0;
+				_p.MouseOverShape = 0;
+				_s.MouseOffsetX = 0;
+				_s.MouseOffsetY = 0;
+				_s.MouseTrackChoose = 0;
+				_s.MouseTrackDown = 0;
+				_s.MouseTrackLeft = 0;
+				_s.MouseTrackTop = 0;
+			};
+			
+			/// <method>
+			/// 	<name>clearTempShapes</name>
+			/// 	<description>Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</description>
+			/// </method>
+			n.clearTempShapes = function(){
+				var _p = this.objects,i=0;
+				for(; i < _p.temp_shapes.length;i++){
+					if(typeof _p.temp_shapes[i] != DATATYPES.TYPE_NUMBER) continue;
+					delete _p.shapes[_p.temp_shapes[i]];
+				}
+				
+				_p.temp_shapes = [];
+			};
+			
+			/// <method>
 			/// 	<name>ClearTempCanvas</name>
 			/// 	<description>Clears the Temporary Canvas shapes and drawings.</description>
 			/// </method>
 			n.ClearTempCanvas = function () {
 				var _p = this.objects,i=0;
-				
-				for(; i < _p.temp_shapes.length;){
-					if(typeof _p.temp_shapes[i] != DATATYPES.TYPE_NUMBER) continue;
-					delete _p.shapes[_p.temp_shapes[i++]];
-				}
+				/// this.clearEventTrack();
 				_p.shape_track_map = [];
-				_p.temp_shapes = [];
+				this.clearTempShapes();
 				_p.temp_canvas_2d.clearRect(0, 0, _p.canvas.clientWidth, _p.canvas.clientHeight);
 			};
 			/// <method>
@@ -367,7 +396,7 @@
 			/// </method>
 			n.ClearCanvas = function () {
 				var _p = this.objects, a, i;
-				_p.shape_track_map = [];
+				this.clearEventTrack();
 				_p.canvas_2d.clearRect(0, 0, _p.canvas.clientWidth, _p.canvas.clientHeight);
 				_p.shapes = [];
 				/// TODO: Delete non-vectors based on shape property, not blind delete all spans

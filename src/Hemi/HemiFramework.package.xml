@@ -64,10 +64,9 @@
 		<resource name="JSONRPCCache" />
 
          <pattern match="/\*[\S\s]*?\*/" replace="" />
-         <!-- 
+
          <pattern match="\r\n\r\n" replace="%JSC_NEWLINE%" />
          <pattern match="\n\n" replace="%JSC_NEWLINE%" />
-         -->
          
          <pattern match="%JSC_STRIP_EXTRA_SPACE%" replace="$1" />
          <pattern match="%JSC_STRIP_SPACE_AROUND_SPECIAL_CHAR%" replace="$1" />

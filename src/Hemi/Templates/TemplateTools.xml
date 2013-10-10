@@ -137,7 +137,7 @@
 				if(!aElements[e]) continue;
 				if(aElements[e].getIsRendered()){
 					
-					var oX = Hemi.registry.service.getObject(aElements[e].object_id);
+					var oX = Hemi.registry.service.getObject(aElements[e].getObjectId());
 					/// Keep the value linked in
 					Hemi.data.form.service.synchronizeComponent(oX,(bSyncIn ? 1 : 0),(bSyncIn ? 0 : 1));
 

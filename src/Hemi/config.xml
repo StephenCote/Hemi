@@ -183,12 +183,11 @@
 		<replace>H</replace>
 		</patterns>
 		<patterns><match><![CDATA[\t]]></match><replace> </replace></patterns>
-		<!--
+		<!-- 
 		<patterns><match><![CDATA[\r\n\r\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
 		<patterns><match><![CDATA[\n\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
 		-->
-		<!-- 
 		<patterns><match>%JSC_STRIP_EXTRA_SPACE%</match><replace>$1</replace></patterns>
-		-->
+		
 
 </ScriptConfigType>

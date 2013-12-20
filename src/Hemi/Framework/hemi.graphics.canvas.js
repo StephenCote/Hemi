@@ -113,6 +113,11 @@
 					this.ready_state = 5;
 					this.Clear();
 					var _p = this.objects, _e = HemiEngine.event.removeEventListener;
+					/// _e(document, 'touchmove', this._prehandle_document_touchmove);
+					/// _e(_p.temp_canvas, 'scroll', this._prehandle_canvas_scroll);
+					_e(_p.temp_canvas, 'touchstart', this._prehandle_canvas_mouse);
+					_e(_p.temp_canvas, 'touchmove', this._prehandle_canvas_mouse);
+					_e(_p.temp_canvas, 'touchend', this._prehandle_canvas_mouse);
 					_e(_p.temp_canvas, 'mousedown', this._prehandle_canvas_mouse);
 					_e(_p.temp_canvas, 'mousemove', this._prehandle_canvas_mouse);
 					_e(_p.temp_canvas, 'mouseup', this._prehandle_canvas_mouse);
@@ -167,6 +172,15 @@
 
 
 				this.scopeHandler("canvas_mouse", 0, 0, 1);
+				this.scopeHandler("document_touchmove", 0, 0, 1);
+				/// this.scopeHandler("canvas_scroll", 0, 0, 1);
+
+				/// _e(window.document, 'touchmove', this._prehandle_document_touchmove);
+				
+				/// _e(oT, 'scroll', this._prehandle_canvas_scroll);
+				_e(oT, 'touchstart', this._prehandle_canvas_mouse);
+				_e(oT, 'touchmove', this._prehandle_canvas_mouse);
+				_e(oT, 'touchend', this._prehandle_canvas_mouse);
 				_e(oT, 'mousedown', this._prehandle_canvas_mouse);
 				_e(oT, 'mousemove', this._prehandle_canvas_mouse);
 				_e(oT, 'mouseup', this._prehandle_canvas_mouse);
@@ -1250,6 +1264,8 @@
 				this.objects.MouseClickShape = 0;
 				return r;
 			};
+
+
 			/// <method internal = "1">
 			/// 	<name>handle_canvas_mousemove</name>
 			///		<param name="e" type="event">Event.</param>
@@ -1373,6 +1389,20 @@
 				}
 				return oShape;
 			};
+
+			/// <method internal = "1">
+			/// 	<name>_handle_document_touchmove</name>
+			///		<param name="e" type="event">Event.</param>
+			/// 	<description>Sinks the global touchmove event. TODO: Need to refactor this</description>
+			/// </method>	
+			n._handle_document_touchmove = function (e) {
+				e = HemiEngine.event.getEvent(e);
+				var s = e.type;
+				/// e.preventDefault();
+				return false;
+				/// if(s.match(/touch/gi)) e.preventDefault();
+			};
+			
 			/// <method internal = "1">
 			/// 	<name>_handle_canvas_mouse</name>
 			///		<param name="e" type="event">Event.</param>
@@ -1380,7 +1410,17 @@
 			/// </method>	
 			n._handle_canvas_mouse = function (e) {
 				e = HemiEngine.event.getEvent(e);
-				var sHandler = "handle_canvas_" + e.type, r;
+				var s = e.type;
+				/// if(s.match(/touch/gi)) e.preventDefault();
+				if(s.match(/touchstart/gi)){
+					s = "mousedown";
+				}
+				else if(s.match(/touchend/gi)) s = "mouseup";
+				else if(s.match(/touchmove/gi)){
+					/// e.preventDefault();
+					s = "mousemove";
+				}
+				var sHandler = "handle_canvas_" + s, r;
 				/// this.log("Dispatch: " + sHandler);
 				this.properties.MouseTrackLeft = (typeof e.layerX == "number" ? e.layerX : e.offsetX);
 				this.properties.MouseTrackTop = (typeof e.layerY == "number" ? e.layerY : e.offsetY);
@@ -1388,6 +1428,7 @@
 				if (typeof this[sHandler] == "function") r = this[sHandler](e);
 				return r;
 			};
+			
 			/// <method>
 			/// 	<name>Resize</name>
 			///		<param name="width" type="String">New width value.</param>

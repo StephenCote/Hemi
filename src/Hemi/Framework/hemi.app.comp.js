@@ -310,7 +310,7 @@
 				b: b,
 
 				/* event binding list */
-				eb: "keydown,keyup,keypress,change,focus,blur,mouseover,mouseout,mouseup,mousedown,click",
+				eb: "keydown,keyup,keypress,change,focus,blur,mouseover,mouseout,mouseup,mousedown,click,touchstart,touchend,touchmove",
 				/* transactional */
 				t: 1,
 				/* transaction name */

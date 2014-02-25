@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
-<source>
+<?xml version="1.0" encoding="UTF-8"?><source>
 <name>Hemi.graphics.canvas</name>
 <project>
 <name>Hemi JavaScript Framework</name>
@@ -56,12 +55,17 @@ temp_shapes contains shapes currently applied to the temporary canvas
 
 shape_track_map is a jagged array of x-axis[int],y-axis[int],node_indices[]
 
+_e(document, 'touchmove', this._prehandle_document_touchmove);
+_e(_p.temp_canvas, 'scroll', this._prehandle_canvas_scroll);
 <method internal="1">
 <name>Initialize</name>
 <description>Initializes the Canvas Class.</description>
 </method>
 If context is still undefined, leave
 
+this.scopeHandler("canvas_scroll", 0, 0, 1);
+_e(window.document, 'touchmove', this._prehandle_document_touchmove);
+_e(oT, 'scroll', this._prehandle_canvas_scroll);
 <object>
 <name>ContextConfig</name>
 <description>Applies configuration to the context.</description>
@@ -138,9 +142,18 @@ If context is still undefined, leave
 <description>Removes the specified shape.</description>
 </method>
 <method>
+<name>clearEventTrack</name>
+<description>Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</description>
+</method>
+<method>
+<name>clearTempShapes</name>
+<description>Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</description>
+</method>
+<method>
 <name>ClearTempCanvas</name>
 <description>Clears the Temporary Canvas shapes and drawings.</description>
 </method>
+this.clearEventTrack();
 <method>
 <name>ClearCanvas</name>
 <description>Clears the Canvas shapes and drawings.</description>
@@ -230,7 +243,7 @@ right center
 y1 += parseInt(h1 / 2);
 left center 1
 left center 1
-bottom center 2
+y2 == top center center 2
 negative vert position
 left center 2
 }
@@ -348,7 +361,7 @@ Left
 Right
 <method>
 <name>NewPolygon</name>
-<param name="aPoints" type="Array&lt;Point>">Array of points.</param>
+<param name="aPoints" type="Array&lt;Point&gt;">Array of points.</param>
 <param name="sFill" type="String">Fill color.</param>
 <param name="sStroke" type="String">Stroke color.</param>
 <return-value name="oShape" type="Shape">A new shape object.</return-value>
@@ -499,10 +512,19 @@ this.log("Dispatch " + e.type + " to " + aD.length + " decorators");
 <description>Dispatches the mousedown event to any specified decorators. Sets the MouseTrackLeft, MouseTrackTop, MouseTrackChoose, MouseTrackDown, and MouseDownShape properties.</description>
 </method>
 <method internal="1">
+<name>_handle_document_touchmove</name>
+<param name="e" type="event">Event.</param>
+<description>Sinks the global touchmove event. TODO: Need to refactor this</description>
+</method>
+e.preventDefault();
+if(s.match(/touch/gi)) e.preventDefault();
+<method internal="1">
 <name>_handle_canvas_mouse</name>
 <param name="e" type="event">Event.</param>
 <description>Routes mouse events.</description>
 </method>
+if(s.match(/touch/gi)) e.preventDefault();
+e.preventDefault();
 this.log("Dispatch: " + sHandler);
 <method>
 <name>Resize</name>

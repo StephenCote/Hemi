@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
-<source>
+<?xml version="1.0" encoding="UTF-8"?><source>
 <name>Hemi.wires</name>
 / <project>
 <name>Hemi JavaScript Framework</name>
@@ -30,11 +29,11 @@
 <description><![CDATA[This demonstrates the use of wires to connect a set of functions in a loose signal and slot implementation. The demonstration uses a single wire that connects test1 to test2, test1 to testC, testC to testX, and testX to testC. The wire is invoked with an array of arguments that is passed to all wired functions. When the wire is invoked, the test1 function is invoked. test1 is wired to two handlers, test2 and testC, and both those handlers are invoked if test1 returns true, or handler execution is forced. If the wire is set to signal, the testC causes the testX handler to be invoked, because testC is also an action. When testX is invoked, it invokes testC again because that handler was used twice. The propogation stops after testC is invoked a second time because handlers can only signal a single time. ]]></description>
 <code><![CDATA[function testWire(){]]></code>
 <code><![CDATA[  var _w = Hemi.wires.wire,w,w2,co;]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  co = new CObj();]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  w = _w.newInstance();]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  /// Test 1 will invoke test 2]]></code>
 <code><![CDATA[  /// This results in 2 function invocations]]></code>
 <code><![CDATA[  ///]]></code>
@@ -57,14 +56,14 @@
 <code><![CDATA[  /// TestC is invoked again as a handler, but it will not auto-signal a second time]]></code>
 <code><![CDATA[  ///]]></code>
 <code><![CDATA[  w.wire(0,"testX",co,"testC");]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  /// Invoke the wire]]></code>
 <code><![CDATA[        ///]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  w.invoke([{id:1,data:"the data"}],0,"test1");]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[}]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[function test1(o){]]></code>
 <code><![CDATA[  alert('test1');]]></code>
 <code><![CDATA[  return 1;]]></code>
@@ -72,7 +71,7 @@
 <code><![CDATA[function testX(o){]]></code>
 <code><![CDATA[  alert('testX');]]></code>
 <code><![CDATA[}]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[function test2(o){]]></code>
 <code><![CDATA[  alert('test 2');]]></code>
 <code><![CDATA[}]]></code>
@@ -80,7 +79,7 @@
 <code><![CDATA[  alert('test 1_1');]]></code>
 <code><![CDATA[  return 1;]]></code>
 <code><![CDATA[}]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[function CObj(){]]></code>
 <code><![CDATA[  this.id = "XX";]]></code>
 <code><![CDATA[  this.object_id = "swc_debug_obj";]]></code>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
-<source>
+<?xml version="1.0" encoding="UTF-8"?><source>
 <name>Hemi.app.module.test</name>
 <project>
 <name>Hemi JavaScript Framework</name>
@@ -145,7 +144,7 @@ Test Status
 <param name="sMessage" type="String">Message to send to the logger.</param>
 <description>Sends a message in the ###.3 message block.</description>
 </method>
-<property get="1" internal="1" name="TestMembers" private="1" type="Array&lt;String>">Array of test names.   Property is only available when module is loaded as a TestModule.</property>
+<property get="1" internal="1" name="TestMembers" private="1" type="Array&lt;String&gt;">Array of test names.   Property is only available when module is loaded as a TestModule.</property>
 <property get="1" name="Container" type="Node">A pointer to the XHTML Node for which the module was loaded.</property>
 <property get="1" name="Component" type="XHTMLComponent">A pointer to the XHTMLComponent created for any Container, if a Container was used.</property>
 </object>
@@ -157,7 +156,7 @@ Test Status
 <property get="1" name="stop_time" type="Date">The time when the test completed.</property>
 <property default="0" get="1" name="status" set="1" type="int">The status of the result.  0 = created; 1 = prior to start, 2 = after run, 3 = before end, 4 = ended.</property>
 <property default="0" get="1" name="error" set="1" type="boolean">Bit indicating a failure or exception occured.</property>
-<property get="1" name="messages" type="Array&lt;String>">A string array of messages.  </property>
+<property get="1" name="messages" type="Array&lt;String&gt;">A string array of messages.  </property>
 <property get="1" name="data" set="1" type="variant">General data property for storing data during the execution of the test.</property>
 </object>
 </class>

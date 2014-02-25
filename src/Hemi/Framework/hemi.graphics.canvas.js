@@ -747,16 +747,16 @@
 						
 						if (x2 > x1) x1 += w1;
 						y1 += parseInt(h1 / 2);
-						this.log("right center 1: " + x1 + ", " + y1);
+						this.log("left center 1: " + x1 + ", " + y1);
 					}
 
-					/// bottom center 2
+					/// y2 == top center center 2
 					if ((y2 + h2) < y1) {
 						/// negative vert position
 						
 						yM = 0;
-						y2 += h2;
-						x2 += parseInt(w2 / 2);
+						y2 = o2.y;
+						x2 = o2.x + parseInt(w2 / 2);
 						this.log("bottom center 2: " + x2 + ", " + y2);
 					}
 					else {

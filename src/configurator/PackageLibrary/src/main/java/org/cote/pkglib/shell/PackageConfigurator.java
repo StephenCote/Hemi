@@ -1,7 +1,5 @@
 package org.cote.pkglib.shell;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.Properties;
 

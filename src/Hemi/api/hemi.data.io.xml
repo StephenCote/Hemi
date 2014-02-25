@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
-<source>
+<?xml version="1.0" encoding="UTF-8"?><source>
 <name>Hemi.data.io</name>
 <project>
 <name>Hemi JavaScript Framework</name>
@@ -90,12 +89,12 @@
 </method>
 <method>
 <name>getBusType</name>
-<return-value name="eBus" type="Enum&lt;BusType>">The enumeration of bus types.</return-value>
+<return-value name="eBus" type="Enum&lt;BusType&gt;">The enumeration of bus types.</return-value>
 <description>Returns the enumeration of bus types.</description>
 </method>
 <method>
 <name>getList</name>
-<param name="eBus" type="Enum&lt;BusType>">The request bus.</param>
+<param name="eBus" type="Enum&lt;BusType&gt;">The request bus.</param>
 <param name="sApplication" type="String">The application to handle the request.</param>
 <param name="sContext" type="String">The context of the request.</param>
 <param name="sCatalog" type="String">The group catalog.  Reserved values are: directory, data</param>
@@ -140,10 +139,10 @@ Invoked by the instrumented deconstructor
 <property get="1" name="type" set="1" type="String">Type of the group.</property>
 <property get="1" name="id" type="String">Unique identifier.</property>
 <property get="1" name="namespace" type="String">Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</property>
-<property get="1" name="data" type="Array&lt;Data>">List of data contained by the group.</property>
-<property get="1" name="groups" type="Array&lt;Group>">List of groups contained by the group.</property>
+<property get="1" name="data" type="Array&lt;Data&gt;">List of data contained by the group.</property>
+<property get="1" name="groups" type="Array&lt;Group&gt;">List of groups contained by the group.</property>
 <property get="1" name="detailsOnly" type="boolean">Bit indicating whether the group pointers (such as children) are populated.</property>
-<property get="1" name="bus" type="Enum&lt;BusType>">The bus via which the group was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
+<property get="1" name="bus" type="Enum&lt;BusType&gt;">The bus via which the group was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
 </object>
 <object>
 <name>IOSubject</name>
@@ -159,10 +158,10 @@ Invoked by the instrumented deconstructor
 </method>
 <method>
 <name>arrayToGroup</name>
-<param name="aArray" type="Array&lt;String>">An array of group names</param>
+<param name="aArray" type="Array&lt;String&gt;">An array of group names</param>
 <param name="oPolicy" optional="1" type="Policy">Default group policy.</param>
 <param name="sParentPath" optional="1" type="String">Parent path to the group.</param>
-<return-value name="aGroups" type="Array&lt;Group>">An array of group objects.</return-value>
+<return-value name="aGroups" type="Array&lt;Group&gt;">An array of group objects.</return-value>
 <description>Returns an array of group objects.</description>
 </method>
 <method>
@@ -172,9 +171,9 @@ Invoked by the instrumented deconstructor
 </method>
 <method>
 <name>arrayToData</name>
-<param name="aArray" type="Array&lt;String>">An array of data</param>
+<param name="aArray" type="Array&lt;String&gt;">An array of data</param>
 <param name="oPolicy" type="Policy">Default data policy.</param>
-<return-value name="aData" type="Array&lt;Data>">An array of data objects.</return-value>
+<return-value name="aData" type="Array&lt;Data&gt;">An array of data objects.</return-value>
 <description>Returns an array of data objects.</description>
 </method>
 <object>
@@ -196,7 +195,7 @@ Invoked by the instrumented deconstructor
 <property get="1" name="group" set="1" type="String">Group identifier.  This may be used to differentiate the data relative to other data, such as a directory.</property>
 <property get="1" name="description" set="1" type="String">Description of the data.</property>
 <property get="1" name="namespace" type="String">Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</property>
-<property get="1" name="bus" type="Enum&lt;BusType>">The bus via which the data was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
+<property get="1" name="bus" type="Enum&lt;BusType&gt;">The bus via which the data was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
 </object>
 <method>
 <name>newData</name>
@@ -251,24 +250,24 @@ Invoked by the instrumented deconstructor
 <property get="1" name="message" set="1" type="String">Response messages, if any.</property>
 <property get="1" name="requestId" set="1" type="String">The id of the IORequest submitted and instigating this response. (IORequest.id property, not IORequest.requestId).</property>
 <property get="1" name="serviceId" type="String">The registered identifier of the service for which the response was created.</property>
-<property get="1" name="responseData" type="Array&lt;Variant>">List of data accompanying the response.</property>
+<property get="1" name="responseData" type="Array&lt;Variant&gt;">List of data accompanying the response.</property>
 <property get="1" name="namespace" type="String">Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</property>
-<property get="1" name="eBus" type="Enum&lt;BusType>">Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
+<property get="1" name="eBus" type="Enum&lt;BusType&gt;">Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
 <property get="1" name="providerResponded" type="Hash">Hash of providers which responded.</property>
 <property get="1" name="responseHandler" type="function">Handler to be invoked for asynchronous requests.</property>
 <method>
 <name>writeData</name>
 <param name="o" type="Data">A data object.</param>
 <param name="p" optional="1" type="IOProvider">The service providing the data.</param>
-<param name="r" optional="1" type="Array&lt;Group>">The parent group array.</param>
+<param name="r" optional="1" type="Array&lt;Group&gt;">The parent group array.</param>
 <param name="b" optional="1" type="String">The bus via which the data was provided.</param>
 <description>Adds the specified data object to the response.</description>
 </method>
 <method>
 <name>writeDataArray</name>
-<param name="a" type="Array&lt;Data>">An array of data objects.</param>
+<param name="a" type="Array&lt;Data&gt;">An array of data objects.</param>
 <param name="p" optional="1" type="IOProvider">The service providing the data.</param>
-<param name="r" optional="1" type="Array&lt;Data>">The parent data array.</param>
+<param name="r" optional="1" type="Array&lt;Data&gt;">The parent data array.</param>
 <param name="b" optional="1" type="String">The bus via which the data was provided.</param>
 <description>Adds the specified data objects to the response.</description>
 </method>
@@ -276,15 +275,15 @@ Invoked by the instrumented deconstructor
 <name>writeGroup</name>
 <param name="o" type="Group">A group object.</param>
 <param name="p" optional="1" type="IOProvider">The service providing the group.</param>
-<param name="r" optional="1" type="Array&lt;Group>">The parent group array.</param>
+<param name="r" optional="1" type="Array&lt;Group&gt;">The parent group array.</param>
 <param name="b" optional="1" type="String">The bus via which the group was provided.</param>
 <description>Adds the specified group object to the response.</description>
 </method>
 <method>
 <name>writeGroupArray</name>
-<param name="a" type="Array&lt;Group>">An array of group objects.</param>
+<param name="a" type="Array&lt;Group&gt;">An array of group objects.</param>
 <param name="p" optional="1" type="IOProvider">The service providing the group.</param>
-<param name="r" optional="1" type="Array&lt;Group>">The parent group array.</param>
+<param name="r" optional="1" type="Array&lt;Group&gt;">The parent group array.</param>
 <param name="b" optional="1" type="String">The bus via which the group was provided.</param>
 <description>Adds the specified group objects to the response.</description>
 </method>
@@ -310,8 +309,8 @@ Invoked by the instrumented deconstructor
 <property get="1" name="detailsOnly" type="boolean">Bit indicating whether returned data should include all information, or only meta information.</property>
 <property get="1" name="requestContext" type="String">Context is used to distinguish where the data request originated, and where it may be delivered.</property>
 <property get="1" name="namespace" type="String">Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</property>
-<property get="1" name="eBus" type="Enum&lt;BusType>">Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
-<property get="1" name="requestData" type="Array&lt;Variant>">List of data accompanying the request.</property>
+<property get="1" name="eBus" type="Enum&lt;BusType&gt;">Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</property>
+<property get="1" name="requestData" type="Array&lt;Variant&gt;">List of data accompanying the request.</property>
 <property get="1" name="serviceId" type="String">The registered identifier of the service for which the request was created.</property>
 <property get="1" name="providerRequested" type="Hash">Hash of provider identifiers to which the request was submitted.</property>
 <property get="1" name="transactionId" type="String">The transaction packet identifier.</property>
@@ -323,7 +322,7 @@ Invoked by the instrumented deconstructor
 </object>
 <method internal="1">
 <name>newIORequest</name>
-<param name="eBus" type="Enum&lt;BusType>">The request bus.</param>
+<param name="eBus" type="Enum&lt;BusType&gt;">The request bus.</param>
 <param name="sApplication" type="String">The request application.</param>
 <param name="sContext" type="String">The context of the request.</param>
 <param name="sCatalog" type="String">The name of the request catalog.</param>
@@ -340,7 +339,7 @@ Invoked by the instrumented deconstructor
 <method internal="1">
 <name>createRequest</name>
 <param name="oSubject" type="IOSubject">The subject making the request.</param>
-<param name="eBus" type="Enum&lt;BusType>">The request bus.</param>
+<param name="eBus" type="Enum&lt;BusType&gt;">The request bus.</param>
 <param name="sApplication" type="String">The request application.</param>
 <param name="sContext" type="String">The context of the request.</param>
 <param name="sCatalog" type="String">The name of the request catalog.</param>

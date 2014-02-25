@@ -97,10 +97,13 @@
 <h4>Method Index</h4>
 <ul class="index">
 <li>public <a href="#_handle_canvas_mouse">_handle_canvas_mouse</a> (<b>internal</b>): Routes mouse events.</li>
+<li>public <a href="#_handle_document_touchmove">_handle_document_touchmove</a> (<b>internal</b>): Sinks the global touchmove event. TODO: Need to refactor this</li>
 <li>public <a href="#AddShapeDecorator">AddShapeDecorator</a>: Adds a ShapeDecorator to the canvas.</li>
 <li>public <a href="#Clear">Clear</a>: Clears the Canvas and Temporary Canvas shapes and drawings.</li>
 <li>public <a href="#ClearCanvas">ClearCanvas</a>: Clears the Canvas shapes and drawings.</li>
+<li>public <a href="#clearEventTrack">clearEventTrack</a>: Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</li>
 <li>public <a href="#ClearTempCanvas">ClearTempCanvas</a>: Clears the Temporary Canvas shapes and drawings.</li>
+<li>public <a href="#clearTempShapes">clearTempShapes</a>: Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</li>
 <li>public <a href="#ConnectShapes">ConnectShapes</a>: Draws a connection between the two shapes.</li>
 <li>public <a href="#dispatch_decorators">dispatch_decorators</a> (<b>internal</b>): Dispatches the specified event to specified decorators.</li>
 <li>public <a href="#Draw">Draw</a>: Draws the specified shape onto the temporary canvas.</li>
@@ -461,6 +464,33 @@ e
 <li>
 <b>e</b> as event : Event.</li>
 </ul>
+<a name="_handle_document_touchmove"></a>
+<h3 class="membertitle">_handle_document_touchmove</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#CanvasInstance">CanvasInstance</a>
+</li>
+<li>
+<a href="#CanvasInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sinks the global touchmove event. TODO: Need to refactor this</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_document_touchmove(
+e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>e</b> as event : Event.</li>
+</ul>
 <a name="AddShapeDecorator"></a>
 <h3 class="membertitle">AddShapeDecorator</h3>
 <ul class="nav">
@@ -527,6 +557,28 @@ e
 
 )
 </p>
+<a name="clearEventTrack"></a>
+<h3 class="membertitle">clearEventTrack</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#CanvasInstance">CanvasInstance</a>
+</li>
+<li>
+<a href="#CanvasInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearEventTrack(
+
+)
+</p>
 <a name="ClearTempCanvas"></a>
 <h3 class="membertitle">ClearTempCanvas</h3>
 <ul class="nav">
@@ -546,6 +598,28 @@ e
 <p class="methoddesc">Clears the Temporary Canvas shapes and drawings.</p>
 <h4>Syntax</h4>
 <p class="methodsyntax">void ClearTempCanvas(
+
+)
+</p>
+<a name="clearTempShapes"></a>
+<h3 class="membertitle">clearTempShapes</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#CanvasInstance">CanvasInstance</a>
+</li>
+<li>
+<a href="#CanvasInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears pointers to shapes and positions being tracked for event handling.  This can be useful when switching or repainting views.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearTempShapes(
 
 )
 </p>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-16"?>
-<source>
+<?xml version="1.0" encoding="UTF-8"?><source>
 <name>Hemi.data.form</name>
 <project>
 <name>Hemi JavaScript Framework</name>
@@ -96,7 +95,7 @@
 <code><![CDATA[  <input type = "text" id = "oText" value = "example text" />]]></code>
 <code><![CDATA[  <input type = "button" value = "Destroy the text field" onclick = "testXhtmlDestroy()" />]]></code>
 <code><![CDATA[</div>]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[<!-- Script Source -->]]></code>
 <code><![CDATA[window.onload = testXhtml;]]></code>
 <code><![CDATA[var oX;]]></code>
@@ -112,7 +111,7 @@
 <code><![CDATA[  oX.post_init();]]></code>
 <code><![CDATA[}]]></code>
 <code><![CDATA[function testXhtmlDestroy(){]]></code>
-<code><![CDATA[]]></code>
+<code/>
 <code><![CDATA[  // Destroy the component]]></code>
 <code><![CDATA[  // And throw away the input field]]></code>
 <code><![CDATA[  // This will automatically syncronize the field value]]></code>

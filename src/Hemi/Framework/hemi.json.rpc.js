@@ -84,12 +84,13 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 				}
 				return 1;
 			};
+			/*
 			t.invokeMethod = function(v, m, p, fH){
 				var oSvc = t.getService(v,1);
 				var oReq = NewJSONRPCRequest(m, p);
 				return uwm.postJSON(oSvc.schema.serviceURL, oReq, fH);
 			};
-			
+			*/
 			t.loadJSONSchema = function(v, j){
 				var oSvc = (typeof v == DATATYPES.TYPE_OBJECT ? v : t.getService(v,1));
 				if(!oSvc.getJSONSchema && !oSvc.entity){

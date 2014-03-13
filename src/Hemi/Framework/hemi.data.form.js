@@ -509,6 +509,10 @@
 
                 if (o.b){
                 	w = HemiEngine.registry.service.getObject(o.b);
+                	if(!w){
+                		_m.sendMessage("Object binding no longer exists for id " + o.b, "200.2");
+                		return;
+                	}
                 	if(w.bind) w = w.bind;
                 }
 					/*

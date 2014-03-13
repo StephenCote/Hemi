@@ -23,7 +23,7 @@
 			</div>
 			<div rid = "xmlxsl">
 				<div class = "title">XML / XSL</div>
-				<import-xml src = "Templates/XslTransformer.xml" id = "XslTransformer" />
+				<import-xml src = "Fragments/XslTransformer.xml" id = "XslTransformer" />
 			</div>
 
 		<embedded-script>

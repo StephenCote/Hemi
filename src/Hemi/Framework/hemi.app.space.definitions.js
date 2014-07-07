@@ -144,7 +144,7 @@
 			);
             t.addDefinition(
 				t.newDefinition(
-					["p", "span", "div", "body", "form", "input", "textarea", "select", "table", "tr", "td", "tbody", "thead", "th", "img", "ul", "ol", "li", "a", "iframe", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "dd", "dt"],
+					["nav","header","p", "span", "div", "body", "form", "input", "textarea", "select", "table", "tr", "td", "tbody", "thead", "th", "img", "ul", "ol", "li", "a", "iframe", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "dd", "dt"],
 					"hemi.object.xhtml",
 					"newInstance",
 					["ora:parent_element", "ora:node_context", "ora:rid_attr", "ora:space_id", "hemi.data.form.service", "ora:integer_0", "ora:integer_0", "ora:space_config"],

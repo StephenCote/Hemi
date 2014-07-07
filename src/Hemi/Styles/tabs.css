@@ -58,14 +58,17 @@ div.stepstrip
 	background-color: #FFFFFF;
 	color: #000000;
 	cursor:pointer;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
 }
 .step_active
 {
-	background-color: #FFFF99;
+	background-color: #5555FF;
 	color: #000000;
 }
 .step_inactive
 {
-	background-color: #999900;
-	color: #CFCFCF;	
+	background-color: #DDDDFF;
+	color: #505050;	
 }

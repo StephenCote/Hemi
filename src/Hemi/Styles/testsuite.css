@@ -1,13 +1,15 @@
-﻿div.test_suite_results
+div.test_suite_results
 {
 	height: 100px;
 	overflow:auto;
 	background-color: #FFFFFF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #55FF55;
+	border-radius: 5px;
+	border: 1px solid #AAAADD;
 	padding: 10px;
 	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	moz-box-shadow: 5px 5px 3px #CFCFCF;
 	padding: 5px 5px 5px 15px;
 	margin: 0px 10px 5px 10px;
 }
@@ -16,9 +18,11 @@ p.test_status
 	background-color: #FFFFFF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #55FF55;
+	border-radius: 5px;
+	border: 1px solid #AAAADD;
 	padding: 10px;
-	/*-moz-box-shadow: 5px 5px 3px #CFCFCF;*/
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	box-shadow: 5px 5px 3px #CFCFCF;
 	padding: 2px 0px 2px 0px;
 	margin: 0px 10px 5px 10px;
 }
@@ -26,7 +30,8 @@ p.test_status input
 {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #55FF55;
+	border-radius: 5px;
+	border: 1px solid #AAAADD;
 
 }
 span.test_label 
@@ -40,7 +45,7 @@ div.test_box input
 {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #55FF55;
+	border: 1px solid #AAAADD;
 	margin:0px;
 	height:18px;
 }
@@ -61,9 +66,11 @@ div.test_box
 	background-color: #FFFFFF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #55FF55;
+	border-radius: 5px;
+	border: 1px solid #AAAADD;
 	padding: 10px;
-	/*-moz-box-shadow: 5px 5px 3px #CFCFCF;*/
+	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	box-shadow: 5px 5px 3px #CFCFCF;
 	padding: 0px 0px 0px 5px;
 	margin: 0px;
 }

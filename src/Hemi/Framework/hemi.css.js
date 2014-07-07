@@ -55,6 +55,7 @@
 				l.setAttribute("href",u);
 				l.setAttribute("rel","stylesheet");
 				document.getElementsByTagName("head")[0].appendChild(l);
+				_s[n] = l;
 
 			}
 		},

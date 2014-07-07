@@ -179,6 +179,7 @@
                     c.setManageMaximize(b1);
                     c.setManageMinimize(b2);
                     m.CenterWindow(c);
+                    if(f) f(c);
                     return;
                 }
             }

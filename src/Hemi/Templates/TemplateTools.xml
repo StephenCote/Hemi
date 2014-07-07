@@ -321,13 +321,14 @@
 		},
 		ResizeFrame : function(n,iModWidth,iModHeight){
 			try{
-				var d = this.getTemplateObjectByName(n);
+				var d = (typeof n == "object" ? n : this.getTemplateObjectByName(n));
 				
 				var iT = d.offsetTop;
 				// the parentNode x 3 is a bug
 				// where Engine is not correctly swapping out the html-fragment element
 				//
-				var iB = d.parentNode.parentNode.parentNode.clientHeight;
+				var iB = (this.getBody ? this.getBody() : d.parentNode.parentNode.parentNode).clientHeight; 
+					///d.parentNode.parentNode.parentNode.clientHeight;
 							//(typeof this.getBody == "function" ? this.getBody() : d.parentNode).clientHeight;
 							//n.parentNode.parentNode.parentNode.clientHeight;
 				var iH = (iB - iT );

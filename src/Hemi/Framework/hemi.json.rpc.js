@@ -97,7 +97,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 					return 0;
 				}
 				if(!oSvc.jsonSchema){
-					oSvc.jsonSchema = (j && (typeof j == DATATYPES.TYPE_OBJECT) && j.result ? j.result : (oSvc.schema.serviceType.match(/^json-rest$/i) ? oSvc.entity() : oSvc.getJSONSchema().result));
+					oSvc.jsonSchema = (j && (typeof j == DATATYPES.TYPE_OBJECT) ? (j.result ? j.result : j) : (oSvc.schema.serviceType.match(/^json-rest$/i) ? oSvc.entity() : oSvc.getJSONSchema().result));
 					t.emitJSONSchema(oSvc.jsonSchema);
 				}
 			};

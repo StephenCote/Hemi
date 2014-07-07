@@ -6,10 +6,12 @@ div.window_gizmo{
  	border:1px solid #505050;
  	background-color:#000000;
  	z-index: 10;
+	padding: 0px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	padding: 0px;
-	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	border-radius: 5px; 	
+	-moz-box-shadow: .25em .25em .25em 0em #CFCFCF;
+	box-shadow: .25em .25em .25em 0em #CFCFCF;
 }
 
 div.window_gizmo_focus{
@@ -58,9 +60,13 @@ div.window_gizmo_frame{
  	height:50px;
  	width:50px;
  	border: 1px outset #555500;
+
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	border-radius: 5px; 	
+	-moz-box-shadow: .25em .25em .25em 0em #CFCFCF;
+	box-shadow: .25em .25em .25em 0em #CFCFCF;
+
 }
 div.gizmo_screen
 {
@@ -75,15 +81,21 @@ div.gizmo_screen
 }
 div.window_title{
 	height:21px;
-	background-color: #000055;
-	color: #DDDD00;
+
+	background: #0000FF repeat scroll 0 0 transparent;
+	background: linear-gradient(to bottom, #0000FF, #EEEEFF) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #0000FF, #EEEEFF) repeat scroll 0 0 transparent;
+	background: -webkit-gradient(linear,left top, left bottom, from(#0000FF), to(#EEEEFF)) repeat scroll 0 0 transparent;
+
+	color: #CFCFCF;
+	text-shadow: 2px 2px #303030;
 	border: 1px solid #2B302D;
 	padding-top:0px;
 	padding-left: 2px;
 	font: normal 12pt Arial;
 }
 div.window_title_focus{
-	color: #FFFF99;
+	color: #FFFFFF;
 	background-color: #000099;
 	border: 1px outset #2B302D;
 }
@@ -96,7 +108,10 @@ div.window_status{
 	padding-left: 2px;
 	width:100%;
 	color: #DDDD00;
-	background-color: #000055;
+	background: #0000FF repeat scroll 0 0 transparent;
+	background: linear-gradient(to bottom, #EEEEFF, #0000ff) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(center top , #EEEEFF, #0000ff) repeat scroll 0 0 transparent;
+	background: -webkit-gradient(linear,left top, left bottom, from(#EEEEFF), to(#0000ff)) repeat scroll 0 0 transparent;
 	border-top: 1px solid #2B302D;
 }
 div.window_status_focus{

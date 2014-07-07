@@ -1,4 +1,4 @@
-﻿.framework_toolbar
+.framework_toolbar
 {
     background-color: #AAAADD;
 	height:28px;
@@ -14,10 +14,11 @@
     height:24px;
     margin-left:2px;
     padding:0px;
-    border:0px dotted #CFCFCF;
+    border:0px dotted #505050;
     background-color:transparent;
     background-repeat:no-repeat;
 }
+
 input.toolbar_button_profiler
 {
     background-image: url(../Graphics/Icons/crystal/24x24/advanced-directory.png);

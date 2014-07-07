@@ -37,12 +37,14 @@ ul.menu li.hemi
 	overflow:auto;
 	height:250px;
 	padding: 10px;
-	background-color: #FFFFEF;
+	background-color: #FFFFFF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	border: 1px solid #FFFF55;
+	border-radius: 5px;
+	border: 1px solid #AAAADD;
 	padding: 10px;
 	-moz-box-shadow: 5px 5px 3px #CFCFCF;
+	box-shadow: 5px 5px 3px #CFCFCF;
 	font: normal 8pt Times;
 	position:relative;
 	/*bottom:0px;*/

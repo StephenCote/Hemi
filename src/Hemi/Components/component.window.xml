@@ -128,7 +128,7 @@
 			if(!_p.body){
 				_p.body = document.createElement("div");
 				_p.body.setAttribute("is-body","1");
-				_p.body.appendChild(document.createTextNode("[ ... awaiting content ... ]"));
+				_p.body.appendChild(document.createTextNode(" "));
 				this.getContainer().appendChild(_p.body);
 			}
 

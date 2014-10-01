@@ -40,6 +40,7 @@
 			this.synchronizeValue();
 		},
 		synchronizeValue : function(){
+			if(!this.getProperties().build) return;
 			var o = new Date(this.getContainer().value);
 			if(!isNaN(o.getTime())){
 				Hemi.log("Synchronizing calendar to " + this.getContainer().value);

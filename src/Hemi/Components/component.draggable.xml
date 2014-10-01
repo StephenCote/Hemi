@@ -4,6 +4,7 @@
 		<![CDATA[
 			component_destroy:function(){
 				Hemi.include("hemi.css");
+				Hemi.log("Init draggable");
 				var oT = this.GetTracker();
 				if(oT && oT.getReadyState() == 4){
 					oT.ReleaseDraggable(this);
@@ -40,6 +41,7 @@
 				 if(!dt.IsCapturing() || dt.GetCaptured() == this || dt.GetDropping() == this) return;
 				//document.title = (new Date()).getTime() + ":" + dt.IsCapturing() + " / " + this.getObjectId() + ":" + dt.GetCaptured().getObjectId();
 				 dt.RequestDroppable(this);
+
 				Hemi.event.cancelEvent(evt);
 				evt.returnValue = false;
 						
@@ -53,7 +55,11 @@
 				//this.getContainer().innerHTML = "[ draggable - [md]]";
 				evt = Hemi.event.getEvent(e);
 				var oSrc = Hemi.event.getEventSource(evt);
-				if(oSrc != this.getContainer()) return;
+				while(oSrc != this.getContainer()) oSrc = oSrc.parentNode;
+				if(oSrc == null || !oSrc){
+					Hemi.log("Invalid click source");
+					return;
+				}
 						
 				l = evt.clientX - Hemi.css.getAbsoluteLeft(this.getContainer());
 				t = evt.clientY - Hemi.css.getAbsoluteTop(this.getContainer());

@@ -400,7 +400,7 @@
 			n.getItemSize=function(){
 				return this.objects.r.length;
 			};
-			
+
 			/// <method>
 			/// <name>getItems</name>
 			/// <return-value name = "a" type = "Array">Array of WideSelectItem objects.</return-value>
@@ -432,6 +432,20 @@
 				}
 				return null;
 			};
+			
+			/// <method>
+			/// <name>getActiveItems</name>
+			/// <return-value name = "a" type = "Array">Array of WideSelectItem objects.</return-value>
+			/// <description>Returns an array of selected WideSelectItem objects.</description>
+			/// </method>
+			n.getActiveItems = function(){
+				var a = [], o = this.objects,i;
+				for(i in o.active_results){
+					if(o.active_results[i] == 1) a.push(o.r[o.rh[i]]);
+				}
+				return a;
+			};
+
 
 			/// <method>
 			/// <name>setCanRequest</name>

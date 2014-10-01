@@ -4,6 +4,7 @@
 	<![CDATA[
 		component_init : function(){
 			Hemi.include("hemi.css");
+			Hemi.css.loadStyleSheet("Styles/hemi.css","hemi");
 			var _s = this.getProperties();
 			_s.zindex_dragitem = 121;
 			_s.zindex_screen = 120;
@@ -52,6 +53,7 @@
 			_p.drop_frame.style.top = iY2 + "px";
 			_p.drop_frame.style.left = iX2 + "px";
 			_p.drop_frame.style.zIndex = _s.zindex_dragitem;
+			Hemi.message.service.publish("ondragover", {src:_p.captured,target:o});
 		},
 		ReleaseDroppable : function(){
 			var _s = this.getProperties(), _p = this.getObjects();
@@ -70,11 +72,16 @@
 				o.getObjects().drag_frame.parentNode.removeChild(o.getObjects().drag_frame);
 				o.getObjects().drag_frame = 0;
 			}
+			if(_s.is_dropping && _p.drop_target){
+				Hemi.message.service.publish("ondrop", {src:o,target:_p.drop_target});
+			}
+			if(o.readyState == 4) Hemi.message.service.publish("ondragend", {src:o});
 			this.ReleaseDroppable();
 			this.ReturnScreen();
 		},
 
 		CaptureDraggable : function(o, l, t){
+			Hemi.log("Capture draggable");
 			var _s = this.getProperties(), _p = this.getObjects(), _cp = o.getObjects(), i;
 			t = (typeof t == "number") ? t : 0;
 			l = (typeof l == "number") ? l : 0;
@@ -96,6 +103,7 @@
 			_cp.drag_frame.style.zIndex = _s.zindex_dragitem;
 			_s.track_x = l;
 			_s.track_y = t;	
+			Hemi.message.service.publish("ondragstart", {src:o});
 
 		},
 		

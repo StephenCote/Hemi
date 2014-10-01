@@ -49,12 +49,13 @@
         ///		<param name="oElement" type="Node">XHTML Node for which the XHTML Component will be created.</param>
         ///		<param name="oSpace" type="SpaceObject" optional = "1">Application space in which the component will exist.</param>
         ///		<param name="sRid" type="String" optional = "1">Reference id for addressing this object through the registry service or within the application space.</param>
+        ///		<param name="bDynamic" type="bit" optional = "1">Permit creating a component on an existing space.  This is a safety check to allow adding the component without creating a duplicate entry.</param>
         /// 	<return-value type = "XHTMLComponent" name = "oComponent">A new XHTML Component.</return-value>
         /// 	<description>Creates a new XHTML Component.</description>
         /// </method>
-        createComponent: function (o, s, r) {
+        createComponent: function (o, s, r, b) {
             var x = 0;
-            if (s && s.space_state != 4) {
+            if (s && s.space_state != 4 && !b) {
                 HemiEngine.logError("Cannot dynamically create and bind a node to a component inside an initializing space");
                 return;
             }

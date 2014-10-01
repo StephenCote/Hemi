@@ -368,7 +368,7 @@
 			///		</method>
 
 			n._handle_xhtml_token = function (i, s) {
-				var r = s, p = /\$\{property\.(\S+)\}/, g = /\$\{form\.(\S+)\}/, b = /\$\{bean\.(.[^\.]+)\}/, b2 = /\$\{bean\.(.[^\.]+)\.(.[^\.]+)\}/, m, f = "replace",v;
+				var r = s, p = /\$\{property\.(\S[^\}]+)\}/, g = /\$\{form\.(\S[^\}]+)\}/, b = /\$\{bean\.(.[^\.\}]+)\}/, b2 = /\$\{bean\.(.[^\.\}]+)\.(.[^\.]+)\}/, m, f = "replace",v;
 
 				if (i == 2 || i == 3) {
 					if (!r || !r.length || !r.match(/\$/)) return r;

@@ -80,7 +80,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 				for(var i = 0; i < oS.methods.length; i++){
 					var sMName = oS.methods[i].name;
 					var sSUrl = oS.serviceURL;
-					v[sMName] = buildMethod(v, sMName, sSUrl,oS.methods[i].httpMethod);
+					v[sMName] = buildMethod(v, sMName, sSUrl,oS.methods[i].httpMethod,oS.methods[i].returnValue);
 				}
 				return 1;
 			};
@@ -156,7 +156,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 	}, 1);
 	
 	/// LOCAL CONFIG
-	function buildMethod(oSvc, sName, sUrl, sHttpMethod){
+	function buildMethod(oSvc, sName, sUrl, sHttpMethod, vReturn){
 		
 		var x;
 		if(oSvc.schema.serviceType.match(/^json-rest$/i)){
@@ -177,6 +177,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 					}
 				}
 				if(!ufg) ufg=HemiEngine.json.rpc.service.serviceCallConfig();
+				
 				if(!v){
 					v = "GET";
 					HemiEngine.logError("Method not specified for " + sName + ". Defaulting to GET.")
@@ -191,7 +192,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 						o = sc.readByName(f.serviceName, sK);
 					}
 					else{
-						o = HemiEngine.xml.getJSON(f.url + "/" + sK, fH, ufg.async, ufg.id, ufg.cache);
+						o = HemiEngine.xml["get" + (vReturn && vReturn.type && vReturn.type.match(/String$/) ? "Text" : "JSON")](f.url + "/" + sK, fH, ufg.async, ufg.id, ufg.cache);
 						
 						/// TODO: Note, the cache mechanism is currently not supported for async requests
 						///

@@ -13,6 +13,9 @@
 			if(typeof this.setStatus == "function") this.setStatus("");
 		},
 		extendSpaceConfiguration : function(oNode){
+			/// parseConfiguration won't operate on the parent node (oNode), so in this utility the parent (oNode) is specifically added to the space, and then the child nodes are processed.
+			///
+			Hemi.app.createComponent(oNode,this.getTemplateSpace(),0,1);
 			Hemi.app.space.service.parseConfiguration(this.getTemplateSpace(),0,"self",oNode);
 		},
 		GetSession : function(){

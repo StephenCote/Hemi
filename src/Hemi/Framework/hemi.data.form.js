@@ -159,6 +159,7 @@
 
 (function () {
     HemiEngine.include("hemi.object");
+    HemiEngine.include("hemi.text");
     HemiEngine.namespace("data.form", HemiEngine, {
         service: 0,
         serviceImpl: function () {
@@ -219,7 +220,7 @@
 				_m = HemiEngine.message.service
 			;
             t.objects = {
-                fn: ["hidden", "text", "password", "textarea", "select-multiple", "select-one", "checkbox"]
+                fn: ["date","hidden", "text", "password", "textarea", "select-multiple", "select-one", "checkbox"]
             };
             t.properties = {
                 a: 1,
@@ -544,7 +545,7 @@
                             o.v = c.value;
                             if (w){
                             	if(w[j] instanceof Date){
-                            		w[j] = new Date(c.value);
+                            		w[j] = new Date(c.value + (o.t == "date" ? " 00:00:00":""));
                             		/// alert("in: " + j + ":" + w[j]);
                             	}
                             	else{
@@ -557,7 +558,8 @@
                         else{
                         	if(w && (w[j] instanceof Date)){
                         		/// alert("in: " + j + ":" + w[j]);
-                        		c.value = (w[j].getMonth() + 1) + "/" + w[j].getDate() + "/" + w[j].getFullYear();
+                        		if(o.t != "date") c.value = (w[j].getMonth() + 1) + "/" + w[j].getDate() + "/" + w[j].getFullYear();
+                        		else c.value = w[j].getFullYear() + "-" + HemiEngine.text.pad((w[j].getMonth() + 1),2) + "-" + HemiEngine.text.pad(w[j].getDate(),2);
                         	}
                         	else{
                         		c.value = (w ? w[j] : o.v);

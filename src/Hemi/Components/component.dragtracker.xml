@@ -98,8 +98,8 @@
 			_cp.drag_frame.style.height = o.getContainer().offsetHeight + "px";
 			var iX2 = Hemi.css.getAbsoluteLeft(o.getContainer());
 			var iY2 = Hemi.css.getAbsoluteTop(o.getContainer());
-			_cp.drag_frame.style.top = (iY2 + t - 10) + "px";
-			_cp.drag_frame.style.left = (iX2 + l + 10) + "px";
+			_cp.drag_frame.style.top = (document.body.scrollTop + iY2 + t - 10) + "px";
+			_cp.drag_frame.style.left = (document.body.scrollLeft + iX2 + l + 10) + "px";
 			_cp.drag_frame.style.zIndex = _s.zindex_dragitem;
 			_s.track_x = l;
 			_s.track_y = t;	

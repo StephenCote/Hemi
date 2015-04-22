@@ -175,6 +175,12 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 						fH = ufg.handler;
 						l--;
 					}
+					/// Handle case where no a client accepts a config parameter, but passes in undefined
+					/// Then trim off that undefined value from the method call
+					///
+					else if(l > 0 && typeof g[l - 1] == DATATYPES.TYPE_UNDEFINED){
+						l--;
+					}
 				}
 				if(!ufg) ufg=HemiEngine.json.rpc.service.serviceCallConfig();
 				
@@ -198,6 +204,9 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 						///
 						if(f.cached && typeof o == DATATYPES.TYPE_OBJECT && o!=null && !ufg.async){
 							sc.addToCache(f.serviceName,o,sK);
+						}
+						else{
+							Hemi.logDebug("Do not cache " + f.serviceName + " " + sK);
 						}
 					}
 				}

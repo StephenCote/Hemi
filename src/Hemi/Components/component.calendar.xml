@@ -13,7 +13,14 @@
 		buildCalendar : function(){
 			if(this.getProperties().build) return;
 			this.getProperties().build = 1;
-			if(this.getContainer().nodeName && this.getContainer().nodeName.match(/^input$/gi) && this.getContainer().type.match(/^date/gi)) return;
+			if(this.getContainer().nodeName && this.getContainer().nodeName.match(/^input$/gi) && this.getContainer().type.match(/^date/gi)){
+				/*
+				var oD = new Date();
+				this.getContainer().value =  oD.getFullYear() + "-" + Hemi.text.pad((oD.getMonth() + 1),2) + "-" + Hemi.text.pad(oD.getDate(),2);
+				alert('set: ' + oD.getFullYear() + "-" + Hemi.text.pad((oD.getMonth() + 1),2) + "-" + Hemi.text.pad(oD.getDate(),2) + " == " + this.getContainer().value);
+				*/
+				return;
+			}
 			Hemi.include("hemi.ui.util");
 			Hemi.include("hemi.ui.calendar");
 			Hemi.css.loadStyleSheet("Styles/caltasche.css","caltasche");

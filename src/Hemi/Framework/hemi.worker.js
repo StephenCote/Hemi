@@ -73,24 +73,25 @@
 
             /// <method>
             /// 	<name>NewWorker</name>
-            ///		<param name="sPath" type="String">Path to the script which the worker will process.</param>
+            ///		<param name="sName" type="String">Name of the worker script.</param>
+            ///		<param name="sPath" optional = "1" type="String">Parent path to the script which the worker will process.</param>
             ///		<param name="oContainer" type="XHTMLComponent" optional = "1">XHTML Component acting as a container for the module.</param>
             /// 	<return-value type = "Worker" name = "vWorker">A Worker or PsuedoWorker object..</return-value>
             /// 	<description>Creates a new Worker or PsuedoWorker object, depending on browser support.</description>
             /// </method>
-            t.NewWorker = function (p, x) {
+            t.NewWorker = function (n, p, x) {
 
                 var w;
 
                 if (typeof Worker != "undefined") {
                     w = new Worker(Hemi.hemi_base + "Workers/worker.bootstrap.js");
                     w.onmessage = this._prehandle_worker;
-                    w.postMessage('_hwi:' + p);
+                    w.postMessage('_hwi:' + (p ? p : "Workers/") + n);
                 }
                 else {
                     w = Hemi.newObject("proxy_worker", "%FILE_VERSION%", 1, 0, {
                         object_create: function () {
-                            this.getObjects().module = Hemi.app.module.service.NewModule(p, null, "Workers/", {
+                            this.getObjects().module = Hemi.app.module.service.NewModule(n, null, (p ? p : "Workers/"), {
                                 DecorateModuleContent: function () {
                                     return "var WorkerProxy = null;"
                                         +

@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
-<Template>
-<p>Template Example</p>
-<embedded-init><![CDATA[
-	embedded_init : function(){
-		//alert("Embedded init");
-	}
-]]></embedded-init>
-</Template>

@@ -24,16 +24,7 @@
 ///	</static-class>
 (function () {
 
-	/*
-	Check for IE, try injecting excanvas library, and try instrumenting excanvas
-	*/
-	if (!DATATYPES.TU(document.attachEvent)) {
-		if (!HemiEngine.isImported("excanvas")) {
-			HemiEngine.include("excanvas", "3rdParty/");
-			if (typeof G_vmlCanvasManager != "undefined")
-				G_vmlCanvasManager.init_(document);
-		}
-	}
+
 	/// <object>
 	///		<name>ShapeDecorator</name>
 	///		<version>%FILE_VERSION%</version>
@@ -667,9 +658,13 @@
 				;
 				iH = _o.canvas.clientHeight;
 				if (!sColor) sColor = "#000000";
-				if (typeof _o.canvas_2d.measureText != "undefined") {
+				/// 2015/06/16
+				/// Ok, this was just laughably bad
+				///
+				if (typeof _o.canvas_2d.fillText != "undefined") {
 					_o.temp_canvas_2d.font = sF;
 					_o.temp_canvas_2d.fillStyle = sColor;
+					/*
 					if (vX == "center") {
 						var iW = _o.canvas.width;
 						var iTW = _o.canvas_2d.measureText(x).width;
@@ -677,19 +672,12 @@
 						else vX = 0;
 					}
 					vY += 10;
+					*/
 					/// this.log("Draw Text at " + vX + ", " + vY);
 					_o.temp_canvas_2d.fillText(x, vX, vY);
 					return 1;
 				}
-				else {
 
-					var oT = document.createElement("span");
-					oT.appendChild(document.createTextNode(x));
-					oT.style.csx = "font: normal " + sF + ";color: " + sColor + ";position:absolute;top:" + vY + "px;left:" + vX + "px;";
-					/// this.log("Draw Text at " + vX + ", " + vY);
-					_o.canvas.parentNode.appendChild(oT);
-					return 2;
-				}
 			};
 			/// <method>
 			/// 	<name>ConnectShapes</name>

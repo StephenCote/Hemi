@@ -16,6 +16,9 @@
 ///			<description>Utilities for DOM Styles and Cascading Style Sheets.</description>
 (function(){
 	HemiEngine.namespace("css", HemiEngine,{
+		getCSSBase : function(){
+			return (typeof HemiConfig != DATATYPES.TYPE_UNDEFINED && HemiConfig.cssBase ? HemiConfig.cssBase : HemiEngine.hemi_base);
+		},
 		/// <method>
 		/// <name>toggleStyleSheet</name>
 		/// <param name="sTitle" type="String">Name of the stylesheet link.</param>
@@ -42,7 +45,8 @@
 			if(!n) n = u;
 			if (_s[n]) return;
 			/* location.protocol.match(/^http/i) && */
-			if(!u.match(/^\//)) u = HemiEngine.hemi_base + u;
+			/// if(!u.match(/^\//)) u = HemiEngine.hemi_base + u;
+			if(!u.match(/^\//)) u = HemiEngine.css.getCSSBase() + u;
 			if(typeof document.createStyleSheet != DATATYPES.TYPE_UNDEFINED){
 				o = document.createStyleSheet(u);
 				if(o)

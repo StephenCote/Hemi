@@ -37,6 +37,7 @@
 				tab.pane = p;
 				p.style.display = "none";
 				p.className += " tab_pane";
+				p.tab_index = l;
 				// p.style.clear = "both";
 			//}
 		},
@@ -53,7 +54,7 @@
 
 			if(typeof ti == "number" && (ti < 0 || ti >= tabs.length)) return;
 			for(var i = 0; i < tabs.length; i++){
-				if(!tabs[i].tab || !tabs[i].pane) continue;
+				if(tabs[i] == null || !tabs[i].tab || !tabs[i].pane) continue;
 				if(
 					(typeof ti == "number" && ti == i)
 					||

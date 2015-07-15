@@ -368,7 +368,7 @@
 			///		</method>
 
 			n._handle_xhtml_token = function (i, s) {
-				var r = s, p = /\$\{property\.(\S[^\}]+)\}/, g = /\$\{form\.(\S[^\}]+)\}/, b = /\$\{bean\.(.[^\.\}]+)\}/, b2 = /\$\{bean\.(.[^\.\}]+)\.(.[^\.]+)\}/, m, f = "replace",v;
+				var r = s, h = /\$\{hemiConfig\.(\S[^\}]+)\}/,p = /\$\{property\.(\S[^\}]+)\}/, g = /\$\{form\.(\S[^\}]+)\}/, b = /\$\{bean\.(.[^\.\}]+)\}/, b2 = /\$\{bean\.(.[^\.\}]+)\.(.[^\.]+)\}/, m, f = "replace",v;
 
 				if (i == 2 || i == 3) {
 					if (!r || !r.length || !r.match(/\$/)) return r;
@@ -382,6 +382,8 @@
 						r = r[f](b, n.object_id + "-" + m[1]);
 					while ((m = r.match(p)) && m.length > 1)
 						r = r[f](p, n.properties[m[1]]);
+					while ((m = r.match(h)) && m.length > 1)
+						r = r[f](h, (typeof HemiConfig != DATATYPES.TYPE_UNDEFINED && HemiConfig[m[1]] ? HemiConfig[m[1]] : ""));
 					while ((m = r.match(b2)) && m.length > 2) {
 						/// reuse b
 						b = n.getBean(m[1]);

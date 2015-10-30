@@ -26,6 +26,7 @@
 			this.getObjects().wide_select.destroy();
 			this._prehandle_result_click = 0;
 		},
+
 		_handle_result_click : function(v,b){
 			if(this.getProperties().local_result_click){
 				eval(this.getProperties().local_result_click)();
@@ -34,6 +35,7 @@
 				//alert('default result click: ' + this.getObjectId());
 			}
 		},
+
 		GetWideSelect : function(){
 			return this.getObjects().wide_select;
 		}

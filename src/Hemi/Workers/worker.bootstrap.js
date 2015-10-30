@@ -20,7 +20,12 @@ if (typeof Hemi == "undefined" && typeof importScripts == 'function') {
         switch (sBL) {
             case "_hwi":
                 if (typeof g_module == "undefined")
-                    g_module = Hemi.app.module.service.NewModule(sBD, null, "Workers/", Hemi.worker.service);
+                	var sBDP = 0, sBDN = sBD;
+                	if(sBD.match(/\//)){
+                		sBDP = sBD.substring(0,sBD.lastIndexOf("/") + 1);
+                		sBDN = sBD.substring(sBD.lastIndexOf("/") + 1, sBD.length);
+                	}
+                    g_module = Hemi.app.module.service.NewModule(sBDN, null, (sBDP ? sBDP : "Workers/"), Hemi.worker.service);
                 
                 break;
             default:

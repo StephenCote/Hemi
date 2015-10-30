@@ -2,7 +2,7 @@
 /*
 	"Hemi" JavaScript Framework
 	Engine for Web Applications 3.5
-	Composite file "hemi.comp.js" release: 0.0.1981
+	Composite file "hemi.comp.js" release: 0.0.1717
 	Copyright 2002 - 2013. All Rights Reserved.
 	Author: Stephen W. Cote
 	Project: https://github.com/StephenCote/Hemi

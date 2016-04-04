@@ -59,13 +59,13 @@
             return s.behavior_storage;
         },
         init: function () {
-            var s = HemiEngine.storage.iestore, o, br;
-
+            var s = HemiEngine.storage.iestore, o, br,b = document.body;
+            if(!b) return;
             o = document.createElement("div");
 
             o.style.cssText = "position:absolute;display:none;width:1px;height:1px;top:0px;left:0px;";
             /// o.setAttribute("id","ocjsIESP");
-            document.body.appendChild(o);
+            b.appendChild(o);
             o.addBehavior("#default#userData");
 
             if (typeof o.XMLDocument != "undefined") {

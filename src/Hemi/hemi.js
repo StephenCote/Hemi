@@ -1337,7 +1337,7 @@ if (typeof window != "object") window = {};
         /// <description>Specifies the name of the registered ActiveX control to use for XML requests.</description>
         /// </property>
         ax_dom_control: "MSXML.DOMDocument",
-
+/*
         /// <property type = "boolean" get = "1" set = "1">
         /// <name>gadget_mode</name>
         /// <description>Specifies whether the xml package is operating in a mode that better supports Windows Sidebar Gadgets.</description>
@@ -1355,7 +1355,7 @@ if (typeof window != "object") window = {};
         /// <description>Specifies the base path to use when operating in Gadget mode.  The base path should be in the format of a file URI, such as <i>file:///c:/...</i>.</description>
         /// </property>
         gadget_base_path: 0,
-
+*/
         _xml_http_cache_enabled: 1,
 
         /// <method>
@@ -1377,7 +1377,7 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._xml_http_cache_enabled;
         },
 
-
+        /*
         _xml_namespace_resolver: [
 			["soapenc", "http://schemas.xmlsoap.org/soap/encoding/"],
 			["wsdl", "http://schemas.xmlsoap.org/wsdl/"],
@@ -1387,7 +1387,7 @@ if (typeof window != "object") window = {};
         _xml_namespace_url: {},
         _xml_namespace_uri: {},
         _xml_namespace_hashed: 0,
-
+		*/
 
         _xml_http_objects: [],
         _xml_http_object_use: 0,
@@ -1972,7 +1972,7 @@ if (typeof window != "object") window = {};
         /// <param name="h" type="function" optional="1" default="null">Handler invoked for asynchronous requests.</param>
         /// <param name="a" type="boolean" optional="1" default = "false">Bit indicating whether the request is asynchronous.</param>
         /// <param name="i" type="String" optional = "1" default = "auto">Identifier used to track the request and retrieve cached results.</param>
-        /// <param name="x" type="boolean" optional="1" default = "false">Bit indicating whether the request is a post.</param>
+        /// <param name="x" type="String" optional="1" default = "false">String representing the HTTP verb, or legacy bit field indicating whether the request is a post.</param>
         /// <param name="d" type="XMLDocument" optional="1" default = "null">XML Document to send with post request.</param>
         /// <param name="c" type="boolean" optional="1" default = "false">Bit indicating whether the response should be cached.</param>
         /// <param name="t" type="int" optional="1" default = "0">Int indicating whether the request and response as text (1) or JSON (2) instead of XML (0).</param>
@@ -1992,7 +1992,7 @@ if (typeof window != "object") window = {};
             if (typeof c == DATATYPES.TYPE_UNDEFINED) c = 0;
             if (typeof x == DATATYPES.TYPE_UNDEFINED) x = 0;
             if (typeof d == DATATYPES.TYPE_UNDEFINED) d = null;
-            z = (x ? "POST" : "GET");
+            z = (x ? (typeof x == "string" ? x : "POST") : "GET");
             if (typeof i != DATATYPES.TYPE_STRING) i = HemiEngine.guid();
 
 			/// 2011/02/22 Only use the proxy if loaded
@@ -2077,13 +2077,14 @@ if (typeof window != "object") window = {};
 
 
             b = _x._xml_http_pool_enabled;
+            /*
             if (_x.gadget_mode) {
                 a = 0;
                 b = 0;
                 p = _x.gadget_base_path + p;
                 r = new ActiveXObject(_x.gadget_xml_control);
             }
-            else if (b) {
+            else */ if (b) {
 
                 r = _x.getXmlHttpObjectFromPool(!a);
 
@@ -2364,7 +2365,7 @@ if (typeof window != "object") window = {};
             return o;
         },
 
-
+/*
         HashNamespaces: function () {
             var _x = HemiEngine.xml, a, i = 0, o;
             _x._xml_namespace_uri = {};
@@ -2400,7 +2401,7 @@ if (typeof window != "object") window = {};
 
             return "";
         },
-
+	*/
 
         /// <method>
         /// <name>selectSingleNode</name>

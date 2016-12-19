@@ -1874,6 +1874,10 @@ if (typeof window != "object") window = {};
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 2);
         },
+        
+        deleteJSON: function (p, h, a, i, c) {
+            return HemiEngine.xml._request_xmlhttp(p, h, a, i, "DELETE", null, c, 2);
+        },
 
         /// <method>
         /// <name>getText</name>
@@ -1890,6 +1894,10 @@ if (typeof window != "object") window = {};
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 1);
         },
+        deleteText: function (p, h, a, i, c) {
+
+            return HemiEngine.xml._request_xmlhttp(p, h, a, i, "DELETE", null, c, 1);
+        },
 
         /// <method>
         /// <name>getXml</name>
@@ -1905,6 +1913,10 @@ if (typeof window != "object") window = {};
         getXml: function (p, h, a, i, c) {
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c);
+        },
+        deleteXml: function (p, h, a, i, c) {
+
+            return HemiEngine.xml._request_xmlhttp(p, h, a, i, "DELETE", null, c);
         },
 
         /// <method>
@@ -1926,6 +1938,8 @@ if (typeof window != "object") window = {};
             }
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 1, JSON.stringify(d), 0, 2);
         },
+        
+        
 
         /// <method>
         /// <name>postText</name>

@@ -2506,7 +2506,13 @@ if (typeof window != "object") window = {};
 
             var i = 0, b, e, c, r = [];
             if (!z) r = null;
-
+            /*
+            var xp = p + (typeof n == DATATYPES.TYPE_STRING ? " > " + n : "") + (a && v ? "[" + a + "='" + v + "']" : "");
+            c = document.querySelectorAll(xp);
+            if(!z && c.length) r = c[0];
+            else r = c;
+            */
+             
             c = x.getElementsByTagName(p);
 
             if (typeof n == DATATYPES.TYPE_STRING) {
@@ -2531,6 +2537,7 @@ if (typeof window != "object") window = {};
 
                 }
             }
+            
             return r;
         },
 

@@ -371,6 +371,9 @@
                         */
                     }
                     if (dp && _ac) {
+                    	/// 2017/01/10 - changed last bit from 1 to 0 for async load
+                    	/// 01/13 - and, changed it back - there are some downstream dependencies on this being synchronous,
+                    	/// 
                         _p.a = _ac.bindComponent(t.object_id, i, dp, 0, 1);
 
                     }

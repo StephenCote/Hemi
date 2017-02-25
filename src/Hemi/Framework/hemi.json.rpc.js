@@ -63,12 +63,17 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 				return {hemiSvcCfg:true,id:i,cache:(c?true:false),async:(a?true:false),handler:(typeof f==DATATYPES.TYPE_FUNCTION?f:0)};
 			};
 			t.loadService = function(v, x){
+				var hls = HemiEngine.json.rpc.service.handleLoadService, vObj=v;
 				if(typeof v != DATATYPES.TYPE_OBJECT) v = t.getService(v);
 				if(!v || v.loaded) return 0;
-
+				
+				/*
+				if(x && (typeof x == DATATYPES.TYPE_OBJECT)) hls(x,vObj);
+				else HemiEngine.xml.getJSON(v.uri,function(s,v){if(v && v != null) hls(v,vObj); else alert("Unable to load service: " + v.uri);},1);
+				*/
 				/// NOTE: Synchronous call
 				///
-
+				
 				var oS = (x && (typeof x == DATATYPES.TYPE_OBJECT) ? x : HemiEngine.xml.getJSON(v.uri));
 				if(typeof oS != DATATYPES.TYPE_OBJECT || oS == null){
 					alert("Unable to load service: " + v.uri + ":" + (typeof oS));
@@ -82,7 +87,24 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 					var sSUrl = oS.serviceURL;
 					v[sMName] = buildMethod(v, sMName, sSUrl,oS.methods[i].httpMethod,oS.methods[i].returnValue);
 				}
+				
+				
 				return 1;
+			};
+			t.handleLoadService = function(oS, v){
+				if(typeof oS != DATATYPES.TYPE_OBJECT || oS == null){
+					alert("Unable to load service: " + v.uri + ":" + (typeof oS));
+					return null;
+				}
+				v.schema = oS;
+				v.loaded = 1;
+				
+				for(var i = 0; i < oS.methods.length; i++){
+					var sMName = oS.methods[i].name;
+					var sSUrl = oS.serviceURL;
+					v[sMName] = buildMethod(v, sMName, sSUrl,oS.methods[i].httpMethod,oS.methods[i].returnValue);
+				}
+
 			};
 			/*
 			t.invokeMethod = function(v, m, p, fH){

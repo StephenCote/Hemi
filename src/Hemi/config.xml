@@ -31,16 +31,13 @@
 
 		  <scriptFiles encodedName = "Hemi" name = "hemi.js" linkBase ="true" />
 		  <scriptFiles encodedName = "AppComp" name = "hemi.app.comp.js" />
-		  <!-- 
+		 
 		  <scriptFiles encodedName = "AppDWAC" name = "hemi.app.dwac.js" />
-		  -->
 		  <scriptFiles encodedName = "AppBase" name = "hemi.app.js" />
 		  <scriptFiles encodedName = "AppModule" name = "hemi.app.module.js" />
 		  <scriptFiles encodedName = "AppModuleTest" name = "hemi.app.module.test.js" />
-		  <!--
           <scriptFiles encodedName = "DataIO" name = "hemi.data.io.js" />
 		 <scriptFiles encodedName = "DataIOProxy" name = "hemi.data.io.proxy.js" />
-		 -->
 		  <scriptFiles encodedName = "AppSpaceDefinition" name = "hemi.app.space.definitions.js" />
 		  <scriptFiles encodedName = "AppSpace" name = "hemi.app.space.js" />
 		  <scriptFiles encodedName = "CSS" name = "hemi.css.js" />
@@ -54,28 +51,24 @@
 		  <scriptFiles encodedName = "Object" name = "hemi.object.js" />
 		  <scriptFiles encodedName = "ObjectXHTML" name = "hemi.object.xhtml.js" />
         
-        <!-- 
+
         <scriptFiles encodedName = "StorageDOM" name = "hemi.storage.dom.js" />
         
 		  <scriptFiles encodedName = "StorageIEStore" name = "hemi.storage.iestore.js" />
 		  
 		  <scriptFiles encodedName = "Storage" name = "hemi.storage.js" />
-		  -->
 		  <scriptFiles encodedName = "Task" name = "hemi.task.js" />
 		<scriptFiles encodedName = "Util" name = "hemi.util.js" />
 		<scriptFiles encodedName = "WebSecurity" name = "hemi.web.security.js" />
 		<scriptFiles encodedName = "UtilLogger" name = "hemi.util.logger.js" />
-		<!-- 
 		<scriptFiles encodedName = "UtilConfig" name = "hemi.util.config.js" />
-		-->
 		<scriptFiles encodedName = "Transaction" name = "hemi.transaction.js" />
 		<scriptFiles encodedName = "Text" name = "hemi.text.js" />
 		
 		<scriptFiles encodedName = "Worker" name = "hemi.worker.js" />
-		<!-- 
+		
 		<scriptFiles encodedName ="FrameworkIOProvider" name ="hemi.framework.io.provider.js" />
 			<scriptFiles encodedName ="FrameworkIOOfflineProvider" name ="hemi.framework.io.offline.provider.js" />
-		-->
 		
 		  <scriptFiles encodedName = "UIWideselect" name = "hemi.ui.wideselect.js" />
 		  <!-- 

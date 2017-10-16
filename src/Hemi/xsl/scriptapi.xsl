@@ -383,9 +383,7 @@ See <a><xsl:attribute name="href">#<xsl:value-of select = "example[@implementati
 </p>
 </xsl:if>
 </xsl:template>
-<xsl:template match = "a">
-<a><xsl:attribute name = "href"><xsl:value-of select="@href" /></xsl:attribute><xsl:value-of select = "." /></a>
-</xsl:template>
+
 
 <xsl:template match = "message">
 <a><xsl:attribute name="name"><xsl:value-of select = "name" /></xsl:attribute></a>

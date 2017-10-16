@@ -68,9 +68,9 @@
 			js_hash:[],
 			query_hash:[],
 			unique_images:[],
-			custom_variables:[%CUSTOM_VARIABLES%],
-			custom_cookies:[%CUSTOM_COOKIES%],
-			custom_forms:[%CUSTOM_FORMS%]
+			custom_variables:["%CUSTOM_VARIABLES%"],
+			custom_cookies:["%CUSTOM_COOKIES%"],
+			custom_forms:["%CUSTOM_FORMS%"]
 		},
 		///
 		/// b = skip perf metrics

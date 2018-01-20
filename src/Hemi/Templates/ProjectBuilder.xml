@@ -106,6 +106,7 @@
 			this.refreshBuilderUI();
 			this.RefreshProjectBuilder();
 			this.getProperties().builder_title = "Project Builder";
+			window.debugObj = this;
 		},
 		RefreshProjectBuilder : function(){
 			var b = (this.getObjects().project_construct ? 1 : 0);
@@ -140,42 +141,36 @@
 			}
 			this.BuildProject();
 			
-			var sTemp = this.GetElementByRID("project_text").value;
-			this.GetElementByRID("project_text").value = escape(sTemp);
-			
+	
 			var sName = this.GetElementByRID("project_name").value;
-			var bAdd = 1;
-			var oResp = this.GetNameExists(["project_name","project_id"], sName, "Pub");
-			if(oResp.status == true){
-				bAdd = 0;
-			}
-      
+     
+			var sTemp = this.GetElementByRID("project_text").value;
+			var bRet = 0;
 			var bOut = 0;
-			var aF = ["project_name","project_description","project_text"];
-			var oResp = 0;
-			if(!bAdd){
-				Hemi.log("Editing Project ...");
-				oResp = this.EditData(aF, this.getObjects().project_construct.id, "Pub");
+			var sPubPath = this.getProperties().current_path.substring(0,this.getProperties().current_path.lastIndexOf("/"));
+			var oG = AM6Client.find("GROUP","DATA",sPubPath + "/Pub");
+			var oND = AM6Client.getByName("DATA",oG.objectId,sName);
+			if(!oND){
+				oND = this.newData(sName,"text/plain",sPubPath + "/Pub");
 			}
-			else{
-				Hemi.log("Adding Project ...");
-				oResp = this.AddData(aF, "Pub");
-			}
-			if(oResp.status){
-				var sId = oResp.responseId;
+			oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
+
+			if(bRet){
+				var sId = oND.objectId;
 				if(!sId || sId.length == 0){
-						this.SetLabel("Error retrieving publication id");
+						this.SetLabel("Error retrieving publication id for " + sPubPath + "/" + sName);
 				}
 				else{
 					/// if(!bSkipRefresh) this.RefreshDWACLists();
 					this.SetLabel("Published!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Pub Id: " + sId + " / Path: " + oResp.responsePath);
-					this.getProperties().pub_data_path = oResp.responsePath;
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Pub Id: " + sId + " / Path: " + oND.groupPath);
+					this.getProperties().pub_data_path = oND.groupPath;
 					bOut = 1;
 				}
 			}
 			else{
-				this.SetLabel("Failed to publish '" + this.GetElementByRID("project_name").value + "'");
+				this.SetLabel("Failed to publish '" + sPubPath + "/" + sName + "'");
 			}
 			this.GetElementByRID("project_text").value = sTemp;
 			return bOut;
@@ -203,14 +198,15 @@
 			
 			this.GetElementByRID("build_project").selectedIndex = 0;
 			this.BuildProject();
-
+			var sName = this.GetElementByRID("project_name").value;
 			var aParams = [
 				this.GetElementByRID("project_name").value,
 				sTask,
 				sTemplate,
-				"dwac:" + this.getProperties().pub_data_path,
+				g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.getProperties().current_path.substring(0,this.getProperties().current_path.lastIndexOf("/")) + "/Pub/" + sName,
 				this.GetElementByRID("run_project_as").selectedIndex
 			];
+					
 			this.RunControl("RunApplicationProject", aParams);
 		},
 		LoadObject : function(i){
@@ -219,18 +215,21 @@
 
 			this.getProperties().project_id = i;
 			this.GetElementByRID("build_project").selectedIndex = 0;
-			this.ReadData(0, i, this._prehandle_project_load);
+			AM6Client.get("DATA",i,this._prehandle_project_load);
 		},
-		_handle_project_load : function(oService, oSubject, oRequest, oResponse){
+		_handle_project_load : function(s, v){
 			this.SetLabel("");
-			if(!oResponse.responseData.length){
+			if(v && v.json) v = v.json;
+			if(!v || v == null){
 				 this.SetLabel("Failed to load project");
 				 return;
 			}
-			var oData = oResponse.responseData[0];
-			var sVal = unescape(oData.value);
 			
-			this.GetElementByRID("project_text").value = sVal;
+			var oData = v;
+			window.debugObj = this;
+			this.SetDataPath(oData.groupPath);
+			var sTemp = uwm.base64Decode(oData.dataBytesStore);	
+			this.GetElementByRID("project_text").value = sTemp;
 
 			if(this.LoadProjectText()){
 				this.GetElementByRID("project_name").value = oData.name;
@@ -239,7 +238,6 @@
 				this.getObjects().project_construct.id = this.getProperties().project_id;
 				this.RefreshProjectBuilder();
 				Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Id: " + this.getProperties().project_id + " / Path: " + oData.path);
-				this.SetDataPath(oData.path);
 			}
 
 			this.GetElementByRID("project_id").value = this.getProperties().project_id + "";
@@ -253,10 +251,10 @@
 				 return;
 			}
 			if(!confirm("Are you sure you want to delete this project?")) return;
-			var oResp = this.DeleteData(["project_id"], id);
-			if(oResp.status == true){
-					this.ClearProject();
-					/// this.RefreshDWACLists();
+			var oResp = AM6Client.delete("DATA",id);
+			if(oResp == true){
+				this.ClearProject();
+				/// this.RefreshDWACLists();
 			}
 			else{
 				 this.SetLabel("Failed to delete data #" + id);
@@ -279,6 +277,7 @@
 				this.GetProjectTemplatesList().clearItems();
 				this.SetLabel("");
 				this.RefreshProjectBuilder();
+				delete this.getProperties().data_object;
 		},
 	
 		SaveCurrentObject : function(){
@@ -299,38 +298,40 @@
 			}
 			this.BuildProject();
 			var sName = this.GetElementByRID("project_name").value;
-			var oResp = this.GetNameExists(["project_name","project_id"], sName);
-			if(oResp.status == true){
-				Hemi.log("Resp Status=" + oResp.status);
-				this.SetLabel("The project '" + sName + "' already exists");
-				return;
-			}
-			
+				
 			var sTemp = this.GetElementByRID("project_text").value;
-			this.GetElementByRID("project_text").value = escape(sTemp);
-
-			var aF = ["project_name","project_description","project_text","project_id"];
-			oResp = 0;
-			if(this.getObjects().project_construct.id > 0){
-				oResp = this.EditData(aF, this.getObjects().project_construct.id);
-			}
+	
+			var bRet = 0;
+			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
+			if(this.getObjects().project_construct.id && this.getProperties().data_object){
+				oND = this.getProperties().data_object;
+				oND.name = sName;			}
 			else{
-				oResp = this.AddData(aF);
+				oND = this.newData(sName,"text/xml",this.getProperties().current_path);
 			}
-			if(oResp.status){
+			oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
+
+			if(bRet){
+				oND = (oND.objectId ? AM6Client.get("DATA",oND.objectId) : AM6Client.getByName("DATA",oG.objectId,sName));
+				if(!oND){
+					this.SetLabel("Failed to retrieve object data");
+					return;
+				}
+
 
 				this.getObjects().project_construct.changes = 0;
-				var sId = oResp.responseId;
+				var sId = oND.objectId;
 				if(!sId || sId.length == 0){
 						this.SetLabel("Error retrieving data id");
-						this.getObjects().project_construct.id = 0;
+						delete this.getObjects().project_construct.id;
 				}
 				else{
-					this.getObjects().project_construct.id = parseInt(sId);	
+					this.getObjects().project_construct.id = sId;	
 					this.GetElementByRID("project_id").value = sId;
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Id: " + sId + " / Path: " + oResp.responsePath);
-					this.SetDataPath(oResp.responsePath);
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("project_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					this.SetDataPath(oND.groupPath);
 				}
 			}
 			else{
@@ -351,6 +352,7 @@
 		},
 
 		BuildProject : function(){
+			window.debugObj = this;
 			if(!this.getObjects().project_construct){
 				this.SetLabel("Invalid project construct");
 				return;	 
@@ -378,15 +380,16 @@
 			if(bDep){
 				aBuff.push("<fragments>\n");
 			}
+			var sP = this.getProperties().current_path.substring(0,this.getProperties().current_path.lastIndexOf("/"));
 			for(var i = 0; i < aItems.length; i++){
 				if(!bDep){
-					aBuff.push("<module type = \"fragment\"  uri = \"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Fragments/" + aItems[i].name + "\"");
+					aBuff.push("<module type = \"fragment\"  uri = \"" + g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Fragments/" + aItems[i].name + "\"");
 					aBuff.push(" id = \"" + aItems[i].data + "\"");
 					aBuff.push(" name = \"" + aItems[i].name + "\"");
 					aBuff.push(" />\n");
 				}
 				else{
-					var oXml = Hemi.xml.getXml("dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Fragments/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
+					var oXml = Hemi.xml.getXml(g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Fragments/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
 					aBuff.push("<fragment id = \"" + aItems[i].name + "\">\n");
 					aBuff.push(this.BuildProjectModule(oXml, oXml.documentElement, aErrors));
 					var s = Hemi.xml.serialize(oXml.documentElement);
@@ -403,13 +406,13 @@
 			}
 			for(var i = 0; i < aItems.length; i++){
 				if(!bDep){
-					aBuff.push("<module type = \"tasklist\"  uri = \"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Tasks/" + aItems[i].name + "\"");
+					aBuff.push("<module type = \"tasklist\"  uri = \"" + g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Tasks/" + aItems[i].name + "\"");
 					aBuff.push(" id = \"" + aItems[i].data + "\"");
 					aBuff.push(" name = \"" + aItems[i].name + "\"");
 					aBuff.push(" />\n");
 				}
 				else{
-					var oXml = Hemi.xml.getXml("dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Tasks/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
+					var oXml = Hemi.xml.getXml(g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Tasks/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
 					for(var c = 0; c < oXml.documentElement.childNodes.length; c++){
 						if(oXml.documentElement.childNodes[c].nodeType == 1){
 							var oTask = oXml.documentElement.childNodes[c];
@@ -431,13 +434,13 @@
 			}
 			for(var i = 0; i < aItems.length; i++){
 				if(!bDep){
-					aBuff.push("<module type = \"component\"  uri = \"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Components/" + aItems[i].name + "\"");
+					aBuff.push("<module type = \"component\"  uri = \"" + g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Components/" + aItems[i].name + "\"");
 					aBuff.push(" id = \"" + aItems[i].data + "\"");
 					aBuff.push(" name = \"" + aItems[i].name + "\"");
 					aBuff.push(" />\n");
 				}
 				else{
-					var oXml = Hemi.xml.getXml("dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Components/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
+					var oXml = Hemi.xml.getXml(g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Components/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
 					for(var c = 0; c < oXml.documentElement.childNodes.length; c++){
 						if(oXml.documentElement.childNodes[c].nodeType == 1){
 							aBuff.push(this.BuildProjectModule(oXml, oXml.documentElement.childNodes[c], aErrors));
@@ -457,13 +460,13 @@
 			}
 			for(var i = 0; i < aItems.length; i++){
 				if(!bDep){
-					aBuff.push("<module type = \"template\"  uri = \"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/" + aItems[i].name + "\"");
+					aBuff.push("<module type = \"template\"  uri = \"" + g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Templates/" + aItems[i].name + "\"");
 					aBuff.push(" id = \"" + aItems[i].data + "\"");
 					aBuff.push(" name = \"" + aItems[i].name + "\"");
 					aBuff.push(" />\n");
 				}
 				else{
-					var oXml = Hemi.xml.getXml("dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
+					var oXml = Hemi.xml.getXml(g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Templates/" + aItems[i].name + "?ts=" + (new Date()).getTime(),0,0,0,0);
 					var sId = Hemi.text.trim(oXml.documentElement.getAttribute("id"));
 					if(sId.length > 0 && sTemplate.length > 0 && sId == sTemplate) bCheck = 1;
 					//aBuff.push("<Template id = \"" + aItems[i].name + "\">\n");
@@ -496,10 +499,10 @@
 			}
 		},
 		BuildProjectModule : function(oXml, oNode, aMessages){
-			var sDWACPath = g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name;
-			//var regFrag = /Fragments\/([\S\s]+)/;
-			var regComp = new RegExp("appcomp_path\\s*=\\s*\"(dwac:)+" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Components/([^\"]*)\"","g");
-			var regFrag = new RegExp("(dwac:)+" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Fragments/([\\S\\s]+)");
+			var sP = this.getProperties().current_path.substring(0,this.getProperties().current_path.lastIndexOf("/"));
+			var sPB = g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP;
+			var regComp = new RegExp("appcomp_path\\s*=\\s*\"(dwac:)*" + sPB + "/Components/([^\"]*)\"","g");
+			var regFrag = new RegExp("(dwac:)*" + sPB + "/Fragments/([\\S\\s]+)");
 			var oM;
 			var aBuff = [];
 			var oImports = oNode.getElementsByTagName("import-xml");
@@ -603,11 +606,13 @@
 			oW.SetPickerHandler(this._prehandle_project_picker_choose);
 			oW.setHideOnClose(0);
 			this.getObjects().current_picker = oW;
-			var oResp = this.ListData(this.getProperties().link_target);
+			var sPath = uwm.getPathForType("DWAC") + "/" + this.getProperties().link_target;
+			//var oResp = this.ListData(this.getProperties().link_target);
+			var sGid = AM6Client.find("GROUP","DATA",sPath).objectId;
+			var a = AM6Client.list("DATA",sGid,0,0);
 			oW.GetPickerList().clearItems();
-			for(var i = 0; i < oResp.responseData.length; i++){
-				/// Hemi.log("Adding to picker: " + oResp.responseData[i].name + " (" + oResp.responseData[i].id + ")");
-				oW.GetPickerList().addItem(oResp.responseData[i].name,"" + oResp.responseData[i].id);
+			for(var i = 0; i < a.length; i++){
+				oW.GetPickerList().addItem(a[i].name,"" +a[i].name);
 			}
 		},
 		_handle_project_picker_choose : function(oPicker, oItem){

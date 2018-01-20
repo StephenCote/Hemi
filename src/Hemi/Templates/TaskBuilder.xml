@@ -96,8 +96,9 @@
 			this.GetElementByRID("build_task").selectedIndex = 0;
 			this.BuildTaskList();
 			aBuff.push(this.GetElementByRID("task_text").value);
-
-			var aParams = [this.GetElementByRID("task_name").value, oTask.name, aBuff.join("\n"),"dwac:" + this.GetDataPath(),this.GetElementByRID("run_task_as").selectedIndex];
+			
+			var sName = this.GetElementByRID("task_name").value;
+			var aParams = [this.GetElementByRID("task_name").value, oTask.name, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_task_as").selectedIndex];
 			this.RunControl("RunApplicationTaskList", aParams);
 		},
 
@@ -106,18 +107,20 @@
 			Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"[ Volatile Task ]");
 			this.getProperties().task_id = i;
 			this.GetElementByRID("build_task").selectedIndex = 0;
-			this.ReadData(0, i, this._prehandle_task_load);
+			AM6Client.get("DATA",i,this._prehandle_task_load);
 		},
-		_handle_task_load : function(oService, oSubject, oRequest, oResponse){
+		_handle_task_load : function(s, v){
 			this.SetLabel("");
-			if(!oResponse.responseData.length){
+			if(v && v.json) v = v.json;
+			if(!v || v == null){
 				 this.SetLabel("Failed to load task list");
 				 return;
 			}
-			var oData = oResponse.responseData[0];
-			var sVal = unescape(oData.value);
-
-			this.GetElementByRID("task_text").value = sVal;
+			var oData = v;
+			this.SetDataPath(oData.groupPath);
+			var sTemp = uwm.base64Decode(oData.dataBytesStore);
+			
+			this.GetElementByRID("task_text").value = sTemp;
 
 			if(this.LoadTaskText()){
 				this.GetElementByRID("task_name").value = oData.name;
@@ -125,8 +128,7 @@
 
 				this.getObjects().task_construct.id = this.getProperties().task_id;
 				this.RefreshTaskBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + this.getProperties().task_id + " / Path: " + oData.path);
-				this.SetDataPath(oData.path);
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + this.getProperties().task_id + " / Path: " + oData.groupPath);
 			}
 
 			this.GetElementByRID("task_id").value = this.getProperties().task_id + "";
@@ -140,8 +142,9 @@
 				 return;
 			}
 			if(!confirm("Are you sure you want to delete this task list?")) return;
-			var oResp = this.DeleteData(["task_id"], id);
-			if(oResp.status == true){
+			var oResp = AM6Client.delete("DATA",id);
+			if(oResp == true){
+				this.ClearComponent();
 					this.ClearTaskList();
 					///this.RefreshDWACLists();
 			}
@@ -150,6 +153,7 @@
 			}
 		},
 		ClearTaskList : function(){
+				delete this.getProperties().data_object;
 				this.GetElementByRID("build_task").selectedIndex = 0;
 				this.GetElementByRID("task_text").value = "";
 				this.GetElementByRID("task_id").value = "0";
@@ -181,39 +185,38 @@
 				this.BuildTaskList();
 			}
 			var sName = this.GetElementByRID("task_name").value;
-			var oResp = this.GetNameExists(["task_name","task_id"], sName);
-			if(oResp.status == true){
-				Hemi.log("Resp Status=" + oResp.status);
-				this.SetLabel("The task '" + sName + "' already exists");
-				return;
-			}
-			
 			var sTemp = this.GetElementByRID("task_text").value;
-			this.GetElementByRID("task_text").value = escape(sTemp);
-			
-			
-			var aF = ["task_name","task_description","task_text","task_id"];
-			oResp = 0;
-			if(this.getObjects().task_construct.id > 0){
-				oResp = this.EditData(aF, this.getObjects().task_construct.id);
+			var bRet = 0;
+			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
+			if(this.getObjects().task_construct.id && this.getProperties().data_object){
+				oND = this.getProperties().data_object;
+				oND.name = sName;			
 			}
 			else{
-				oResp = this.AddData(aF);
+				oND = this.newData(sName,"text/plain",this.getProperties().current_path);
 			}
-			if(oResp.status){
+			oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
+
+			if(bRet){
+				oND = (oND.objectId ? AM6Client.get("DATA",oND.objectId) : AM6Client.getByName("DATA",oG.objectId,sName));
+				if(!oND){
+					this.SetLabel("Failed to retrieve object data");
+					return;
+				}
 				this.getObjects().task_construct.changes = 0;
-				var sId = oResp.responseId;
+				var sId = oND.objectId;
 				if(!sId || sId.length == 0){
 						this.SetLabel("Error retrieving data id");
-						this.getObjects().task_construct.id = 0;
+						delete this.getObjects().task_construct.id;
 				}
 				else{
-					this.getObjects().task_construct.id = parseInt(sId);	
+					this.getObjects().task_construct.id = sId;	
 					this.GetElementByRID("task_id").value = sId;
 					///this.RefreshDWACLists();
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + sId + " / Path: " + oResp.responsePath);
-					this.SetDataPath(oResp.responsePath);
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					this.SetDataPath(oND.groupPath);
 				}
 			}
 			else{

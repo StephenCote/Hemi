@@ -222,11 +222,7 @@ if (typeof window != "object") window = {};
 			return HemiEngine.getLibrary(s);
 		}
         var v, l = HemiEngine.Libraries.length, q, b = 0;
-		/* if(z && z.match(/dwac/)) alert(z + "\n" + (z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxied(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js");*/
-		
-		/* if(z && z.match(/Modules/)) alert((z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxyProtocol(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js");*/
         var x = HemiEngine.xml.getText((z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxyProtocol(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js", 0, 0, s, 1);
-		/* if(!s.match(/^hemi/) && !x) alert((z && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js" + ":" + s); */
         /// try {
             if (x) {
                 x = x.replace(/^\s+/, "").replace(/\s+$/, "");
@@ -239,7 +235,7 @@ if (typeof window != "object") window = {};
             alert("Error including library '" + s + "'\n\n" + e.message);
         }
 		*/
-		/* if(z && z.match(/dwac/)) alert(x); */
+
         q = {
             package: s,
             index: l,

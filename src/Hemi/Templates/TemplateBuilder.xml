@@ -93,7 +93,9 @@
 			if(!this.getObjects().template_construct) return;
 			this.GetElementByRID("build_template").selectedIndex = 0;
 			this.BuildTemplate();
-			var aParams = [this.GetElementByRID("template_name").value, this.GetElementByRID("template_text").value,"dwac:" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + this.getObjects().template_construct.id,this.GetElementByRID("run_template_as").selectedIndex];
+			var sName = this.GetElementByRID("template_name").value;
+			var aParams = [sName, this.GetElementByRID("template_text").value, g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_template_as").selectedIndex];
+
 			this.RunControl("RunApplicationTemplate", aParams);
 		},
 		GetTemplateModel : function(){
@@ -109,18 +111,21 @@
 
 			this.getProperties().template_id = i;
 			this.GetElementByRID("build_template").selectedIndex = 0;
-			this.ReadData(0, i, this._prehandle_template_load);
+			AM6Client.get("DATA",i,this._prehandle_template_load);
 		},
-		_handle_template_load : function(oService, oSubject, oRequest, oResponse){
+		_handle_template_load : function(s, v){
 			this.SetLabel("");
-			if(!oResponse.responseData.length){
+			if(v && v.json) v = v.json;
+			if(!v || v == null){
 				 this.SetLabel("Failed to load component");
 				 return;
 			}
-			var oData = oResponse.responseData[0];
-			var sVal = unescape(oData.value);
+			
+			var oData = v;
+			this.SetDataPath(oData.groupPath);
+			var sTemp = uwm.base64Decode(oData.dataBytesStore);
 
-			this.GetElementByRID("template_text").value = sVal;
+			this.GetElementByRID("template_text").value = sTemp;
 
 			if(this.LoadTemplateText()){
 				this.getObjects().template_construct.id = this.getProperties().template_id;
@@ -139,8 +144,8 @@
 				 return;
 			}
 			if(!confirm("Are you sure you want to delete this template?")) return;
-			var oResp = this.DeleteData(["template_id"], id);
-			if(oResp.status){
+			var oResp = AM6Client.delete("DATA",id);
+			if(oResp){
 					this.ClearTemplate();
 			}
 			else{
@@ -157,6 +162,7 @@
 				this.GetTemplateModel().clearItems();
 				this.GetLinkedFragmentModel().clearItems();
 				this.RefreshTemplateBuilder();
+				delete this.getProperties().data_object;
 		},
 		SaveCurrentObject : function(){
 			if(
@@ -178,35 +184,37 @@
 			this.BuildTemplate();
 			
 			var sName = this.GetElementByRID("template_name").value;
-			var oResp = this.GetNameExists(["template_name","template_id"], sName);
-			if(oResp.status == true){
-				Hemi.log("Resp Status=" + oResp.status);
-				this.SetLabel("The template '" + sName + "' already exists");
-				return;
-			}
 
 			var sTemp = this.GetElementByRID("template_text").value;
-			this.GetElementByRID("template_text").value = escape(sTemp);
-			var aF = ["template_name","template_description","template_text","template_id"];
 
-			oResp = 0;
-			if(this.getObjects().template_construct.id > 0){
-				oResp = this.EditData(aF, this.getObjects().template_construct.id);
+			var bRet = 0;
+			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
+			var oND = 0;
+			if(this.getObjects().template_construct.id && this.getProperties().data_object){
+				oND = this.getProperties().data_object;
+				oND.name = sName;
 			}
 			else{
-				oResp = this.AddData(aF);
+				oND = this.newData(sName,"text/plain",this.getProperties().current_path);
 			}
+			oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
 
-			if(oResp.status){
+			if(bRet){
+				oND = (oND.objectId ? AM6Client.get("DATA",oND.objectId) : AM6Client.getByName("DATA",oG.objectId,sName));
+				if(!oND){
+					this.SetLabel("Failed to retrieve object data");
+					return;
+				}
+
 				this.getObjects().template_construct.changes = 0;
-				var sId = oResp.responseId;
+				var sId = oND.objectId;
 				if(!sId || sId.length == 0){
 						this.SetLabel("Error retrieving data id");
-						this.getObjects().template_construct.id = 0;
+						delete this.getObjects().template_construct.id;
 				}
 				else{
-					this.getObjects().template_construct.id = parseInt(sId);
-					/// this.RefreshDWACLists();
+					this.getObjects().template_construct.id = sId;
 					this.SetLabel("Saved!");
 					this.RefreshTemplateBuilder();
 					Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"Id: " + sId + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + sId);
@@ -347,11 +355,16 @@
 			oW.setIsModal(1);
 
 			oW.SetPickerHandler(this._prehandle_template_picker_choose);
+			var sP = this.getProperties().current_path.substring(0,this.getProperties().current_path.lastIndexOf("/")) + "/Fragments";
+			var sGid = AM6Client.find("GROUP","DATA",sP).objectId;
+			var a = AM6Client.list("DATA",sGid,0,0);
+			/*
 			var oResponse = this.ListData("Fragments");
             var a = oResponse.responseData;
             if(!a.length && oResponse.responseGroups.length) a = oResponse.responseGroups[0].data;
+            */
 			for(var i = 0; i < a.length; i++){
-				oW.GetPickerList().addItem(a[i].name,"" + a[i].id);
+				oW.GetPickerList().addItem(a[i].name,"" + a[i].name);
 			}
 			oW.setHideOnClose(0);
 		},
@@ -371,7 +384,9 @@
 			}
 			else{
 				this.GetLinkedFragmentModel().addItem(oItem.name,oItem.data);
-				this.getObjects().template_construct.xhtml_content += "\n<import-xml src = \"" + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Fragments/ID-" + oItem.data + "\" id = \"" + oItem.name + "\" />";
+				var sP = this.GetDataPath().substring(0,this.GetDataPath().lastIndexOf("/"));
+				
+				this.getObjects().template_construct.xhtml_content += "\n<import-xml src = \"" + g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP + "/Fragments/" + oItem.data + "\" id = \"" + oItem.name + "\" />";
 				this.getObjects().template_construct.changes++;
 				this.GetLinkedFragmentModel().commitBuffer();
 				this.BuildTemplate();

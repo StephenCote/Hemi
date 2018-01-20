@@ -14,13 +14,10 @@
 			this.getProperties().data_path = 0;
 			this.setupButtons("buttons-bar");
 			this.joinTransactionPacket("datagrid");
-			this.joinTransactionPacket("iobus");
 			this.scopeHandler("template_loaded", 0, 0, 1);
 		},
 		embedded_destroy : function(){
-			/// alert('destroy');
 			this.removeFromTransactionPacket("datagrid");
-			this.removeFromTransactionPacket("iobus");
 			this._prehandle_template_loaded = 0;
 		},
 		SetDataPath : function(s){
@@ -54,13 +51,8 @@
             }
 		},
 		refreshBuilderUI : function(){
-			/// alert('refresh: ' + this.getProperties().busType);
-			var _bt = Hemi.data.io.service.getBusType();
-			var bNO = (this.getProperties().busType != _bt.ONLINE && this.getProperties().busType != _bt.OFFLINE);
-			var sNote = "";
-			if(bNO) sNote = " (Bus must be ONLINE or OFFLINE to save or delete)";
-			if(this.setStatus) this.setStatus("Builder: Bus " + Hemi.data.io.service.getBusName(this.getProperties().busType) + sNote);
-			
+			if(this.setStatus) this.setStatus("Builder");
+			var bNO = false;
 			this.GetElementByRID("btnSave").disabled = bNO;
 			this.GetElementByRID("btnDel").disabled = bNO;
 		},
@@ -105,8 +97,25 @@
 			Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, fHandler);
 			return Hemi.data.io.service.getResponseByName(oRequest.responseId);
 		},
+		newData : function(sName, sMimeType, sGroupPath){
+			var o = new org.cote.objects.dataType();
+			o.name = sName;
+			o.blob = true;
+			o.nameType = "DATA";
+			o.dataBytesStore = "";
+			o.mimeType = (sMimeType ? sMimeType : "text/plain");
+			o.description = "";
+			o.id = 0;
+			o.createdDate = new Date();
+			o.modifiedDate = o.createdDate;
+			o.expiryDate = o.createdDate;
+			o.groupPath = sGroupPath;
+			return o;
+		},
 		queryData : function(sAct, aF, sCtx, sName, sId, bFull, bAsync, sMime, fHandler){
+			
 			var _p = this.getProperties();
+			//alert("Query " + sAct + " / " + _p.current_path);
 			var oD = 0;
 			if(aF && aF.length > 0){
 				oD = this.GetSerialData(aF);

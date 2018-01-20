@@ -19,26 +19,24 @@
 			var o = 0,p,l=tabs.length;
 			
 			var strip = this.GetElementByRID("tabstrip");
-			//strip.style.clear = "both";
-			//for(var i = 0; i < arguments.length; i++){
+
 				var tab = tabs[l] = {index:l,tab:0,pane:0,paneid:i,label:n};
 				p = this.GetElementByRID(tab.paneid);
 
 				if(!p) return 0;
-				//o = this.GetElementByRID(tabs[i].tabid);
 				o = document.createElement("div");
 				o.appendChild(document.createTextNode(n));
 				o.className = "tab";
 				o.onclick = this._prehandle_tabclick;
 				if(typeof fShow == "function") o.ontabclick = fShow;
 				o.tab_index = l;
+				o.tab_name = n;
 				strip.appendChild(o);
 				tab.tab = o;
 				tab.pane = p;
 				p.style.display = "none";
 				p.className += " tab_pane";
 				p.tab_index = l;
-				// p.style.clear = "both";
 			//}
 		},
 		_handle_tabclick : function(e){

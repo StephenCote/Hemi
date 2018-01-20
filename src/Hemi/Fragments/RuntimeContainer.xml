@@ -178,7 +178,7 @@
 				///
 
 				Hemi.app.module.test.service.UnloadTest(sId);
-				 var oComp = document.createElement("div");
+				var oComp = document.createElement("div");
                 oComp.setAttribute("component","testable");
                 oComp.setAttribute("test-path",sUrl);
                 oComp.setAttribute("tests",sId);

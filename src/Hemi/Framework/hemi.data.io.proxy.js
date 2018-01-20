@@ -209,6 +209,7 @@
 					this.logError("Error composing Data IO Request for " + p);
 					return b;
 				}
+
 				v = {
 					requestId: r.requestId,
 					responseId: 0,
@@ -226,6 +227,7 @@
 					r,
 					(a ? this._prehandle_xml_io_request : 0)
 				);
+
 				if (a) return true;
 				v.responseId = r.responseId;
 				q = Hemi.data.io.service.getResponseByName(r.responseId);

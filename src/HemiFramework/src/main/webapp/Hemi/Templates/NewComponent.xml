@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title = "New Component">
+		<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+		<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "component_name" />
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Participation ID:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "participation_name" />
+		</div>
+		<div class = "field_description">
+				  (<i>optional</i>) Name of <a href ="/Hemi/api/hemi.transaction.html">Transaction Service</a> transaction this component will use.
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Package:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "package_name" />
+		</div>
+		<div class = "field_description">
+				(<i>optional</i>) A period-delimited prefix used if this component will be compiled into an Hemi framework library.
+		</div>
+	</div>
+	<div style ="overflow:auto;height:150px;">
+			<input type ="checkbox" rid ="chk_enable_log" /> Add logging
+			<br />
+			<input type ="checkbox" rid ="chk_enable_templates" /> Enable templates
+			<br />
+			<!--
+			<input type ="checkbox" rid ="chk_enable_tasks" /> Include task example
+			<br />
+			-->
+			<input type ="checkbox" rid ="chk_use_transactions" /> Include transaction API
+			<br />
+			<input type ="checkbox" rid ="chk_use_monitor" /> Include monitoring API (w/ two callback examples)
+			<br />
+			<input type ="checkbox" rid ="chk_use_threads" /> Include threading API
+			<br />
+			<input type ="checkbox" rid ="chk_use_xml" /> Include XML examples
+			<br />
+			<input type ="checkbox" rid ="chk_use_json" /> Include JSON examples
+			<br />
+			<input type ="checkbox" rid ="chk_use_delegates" /> Custom Delegate Example
+			<br />
+			<input type ="checkbox" rid ="chk_use_ui_events" /> Include DHTML Events for use with XHTMLComponents.
+	</div>
+	<div>
+		<input type ="button"	value ="Create" onclick ="${this}.CreateNewComponent()" />
+		<input type ="button"	value ="Close" onclick ="${this}.Close()" />
+	</div>
+	<embedded-script>
+		<![CDATA[
+		template_init : function(){
+
+
+		},
+		CreateNewComponent : function(){
+				var sName = this.GetElementByRID("component_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				if(sName.length == 0 || sName.match(/\s+/)){
+					this.setStatus("Invalid name.  Name must be specified, and should not use spaces.");
+					return;
+				}
+				 
+				var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+
+				oBuilder.ClearComponent();
+
+				var oConstruct = oBuilder.NewComponentConstruct(oBuilder.GetComponentModel());
+				oConstruct.changes++;
+						
+				oBuilder.GetElementByRID("component_name").value = this.GetElementByRID("component_name").value;
+				oBuilder.GetElementByRID("participation_name").value = this.GetElementByRID("participation_name").value;
+							
+				oBuilder.GetElementByRID("package_name").value = this.GetElementByRID("package_name").value;
+				
+				oBuilder.AddFunctionStatement(oConstruct, "component_init","// Invoked when component is loaded");
+				oBuilder.AddFunctionStatement(oConstruct, "component_destroy","// Invoked when a destroy signal is raised");
+				
+				if(this.GetElementByRID("chk_use_json").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add a delegate for async JSON callbacks.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// This could also be done without the delegate by using a MessageService subscription for \"onloadxml\" (there is not a separate \"onloadjson\" message).  The handler would be the same.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"async_json\",0,0,1);");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","this._prehandle_async_json = 0;");
+									
+						oBuilder.AddFunctionParameter(oConstruct, "GetAsynchronousJSON","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","// Cache the JSON object for future requests");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","// Note: Changes to the JSON object will affect the cache copy.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","var bCacheResult = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","var bAsyncRequest = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","// Use the special _prehandle_ delegate created with the createHandler call in component_init.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousJSON","Hemi.xml.getJSON(sPath, this._prehandle_async_xml, bAsyncRequest, sRequestId, bCache);");
+						oBuilder.AddFunctionParameter(oConstruct, "PostAsynchronousJSON","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousJSON","var bAsyncRequest = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousJSON","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousJSON","var oJSON = {\"name\":\"test\",\"id\":123};");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousJSON","// Use the special _prehandle_ delegate created with the createHandler call in component_init.");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousJSON","Hemi.xml.postJSON(sPath, oJSON, this._prehandle_async_json, bAsyncRequest, sRequestId);");
+
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_async_json","sMessageName");
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_async_json","vMessageVariant");
+						oBuilder.AddFunctionStatement(oConstruct, "_handle_async_json","var oJSON = vMessageVariant.json;");
+						
+						oBuilder.AddFunctionParameter(oConstruct, "PostSynchronousJSON","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousJSON","var bAsyncRequest = false;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousJSON","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousJSON","var oJSON = {\"name\":\"test\",\"id\":123};");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousJSON","var oJSONResponse = Hemi.xml.postJSON(sPath, oJSON, null, bAsyncRequest, sRequestId);");
+
+						oBuilder.AddFunctionParameter(oConstruct, "GetSynchronousJSON","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","// Cache the XML document for future requests");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","// Note: Changes to the XML node tree will affect the cache copy.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","var bCacheResult = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","var bAsyncRequest = false;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","var oJSON = Hemi.xml.getJSON(sPath, null, AsyncRequest, sRequestId, bCacheResult);");
+				}
+				
+				if(this.GetElementByRID("chk_use_xml").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add a delegate for async XML callbacks.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// This could also be done without the delegate by using a MessageService subscription for \"onloadxml\".  The handler would be the same.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"async_xml\",0,0,1);");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","this._prehandle_async_xml = 0;");
+									
+						oBuilder.AddFunctionParameter(oConstruct, "GetAsynchronousXML","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","// Cache the XML document for future requests");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","// Note: Changes to the XML node tree will affect the cache copy.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","var bCacheResult = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","var bAsyncRequest = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","// Use the special _prehandle_ delegate created with the createHandler call in component_init.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetAsynchronousXML","Hemi.xml.getXml(sPath, this._prehandle_async_xml, bAsyncRequest, sRequestId, bCache);");
+						oBuilder.AddFunctionParameter(oConstruct, "PostAsynchronousXML","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousXML","var bAsyncRequest = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousXML","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousXML","var oXmlDocument = Hemi.xml.newXmlDocument(\"CustomXml\");");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousXML","// Use the special _prehandle_ delegate created with the createHandler call in component_init.");
+						oBuilder.AddFunctionStatement(oConstruct, "PostAsynchronousXML","Hemi.xml.postXml(sPath, oXmlDocument, this._prehandle_async_xml, bAsyncRequest, sRequestId);");
+
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_async_xml","sMessageName");
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_async_xml","vMessageVariant");
+						oBuilder.AddFunctionStatement(oConstruct, "_handle_async_xml","var oXmlDocument = vMessageVariant.xdom;");
+						
+						oBuilder.AddFunctionParameter(oConstruct, "PostSynchronousXML","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousXML","var bAsyncRequest = false;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousXML","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousXML","var oXmlDocument = Hemi.xml.newXmlDocument(\"CustomXml\");");
+						oBuilder.AddFunctionStatement(oConstruct, "PostSynchronousXML","var oXmlResponse = Hemi.xml.postXml(sPath, oXmlDocument, null, bAsyncRequest, sRequestId);");
+
+						oBuilder.AddFunctionParameter(oConstruct, "GetSynchronousXML","sPath");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","// Cache the XML document for future requests");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","// Note: Changes to the XML node tree will affect the cache copy.");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var bCacheResult = true;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var bAsyncRequest = false;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var sRequestId = null;");
+						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var oXmlDocument = Hemi.xml.getXml(sPath, null, AsyncRequest, sRequestId, bCacheResult);");
+				}
+				if(this.GetElementByRID("chk_use_monitor").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add this component to the monitor service");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","Hemi.monitor.service.addMonitor(this);");
+						oBuilder.AddFunctionStatement(oConstruct, "initializeMonitor","// Required API for MonitorService - return true to enable monitor");
+						oBuilder.AddFunctionStatement(oConstruct, "initializeMonitor","return true;");
+						oBuilder.AddFunctionParameter(oConstruct, "handle_mouse_click","e");
+						oBuilder.AddFunctionStatement(oConstruct, "handle_mouse_click","// Unlike the localized DHTML event, _handle_mouse_click,");
+						oBuilder.AddFunctionStatement(oConstruct, "handle_mouse_click","// this handler will receive all click events for the document");
+						oBuilder.AddFunctionStatement(oConstruct, "handle_mouse_click","var oSrcEl = Hemi.event.getEventSource(e);");
+						oBuilder.AddFunctionStatement(oConstruct, "doInterval","// Invoked by internal monitoring thread");
+				}
+				if(this.GetElementByRID("chk_use_delegates").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// createHandler injects an object sensitive wrapper around the method callback");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// In this example: _prehandle_delegate_example is created to invoke _handle_delegate_example");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"delegate_example\",0,0,1);");
+						oBuilder.AddFunctionStatement(oConstruct, "_handle_delegate_example","// invoked by custom script.  Parameters are whatever are specified by you.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","// Cleanup the generated function");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","this._prehandle_delegate_example = null;");
+				}
+				if(this.GetElementByRID("chk_use_threads").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.getObjects().thread = Hemi.util.thread.newInstance(this);");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Remember to start the thread!  invoke component_post_init if not using this with an XHTMLComponent.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.component_post_init();");
+						oBuilder.AddFunctionStatement(oConstruct, "component_post_init","// Post init invoked automatically by XHTMLComponent.  Otherwise, invoke from the implementing script, or at the end of component_init.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_post_init","// thread.run takes one parameter to override the default 1000 ms iteration delay.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_post_init","this.getObjects().thread.run();");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","// Drop the object reference.  The thread will clean itself up when this object is destroyed.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","this.getObjects().thread = null;");
+						oBuilder.AddFunctionParameter(oConstruct, "handle_thread_start","Thread");
+						oBuilder.AddFunctionParameter(oConstruct, "handle_thread_stop","Thread");
+						oBuilder.AddFunctionParameter(oConstruct, "handle_thread_run","Thread");
+						oBuilder.AddFunctionStatement(oConstruct, "handle_thread_run","// Invoked every iteration of the thread");
+
+				}
+				if(this.GetElementByRID("chk_enable_log").checked){
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Instrument functionality for a locally scoped logger.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","Hemi.util.logger.addLogger(this, \"" + this.GetElementByRID("component_name").value + "\", \"" + this.GetElementByRID("component_name").value + " Component\", \"150\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.logDebug(\"Loaded : " + this.GetElementByRID("component_name").value + "\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.log(\"Loaded : " + this.GetElementByRID("component_name").value + "\");");
+				}
+				if(this.GetElementByRID("chk_enable_templates").checked){
+						// getTemplateContainer
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Instrument functionality for loading templates");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.setTemplateIsSpace(1);");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.loadTemplate(\"path/file.xml\");");
+
+						oBuilder.AddFunctionParameter(oConstruct, "local_template_init","ApplicationComponent");
+						oBuilder.AddFunctionStatement(oConstruct, "local_template_init","// Invoked after the template is loaded and its initialization has been executed.");
+
+						oBuilder.AddFunctionStatement(oConstruct, "getTemplateContainer","// Change this to use any object.  Otherwise, all children within the component may be destroyed.");						
+						oBuilder.AddFunctionStatement(oConstruct, "getTemplateContainer","return this.getContainer();");
+				}
+				if(this.GetElementByRID("chk_use_transactions").checked){
+						//oBuilder.serveTransaction('printerfriendly');
+						var sPart = oBuilder.GetElementByRID("participation_name").value;
+						if(sPart.length == 0) sPart = oBuilder.GetElementByRID("component_name").value;
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Serve the transaction \"example\" to all \"" + sPart + "\" participants.");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.serveTransaction(\"example\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Alternately, serve the transaction \"example\" to participants in named transaction \"ExampleParticipants\".");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.serveTransaction(\"example\", 0, 1, \"ExampleParticipants\");");
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_example","TransactionService");
+						oBuilder.AddFunctionParameter(oConstruct, "_handle_example","TransactionPacket");
+						oBuilder.AddFunctionStatement(oConstruct, "_handle_example","// Return false to continue receiving notification.  Return true to stop receiving notification.");
+						oBuilder.AddFunctionStatement(oConstruct, "_handle_example","return false;");
+				}
+				if(this.GetElementByRID("chk_use_ui_events").checked){
+					var aEvts = "change,focus,blur,mouseover,mouseout,mouseup,mousedown,click".split(",");
+					for(var i = 0; i < aEvts.length; i++){
+						var sName = "_handle_" + aEvts[i];
+						oBuilder.AddFunctionParameter(oConstruct, sName,"e");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"// Acquire the correct event object");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"e = Hemi.event.getEvent(e);");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"// Get the source element that fired the event");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"var oSrcEl = Hemi.event.getEventSource(e);");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"// Uncomment following line to cancel the event propogation.");
+						oBuilder.AddFunctionStatement(oConstruct, sName,"//Hemi.event.getEvent_cancel(Hemi.event.getEvent(e));");
+					}
+				}
+				oBuilder.getObjects().component_construct = oConstruct;
+				oBuilder.BuildComponent();
+				this.getProperties().built = 1;
+				oBuilder.RefreshComponentBuilder();
+				this.Close();
+		},
+        local_handle_close : function(oWin){
+            var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oBuilder && typeof oBuilder.getFocus == "function") oBuilder.getFocus();
+		}
+		
+
+  ]]>
+	</embedded-script>
+</Template>

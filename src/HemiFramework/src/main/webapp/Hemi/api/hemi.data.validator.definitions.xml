@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.data.validator.definitions</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.data.validator.definitions</path>
+<library>Hemi</library>
+<description>Data Validator Definitions define validation patterns for verifying form field and custom control (e.g.: Hemi.ui.wideselect) input matches expected patterns and allowable characters.  Patterns may be chained together and defined with a meaningful description for end users.</description>
+<static-class>
+<name>service</name>
+<version>3.5.1</version>
+<description>Static implementation of hemi.data.validator.definitions.serviceImpl</description>
+</static-class>
+<class>
+<name>service</name>
+<version>3.5.1</version>
+<description>This service defines validation patterns for use by the Hemi Data Form Service.</description>
+<method>
+<name>addNewPattern</name>
+<param name="sId" type="String">Validation pattern id.</param>
+<param name="sType" type="String">The type of validation: bool, replace, or none.</param>
+<param name="sComp" optional="1" type="String">For validation type of bool, the comparison value may be "true" or "false".</param>
+<param name="sMatch" type="String">Regular expression to use to match the input value.</param>
+<param name="sReplace" optional="1" type="String">Replacement value to use for the matched expression.</param>
+<param name="bNull" optional="1" type="boolean">Bit indicating whether null values are allowed.</param>
+<param name="sError" optional="1" type="String">Error message to describe the expected pattern. e.g.: Phone numbers should be numbers and hyphens only.</param>
+<param name="aIncludes" optional="1" type="array">Array of pattern ids that should be executed prior to this pattern. e.g.: The trim-ends pattern has a comparison of none and includes the trim-start and trim-end patterns.</param>
+<return-value name="object" type="object">A new internal space definition.</return-value>
+<description>Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</description>
+</method>
+</class>
+</package>
+<index><description>Data Validator Definitions define validation patterns for verifying form field and custom control (e.g.: Hemi.ui.wideselect) input matches expected patterns and allowable characters.  Patterns may be chained together and defined with a meaningful description for end users.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.util.url</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.util</path>
+<library>Hemi</library>
+<description>The URL class parses URIs into individual parts.  The class also supports resolving relative paths against specified URLs.</description>
+<static-class>
+<name>url</name>
+<version>3.5.1</version>
+<description>Utility for parsing URLs.</description>
+<version>3.5.1</version>
+<method>
+<name>qualifyToHost</name>
+<param name="u" type="String">Partial URL.</param>
+<description>Merges the specified URL with the current window URL (document.URL).</description>
+<return-value name="v" type="String">Full url derived from the specified partial URL, and the window URL.</return-value>
+</method>
+<method>
+<name>newInstance</name>
+<param name="v" type="String">Partial or complete URL.</param>
+<param name="b" type="boolean">Bit indicating whether to qualify the URL parameter against the current URL.</param>
+<description>Creates a new Url object.</description>
+<return-value name="u" type="UrlInstance">Instance of a Url.</return-value>
+</method>
+</static-class>
+
+<class>
+<name>UrlInstance</name>
+<version>3.5.1</version>
+<description>On object representation of a specified URL.</description>
+<example>
+<description>Demonstrate how to obtain a full URL from a specified partial URL.</description>
+<name>Url Utility #1</name>
+<code>var sFullUrl = HemiEngine.util.url.qualifyToHost("someFile.html");</code>
+</example>
+<example>
+<description>Demonstrate how to obtain a UrlInstance and access its members.</description>
+<name>Url Utility #2</name>
+<code>var oUrl = HemiEngine.util.url.newInstance("/path/someFile.html?somequery=1");</code>
+<code>var sQuery = oUrl.getQuery();</code>
+</example>
+<property get="1" internal="1" type="String">
+<name>object_id</name>
+<description>Unique instance identifier.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_version</name>
+<description>Version of the object class.</description>
+</property>
+<property get="1" internal="1" type="String">
+<name>object_type</name>
+<description>The type of this object.</description>
+</property>
+<property get="1" internal="1" type="int">
+<name>ready_state</name>
+<description>Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</description>
+</property>
+<method>
+<name>getObjectId</name>
+<return-value name="i" type="String">The unique object instance id.</return-value>
+<description>Returns the unique id of the object.</description>
+</method>
+
+<method>
+<name>getObjectType</name>
+<return-value name="t" type="String">The type of the object instance.</return-value>
+<description>Returns the type of the object.</description>
+</method>
+
+<method>
+<name>getObjectVersion</name>
+<return-value name="v" type="String">The version of the object instance.</return-value>
+<description>Returns the version of the object.</description>
+</method>
+
+<method>
+<name>getReadyState</name>
+<return-value name="s" type="int">The object ready state.</return-value>
+<description>Returns the state of the object.</description>
+</method>
+<method>
+<name>getFile</name>
+<return-value name="f" type="String">The file portion of the URL.</return-value>
+<description>Returns any file reference.</description>
+</method>
+<method>
+<name>getQuery</name>
+<return-value name="q" type="String">The query string.</return-value>
+<description>Returns any query string.</description>
+</method>
+<method>
+<name>getDomain</name>
+<return-value name="d" type="String">The domain name.</return-value>
+<description>Returns the domain name.</description>
+</method>
+<method>
+<name>getPath</name>
+<return-value name="p" type="String">The URL path.</return-value>
+<description>Returns the URL path.</description>
+</method>
+<method>
+<name>getProtocol</name>
+<return-value name="p" type="String">The URL protocol.</return-value>
+<description>Returns the URL protocol.</description>
+</method>
+<method>
+<name>qualify</name>
+<param name="u" type="String">Partial URL.</param>
+<description>Merges the specified partial URL with the current context URL of the UrlInstance.</description>
+<return-value name="v" type="String">Full url derived from the specified partial URL, and the context URL.</return-value>
+</method>
+<method internal="1">
+<name>_init</name>
+<param name="o" type="String">Input URL</param>
+<description>Initializes the UrlInstance.</description>
+</method>
+</class>
+</package>
+<index><description>The URL class parses URIs into individual parts.  The class also supports resolving relative paths against specified URLs.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

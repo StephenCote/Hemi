@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ScriptConfigType xmlns="http://www.cote.org/pkglib/objects">
+	<distribution>
+		<documentListFile>stage/hemi.files.xml</documentListFile>
+		<stagePath>stage/</stagePath>
+		<template>
+
+		  	<label>Template Output Location</label>
+			<description>Specifies where the configured templates are saved</description>
+			<path>./</path>
+		</template>
+		<outputFile>./hemi.comp.js</outputFile>
+		<outputHeader>
+/*
+	"Hemi" JavaScript Framework
+	Engine for Web Applications 3.5
+	Composite file "%OUTPUT_FILE%" release: %FILE_VERSION%
+	Copyright 2002 - 2016. All Rights Reserved.
+	Author: Stephen W. Cote
+	Project: https://github.com/StephenCote/Hemi
+	BSD License File: hemi.license.txt
+*/
+		</outputHeader>
+		<outputFooter>
+/* End Hemi Framework 3.5 */
+		</outputFooter>
+	</distribution>
+	<linker removeArtifacts = "true" enabled = "true">
+		<linkArtifact><![CDATA[HemiEngine\.include\("([\S][^\"]+)"\);]]></linkArtifact>
+	</linker>	
+
+		  <scriptFiles encodedName = "Hemi" name = "hemi.js" linkBase ="true" />
+		  <scriptFiles encodedName = "AppComp" name = "hemi.app.comp.js" />
+		 
+		  <scriptFiles encodedName = "AppDWAC" name = "hemi.app.dwac.js" />
+		  <scriptFiles encodedName = "AppBase" name = "hemi.app.js" />
+		  <scriptFiles encodedName = "AppModule" name = "hemi.app.module.js" />
+		  <scriptFiles encodedName = "AppModuleTest" name = "hemi.app.module.test.js" />
+          <scriptFiles encodedName = "DataIO" name = "hemi.data.io.js" />
+		 <scriptFiles encodedName = "DataIOProxy" name = "hemi.data.io.proxy.js" />
+		  <scriptFiles encodedName = "AppSpaceDefinition" name = "hemi.app.space.definitions.js" />
+		  <scriptFiles encodedName = "AppSpace" name = "hemi.app.space.js" />
+		  <scriptFiles encodedName = "CSS" name = "hemi.css.js" />
+		  <scriptFiles encodedName = "DataForm" name = "hemi.data.form.js" />
+		  <scriptFiles encodedName = "DataStack" name = "hemi.data.stack.js" />
+		  <scriptFiles encodedName = "DataValidatorDefinition" name = "hemi.data.validator.definitions.js" />
+		  <scriptFiles encodedName = "DataValidator" name = "hemi.data.validator.js" />
+		  <scriptFiles encodedName = "Driver" name = "hemi.driver.js" />
+		  <scriptFiles encodedName = "Event" name = "hemi.event.js" />
+		  <scriptFiles encodedName = "GraphicsCanvas" name = "hemi.graphics.canvas.js" />
+		  <scriptFiles encodedName = "Object" name = "hemi.object.js" />
+		  <scriptFiles encodedName = "ObjectXHTML" name = "hemi.object.xhtml.js" />
+        
+
+        <scriptFiles encodedName = "StorageDOM" name = "hemi.storage.dom.js" />
+        
+		  <scriptFiles encodedName = "StorageIEStore" name = "hemi.storage.iestore.js" />
+		  
+		  <scriptFiles encodedName = "Storage" name = "hemi.storage.js" />
+		  <scriptFiles encodedName = "Task" name = "hemi.task.js" />
+		<scriptFiles encodedName = "Util" name = "hemi.util.js" />
+		<scriptFiles encodedName = "WebSecurity" name = "hemi.web.security.js" />
+		<scriptFiles encodedName = "UtilLogger" name = "hemi.util.logger.js" />
+		<scriptFiles encodedName = "UtilConfig" name = "hemi.util.config.js" />
+		<scriptFiles encodedName = "Transaction" name = "hemi.transaction.js" />
+		<scriptFiles encodedName = "Text" name = "hemi.text.js" />
+		
+		<scriptFiles encodedName = "Worker" name = "hemi.worker.js" />
+		
+		<scriptFiles encodedName ="FrameworkIOProvider" name ="hemi.framework.io.provider.js" />
+			<scriptFiles encodedName ="FrameworkIOOfflineProvider" name ="hemi.framework.io.offline.provider.js" />
+		
+		  <scriptFiles encodedName = "UIWideselect" name = "hemi.ui.wideselect.js" />
+		  <!-- 
+		  <scriptFiles encodedName = "Monitor" name = "hemi.monitor.js" />
+		  <scriptFiles encodedName = "UtilThread" name = "hemi.util.thread.js" />
+		  <scriptFiles encodedName = "Wires" name = "hemi.wires.js" />
+
+		  <scriptFiles encodedName = "WiresPrimitive" name = "hemi.wires.primitive.js" />
+		  -->
+		  <scriptFiles encodedName = "UtilUrl" name = "hemi.util.url.js" />
+		  <scriptFiles encodedName = "UIUtil" name = "hemi.ui.util.js" />
+		  <scriptFiles encodedName = "JSONRPC" name = "hemi.json.rpc.js" />
+		  <scriptFiles encodedName = "JSONRPCCache" name = "hemi.json.rpc.cache.js" />
+		  
+		  <scriptFiles encodedName = "Calendar" name = "hemi.ui.calendar.js" />
+			
+		<features name = "debug_message" enabled = "0" />
+		<features name = "catch_error" enabled = "1" />
+		<features name = "package_util" enabled = "1" />
+		<features name = "support_localfilesystem" enabled = "1" />
+		<features name = "xml_querynode" enabled = "1" />
+		<features name = "xml_selectnode" enabled = "1" />
+		<features name = "xml_namespaceresolver" enabled = "1" />
+		<features name = "xml_transform" enabled = "1" />
+		<features name = "xml_pool" enabled = "1" />
+		<features name = "xml_cache" enabled = "1" />
+		<features name = "xml_utilities" enabled = "1" />
+		<features name = "xml_serialize_utility" enabled = "1" />
+		<features name = "xml_cache_race_check" enabled = "1" />
+		<features name = "dom_motion_capture" enabled = "1" />
+		<features name = "dom_event_buffer" enabled = "1" />
+		<features name = "xform_select_multiple" enabled = "0" />
+		<features name = "xform_select_single" enabled = "1" />
+		<features name = "xml_ietransform_method_1" enabled = "1" />
+		<features name = "xml_ietransform_method_2" enabled = "0" />
+		<features name = "appcomp_runtime" enabled = "1" />
+		<features name = "appcomp_wireutil" enabled = "0" />
+		<features name = "appcomp_lookuputil" enabled = "1" />
+		<features name = "appcomp_token_stack" enabled = "1" />
+		<features name = "engine_parse_cache" enabled = "1" />
+		<features name = "caltasche_feature_extension" enabled = "0" />
+		<features name = "engine_wires" enabled = "1" />
+	
+
+		<properties name = "publication_remove_object" value = "onremoveobject" />
+		<properties name = "engine_primary_engine_name" value = "engine_loader" />
+		<properties name = "engine_primary_engine_action" value = "[nothing]" />
+		<properties name = "engine_primary_engine_action_type" value = "default" />
+		<properties name = "engine_primary_engine_handler" value = "engine_service_initialized" />
+		<properties name = "engine_primary_engine_handler_type" value = "event" />
+		<properties name = "engine_default_engine_name" value = "engine" />
+		<properties name = "engine_default_engine_action" value = "[nothing]" />
+		<properties name = "engine_default_engine_action_type" value = "default" />
+		<properties name = "engine_default_engine_handler" value = "engine_started" />
+		<properties name = "engine_default_engine_handler_type" value = "event" />
+		<properties name = "engine_config_task" value = "load_engine_config" />
+		<properties name = "engine_auto_load" value = "1" />
+		<properties name = "engine_inline_reference" value = "self" />
+		<properties name = "engine_component_reference_id" value = "rid" />
+		<properties name = "engine_component_auto_id" value = "aid" />
+		<properties name = "engine_config_xml_element" value = "configuration" />
+		<properties name = "config_element_parent_name" value = "config" />
+		<properties name = "config_element_name" value = "param" />
+		<properties name = "config_attr_name_name" value = "name" />
+		<properties name = "config_attr_value_name" value = "value" />
+		<properties name = "appcomp_class" value = "ApplicationComponent" />
+		<properties name = "appcomp_package" value = "org.cote.js.appcomp" />
+		<properties name = "appcomp_source_code" value = "" />
+		<properties name = "appcomp_use_friendly_id" value = "1" />
+		<!-- acrid  is used to keep a reference to a component -->
+		<properties name = "appcomp_binding_id_attr" value = "acrid" />
+		<!-- attribute on component definition for identifying transactional participants -->
+		<properties name = "appcomp_participant_id_attr" value = "participant-id" />
+		<!-- acid used by xhtmlcomponent -->
+		<properties name = "appcomp_component_id_attr" value = "acid" />
+		<!-- accfgid used by xhtmlcomponent -->
+		<properties name = "appcomp_component_config_id_attr" value = "accfgid" />
+		<properties name = "appcomp_component_path_attr" value = "appcomp_path" />
+		<properties name = "appcomp_default_config_id" value = "appcomp_path" />
+		<!-- comma-separated list; NO SPACES -->
+		<properties name = "appcomp_event_binding" value = "change,focus,blur,mouseover,mouseout,mouseup,mousedown,click" />
+		<properties name = "appcomp_label" value = "application_component" />
+		<properties name = "appcomp_element_parent_name" value = "application-components" />
+		<properties name = "appcomp_element_name" value = "application-component" />
+		<!-- leave appcomp is a sync load because it speeds up delivery when multiple components are in a single file -->
+		<properties name = "appcomp_async_load" value = "0" />
+		<properties name = "xml_http_cache_enabled" value = "1" />
+		<properties name = "xml_http_pool_enabled" value = "1" />
+		<properties name = "xml_http_pool_size" value = "5" />
+		<properties name = "xml_http_pool_maxsize" value = "10" />
+		
+		<properties name = "xml_microsoft_activex_domdocument" value = "MSXML.DOMDocument" />
+		<properties name = "xml_microsoft_activex_xmlhttp" value = "MSXML2.XMLHTTP.3.0" />
+		
+		<properties name = "task_serve_delay" value = "0" />
+		<properties name = "task_xpath_context" value = "" />
+		<properties name = "message_report_threshold" value = "1" />
+		<properties name = "message_delivery_delay" value = "0" />
+		<properties name = "message_max_entries" value = "200" />
+		<properties name = "validation_patterns_autoload" value = "1" />
+		<properties name = "xhtml_formcomponent_autovalidate" value = "1" />
+		<properties name = "xhtml_engine_reference_id" value = "erid" />
+		<properties name = "thread_run_method" value = "handle_thread_run" />
+		<properties name = "thread_start_method" value = "handle_thread_start" />
+		<properties name = "thread_stop_method" value = "handle_thread_stop" />
+		<properties name = "thread_run_interval" value = "1000" />
+
+		<properties name = "token_overstack_enable" value = "0" />
+		<properties name = "wideselect_maximum_page_items" value="9" />
+		<properties name = "wideselect_class_container" value="wideselect_container" />
+		<properties name = "wideselect_class_item" value="wideselect_item" />
+		<properties name = "wideselect_class_item_blocked" value="wideselect_item_blocked" />
+		<properties name = "wideselect_class_item_hover" value="wideselect_item_hover" />
+		<properties name = "wideselect_class_item_active" value="wideselect_item_active" />
+		
+		<properties name ="monitor_session_id" value = "MONITOR_SESSION_ID" />
+
+
+		<patterns>
+		 <match>HemiEngine</match>
+		<replace>H</replace>
+		</patterns>
+		<patterns><match><![CDATA[\t]]></match><replace> </replace></patterns>
+		<!-- 
+		<patterns><match><![CDATA[\r\n\r\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
+		<patterns><match><![CDATA[\n\n]]></match><replace>%JSC_NEWLINE%</replace></patterns>
+		-->
+		<patterns><match>%JSC_STRIP_EXTRA_SPACE%</match><replace>$1</replace></patterns>
+		
+
+</ScriptConfigType>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.data.io</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.data.io</path>
+<library>Hemi</library>
+<description>The Data IO service is used to broker data requests with configured data providers.  The built-in interchange format is loosely modelled on the Account Manager 4 Data and Group object model, but the implementation is open for any object type.</description>
+<static-class>
+<name>service</name>
+<version>3.5.1</version>
+<description>Static implementation of the hemi.data.io.proxy.serviceImpl class.</description>
+
+
+</static-class>
+<class>
+<name>serviceImpl</name>
+<version>3.5.1</version>
+<description>The Data IO proxy service marshals custom protocol requests through Data IO providers.</description>
+
+Change the bus type automatically based on the transaction
+
+<method internal="1">
+<name>buildMatcher</name>
+<description>Builds the expression matcher for custom protocols.</description>
+</method>
+<method internal="1">
+<name>unregister</name>
+<param name="oProvider" type="ProviderStruct">Internal Provider Structure</param>
+<return-value name="bUnregistered" type="bit">Bit indicating the provider was unregistered as providing a proxy.</return-value>
+<description>Delinks a provider from a custom protocol proxy.</description>
+</method>
+<method internal="1">
+<name>register</name>
+<param name="oProvider" type="ProviderStruct">Internal Provider Structure</param>
+<return-value name="bUnregistered" type="bit">Bit indicating the provider was registered as providing a custom protocol proxy.</return-value>
+<description>Links a provider to a custom protocol proxy.</description>
+</method>
+<method>
+<name>isProxyProtocol</name>
+<param name="sUri" type="String">A URI pattern.</param>
+<return-value name="bProxied" type="bit">Bit indicating the provided URI pattern matches a registered protocol proxy.</return-value>
+<description>Tests whether a URI pattern matches a registered protocol proxy.</description>
+</method>
+<method>
+<name>isProxied</name>
+<param name="sUri" type="String">A URI pattern.</param>
+<param name="iBusType" optional="1" type="int">The bus type to use when determining proxy applicability.</param>
+<return-value name="bProxied" type="bit">Bit indicating the provided URI pattern matches a registered protocol proxy.</return-value>
+<description>Tests whether a URI pattern may be proxied based on a custom protocol.</description>
+</method>
+b = (b ? b : t.properties.busType);
+<method>
+<name>setAutoChangeBus</name>
+<param name="bAuto" type="bit">Bit indicating whether the proxy bus should track with the "iobus" transaction.</param>
+<description>Specify whether the proxy service should change the current bus based on the "iobus" transaction.</description>
+</method>
+<method>
+<name>setBusType</name>
+<param name="iType" type="BUSTYPE">The current bus.</param>
+<description>Specify the current bus the proxy service should use.</description>
+</method>
+<method>
+<name>stripProxyProtocol</name>
+<param name="sUri" type="BUSTYPE">The current bus.</param>
+<description>Specify the current bus the proxy service should use.</description>
+</method>
+<method virtual="1">
+<name>_handle_change_bus</name>
+<param name="oService" type="TransactionService">The service handling this channel.</param>
+<param name="oPacket" type="TransactionPacket">The packet being served.</param>
+<description>Update the proxied bus type from the "iobus" transaction.</description>
+</method>
+<method internal="1">
+<name>proxyXml</name>
+<param name="sPath" type="String">The URI to an XML/Text/JSON Resource decorated with the proxy protocol.</param>
+<param default="null" name="h" optional="1" type="function">Handler invoked for asynchronous requests.</param>
+<param name="bAsync" type="bit">Bit indicating wether the request is asynchronous. Currently limited to synchronous; async requests will be ignored.</param>
+<param name="sId" type="String">Identifier associated with the request.</param>
+<param name="bPost" type="bit">Bit indicating wether the request should be made via HTTP POST.</param>
+<param name="vData" type="variant">Data to be included as the POST payload, such as an XMLDocument, text, or JSON structure.</param>
+<param default="false" name="c" optional="1" type="boolean">Bit indicating whether the response should be cached.</param>
+<param default="0" name="t" optional="1" type="int">Int indicating whether the request and response as text (1) or JSON (2) instead of XML (0).</param>
+<return-value name="oXml" type="HemiXML">Returns an internal XML construct.</return-value>
+<description>Proxies an XML URI Request to the registered provider for the matching protocol.  TODO: Instrument async handling to proxy async Data IO response through XML Async Response.</description>
+</method>
+return b;
+</class>
+</package>
+<index><description>The Data IO service is used to broker data requests with configured data providers.  The built-in interchange format is loosely modelled on the Account Manager 4 Data and Group object model, but the implementation is open for any object type.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

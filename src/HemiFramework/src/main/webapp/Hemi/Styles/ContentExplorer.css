@@ -1,0 +1,36 @@
+/* Explorer */
+div.explorer_address
+{
+	background-color: #AAAADD;
+	clear:left;
+}
+div.explorer_address_label
+{
+	width:50px;
+	font:italic 10pt Arial;
+	float:left;
+	color: #303030;
+}
+div.explorer_address_text
+{
+	font: normal 10pt Arial;
+	color:#000000;
+}
+div.explorer_content
+{
+	clear:right;
+	height:400px;
+	overflow:auto;
+}
+div.explorer_tree
+{
+	color: #FFFFFF;
+	background-color: #AAAADD;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:  5px;
+	border: 1px solid #CFCFCF;
+	width:250px;
+	height:400px;
+	float:left;
+	overflow:auto;
+}

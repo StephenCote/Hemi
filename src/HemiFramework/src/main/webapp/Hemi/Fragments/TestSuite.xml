@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+  <import-style src ="Styles/testsuite.css" id ="TestSuite" />
+  <div rid ="suite_commands">
+      <span style ="display:inline;" rid ="suite_choose">
+        <select onchange ="${this}.handle_select_test()" rid ="select_test">
+          <option value ="all">All Cases</option>
+          <!--
+          <option value ="custom">Custom Case</option>
+          -->
+        </select>
+        <input type ="text" rid ="test_path" value ="Tests/" />
+        <input type ="button" value ="Reset All" onclick ="${this}.ResetAllTests()" />
+      </span>
+  </div>
+  <div style ="display:none;" rid ="custom_test">
+    <textarea wrap ="off" style ="width:90%;height:100px;" rid="custom_test_text"></textarea>
+  </div>
+  <div rid ="suite_info">
+      <span rid ="current_test">
+       <br />
+      Tests: 
+        <select onchange ="${this}.handle_select_test_member()" rid ="tests"></select>
+        <input type ="button" value ="Run" onclick ="${this}.RunCurrentTest()" />
+        <input type ="button" style ="display:none;" rid ="btnCustom" value ="Custom" onclick ="${this}.SetupCustom()" />
+        <input type ="button" rid="btnReport" value ="Report" onclick ="${this}.ViewReport()" />
+        <input type ="button" value ="Reset Suite" onclick ="${this}.ResetSelectedTest()" />
+        
+        <br />
+      Current Test: <span style ="display:inline;" rid ="current_test_name"></span>
+        <!--
+        <input type ="button" value ="Run" onclick ="${this}.RunCurrentTest()" />
+        -->
+      </span>
+  </div>
+  <div rid ="suite_status">
+    Active Test Case: <span style ="display:inline;" rid ="suite_name">[ ... Initializing ... ]</span>
+    <span rid ="active_test_status">
+
+    </span>
+  </div>
+  <div class ="test_suite_results" rid ="active_status">
+  </div>
+  <!--
+  <div>
+    <textarea rid ="raw_test" style ="width:100%;height:100px;font:normal 8pt Arial"></textarea>
+  </div>
+  -->
+  <embedded-script>
+    <![CDATA[
+		embedded_init : function(){
+			try{
+		    Hemi.include("hemi.app.module");
+            Hemi.include("hemi.app.module.test");
+			this.getObjects().test_cases = {};
+			this.scopeHandler("test_suite",0,0,1);
+			this.scopeHandler("test_status",0,0,1);
+			this.GetElementByRID("custom_test_text").value = (this.getProperties().custom_test ? this.getProperties().custom_test : "function TestCustom(){\n\tthis.Assert(true);\n}\n");
+			if(!this.getObjects().tests){
+      			this.getObjects().tests = [
+              "custom"
+			    ];
+			}
+			}
+			catch(e){
+			alert(e.description ? e.description : e.message);
+			}
+      
+    },
+    ResetAllTests : function(){
+      this.getObjects().test_cases = {};
+      this.RefreshTestCases();
+    },
+    RefreshTestCases : function(){
+    
+      var o = this.GetElementByRID("select_test");
+      o.options.length = 1;
+      var bCustom= 0;
+      for(var i = 0; i < this.getObjects().tests.length; i++){
+        o.options[o.options.length] = new Option(this.getObjects().tests[i],this.getObjects().tests[i]);
+        if(this.getObjects().tests[i].match(/^custom$/i)) bCustom = 1;
+      }
+      this.GetElementByRID("btnCustom").style.display = (bCustom ? "inline" : "none");
+      if(o.options.length >= 2){
+        this.GetElementByRID("select_test").selectedIndex = 1;
+        this.handle_select_test();
+      }
+      else{
+        Hemi.xml.setInnerXHTML(this.GetElementByRID("suite_name"),"No test cases were specified.");
+      }
+		},
+		embedded_destroy : function(){
+    
+		},
+    LoadSelectedSuite : function(){
+
+      var n = this.GetElementByRID("select_test").value,
+        /// x = (this.GetElementByRID("select_test").selectedIndex == 1),
+        pt = this.GetElementByRID("test_path").value,
+        tc = this.getObjects().test_cases,
+        oT = this.GetElementByRID("tests");
+      ;
+
+      this.GetElementByRID("btnReport").disabled = (n=="all");
+
+      Hemi.xml.setInnerXHTML(this.GetElementByRID("current_test_name"),"");
+      oT.options.length = 0;
+      oT.options[oT.options.length] = new Option("All Tests","all");
+      Hemi.xml.removeChildren(this.GetElementByRID("active_status"),1);
+      Hemi.xml.removeChildren(this.GetElementByRID("active_test_status"),1);
+      Hemi.xml.setInnerXHTML(this.GetElementByRID("suite_name"),n);
+      
+      var a = (this.GetElementByRID("select_test").selectedIndex == 0 ? this.getObjects().tests : [n]);
+        if(a.length == 1) oT.options[0].value = n + "::all";
+        else oT.options[0].value = "all::all";
+        for(var i = 0; i < a.length;i++){
+          n = a[i];
+          if(!tc[n]){
+            x = (n == "custom");
+            tc[n] = Hemi.app.module.test.service.NewTest(n,0,this._prehandle_test_status, this._prehandle_test_suite, (x ? this.GetElementByRID("custom_test_text").value : pt),x);
+          }
+          if(!tc[n] || !tc[n].TestMembers.length)
+            continue;
+          Hemi.log("Load Suite: " + n + " with " + tc[n].TestMembers.length);
+          for(var p = 0; p < tc[n].TestMembers.length; p++){
+            /// Hemi.log("Load Test Member: " + n + "::" + tc[n].TestMembers[p]);
+            oT.options[oT.options.length] = new Option(tc[n].TestMembers[p],n + "::" + tc[n].TestMembers[p]);
+            this.LoadTest(n, tc[n].TestMembers[p],1);  
+          }
+        }
+
+    },
+    LoadTest : function(c, n, b){
+
+      var oC = this.GetElementByRID("active_status"),
+        aT,
+        tc = this.getObjects().test_cases,
+        s
+       ;
+
+      Hemi.xml.setInnerXHTML(this.GetElementByRID("current_test_name"),n);
+      if(!b){
+        Hemi.xml.removeChildren(oC, 1);
+        Hemi.xml.removeChildren(this.GetElementByRID("active_test_status"),1);
+      }
+      if(c == "all"){
+        for(var i = 0; i < this.getObjects().tests; i++)
+          this.LoadTest(this.getObjects().tests[i],n,1);
+        return;
+      }
+      var aT = (n.match(/^all/i) ? tc[c].TestMembers : [n]);
+      for(var i = 0; i < aT.length; i++)
+        this.RenderTest(aT[i], oC, c);
+      
+      
+    },
+    RenderTest : function(s, p, c){
+
+        var oL = document.createElement("p");
+        var oN = document.createElement("span");
+        oN.className = "test_notes";
+        oL.className = "test_status";
+        var oI = document.createElement("img");
+        oI.setAttribute("width","20");
+        oI.setAttribute("height","20");
+        oI.setAttribute("src",Hemi.hemi_base + "Graphics/star_empty.jpg");
+        var sRid = c + "-" + s;
+        var sIRid = c + "-" + s + "-status";
+        var sNRid = c + "-" + s + "-notes";
+        oL.setAttribute("rid",sRid);
+        oI.setAttribute("rid",sIRid);
+        Hemi.app.createComponent(oL, this.getTemplateSpace(), sRid);
+        Hemi.app.createComponent(oI, this.getTemplateSpace(), sIRid);
+        Hemi.app.createComponent(oN, this.getTemplateSpace(), sNRid);
+
+        var oI2 = document.createElement("img");
+        oI2.setAttribute("width","20");
+        oI2.setAttribute("height","20");
+        oI2.setAttribute("src",Hemi.hemi_base + "Graphics/star_empty.jpg");
+        var sIRid2 = c + "-" + s + "-activestatus";
+        oI2.setAttribute("rid",sIRid2);
+        Hemi.app.createComponent(oI2, this.getTemplateSpace(), sIRid2);
+        this.GetElementByRID("active_test_status").appendChild(oI2);
+        
+        var sId = this.getObjectId();
+        var oBtn = document.createElement("input");
+        oBtn.setAttribute("type","button");
+        oBtn.setAttribute("value","Run");
+        oBtn.onclick = function(){
+          var o = Hemi.registry.service.getObject(sId);
+          o.RunTest(c, s);
+        };
+
+
+        var oLbl = document.createElement("span");
+        oLbl.className = "test_label";
+        oLbl.appendChild(document.createTextNode(s));
+        oL.appendChild(oI);
+        oL.appendChild(oBtn);
+        oL.appendChild(oLbl);
+        oL.appendChild(oN);
+        
+        //alert(oI.nodeType);
+        p.appendChild(oL);
+
+        ///this.GetElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
+
+    },
+    RunCurrentTest : function(){
+      var p = this.GetElementByRID("tests").value.split("::"),v;
+      
+      if(p[0] == "all" && p[1] == "all"){
+        /// All suites, all tests
+        for(var i = 0; i < this.getObjects().tests.length; i++){
+          var v = this.getObjects().test_cases[this.getObjects().tests[i]];
+          v.RunTests();
+        }
+      }
+      else if(p[1] == "all"){
+        v = this.getObjects().test_cases[p[0]];
+        v.RunTests();
+      }
+      else{
+        this.RunTest(p[0],p[1]);
+      }
+
+    },
+    ViewReport : function(){
+      var c = this.GetElementByRID("select_test").value;
+      var vTest = (c == "all" ? 0 : this.getObjects().test_cases[c]);
+      var sTitle = "Report: " + c;
+      
+      var sText = (vTest ? vTest.getReport() : "Nothing to report");
+      var oW = Hemi.app.createWindow(0,"Templates/TextViewer.xml","Report-" + c,0,0,{text_title:sTitle,text:sText});
+      oW.setHideOnClose(0);
+    },
+    RunTest : function(c, s){
+      var vTest = this.getObjects().test_cases[c];
+      ///Hemi.log("Run test " + c + ":" + s + " (" + vTest.Module.name + ")");
+      /// alert(s + "\n" + vTest["End" + s]);
+      vTest.RunTest(s);
+      /// this.GetElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
+      
+    },
+    ResetSelectedTest : function(){
+      if(this.GetElementByRID("select_test").selectedIndex == 0) return;
+      var n = this.GetElementByRID("select_test").value, tc = this.getObjects().test_cases;
+      if(tc[n])
+        Hemi.app.module.test.service.UnloadTest(n);
+       
+      delete this.getObjects().test_cases[n];
+      this.LoadSelectedSuite();
+
+    },
+    SetupCustom : function(){
+        //
+       if(this.GetElementByRID("select_test").selectedIndex == 0) return;
+         var n = this.GetElementByRID("select_test").value, c = "custom";
+         if(n == c) return;
+        var o = Hemi.include(n, this.GetElementByRID("test_path").value, 1);
+        if(!o || !o.raw) return;
+
+        if(this.getObjects().test_cases[c]){
+            Hemi.app.module.test.service.UnloadTest(c);
+            delete this.getObjects().test_cases[c];
+        }
+
+        this.GetElementByRID("custom_test_text").value = o.raw;
+        this.GetElementByRID("select_test").value = "custom";
+        this.handle_select_test();
+        
+    },
+    _handle_test_status : function(t, m, i){
+	  var sIco = (i * 25);
+	  if(m.error) sIco="error";
+      this.GetElementByRID(t.name + "-" + m.name + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+      this.GetElementByRID(t.name + "-" + m.name + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+      
+      if(i != 4) Hemi.xml.setInnerXHTML(this.GetElementByRID(t.name + "-" + m.name + "-notes"),"Running.  Status " + i);
+      else Hemi.xml.setInnerXHTML(this.GetElementByRID(t.name + "-" + m.name + "-notes"),"Time: " + (m.stop_time.getTime() - m.start_time.getTime()) + "ms / Result: " + m.result);
+      
+      /// Hemi.log("Handle status: " + t.name + ":" + m.name + ":" + i + " / " + (m == null));
+
+    },
+    _handle_test_suite : function(o){
+     
+      for(var i = 0; i < o.TestMembers.length; i++){
+        ///Hemi.log("Completed " + o.name + "-"  + o.TestMembers[i]);
+	    var sIco = "hover";
+		var oC = o.getTestByName(o.TestMembers[i]);
+		if(oC.error) sIco = "error";
+        this.GetElementByRID(o.name + "-" + o.TestMembers[i] + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+        this.GetElementByRID(o.name + "-" + o.TestMembers[i] + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+      }
+    },
+    handle_select_test : function(){
+
+      //this.LoadTest(this.GetElementByRID("select_test").value, this.GetElementByRID("tests").value);
+      this.GetElementByRID("custom_test").style.display = (this.GetElementByRID("select_test").value == "custom" ? "block" : "none");
+      this.LoadSelectedSuite();
+    },
+    handle_select_test_member : function(){
+      var p = this.GetElementByRID("tests").value.split("::");
+
+      this.LoadTest(p[0], p[1]);
+    }
+    
+    ]]>
+  </embedded-script>
+</html-fragment>

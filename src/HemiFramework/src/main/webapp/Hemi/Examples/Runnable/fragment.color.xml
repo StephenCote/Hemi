@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<p>
+		<select name = "favoriteColor">
+			<option>Gray</option>
+			<option>Charcoal</option>
+			<option>Cadet</option>
+			<option>Arsenic</option>
+			<option>Ash</option>
+			<opton>Bistre</opton>
+		</select>
+	</p>
+</html-fragment>

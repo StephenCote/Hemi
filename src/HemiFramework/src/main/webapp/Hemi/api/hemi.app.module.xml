@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.app.module</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.app.module</path>
+<library>Hemi</library>
+<description>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the <a href="../Tests/test.app.comp.js">Application Component Tests</a> includes several unit tests for vetting the Application Component class.</description>
+<static-class>
+<name>service</name>
+<version>3.5.1</version>
+<description>Static implementation of the hemi.app.module.serviceImpl class.</description>
+
+
+</static-class>
+<class>
+<name>serviceImpl</name>
+<version>3.5.1</version>
+<description>The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</description>
+
+<method>
+<name>NewModule</name>
+<param name="sName" type="String">Name of the Module</param>
+<param name="oContainer" optional="1" type="XHTMLComponent">XHTML Component acting as a container for the module.</param>
+<param name="sPath" optional="1" type="String">Path where the module resides.</param>
+<param name="oModuleService" optional="1" type="FrameworkObject">A framework object for which a <i>decorateModule</i> method is defined.</param>
+<param name="bPathIsContent" optional="1" type="boolean">Bit indicating that the path is the text of the module to load.</param>
+<param default="module" name="sType" optional="1" type="String">Alternate module type for reference implementations.</param>
+<return-value name="oModule" type="Module">A new Module object.</return-value>
+<description>Creates a new Module object.</description>
+</method>
+vMod._IMod();
+<method>
+<name>UnloadModuleImplementations</name>
+<param name="sModule" type="String">Name of the Module</param>
+<return-value name="bRemoved" type="boolean">Bit indicating whether the module implementations were removed.</return-value>
+<description>Destroys all module implementations for the specified module.</description>
+</method>
+Modules use the hemi.object.addObjectDeconstructor
+So, destroy is present (or it's a bug) and invoking destroy will also
+clean up the object.
+<method>
+<name>UnloadModule</name>
+<param name="sModule" type="String">Name of the Test Module</param>
+<return-value name="bRemoved" type="boolean">Bit indicating whether the module was removed.</return-value>
+<description>Unloads the specified module.</description>
+</method>
+<method internal="1">
+<name>LoadModule</name>
+<param name="sName" type="String">Name of the Module</param>
+<param name="sPath" optional="1" type="String">Path to the modules directory.</param>
+<param name="sDecoration" optional="1" type="String">Additional script to include in the module prior to the module being instantiated.</param>
+<param name="bPathIsContent" optional="1" type="boolean">Bit indicating that the path is the text of the module to load.</param>
+<param default="module" name="sType" optional="1" type="String">Alternate module type for reference implementations.</param>
+<return-value name="oModule" type="Module">A new Module object.</return-value>
+<description>Loads a Module definition.</description>
+</method>
+<object>
+<name>ModuleBase</name>
+<description>The ModuleBase is the raw definition from which a Module implementation is created.</description>
+<property get="1" name="Impls" type="String[]">An array of object ids representing instances of this ModuleBase.</property>
+</object>
+<object>
+<name>Module</name>
+<description>A Module encapsulates the imported JavaScript and an API for operating within the framework.</description>
+<method virtual="1">
+<name>Initialize</name>
+<description>Invoked when the module is loaded.</description>
+</method>
+<method virtual="1">
+<name>Unload</name>
+<description>Invoked when the module is unloaded or destroyed.</description>
+</method>
+<property get="1" name="Component" type="XHTMLComponent">A pointer to an underlying XHTMLComponent, if the module is bound to an HTML element via an XHTMLComponent.</property>
+<property get="1" name="name" type="String">The name of the module.</property>
+<property get="1" name="Module" type="Module">An anonymous pointer to the Module instance, for refering to the instance from the anonymous scope enclosure.</property>
+<property get="1" name="Container" type="Node">A pointer to the XHTML Node for which the module was loaded.</property>
+<property get="1" name="Component" type="XHTMLComponent">A pointer to the XHTMLComponent created for any Container, if a Container was used.</property>
+</object>
++ "this._IMod = function(){ Module = this; };"
+if(!b) o.raw = x;
+<method virtual="1">
+<name>DecorateModuleHeader</name>
+<param name="sName" type="String">Name of the Module</param>
+<param name="sPath" type="String">Path to the Module</param>
+<param name="sRaw" type="String">The raw imported text of the module.</param>
+<return-value name="sDecoration" type="String">A value to be included in the module header prior to the module being instantiated.</return-value>
+<description>Decorates a module header.</description>
+</method>
+<method virtual="1">
+<name>DecorateModuleContent</name>
+<param name="sName" type="String">Name of the Module</param>
+<param name="sPath" type="String">Path to the Module</param>
+<param name="sRaw" type="String">The raw imported text of the module.</param>
+<return-value name="sDecoration" type="String">A value to be included in the module prior to the module being instantiated.</return-value>
+<description>Decorates a module content.</description>
+</method>
+<method internal="1">
+<name>Register</name>
+<param name="sName" type="String">Name of the Module</param>
+<param name="vContent" type="Hash">Object hash representing the module API.</param>
+<return-value name="object" type="object">Internal module object.</return-value>
+<description>Registers a Module object.</description>
+</method>
+m = { name: n, data: c, impls: [] };
+return m;
+</class>
+</package>
+<index><description>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the  includes several unit tests for vetting the Application Component class.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.storage</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+Legacy Package System
+
+_js_package("org.cote.js");
+Stand Alone Package System
+
+Debug
+
+Package("Hemi.storage");
+<package>
+<path>Hemi</path>
+<library>Hemi</library>
+<description>A bridge for implementing DOM Storage or Storage facades.</description>
+<static-class>
+<name>storage</name>
+<version>3.5.1</version>
+<description>A wrapper for cross browser storage support.</description>
+
+<example>
+<name>Get Item</name>
+<description>Retrieves an item from storage</description>
+<syntax>[string] = getItem(key);</syntax>
+<code>var provider = HemiEngine.storage.StorageManager.getStorageProvider();</code>
+<code>if(provider) var sValue = provider.getItem("some key");</code>
+</example>
+<example>
+<name>Set Item</name>
+<description>Saves an item into storage</description>
+<syntax>[bool] = setItem(key, val);</syntax>
+<code>var provider = HemiEngine.storage.StorageManager.getStorageProvider();</code>
+<code>if(provider) var bReturn = provider.setItem("some key","some value");</code>
+</example>
+2011/05/03
+IE 9 is balking at the check for the Storage object in some conditions, potentially due to corporate proxy/firewall settings
+
+Interface Support
+
+length : 0,
+getItem : function("key")
+setItem : function("key","data");
+removeItem : function("key");
+clear : function()
+key : function(iIndex);
+<property get="1" internal="1" type="String">
+<name>object_version</name>
+<description>Version of the object class.</description>
+</property>
+<property default="auto" get="1" set="1" type="Object">
+<name>storage_provider</name>
+<description>Specifies the provider to use for storage management.</description>
+</property>
+<property default="auto" get="1" set="1" type="String">
+<name>preferred_storage_type</name>
+<description>Specify or retrieve the preferred storage type.</description>
+</property>
+<method>
+<name>getStorageProvider</name>
+<return-value name="o" type="StorageProvider">Returns a storage provider.</return-value>
+<description>Returns a reference to a storage provider.</description>
+</method>
+<method internal="1">
+<name>testStorageReadWrite</name>
+<param name="o" type="StorageProvider">A StorageProvider to test.</param>
+<return-value name="b" type="StorageProvider">Returns the specified provider if it passes the test, otherwise, returns undefined.</return-value>
+<description>Fixed test to assert the specified API is functioning.</description>
+</method>
+<method>
+<name>testStorageSupported</name>
+<return-value name="b" type="bool">Bit indicating storage API support.</return-value>
+<description>Returns a bit indicating whether the storage API is supported. </description>
+</method>
+</static-class>
+<object>
+<name>StorageProvider</name>
+<version>3.5.1</version>
+<description>A storage provider.</description>
+<property get="1" internal="1" type="String">
+<name>storage_type</name>
+<description>Type name of the storage provider (eg: DOMStorage, IEStorage, DBStorage).</description>
+</property>
+</object>
+</package>
+<index><description>A bridge for implementing DOM Storage or Storage facades.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

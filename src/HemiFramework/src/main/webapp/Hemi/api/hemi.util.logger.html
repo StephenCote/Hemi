@@ -1,0 +1,239 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.util.logger Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.util.logger</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Logger class may be used to instrument an object with logging functionality.  Application logging is handled by the Hemi.message.service.sendMessage function, which supports multiple levels of message levels and message scoping. </p>
+<a name="logger"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.util.logger</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Utility for instrumenting a logging API into an object.  Logging facilities use the Message Service message block format of: ###.#.###.### where the first set identifies the global scope, the second is the level, the third is the inner scope, and the fourth is the fine scope.</p>
+<p class="desc">
+See <a href="#Example Log">Example Log</a> for an example of implementating the script on a page. </p>
+<h3>Index</h3>
+<a name="loggerexampleindex"> </a>
+<h4>Example Index</h4>
+<ul class="index">
+<li>
+<a href="#Example Log">Example Log</a>: Demonstrate how to use the Logger with an existing object.</li>
+</ul>
+<a name="loggermethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#addLogger">addLogger</a>: Instruments the specified logger with a context sensitive logging facility.</li>
+<li>virtual <a href="#log">log</a>: Sends a message in the ###.3 message block.</li>
+<li>virtual <a href="#logAdvisory">logAdvisory</a>: Sends a message in the ###.2 message block.</li>
+<li>virtual <a href="#logDebug">logDebug</a>: Sends a message in the ###.1 message block.</li>
+<li>virtual <a href="#logError">logError</a>: Sends a message in the #100.5 message block.</li>
+<li>virtual <a href="#logFatal">logFatal</a>: Sends a message in the ###.7 message block.</li>
+<li>virtual <a href="#logWarning">logWarning</a>: Sends a message in the ###.4 message block.</li>
+</ul>
+<h3>Examples</h3>
+<a name="Example Log"></a>
+<h3 class="membertitle">Example Log</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggerexampleindex">Examples</a>
+</li>
+</ul>
+<p class="exampledesc">Demonstrate how to use the Logger with an existing object.</p>
+<h4>Example Code</h4>
+<pre class="example">// Some JavaScript Objectvar oMyObject = ...;// The '900' block is an arbitrary value of 1 - 999Hemi.util.logger.addLogger(oMyObject, "MyLog","Actions for my object", 900);// Define a function to receive all log messagesoMyObject.HandleMessages = function(sType, oMessage){   var iLevel = oMessage.level; // iLevel == 900   var sMessage = oMessage.message;}// Listen for log messages on the same objectHemi.message.service.subscribe("onsendmessage", oMyObject.HandleMessages);// Test it out, optionally supply a numeric code pair (###.###) to identify message origination.// The entire code for the message would be: 900.4.100.1oMyObject.logWarning("Something happened!","100.1");</pre>
+<h3>Methods</h3>
+<a name="addLogger"></a>
+<h3 class="membertitle">addLogger</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Instruments the specified logger with a context sensitive logging facility.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void addLogger(
+oObject, sLogName, sLogDescription, iContextId
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oObject</b> as FrameworkObject : Object onto which the logger will be instrumented.</li>
+<li>
+<b>sLogName</b> as String : Short name of the log.</li>
+<li>
+<b>sLogDescription</b> as String : Short description of the log.</li>
+<li>
+<b>iContextId</b> as int : The logging context.  The context must be between 1 and 999.  If the context already exists, then the first context to define the name and description will be used.</li>
+</ul>
+<a name="log"></a>
+<h3 class="membertitle">log</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the ###.3 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void log(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<a name="logAdvisory"></a>
+<h3 class="membertitle">logAdvisory</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the ###.2 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void logAdvisory(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<a name="logDebug"></a>
+<h3 class="membertitle">logDebug</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the ###.1 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void logDebug(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<a name="logError"></a>
+<h3 class="membertitle">logError</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the #100.5 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void logError(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<a name="logFatal"></a>
+<h3 class="membertitle">logFatal</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the ###.7 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void logFatal(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<a name="logWarning"></a>
+<h3 class="membertitle">logWarning</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#logger">logger</a>
+</li>
+<li>
+<a href="#loggermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a message in the ###.4 message block. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void logWarning(
+sMessage
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sMessage</b> as String : Message to send to the logger.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

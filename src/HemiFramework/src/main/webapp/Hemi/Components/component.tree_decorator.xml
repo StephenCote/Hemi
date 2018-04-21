@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<application-components>
+   <application-component id = "tree_decorator" participant-id ="tree">
+      <![CDATA[
+         component_init:function(){
+						Hemi.include("hemi.css");
+						Hemi.include("hemi.text");
+						Hemi.css.loadStyleSheet("Styles/TreeStyles.css","Tree");
+						this.scopeHandler("switchbranch",0,0,1);
+						this.getProperties().current_leaf = 0;
+						this.getProperties().current_path = 0;
+						this.getObjects().current_node = 0;
+						this.getProperties().dir_only = ("1" == this.getContainer().getAttribute("DirectoryOnly") ? 1 : 0);
+						this.getProperties().tree_loaded = 0;
+						this.RenderTree();
+				 },
+				 component_destroy : function(){
+						 this._prehandle_switchbranch = 0;
+				 },
+				 GetCurrentNodeName : function(){
+						return this.getProperties().current_node_name;
+				 },
+				 GetCurrentPath : function(){
+						 return this.getProperties().current_path;
+				 },
+				 GetCurrentNodeId : function(){
+						 return this.getProperties().current_node_id;
+				 },
+				_handle_viewerload : function(s, v){
+						if(this.getProperties().tree_loaded) this.serveTransaction("treeload",this);
+				},
+				_handle_contextload : function(s, v){
+						if(this.getProperties().tree_loaded) this.serveTransaction("treeload",this);
+				},
+				SelectLeaf : function(sName){
+
+					var aLi = this.getContainer().getElementsByTagName("li");
+					for(var i = 0; i < aLi.length; i++){
+						if(aLi[i].leaf_name == sName){
+							this.SetActiveLeaf(aLi[i]);
+							this._handle_switchbranch(aLi[i].firstChild, 1);
+							break;
+						}
+					}
+				},
+				SetActiveLeaf : function(oLi){
+						if(this.getObjects().current_node && this.getObjects().current_node != oLi){
+								this.getObjects().current_node.className = this.getObjects().current_node.className.replace(/\s?branch\_selected/,"");
+						}
+						this.getObjects().current_node = oLi;
+						if(!oLi.className.match(/\s?branch\_selected/)) oLi.className += " branch_selected";
+						this.getProperties().current_path = oLi.node_path;
+						this.getProperties().current_node_name = oLi.node_name;
+						this.getProperties().current_node_id = oLi.node_id;
+				},
+				_handle_switchbranch : function(e, b){
+					e = (e ? e : event);
+					var o = b ? e : (e.target ? e.target : e.srcElement);
+					if(!o){
+						return;
+					}
+					var oP = o.parentNode;
+					
+					if(oP.className.match(/branch\_empty/)){
+					}
+					else if(oP.className.match(/branch\_open/)) oP.className = "branch_close";
+					else if(oP.className.match(/branch\_close/)) oP.className = "branch_open";
+					this.SetActiveLeaf(oP);
+					this.serveTransaction("treenavigate",this);
+					return false;
+				},
+				RenderTree : function(){
+					if(this.getContainer().nodeName.match(/^ul$/i)) this.RenderTreeNodes(this.getContainer(), "", 0);
+					else{
+						var oChildren = this.getContainer().childNodes;
+						for(var i = 0; i < oChildren.length; i++){
+							var oNode = oChildren[i];
+							if(oNode.nodeType == 1 && oNode.nodeName.match(/^li$/i)){
+								RenderTreeNodes(oNode,"",0);
+							}
+						}
+					}
+					if(this.getContainer().childNodes.length > 0) this.getProperties().tree_loaded = 1;
+				},
+				RenderTreeNodes : function(oParent, sPath, iDepth){
+					oParent.className = "treecomp";
+					var aLi = oParent.childNodes;
+					var oTopNode = 0;
+					iDepth++;
+					for(var i = 0; i < aLi.length; i++){
+						var oLI = aLi[i];
+						if(oLI.nodeType != 1 || !oLI.nodeName.match(/^li$/i)) continue;
+						
+						var oFirst = oLI.firstChild;
+						if(!oFirst || oFirst.nodeType != 3) continue;
+
+						var oA = document.createElement("a");
+						oA.setAttribute("href","#");
+						oLI.is_populated = 1;
+						var sCurrentPath = sPath + "/" + Hemi.text.trim(oFirst.nodeValue);
+						oLI.node_name = Hemi.text.trim(oFirst.nodeValue);
+						oLI.node_path = sCurrentPath;
+						oLI.node_id = 0;
+						if(!oTopNode) oTopNode = oLI;
+						this.InstrumentDraggable(oLI);
+							   
+						oLI.insertBefore(oA, oFirst);
+						oA.appendChild(document.createTextNode(Hemi.xml.getInnerText(oFirst)));
+						oLI.removeChild(oFirst);
+
+						if(this.getProperties().dir_only || aLi[i].getElementsByTagName("ul").length > 0){
+							oA.onclick = this._prehandle_switchbranch;
+							oLI.className = "branch_close";
+												 
+						}
+						else{
+							oLI.className = "leaf";
+							oA.onclick = this._prehandle_switchbranch;
+						}
+						var aUl = oLI.childNodes;
+						for(var c = 0; c < aUl.length; c++){
+							if(aUl[c].nodeType == 1 && aUl[c].nodeName.match(/^ul$/i)) this.RenderTreeNodes(aUl[c], sCurrentPath, iDepth);
+						}
+					}
+					if(oTopNode && iDepth == 1 && !this.getObjects().current_node) this._handle_switchbranch(oTopNode.firstChild, 1);
+				},
+				PrintTree : function(oXhtmlParent, vJSONNode, iDepth){
+					if(!iDepth){
+					
+						var oUL = document.createElement("ul");
+						oUL.className = "treecomp";
+						oXhtmlParent.appendChild(oUL);
+						iDepth = 1;
+						oXhtmlParent = oUL;
+					}
+					var aNodes = (vJSONNode.Hierarchy ? vJSONNode.Hierarchy : vJSONNode.nodes);
+					for(var i = 0; i < aNodes.length; i++){
+						var oC = aNodes[i];
+						var oLI = document.createElement("li");
+						
+						oXhtmlParent.appendChild(oLI);
+						oLI.node_id = oC.skey;
+						oLI.node_name = oC.name;
+						oLI.parent_id = oC.parent_id;
+						oLI.node_path = oC.skey;
+						//oLI.policy = this.ImportPolicy(oC);
+						
+						var oA = document.createElement("a");
+						oA.setAttribute("href","#");
+						var isPop = 1;
+						if(oLI.policy && !oLI.policy.read){
+							oLI.className = "branch_lock";
+						}
+						else{
+							oLI.is_populated = isPop;
+							/*
+							if(isPop){
+								oLI.className = "branch_open";
+								oA.onclick = this._prehandle_switchbranch;
+							}
+							else{
+							*/
+							if(oC.nodes.length > 0){
+								oA.onclick = this._prehandle_switchbranch;
+								oLI.className = "branch_close";
+							}
+							else{
+								oLI.className = "leaf";
+								oA.onclick = this._prehandle_switchbranch;
+							}
+							this.InstrumentDraggable(oLI);
+						}
+						oA.appendChild(document.createTextNode(oC.name));
+						oLI.appendChild(oA);
+						this.PrintSubDataTree(oLI, oC);
+
+
+					}
+					
+				},
+				PrintSubDataTree : function(oXhtmlParent, vJSONNode){
+					
+					var oSUL = document.createElement("ul");
+					oSUL.className = "treecomp";
+					oXhtmlParent.appendChild(oSUL);
+					if(vJSONNode.nodes.length) this.PrintTree(oSUL, vJSONNode, 1);
+					/*
+					var aDat = [];
+					if(oDat) aDat = oDat.getElementsByTagName("Data");
+					for(var c = 0; c < aDat.length; c++){
+						oLI = document.createElement("li");
+						var oA = document.createElement("a");
+						oA.setAttribute("href","#");
+						oLI.appendChild(oA);
+						oA.appendChild(document.createTextNode(this.GetElementText(aDat[c],"Name")));
+						oLI.className = "leaf";
+						oLI.data_id = parseInt(this.GetElementText(aDat[c],"Id"));
+						oLI.policy = this.ImportPolicy(aDat[c]);
+						this.InstrumentDraggable(oLI);
+						oSUL.appendChild(oLI);
+					}
+					*/
+				},
+				InstrumentDraggable : function(oNode){
+					
+					var oX = Hemi.object.xhtml.newInstance(oNode,1);
+					var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);
+					oA.loadComponent("draggable","Components/component.draggable.xml");
+					
+				},
+				GetChildNode : function(oXmlNode, sName){
+					var oC = 0;
+					for(var i = 0; i < oXmlNode.childNodes.length; i++){
+						if(oXmlNode.childNodes[i].nodeType == 1 && oXmlNode.childNodes[i].nodeName == sName){
+							oC = oXmlNode.childNodes[i];
+							break;
+						}
+					}
+					return oC;
+				},
+				ImportPolicy : function(vJSONNode){
+					/*
+						Demo JSON Policy Format for a hierarchy node:
+						profile_policies : [ {
+							default: bool,
+							profile_id : ###, /// for all profiles on the page
+							user_id : ###, /// Implied, current context user
+							read : 1,
+							write : 1,
+							change : 1,
+							delete : 1,
+							scd_mode: 1, if user changes data, what happens to it
+							statement : "abc" /// Text statement for debug purposes, describing what this entitlement is
+						}
+						]
+					*/
+					
+					return {
+						read:1,
+						write:0,
+						change:0,
+						del:0,
+						statement:"Debug - default"
+					};
+					
+				}
+			]]>
+		</application-component>
+</application-components>

@@ -1,0 +1,541 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<html-fragment>
+	<import-style src ="Styles/wideselect.css" id ="wideselect" />
+	<div>
+		<input type = "button" value = "Reg" onclick = "${this}.PrintRegistry()" />
+		<input type = "button" value = "Lib" onclick = "${this}.PrintNamespaces()" />
+		<input type = "button" value = "Spa" onclick = "${this}.PrintSpaces()" />
+    <input type = "button" value = "Mod" onclick = "${this}.PrintModules()" />
+		<input type = "button" value = "Tsk" onclick = "${this}.PrintTasks()" />
+		<input type = "button" value = "Txn" onclick = "${this}.PrintTrans()" />
+		<input type = "button" value = "Io" onclick = "${this}.PrintIO()" />
+		<input type = "button" value = "Xml" onclick = "${this}.PrintXml()" />
+		<input type = "button" value = "Msg" onclick = "${this}.PrintMessages()" />
+		<!--
+		<input type = "button" value = "Destroy" onclick = "${this}.SendDestroy()" style = "margin-left:25px;" />
+		-->
+		
+	</div>
+	<div ___pointer_marker = "never" style = "width:50%;float:left;" component = "wideselect" rid = "oRegistry">
+	</div>
+	<div ___pointer_marker = "never" style = "width:50%;float:left;" component = "wideselect" rid = "oModel">
+	</div>
+	<div>
+		Switch Prefix: <input type = "checkbox" onchange ="${this}.DoMatch()" rid = "oFilterPrefix" />
+    Find: <input type = "checkbox" onchange ="${this}.DoMatch()" rid = "oMatch" />
+    <input type = "text" onkeyup ="${this}.DoMatch()" rid = "oMatchText" />
+    <input type ="button" value ="Find" onclick ="${this}.DoMatch()" />
+	</div>
+
+	<embedded-script>
+      <![CDATA[
+		embedded_init : function (){
+
+			this.GetComponentByRID("oRegistry").setLoadHandler(this.scopeHandler("setupList",0,1,1));
+			this.GetComponentByRID("oModel").setLoadHandler(this.scopeHandler("setupModel",0,1,1));
+			this.getObjects().model_list = [];
+			this.getObjects().model_index = [];
+			this.getObjects().pathHash = [];
+			this.getObjects().intModels = 0;
+			
+			
+			Hemi.uid_prefix = "dwd-";
+			this.GetElementByRID("oFilterPrefix").checked = false;
+      this.GetElementByRID("oMatch").checked = false;
+      this.getProperties().printing = 0;
+		},
+		setupModel : function(){
+			this.GetModel().getContainer().style.height = "450px";
+			this.scopeHandler("modelclick",0,0,1);
+			this.GetModel().setResultHandler( this._prehandle_modelclick);
+		},
+		setupList : function(){
+			this.GetList().getContainer().style.height = "450px";
+			this.scopeHandler("resultclick",0,0,1);
+			this.GetList().setResultHandler( this._prehandle_resultclick);
+		},
+		embedded_destroy : function(){
+			this.getObjects().model_list = 0;
+			this.getObjects().model_index = 0;
+			this._prehandle_resultclick = 0;
+			this._prehandle_modelclick = 0;
+			this._prehandle_model = 0;
+			Hemi.uid_prefix = "hemi-";
+		},
+		SendDestroy : function(){
+			Hemi.message.service.sendMessage("Sending Sig Term","200.1");
+			Hemi.registry.service.sendSigterm();
+		},
+		GetList : function(){
+			return this.GetComponentByRID("oRegistry").GetWideSelect();
+		},
+		GetModel : function(){
+			return this.GetComponentByRID("oModel").GetWideSelect();
+		},
+		_handle_resultclick : function(sEvent,oItem){
+			//this.Model();
+			this.ModelObject(this.GetModel(),oItem);
+		},
+		_handle_modelclick : function(sEvent,oItem){
+			//this.Model();
+			/*
+			var oList = this.GetList();
+			oList.clearItems();
+			var aI = this.GetModel().getItems();
+			for(var i = 0; i < aI.length; i++) oList.addItem(aI[i].label,aI[i].value);
+			*/
+			this.ModelObject(this.GetModel(),oItem);
+			
+		},
+
+		ModelObject : function(oList, oItem){
+			//var oModel = this.GetModel();
+			
+			var sV = oItem.data;
+			if(sV == null || sV.length == 0 || sV == "_avoid") return;
+			
+			
+			if(sV == "__aslink"){
+				/// The ActiveSource viewer embeds a global object, ActiveSource, on the page
+				///
+
+				if(typeof this.ShowTab == "function" && typeof ActiveSource == "object"){
+					this.ShowTab("Active Source");
+					
+					var oSource = this.GetElementByRID("oSource");
+					var oEval = this.GetElementByRID("oEval");
+					var oObj = Hemi.registry.service.getObject(this.getProperties().model_id);
+					if(!oObj) oObj = Hemi.app.space.service.getSpace(this.getProperties().model_id);
+					var sCont = "";
+					ActiveObjects.valContainer = 0;
+					ActiveObjects.valReference = 0;
+					ActiveObjects.valBridge = 0;
+					ActiveObjects.valComponent = 0;
+					if(typeof oObj.getReferenceId == "function"){
+						var oC = Hemi.app.space.service.getSpace(oObj.getReferenceId());
+						if(oC){
+							sCont = "\nSpace Reference " + oC.space_name + "(" + oC.space_id + ") as unregistered 'SpaceObject' with ActiveObjects.valReference";
+							ActiveObjects.valReference = oC;
+						}
+					}
+					if(typeof oObj.getContainerId == "function"){
+						var oC = Hemi.registry.service.getObject(oObj.getContainerId());
+						if(oC){
+							sCont = "\nAccess Container Bridge " + oC.getObjectId() + " as " + oC.getObjectType() + " with ActiveObjects.valBridge";
+							ActiveObjects.valBridge = oC;
+						}
+					}
+					if(typeof oObj.getComponentId == "function" && oObj.getComponentId()){
+						sCont = "\nComponent Id: " + oObj.getComponentId();
+					}
+					if(typeof oObj.getApplicationComponent == "function"){
+						var oC = oObj.getApplicationComponent();
+						if(oC){
+							sCont = "\nComponent Bridge " + oC.getObjectId() + " as " + oC.getObjectType() + " with ActiveObjects.valComponent";
+							ActiveObjects.valComponent = oC;
+						}
+					}
+					if(typeof oObj.getContainer == "function"){
+						var oC = oObj.getContainer();
+						if(oC && oC.nodeType == 1){
+							sCont = "\nAccess Container " + oC.nodeName + " with ActiveObjects.valContainer\n" + this.PrototypeElement(oC);
+							ActiveObjects.valContainer = oC;
+						}
+					}
+					oSource.value = 
+						"Active Object " + this.getProperties().model_id + (typeof oObj.getObjectType == "function" ? " as " + oObj.getObjectType() + "(v " + oObj.getObjectVersion() + ")" : "")
+						+"\nAccess with ActiveObjects.val"
+						+ sCont
+					;
+					oEval.value = "ActiveObjects.val";
+					ActiveObjects.val = Hemi.registry.service.getObject(this.getProperties().model_id);
+					
+					
+				}
+
+				return;
+			}
+			this.getProperties().model_id = 0;
+			oList.clearItems();
+			oList.addItem("MODEL","_avoid");
+
+			
+			var oObj = Hemi.registry.service.getObject(sV);
+			if(!oObj) oObj = Hemi.app.space.service.getSpace(oObj);
+			oList.addItem("ID " + sV,"_avoid");
+			if(typeof oObj.getReferenceId == "function"){
+				var oRef = Hemi.app.space.service.getSpace(oObj.getReferenceId());
+				//var oRef = Hemi.registry.service.getObject(oObj.getReferenceId());
+				 //&& oObj.getObjectType() == "application_component"
+				//alert(oRef + ":" + oObj.getReferenceId());
+				if(oRef){
+					oList.addItem("Reference Space: " + oRef.space_name + " (" + oRef.space_id + ")",oRef.space_id);
+				}
+			}
+			if(typeof oObj.getIsComponentLinked == "function" && oObj.getIsComponentLinked()){
+				var oC = oObj.getComponentCollection();
+				if(oC){
+					oList.addItem("Component Link: " + oC.getObjectId() + " as " + oC.getObjectType(),oC.getObjectId());
+				}
+			}
+			if(typeof oObj.getApplicationComponent == "function"){
+				var oC = oObj.getApplicationComponent();
+				if(oC){
+					oList.addItem("Application Component: " + oC.getObjectId() + " as " + oC.getDefinitionId(),oC.getObjectId());
+				}
+			}
+			if(typeof oObj.getComponentId == "function" && oObj.getComponentId()){
+				oList.addItem("Component Id: " + oObj.getComponentId(),"_avoid");
+			}
+			if(typeof oObj.getContainerId == "function"){
+				var oC = Hemi.registry.service.getObject(oObj.getContainerId());
+				if(oC){
+					oList.addItem("Container Bridge: " + oC.getObjectId() + " as " + oC.getObjectType(),oC.getObjectId());
+				}
+			}
+			oList.addItem("Send To Active Source","__aslink");
+			
+			this.getProperties().model_id = sV;
+
+		},
+		PrintNamespaces : function(){
+      this.getProperties().printing = "lib";
+			var a = (Hemi.NS ? Hemi.NS : Hemi.Namespaces);
+			var oList = this.GetList();
+			oList.clearItems();
+			oList.addItem("LOADED NAMESPACES");
+			for(var i = 0; i < a.length; i++){
+				oList.addItem("...." + a[i]);
+			}
+		},
+    
+    Reprint : function(){
+      switch(this.getProperties().printing){
+        case "reg": this.PrintRegistry(); break;
+        case "lib": this.PrintNamespaces(); break;
+        case "spa": this.PrintSpaces(); break;
+        case "mod": this.PrintModules(); break;
+        case "txn": this.PrintTrans(); break;
+        case "tsk": this.PrintTasks(); break;
+        case "io": this.PrintIO(); break;
+        case "xml": this.PrintXml(); break;
+        case "msg": this.PrintMessages(); break;
+        default: break;
+      }
+      
+    },
+    DoMatch : function(e){
+      this.Reprint();
+    },
+    
+    MatchObjectVal : function(o){
+      var b = this.GetElementByRID("oMatch").checked;
+      if(!b) return 1;
+      if(o == null || !o || typeof o.getObjectId != "function") return 0;
+      var exp = new RegExp(this.GetElementByRID("oMatchText").value);
+      b = (o.getObjectType().match(exp) || o.getObjectId().match(exp));
+      if(b) return 1;
+      switch(o.getObjectType()){
+        case "xhtml_component":
+          b = (o.getContainer().nodeName.match(exp) || (o.getComponentId() && o.getComponentId().match(exp)));
+          break;
+      }
+      return (b ? 1 : 0);
+    },
+		PrintRegistry : function(){
+      this.getProperties().printing = "reg";
+			var oR = Hemi.registry.service;
+			var a = oR.getObjectsArray();
+			var oList = this.GetList();
+			oList.clearItems();
+			var s = "";
+			var o;
+			var b;
+			oList.addItem("REGISTRY","_avoid");
+			for(var i = 0;i < a.length; i++){
+				o = a[i];
+				if(o != 0 && this.GetElementByRID("oFilterPrefix").checked && !o.getObjectId().match(/^dwd-/)) continue;
+        if(o != 0 && !this.MatchObjectVal(o)) continue;
+				if(o != 0){
+					oList.addItem(o.getObjectType() + " " + (o.getObjectType() == "xhtml_component" ? o.getContainer().nodeName + " " : "") + "(" + o.getObjectId() + ")",o.getObjectId());
+					if(o.t == "space_service"){
+
+						oList.addItem("....Spaces: " + o.getSpaces().length);
+					}
+					else if(o.t == "task_service"){
+						b = o.getTasks();
+						// s+= "....Tasks: " + b.length + "\n";
+						oList.addItem("....Tasks: " + b.length,o.getObjectId());
+						for(var c = 0;c<b.length;c++){
+              if(!b[c]) continue;
+							//s+= "-        Tasks (" + (c + 1) + ") " + b[c].task_name + "\n";
+							oList.addItem("........Tasks (" + (c + 1) + ") " + b[c].task_name,b[c].getObjectId());
+						}
+
+						
+					}
+					else if(o.t == "transaction_service"){
+						oList.addItem("....Registered Objects: " + o.getRegisteredObjects().length,o.getObjectId());
+						oList.addItem("....Transaction Packets: " + o.getPackets().length,o.getObjectId());
+						//s+= "    Registered Objects: " + o.getRegisteredObjects().length + "\n";
+						//s+= "    Transaction Packets: " + o.getPackets().length + "\n";
+					}
+					else if(o.getObjectType() == "message_service"){
+						//oList.addItem("....Subscriptions: " + o.o.p.s.length,o.getObjectId());
+						oList.addItem("....Subscriptions","_avoid");
+						for(var q in o.getObjects().s){
+							oList.addItem("......" + q + " = " + o.getObjects().s[q].length,o.getObjectId());
+						}
+						// " + o.o.p.s.length,o.getObjectId());
+						oList.addItem("....Delayed Publications: " + o.getObjects().dd.length,o.getObjectId());
+						oList.addItem("....Message Entries: " + o.getObjects().e.length,o.getObjectId());
+					}
+				}
+				
+				
+			}
+		},
+		PrintTrans : function(){
+      this.getProperties().printing = "txn";
+			var oList = this.GetList();
+			oList.clearItems();
+			
+			var i,t,a,_m=Hemi.message.service,ts,h,p,o;
+			//a = _t.getPackets();
+			//var s = "";
+			oList.addItem("TRANSACTIONS","_avoid");
+			ts = Hemi.registry.service.getObjectsArray();
+			for(h = 0; h < ts.length; h++){
+				if(
+          !ts[h]
+          ||
+          ts[h].getObjectType() != "transaction_service"
+          ||
+          (this.GetElementByRID("oFilterPrefix").checked && !ts[h].getObjectId().match(/^dwd-/))
+          ||
+          !this.MatchObjectVal(ts[h])
+       ) continue;
+				oList.addItem("Transaction Service " + ts[h].getObjectId(),ts[h].getObjectId());
+				a = ts[h].getPackets();
+				for(i=0;i<a.length;i++){
+					t = a[i];
+					if(ts[h].isPacket(t)){
+						//s += "Transaction " + t.packet_name + " / s = " + t.packet_state + " / o = " + t.is_open + " / f = " + t.is_finalized + "\n";
+						oList.addItem("....Transaction " + t.packet_name + " (" + t.packet_id + ") / s = " + t.packet_state + " / o = " + t.is_open + " / f = " + t.is_finalized,t.getObjectId());
+						for(var p = 0; p < t.participants.length; p++){
+							o = Hemi.registry.service.getObject(t.participants[p]);
+							if(!o) oList.addItem("........Null Participant " + t.participants[p],"_avoid");
+							else oList.addItem("........Participant " + t.participants[p] + " " + o.getObjectType(),o.getObjectId());
+						}
+					}
+				}
+			}
+			//this.GetElementByRID("data").value = s;			
+		},
+		PrintMessages : function(){
+      this.getProperties().printing = "msg";
+			var oList = this.GetList();
+			oList.clearItems();
+			var a = Hemi.message.service.getEntries();
+			oList.addItem("MESSAGES");
+			for(var i = 0; i < a.length; i++){
+				oList.addItem(Hemi.message.service.parseMessage(a[i]));
+			}
+		},
+		PrintXml : function(){
+      this.getProperties().printing = "xml";
+			var oList = this.GetList();
+			oList.clearItems();
+			var a = Hemi.xml.getRequestArray();
+			oList.addItem("XML REQUESTS");
+			for(var i = 0; i < a.length; i++){
+				oList.addItem((a[i].a ? "a" : "") + "sync " + a[i].u + (a[i].c ? " (hemi cache) " : ""),i);
+			}
+		},
+		PrintTasks : function(){
+      this.getProperties().printing = "tsk";
+			var oList = this.GetList();
+			oList.clearItems();
+			
+			var _t = Hemi.task.service,i,t,a,_m=Hemi.message.service,or,h;
+			a = _t.getTasks();
+			
+			oList.addItem("TASK SERVICES","_avoid");
+			or = Hemi.registry.service.getObjectsArray();
+			for(h = 0; h < or.length; h++){
+				if(!or[h] || or[h].getObjectType() != "task_service" || (this.GetElementByRID("oFilterPrefix").checked && !or[h].getObjectId().match(/^dwd-/)) || !this.MatchObjectVal(o)) continue;
+
+				a = or[h].getTasks();
+				oList.addItem("....Task Service " + or[h].getObjectId(),or[h].getObjectId());
+				for(i=0;i<a.length;i++){
+					t = a[i];
+          if(!t) continue;
+					oList.addItem("........Task " + t.task_name + " (" + t.task_id + ") / e = " + t.executed + " / h = " + t.handled + " / d = " + t.depends.length + " / s = " + t.task_state + " / " + _t.getTaskDepends(t).join(","),t.getObjectId());
+
+				}	
+			}		
+		},
+		PrintIO : function(){
+      this.getProperties().printing = "io";
+			var oList = this.GetList();
+			oList.clearItems();
+			
+			var i,t,a,or,h,eo, j, o, or,rq,rs,ar,p;
+
+			oList.addItem("IO SERVICES","_avoid");
+			or = Hemi.registry.service.getObjectsArray();
+			for(h = 0; h < or.length; h++){
+				if(!or[h] || or[h].getObjectType() != "io_service") continue;
+				oList.addItem("IO Service " + or[h].getObjectId(),or[h].getObjectId());
+				oList.addItem("...PROVIDERS","_avoid");
+				a = or[h].getProviders();
+				for(i=0;i<a.length;i++){
+					var eid = a[i].providerId;
+					if(this.GetElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
+					o = Hemi.registry.service.getObject(eid);
+          if(o && !this.MatchObjectVal(o)) continue;
+					if(!o){
+						oList.addItem("...Stale Provider (" + eid + ")","_avoid");
+					}
+					else{
+
+						oList.addItem("..." + o.getObjectType()+ " (" + eid + ")",eid);
+					}
+				}
+				ar = or[h].getRequests();
+				oList.addItem("...REQUESTS","_avoid");
+				for(i =0; i < ar.length;i++){
+					rs = ar[i];
+					rq = or[h].getResponseByName(rs.responseId);
+					p = or[h].getPacket(rs.transactionName);
+					oList.addItem("...Request (" + (rs.is_open ? "OPEN" : "CLOSED") + ")", "_avoid");
+					oList.addItem("......Request Id: " + rs.id, rs.id);
+					oList.addItem("......Response Id: " + rq.id, rq.id);
+					/// oList.addItem("......Transaction: " + rs.transactionName, rs.transactionName);
+					if(!p) oList.addItem("......Null Packet", "_avoid");
+					else{
+						oList.addItem("......Packet: " + p.packet_name + " (" + p.packet_id + ") / s = " + p.packet_state + " / o = " + p.is_open + " / f = " + p.is_finalized,p.getObjectId());
+					}
+					
+					//(p ? p.packet_name : "None"), (p ? p.packet_name : "_avoid"));
+				}
+				
+				
+			}
+		},
+		PrintModules : function(){
+      this.getProperties().printing = "mod";
+			var oList = this.GetList();
+			oList.clearItems();
+			
+			var i,t,a,or,h,eo,j, or;
+
+			oList.addItem("MODULE SERVICES","_avoid");
+			or = Hemi.registry.service.getObjectsArray();
+			for(h = 0; h < or.length; h++){
+				if(!or[h] || or[h].getObjectType() != "module_service") continue;
+
+				oList.addItem("Module Service " + or[h].getObjectId(),or[h].getObjectId());
+				a = or[h].getModules();
+				for(i=0;i<a.length;i++){
+					t = a[i];
+					oList.addItem("...Module Implementation " + t.name,t.name);
+					eo = t.Impls;
+					for(j = 0; j < eo.length; j++){
+						var eid = eo[j];
+					  if(this.GetElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
+            var mo = Hemi.registry.service.getObject(eid);
+            if(mo && !this.MatchObjectVal(mo)) continue;
+					  var etype = mo.getObjectType();
+						var label = etype + " (" + eid + ")";
+
+						oList.addItem("........" + label,eid);
+					}
+				}	
+			}		
+
+		},
+		PrintSpaces : function(){
+      this.getProperties().printing = "spa";
+			var oList = this.GetList();
+			oList.clearItems();
+			
+			var i,t,a,or,h,eo,j;
+
+			oList.addItem("SPACE SERVICES","_avoid");
+			or = Hemi.registry.service.getObjectsArray();
+			for(h = 0; h < or.length; h++){
+				if(!or[h] || or[h].getObjectType() != "space_service") continue;
+				oList.addItem("Space Service " + or[h].getObjectId(),or[h].getObjectId());
+				a = or[h].getSpaces();
+				//oList.addItem("....Task Service " + or[h].getObjectId(),or[h].getObjectId());
+				for(i=0;i<a.length;i++){
+					t = a[i];
+					if(!t) continue;
+					if(!this.MatchObjectVal(t) || (this.GetElementByRID("oFilterPrefix").checked && !t.getObjectId().match(/^dwd-/))) continue;
+          
+					oList.addItem("....Space " + t.space_name + " (" + t.space_id + ")" + (t.is_primary ? " (primary)" : ""),t.space_id);
+					eo = t.getObjects();
+					for(j = 0; j < eo.length; j++){
+						var label = 0;
+						var etype = 0;
+						var ntype = "";
+						var eid = 0;
+						if(!eo[j].object) label = "null";
+						else{
+							eid = eo[j].object.getObjectId();
+							etype = eo[j].object.getObjectType();
+							if(etype == "xhtml_component") ntype = " " + eo[j].object.getContainer().nodeName + " ";
+							if(eo[j].rid) label = etype + ntype + " " + eo[j].rid;
+							else if(!label) label = etype + etype;
+							label += " (" + eid + ")";
+						}
+						oList.addItem("........" + label,eid);
+					}
+				}	
+			}		
+			//this.GetElementByRID("data").value = s;
+		},
+		Model : function(){
+			var oList = this.GetList();
+			this.getProperties().debug_mode = 1;
+			this.getProperties().iWin = 0;
+			this.getObjects().model_list = [];
+			this.getObjects().model_index = [];
+			this.getObjects().pathHash = [];
+			this.getObjects().intModels = 0;
+			var o = oList.getActiveItem(),ob;
+			if(!o || !o.data || !(ob = Hemi.registry.service.getObject(o.data))) return;
+			oList.clearItems();
+			this.getProperties().pointer_marker = "___pointer_marker_" + (new Date().getTime());
+
+			var s = this.ModelDrill(window,0,this._prehandle_model,(ob.getContainer ? ob.getContainer() : ob));
+			alert(s);
+		},
+		_handle_model : function(oWin, frame_index, parent_path, object_name, object_pointer, depth){
+			//this.GetList().addItem("model");
+			if(!this.getProperties().sProtoParent) this.getProperties().sProtoParent=null;
+			
+			var wName = "window";
+			if(oWin.name) wName = oWin.name;
+			var sPName = "__Model-" + this.getProperties().iWin + "-";
+			var sFName = sPName + wName + "::" + object_name;
+			if(!this.getObjects().model_list[sFName])
+				this.getObjects().model_index[this.getObjects().model_index] = sFName;
+
+			try{
+				this.getObjects().model_list[sFName]={"window":oWin,findex:this.getProperties().iWin,"pointer":object_pointer,"srcFile":wName,"name":object_name,"line":0,"proto":this.getProperties().sProtoParent};
+				if(!this.getObjects().pathHash[sPName]){
+					this.GetList().addItem("Window '" + wName + "' (" + this.getProperties().iWin + ")",sPName);
+					this.getObjects().pathHash[sPName]=1;
+					this.getProperties().intModels++;
+				}
+			}
+			catch(e){
+				this.GetList().addItem("Error " + e.message);
+			}
+		}
+		
+
+	]]></embedded-script>
+</html-fragment>

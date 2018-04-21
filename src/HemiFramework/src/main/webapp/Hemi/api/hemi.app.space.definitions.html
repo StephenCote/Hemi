@@ -1,0 +1,113 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.app.space.definitions Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.app.space.definitions</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#service"><i>static </i>Hemi.app.space.definitions.service</a>: Static implementation of hemi.app.space.definitions.serviceImpl</li>
+<li>
+<a href="#service">Hemi.app.space.definitions.service</a>: This service defines space implementations for use by the Hemi Space Service.</li>
+</ul>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.app.space.definitions.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static implementation of hemi.app.space.definitions.serviceImpl</p>
+<p class="desc"></p>
+<a name="service"> </a>
+<h3 class="membertitle">Hemi.app.space.definitions.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">This service defines space implementations for use by the Hemi Space Service.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="servicemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#clearDefinitions">clearDefinitions</a>: Clears all definitions.</li>
+<li>public <a href="#newDefinition">newDefinition</a>: Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</li>
+</ul>
+<h3>Methods</h3>
+<a name="clearDefinitions"></a>
+<h3 class="membertitle">clearDefinitions</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#service">service</a>
+</li>
+<li>
+<a href="#servicemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears all definitions.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearDefinitions(
+
+)
+</p>
+<a name="newDefinition"></a>
+<h3 class="membertitle">newDefinition</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#service">service</a>
+</li>
+<li>
+<a href="#servicemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new implementation definition.  An implementation definition maps a node name to a specified constructor.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">object = newDefinition(
+aMatchNodes, <i>sNameSpace</i>, <i>sConstructor</i>, <i>aParams</i>, <i>bSwitchContext</i>, <i>sContextPath</i>, <i>sSwapName</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>aMatchNodes</b> as array : Array of node names that should match the specified constructor.</li>
+<li>
+<b>sNameSpace</b> as String <i>(optional)</i>: JavaScript Class namespace, such as MyCompany.MyLibrary.  If the value is "abstract", the definition is treated as a pass-through.</li>
+<li>
+<b>sConstructor</b> as String <i>(optional)</i>: JavaScript Class constructor, such as MyClass.</li>
+<li>
+<b>aParams</b> as array <i>(optional)</i>: Array of parameters to pass to the constructor.  The parameter values can use the Object Request Alias (ORA) for passing in node attribute values from the container (ora:attr_{name}), or object references such as the Space (space_element or space_object).  Refer to the internal Space _parseORAParam function for details.</li>
+<li>
+<b>bSwitchContext</b> as boolean <i>(optional)</i>: Bit indicating that an XML or XHTML node is returned from the constructor, and that the Space service should continue processing into the new object context.</li>
+<li>
+<b>sContextPath</b> as String <i>(optional)</i>: XPath to use to find the object context to switch into.</li>
+<li>
+<b>sSwapName</b> as String <i>(optional)</i>: Element name to use (e.g.: span) to swap a custom node, such is import-xml, to contain valid XHTML markup.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>object</b> as object: A new internal space definition.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

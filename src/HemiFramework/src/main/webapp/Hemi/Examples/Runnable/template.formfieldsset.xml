@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id ="formfieldsset" Title = "Set Form Fields">
+	<p>
+		Text: <input type ="text" name = "txtText" value ="the text" />
+	</p>
+	<p>
+		Password: <input type ="password" name ="pwdPassword" value ="the password" /> (value="the password")
+	</p>
+	<p>
+		Hidden: <input type ="hidden" name ="hidHideMe" value ="hidden value" /> (value="hidden value")
+	</p>
+	<p>
+		Radio: <input type="radio" name="rdoYesNo" value="yes" /> : Yes | <input type="radio" name="rdoYesNo" value="no" /> No
+	</p>
+	<p>
+		Check: <input type ="checkbox" name ="chkYes" value ="Yes" /> : Yes
+	</p>
+	<p>
+		Select (Single): <select name ="selOne">
+			<option>Option 1</option>
+			<option>Option 2</option>
+		</select>
+	</p>
+	<p>
+		Select (Multiple): <select multiple ="1" size ="4" name ="selMult">
+			<option>Option 1</option>
+			<option>Option 2</option>
+			<option>Option 3</option>
+			<option>Option 4</option>
+		</select>
+	</p>
+	<p>
+		<input type ="button" value = "Next" onclick ="${this}.loadTemplate('dwac:/DWAC/Anonymous/Templates/formfieldsget')" />
+	</p>
+
+</Template>

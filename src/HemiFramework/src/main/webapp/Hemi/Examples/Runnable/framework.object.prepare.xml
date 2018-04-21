@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Examples>
+	<Example Id ="framework.object.prepare">
+		<Name><![CDATA[Prepare Existing Object]]></Name>
+		<Description><![CDATA[Prepare an existing object for the framework.]]></Description>
+		<Script>
+			<![CDATA[
+var oObject = {};
+
+oObject.object_destroy = function(){
+   alert("Prepared object was destroyed");
+};
+
+/// Prepare the object, and include a deconstructor
+///
+Hemi.prepareObject("custom_object","1.0",true, oObject,true);
+
+/// The destroy method was injected
+///
+oObject.destroy();
+		]]>
+		</Script>
+	</Example>
+
+</Examples>

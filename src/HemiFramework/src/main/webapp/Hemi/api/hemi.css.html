@@ -1,0 +1,208 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.css Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.css</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The CSS Utility class includes tools for positioning, importing external stylesheets, and enabling and disabling stylesheets.</p>
+<a name="css"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.css</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Utilities for DOM Styles and Cascading Style Sheets.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="cssmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#decodeJSON">decodeJSON</a>: Returns an object from the encoded construct.  The accepted pattern is: {#HF_NAME{name:value}}, and the returned value is an object whose first member is NAME and whose children is the encoded data.  For example: {#HF_Test{data:1}} would yield: {Test:{data:1}}, as a JavaScript object.</li>
+<li>public <a href="#getAbsoluteLeft">getAbsoluteLeft</a>: Returns the absolute left position of the specified node.</li>
+<li>public <a href="#getAbsolutePosition">getAbsolutePosition</a> (<b>internal</b>): Returns the absolute position of the specified node.</li>
+<li>public <a href="#getAbsoluteTop">getAbsoluteTop</a>: Returns the absolute top position of the specified node.</li>
+<li>public <a href="#loadStyleSheet">loadStyleSheet</a>: Imports the specified stylesheet.</li>
+<li>public <a href="#toggleStyleSheet">toggleStyleSheet</a>: Enables or disables the specified external stylesheet.</li>
+</ul>
+<h3>Methods</h3>
+<a name="decodeJSON"></a>
+<h3 class="membertitle">decodeJSON</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an object from the encoded construct.  The accepted pattern is: {#HF_NAME{name:value}}, and the returned value is an object whose first member is NAME and whose children is the encoded data.  For example: {#HF_Test{data:1}} would yield: {Test:{data:1}}, as a JavaScript object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = decodeJSON(
+s
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as String : An encoded JSON-esque string.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as Object: The decoded object.</p>
+<a name="getAbsoluteLeft"></a>
+<h3 class="membertitle">getAbsoluteLeft</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the absolute left position of the specified node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getAbsoluteLeft(
+o, <i>r</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Source DOM Node.</li>
+<li>
+<b>r</b> as object <i>(optional)</i>: Reference DOM Node.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as int: The absolute left of the specified object from the parent window.</p>
+<a name="getAbsolutePosition"></a>
+<h3 class="membertitle">getAbsolutePosition</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the absolute position of the specified node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getAbsolutePosition(
+o, <i>r</i>, b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Source DOM Node.</li>
+<li>
+<b>r</b> as object <i>(optional)</i>: Reference DOM Node.</li>
+<li>
+<b>b</b> as boolean : Bit indicating the position type</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as int: The absolute position of the specified object from the parent window.</p>
+<a name="getAbsoluteTop"></a>
+<h3 class="membertitle">getAbsoluteTop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the absolute top position of the specified node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getAbsoluteTop(
+o, <i>r</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Source DOM Node.</li>
+<li>
+<b>r</b> as object <i>(optional)</i>: Reference DOM Node.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as int: The absolute top of the specified object from the parent window.</p>
+<a name="loadStyleSheet"></a>
+<h3 class="membertitle">loadStyleSheet</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Imports the specified stylesheet.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void loadStyleSheet(
+sUrl, <i>sName</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sUrl</b> as String : Path to the external stylesheet.  Default root path is Hemi.base_path.</li>
+<li>
+<b>sName</b> as String <i>(optional)</i>: Name of the stylesheet.</li>
+</ul>
+<a name="toggleStyleSheet"></a>
+<h3 class="membertitle">toggleStyleSheet</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#css">css</a>
+</li>
+<li>
+<a href="#cssmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Enables or disables the specified external stylesheet.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void toggleStyleSheet(
+sTitle, bEnable
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sTitle</b> as String : Name of the stylesheet link.</li>
+<li>
+<b>bEnable</b> as boolean : Bit indicating whether the stylesheet should be enabled.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

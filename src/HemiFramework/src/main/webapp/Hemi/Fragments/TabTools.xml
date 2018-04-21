@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<html-fragment>
+	<import-style src ="Styles/tabs.css" id ="Tabs" />
+	<div rid = "tabstrip" class = "tabstrip"></div>
+	<embedded-script>
+		<![CDATA[
+		embedded_init : function(){
+			this.getObjects().tabs = [];
+			this.scopeHandler("tabclick",0,0,1);
+
+		},
+		embedded_destroy : function(){
+			this.getObjects().tabs = 0;
+			this._prehandle_tabclick = 0;
+		},
+		AddTab : function(i,n, fShow){
+			var tabs = this.getObjects().tabs;
+
+			var o = 0,p,l=tabs.length;
+			
+			var strip = this.GetElementByRID("tabstrip");
+
+				var tab = tabs[l] = {index:l,tab:0,pane:0,paneid:i,label:n};
+				p = this.GetElementByRID(tab.paneid);
+
+				if(!p) return 0;
+				o = document.createElement("div");
+				o.appendChild(document.createTextNode(n));
+				o.className = "tab";
+				o.onclick = this._prehandle_tabclick;
+				if(typeof fShow == "function") o.ontabclick = fShow;
+				o.tab_index = l;
+				o.tab_name = n;
+				strip.appendChild(o);
+				tab.tab = o;
+				tab.pane = p;
+				p.style.display = "none";
+				p.className += " tab_pane";
+				p.tab_index = l;
+			//}
+		},
+		_handle_tabclick : function(e){
+			var o = Hemi.event.getEventSource(e);
+			if(o && typeof o.tab_index == "number"){
+				this.ShowTab(o.tab_index);
+				if(typeof o.ontabclick == "function") o.ontabclick(o);
+			}
+		},
+		ShowTab : function(ti){
+
+			var tabs = this.getObjects().tabs;
+
+			if(typeof ti == "number" && (ti < 0 || ti >= tabs.length)) return;
+			for(var i = 0; i < tabs.length; i++){
+				if(tabs[i] == null || !tabs[i].tab || !tabs[i].pane) continue;
+				if(
+					(typeof ti == "number" && ti == i)
+					||
+					(typeof ti == "string" && ti == tabs[i].label)
+				){
+					tabs[i].pane.style.display = "block";
+					tabs[i].tab.className = "tab tab_active";			
+				}
+				else{
+					tabs[i].pane.style.display = "none";
+					tabs[i].tab.className = "tab";
+				}
+			}
+		}
+		]]>
+	</embedded-script>
+ 
+</html-fragment>

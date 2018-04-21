@@ -1,0 +1,426 @@
+<?xml version="1.0"?>
+<Package>
+   <meta>
+      <param name="name" value="HemiFramework" />
+      <param name="id" value="529948cf-91f3-4562-8057-e8d90f665370" />
+      <param name="created-date" value="2009/09/20 10:41:51" />
+      <param name="modified-date" value="2009/09/20 10:58:18" />
+      <param name="script-package" value="1" />
+   </meta>
+   <encoding>
+      <param name="encoding" value="1" />
+      <param name="namespace" value="Core.Web.Hemi" />
+      <param name="classname" value="MyPackageClass" />
+   </encoding>
+   <version>
+      <param name="major" value="3" />
+      <param name="minor" value="5" />
+      <param name="build" value="0" />
+   </version>
+   <patternsets>
+      <param name="Merge" value="1">
+         <resource name="Hemi" />
+         <resource name="AppBase" />
+         <resource name="AppDWAC" />
+         <resource name="AppComp" />
+         <resource name="AppModule" />
+         <resource name="AppModuleTest" />
+         <resource name="AppSpaceDefinition" />
+         <resource name="AppSpace" />
+         <resource name="CSS" />
+         <resource name="DataForm" />
+         <resource name="DataIO" />
+         <resource name="DataIOProxy" />
+         <resource name="DataStack" />
+         <resource name="DataValidatorDefinition" />
+         <resource name="DataValidator" />
+         <resource name="Driver" />
+         <resource name="Event" />
+         <resource name="GraphicsCanvas" />
+         <resource name="Monitor" />
+         <resource name="Object" />
+         <resource name="ObjectXHTML" />
+         <resource name="StorageDOM" />
+         <resource name="StorageIEStore" />
+         <resource name="Storage" />
+         <resource name="Task" />
+         <resource name="UIWideselect" />
+         <resource name="Util" />
+         <resource name="UtilThread" />
+         <resource name="WebSecurity" />
+         <resource name="Wires" />
+         <resource name="WiresPrimitive" />
+         <resource name="UtilUrl" />
+         <resource name="UIUtil" />
+         <resource name="Text" />
+         <resource name="FrameworkIOProvider" />
+         <resource name="FrameworkIOOfflineProvider" />
+         <resource name="UtilLogger" />
+         <resource name="UtilConfig" />
+         <resource name="Transaction" />
+         <resource name="Worker" />
+         <resource name="Calendar" />
+		<resource name="JSONRPC" />
+		<resource name="JSONRPCCache" />
+
+         <pattern match="/\*[\S\s]*?\*/" replace="" />
+
+         <pattern match="\r\n\r\n" replace="%JSC_NEWLINE%" />
+         <pattern match="\n\n" replace="%JSC_NEWLINE%" />
+         
+         <pattern match="%JSC_STRIP_EXTRA_SPACE%" replace="$1" />
+         <pattern match="%JSC_STRIP_SPACE_AROUND_SPECIAL_CHAR%" replace="$1" />
+         <pattern match="%JSC_STRIP_SPACE_AROUND_CONDITIONS%" replace="}" />
+         
+         <pattern match=":function" replace="%JSC_NEWLINE_HASHFUNCTION%" />
+         <pattern match="oSubject" replace="sj" />
+         <pattern match="oService" replace="sv" />
+         <pattern match="oRequest" replace="rq" />
+         <pattern match="oResponse" replace="rp" />
+         <pattern match="config_map" replace="cm" />
+         <pattern match="config_path" replace="cp" />
+         <pattern match="config_load_handler" replace="clh" />
+
+         <pattern match="storage_provider" replace="sp" />
+         <pattern match="preferred_storage_types" replace="psts" />
+         <pattern match="preferred_storage_type" replace="pst" />
+         <pattern match="storage_type" replace="st" />
+         <pattern match="session_storage" replace="ss" />
+         <pattern match="local_storage" replace="ls" />
+         <pattern match="global_storage" replace="gs" />
+         <pattern match="preferred_storage" replace="ps" />
+         <pattern match="check_support" replace="cs" />
+         <pattern match="behavior_storage_reader" replace="bsr" />
+         <pattern match="behavior_storage_name" replace="bsn" />
+         <pattern match="behavior_storage" replace="bs" />
+         <pattern match="_logInternal" replace="L" />
+         <pattern match="global_counter" replace="gc" />
+         <pattern match="ready_state" replace="r" />
+         <pattern match="object_type" replace="t" />
+         <pattern match="object_id" replace="i" />
+         <pattern match="object_version" replace="v" />
+         <pattern match="primitive_wires" replace="pw" />
+         <pattern match="_handle_load_xml" replace="HLX" />
+
+         <pattern match="DATATYPES" replace="D" />
+         <pattern match="ACTIVEXOBJECT" replace="A" />
+         <pattern match="XMLHTTPREQUEST" replace="X" />
+         <pattern match="TYPE_STRING" replace="S" />
+         <pattern match="TYPE_NUMBER" replace="N" />
+         <pattern match="TYPE_OBJECT" replace="O" />
+         <pattern match="TYPE_FUNCTION" replace="F" />
+         <pattern match="TYPE_UNDEFINED" replace="U" />
+         
+         <pattern match="HashNamespaces" replace="HN" />
+         <pattern match="Namespaces" replace="NS" />
+         <pattern match="NamespaceMap" replace="NM" />
+         <pattern match="LibraryMap" replace="LM" />
+         <pattern match="Libraries" replace="LB" />
+         <pattern match="_queryFieldValue" replace="Q" />
+         <pattern match="_setFieldValue" replace="S" />
+         <pattern match="_getFieldValue" replace="G" />
+         <pattern match="_parsePatterns" replace="P" />
+         <pattern match="_raiseBasicMessage" replace="R" />
+         <pattern match="_createBasicMessage" replace="C" />
+         <pattern match="parseMessageInstruction" replace="I" />
+
+         <pattern match="_getMessageStatusCode" replace="G" />
+         <pattern match="_getMessageDefinition" replace="D" />
+         <pattern match="_publish" replace="P" />
+         <pattern match="_delayPublish" replace="_P" />
+         <pattern match="sendMessage" replace="S" />
+         <pattern match="publicSendMessage" replace="sendMessage" />
+         <pattern match="block_start_transaction" replace="bst" />
+         <pattern match="block_serve_transaction" replace="btt" />
+         <pattern match="block_end_transaction" replace="bet" />
+         <pattern match="_startTransaction" replace="ST" />
+         <pattern match="_stopTransaction" replace="XT" />
+         <pattern match="start_transaction" replace="st" />
+         <pattern match="stop_transaction" replace="sp" />
+         <pattern match="registered_objects_map" replace="rm" />
+         <pattern match="registered_objects" replace="r" />
+         <pattern match="auto_serve" replace="a" />
+
+         <pattern match="packet_id_counter" replace="c" />
+         <pattern match="packet_id_label" replace="l" />
+         <pattern match="auto_destroy" replace="ad" />
+         <pattern match="_update_task_depends" replace="UT" />
+         <pattern match="_serveTaskTransaction" replace="ST" />
+         <pattern match="_executeTaskAction" replace="EA" />
+         <pattern match="serve_delay" replace="sd" />
+         <pattern match="_handle_window_destroy" replace="HWD" />
+         <pattern match="TASK_STATE_UNINITIALIZED" replace="a" />
+         <pattern match="TASK_STATE_INITIALIZED" replace="b" />
+         <pattern match="TASK_STATE_BUSY" replace="c" />
+         <pattern match="TASK_STATE_ACTIVE" replace="d" />
+         <pattern match="TASK_STATE_HANDLED" replace="e" />
+         <pattern match="TASK_STATE_COMPLETE" replace="f" />
+         <pattern match="TASK_STATE_DESTROY" replace="g" />
+         <pattern match="TASK_EXEC_XML" replace="h" />
+         <pattern match="TASK_EXEC_TASK" replace="i" />
+         <pattern match="TASK_EXEC_IMPORT_TASK" replace="j" />
+         <pattern match="TASK_EXEC_FUNCTION" replace="k" />
+         <pattern match="TASK_EXEC_EVENT" replace="l" />
+         <pattern match="TASK_EXEC_SCRIPT" replace="m" />
+         <pattern match="register_transactions" replace="rt" />
+         <pattern match="_xml_requests_map" replace="rm" />
+         <pattern match="_xml_requests" replace="r" />
+         <pattern match="_xml_http_objects" replace="ho" />
+         <pattern match="_xml_http_object_use" replace="hu" />
+         <pattern match="_xml_http_object_count" replace="hc" />
+         <pattern match="_xml_http_object_pool_size" replace="hs" />
+         <pattern match="_xml_http_object_pool_max" replace="hm" />
+         <pattern match="_xml_http_pool_created" replace="hp" />
+         <pattern match="_xml_http_cache_enabled" replace="ce" />
+         <pattern match="_xml_http_pool_enabled" replace="he" />
+         <pattern match="_xml_namespace_resolver" replace="nr" />
+         <pattern match="_xml_namespace_uri" replace="nu" />
+         <pattern match="_xml_namespace_url" replace="nl" />
+         <pattern match="_xml_namespace_hashed" replace="nh" />
+         
+         <pattern match="resetXmlHttpObjectPool" replace="R" />
+
+         <pattern match="returnXmlHttpObjectToPool" replace="P" />
+         <pattern match="getXmlHttpObjectFromPool" replace="G" />
+         <pattern match="_queryNode" replace="Q" />
+         <pattern match="_handle_xml_request_load" replace="L" />
+         <pattern match="_handle_xml_request_readystatechange" replace="S" />
+         <pattern match="_request_xmlhttp" replace="X" />
+         <pattern match="_stub" replace="B" />
+         <pattern match="implementObjectAccessor" replace="IOA" />
+         <pattern match="processServiceHandler" replace="P" />
+         <pattern match="handle_service_request" replace="H" />
+         <pattern match="addRequestParam" replace="M" />
+         <pattern match="handle_service_response" replace="R" />
+         <pattern match="processResponseByName" replace="Y" />
+         <pattern match="processResponse" replace="Z" />
+         <pattern match="importNodeData" replace="I" />
+         <pattern match="evaluateElementHandler" replace="EH" />
+         <pattern match="local_wire_service" replace="ws" />
+         <pattern match="local_task_service" replace="ts" />
+         <pattern match="engine_id_counter" replace="ic" />
+         <pattern match="engine_id_label" replace="il" />
+         <pattern match="auto_load" replace="al" />
+         <pattern match="config_task" replace="pt" />
+         <pattern match="config_default" replace="pd" />
+         <pattern match="_parseConfiguration" replace="PC" />
+         <pattern match="_parseORAParam" replace="PO" />
+          <pattern match="handle_space_started" replace="HES" />
+         <pattern match="handle_space_service_initialized" replace="HEI" />
+
+         <pattern match="space_objects" replace="eo" />
+         <pattern match="space_object_names" replace="en" />
+         <pattern match="space_object_index" replace="ei" />
+         <pattern match="space_autoid_counter" replace="eac" />
+         <pattern match="_forName" replace="FN" />
+         <pattern match="_implements" replace="IM" />
+         <pattern match="guid_counter" replace="gc" />
+         <pattern match="hashlight" replace="h" />
+         <pattern match="handle_remove_object" replace="H" />
+         <pattern match="handle_run" replace="R" />
+         <pattern match="checkOverstack" replace="CO" />
+         <pattern match="active_item" replace="a" />
+         <pattern match="active_results" replace="v" />
+         <pattern match="request_hash" replace="qr" />
+         <pattern match="request_object" replace="qo" />
+         <pattern match="cell_label_clip_size" replace="cls" />
+         <!-- 
+         <pattern match="clear_node" replace="cn" />
+         <pattern match="class_container" replace="cc" />
+         <pattern match="header_container" replace="hc" />
+         <pattern match="footer_label" replace="fl" />
+         <pattern match="header_label" replace="hl" />
+         <pattern match="header_left_control" replace="hlc" />
+         <pattern match="header_right_control" replace="hrc" />
+         <pattern match="header_control_label_hover" replace="hclh" />
+         <pattern match="header_control_label" replace="hcl" />
+         <pattern match="body_container" replace="bc" />
+         <pattern match="footer_container" replace="fc" />
+         <pattern match="calendar_panel" replace="cp" />
+         <pattern match="calendar_lastmonth_cell" replace="clc" />
+         <pattern match="calendar_nextmonth_cell" replace="cnc" />
+         <pattern match="calendar_thismonth_cell" replace="ctc" />
+         <pattern match="calendar_baseday_cell" replace="cbc" />
+         <pattern match="calendar_currentday_cell" replace="ccc" />
+         <pattern match="calendar_cell_hover" replace="cch" />
+         <pattern match="calendar_cell_label" replace="ccl" />
+         <pattern match="calendar_cell" replace="ca" />
+         -->
+         <pattern match="cell_count" replace="ce" />
+         <pattern match="cell_rows" replace="cr" />
+         <pattern match="cell_columns" replace="cl" />
+         <pattern match="task_panel" replace="tp" />
+         <pattern match="task_add_startdate" replace="tas" />
+         <pattern match="task_add_duedate" replace="tad" />
+         <pattern match="task_add" replace="ta" />
+         <pattern match="task_item_border" replace="tib" />
+         <pattern match="task_item" replace="ti" />
+         <pattern match="task_column_border" replace="tcb" />
+         <pattern match="task_column_label" replace="tcl" />
+         <pattern match="task_column" replace="tl" />
+         <pattern match="task_bullet_column" replace="tbc" />
+         <pattern match="task_name_column" replace="tn" />
+         <pattern match="task_completed_date_column" replace="tc" />
+         <pattern match="task_overdue_column" replace="to" />
+         <pattern match="day_of_week" replace="d" />
+         <pattern match="gmt_offset" replace="g" />
+         <pattern match="current_year" replace="cy" />
+         <pattern match="current_month" replace="cM" />
+         <pattern match="current_day" replace="cd" />
+         <pattern match="current_hour" replace="ch" />
+         <pattern match="current_minute" replace="cm" />
+         <pattern match="current_second" replace="cs" />
+         <pattern match="current_millisecond" replace="ci" />
+         <pattern match="base_year" replace="by" />
+         <pattern match="base_month" replace="bM" />
+         <pattern match="base_day" replace="bd" />
+         <pattern match="base_hour" replace="bh" />
+         <pattern match="base_minute" replace="bm" />
+         <pattern match="base_second" replace="bs" />
+         <pattern match="base_millisecond" replace="bi" />
+         <pattern match="last_month_days" replace="ld" />
+         <pattern match="next_month_days" replace="nd" />
+         <pattern match="first_day_in_month" replace="fm" />
+         <pattern match="last_day_in_month" replace="lm" />
+         <pattern match="render_calendar" replace="rc" />
+         <pattern match="render_tasks" replace="rt" />
+         <pattern match="show_tasks_add" replace="sta" />
+         <pattern match="show_tasks_list" replace="stl" />
+         <pattern match="show_tasks" replace="st" />
+         <pattern match="show_calendar_controls" replace="scc" />
+         <pattern match="show_calendar" replace="sc" />
+         <pattern match="show_task_controls" replace="stc" />
+         <pattern match="auto_render" replace="a" />
+         <pattern match="render_ui" replace="r" />
+         <pattern match="is_calendar_rendered" replace="ic" />
+         <pattern match="is_tasks_rendered" replace="it" />
+         <pattern match="is_rendered" replace="ir" />
+<!--
+         <pattern match="setup" replace="S" />
+-->
+         <pattern match="bindElements" replace="BE" />
+         <pattern match="transmitData" replace="TD" />
+         <pattern match="purgeData" replace="PD" />
+         <pattern match="transmitAndPurgeData" replace="TPD" />
+         <pattern match="handle_general" replace="hg" />
+         <pattern match="dispatchEvent" replace="DE" />
+         <pattern match="context_id" replace="ci" />
+         <pattern match="context_counter" replace="cc" />
+         <pattern match="context_frame" replace="cf" />
+	     <pattern match="properties:" replace="p:" />
+	     <pattern match=".properties" replace=".p" />
+	     <pattern match="objects:" replace="o:" />
+	     <pattern match=".objects" replace=".o" />
+
+<!--
+         <pattern match="object_config" replace="o" />
+-->
+
+         <pattern match="%FILE_VERSION%" replace="%VERSION%" />
+         
+      </param>
+      <param name="Config" value="1">
+         <resource name="FrameworkConfig" />
+         <pattern match="%FILE_VERSION%" replace="%VERSION%" />
+      </param>
+   </patternsets>
+   <deployments>
+      <param name="Global" value="1">
+         <resource name="Merge" type="2" />
+         <resource name="Config" type="2" />
+      </param>
+   </deployments>
+   <resources>
+      <param name="AppComp" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.comp.js]]>      </param>
+      <param name="AppBase" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.js]]>      </param>
+      <param name="AppModule" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.module.js]]>      </param>
+      <param name="AppModuleTest" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.module.test.js]]>      </param>
+      <param name="DataIO" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.io.js]]>      </param>
+      <param name="DataIOProxy" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.io.proxy.js]]>      </param>
+      <param name="AppSpaceDefinition" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.space.definitions.js]]>      </param>
+      <param name="AppSpace" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.space.js]]>      </param>
+      <param name="CSS" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.css.js]]>      </param>
+      <param name="DataForm" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.form.js]]>      </param>
+      <param name="DataStack" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.stack.js]]>      </param>
+      <param name="DataValidatorDefinition" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.validator.definitions.js]]>      </param>
+      <param name="DataValidator" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.data.validator.js]]>      </param>
+      <param name="Driver" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.driver.js]]>      </param>
+      <param name="Event" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.event.js]]>      </param>
+      <param name="GraphicsCanvas" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.graphics.canvas.js]]>      </param>
+      <param name="Monitor" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.monitor.js]]>      </param>
+      <param name="Object" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.object.js]]>      </param>
+      <param name="ObjectXHTML" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.object.xhtml.js]]>      </param>
+      <param name="StorageDOM" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.storage.dom.js]]>      </param>
+      <param name="StorageIEStore" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.storage.iestore.js]]>      </param>
+      <param name="Storage" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.storage.js]]>      </param>
+      <param name="Task" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.task.js]]>      </param>
+      <param name="UIWideselect" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.ui.wideselect.js]]>      </param>
+      <param name="Util" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.util.js]]>      </param>
+      <param name="UtilThread" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.util.thread.js]]>      </param>
+      <param name="WebSecurity" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.web.security.js]]>      </param>
+      <param name="Wires" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.wires.js]]>      </param>
+      <param name="WiresPrimitive" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.wires.primitive.js]]>      </param>
+      <param name="UtilUrl" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.util.url.js]]>      </param>
+      <param name="UtilLogger" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.util.logger.js]]>      </param>
+      <param name="UtilConfig" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.util.config.js]]>      </param>
+      <param name="Transaction" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.transaction.js]]>      </param>
+      <param name="Worker" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.worker.js]]>      </param>
+      <param name="AppDWAC" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.app.dwac.js]]>      </param>
+<param name="Text" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.text.js]]>      </param>
+<param name="FrameworkIOProvider" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.framework.io.provider.js]]>      </param>
+<param name="FrameworkIOOfflineProvider" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.framework.io.offline.provider.js]]>      </param>
+<param name="UIUtil" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.ui.util.js]]>      </param>
+<param name="Calendar" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.ui.calendar.js]]>      </param>
+<param name="JSONRPC" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.json.rpc.js]]>      </param>
+<param name="JSONRPCCache" value="#cdata" mime-type="text/javascript">
+<![CDATA[Framework/hemi.json.rpc.cache.js]]>      </param>
+      <param name="Hemi" value="#cdata" mime-type="text/javascript">
+<![CDATA[hemi.js]]>      </param>
+      <param name="FrameworkConfig" value="#cdata" mime-type="text/xml">
+<![CDATA[config.xml]]>      </param>
+      <param name="ScriptAPI" value="#cdata" mime-type="text/xsl">
+<![CDATA[xsl/scriptapi.xsl]]>      </param>
+   </resources>
+</Package>
+

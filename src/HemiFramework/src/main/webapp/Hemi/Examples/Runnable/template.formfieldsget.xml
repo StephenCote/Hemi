@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id ="formfieldsget" Title = "Get Form Fields">
+	<p>
+		Text: "${form.txtText}"
+	</p>
+	<p>
+		Password: "${form.pwdPassword}"
+	</p>
+	<p>
+		Hidden: "${form.hidHideMe}"
+	</p>
+	<p>
+		Radio: "${form.rdoYesNo}"
+	</p>
+	<p>
+		Check: "${form.chkYes}"
+	</p>
+	<p>
+		Select (Single): "${form.selOne}"
+	</p>
+	<p>
+		Select (Multiple): "${form.selMult}"
+	</p>
+	<p>
+		<input type ="button" value = "Back" onclick ="${this}.loadTemplate('dwac:/DWAC/Anonymous/Templates/formfieldsset')" />
+	</p>
+
+</Template>

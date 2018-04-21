@@ -1,0 +1,702 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.wires Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.wires</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Wire Service is used to chain multiple primitive wires (which connect disparate functions).</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#service"><i>static </i>Hemi.wires.service</a>: Static initializer for new Wire instances.</li>
+<li>
+<a href="#serviceImpl">Hemi.wires.serviceImpl</a>: Service for extending PrimitiveWire utility, auto-linking PrimitiveWires together, and reusing PrimitiveWires.</li>
+</ul>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.wires.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static initializer for new Wire instances.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="servicemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#newInstance">newInstance</a>: Creates and returns a new Wire instance.</li>
+</ul>
+<h3>Methods</h3>
+<a name="newInstance"></a>
+<h3 class="membertitle">newInstance</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#service">service</a>
+</li>
+<li>
+<a href="#servicemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates and returns a new Wire instance.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">w = newInstance(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>w</b> as Wire: Returns a new Wire instance.</p>
+<a name="serviceImpl"> </a>
+<h3 class="membertitle">Hemi.wires.serviceImpl</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Service for extending PrimitiveWire utility, auto-linking PrimitiveWires together, and reusing PrimitiveWires.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="serviceImplexampleindex"> </a>
+<h4>Example Index</h4>
+<ul class="index">
+<li>
+<a href="#Signal and slot example with wires">Signal and slot example with wires</a>: This demonstrates the use of wires to connect a set of functions in a loose signal and slot implementation. The demonstration uses a single wire that connects test1 to test2, test1 to testC, testC to testX, and testX to testC. The wire is invoked with an array of arguments that is passed to all wired functions. When the wire is invoked, the test1 function is invoked. test1 is wired to two handlers, test2 and testC, and both those handlers are invoked if test1 returns true, or handler execution is forced. If the wire is set to signal, the testC causes the testX handler to be invoked, because testC is also an action. When testX is invoked, it invokes testC again because that handler was used twice. The propogation stops after testC is invoked a second time because handlers can only signal a single time. </li>
+</ul>
+<a name="serviceImplpropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
+<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
+<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
+<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
+</ul>
+<a name="serviceImplmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#getCanSignal">getCanSignal</a>: Returns whether the underlying PrimitiveWire objects signal to each other based on commonality between actions and handlers.</li>
+<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
+<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
+<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
+<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
+<li>public <a href="#getWires">getWires</a>: Returns an array of wires.</li>
+<li>public <a href="#getWiresHash">getWiresHash</a>: Returns a hash of wire identifiers where the key is the id and the value is the index into the wires array.</li>
+<li>public <a href="#hardWire">hardWire</a>: Invokes the action of a hardened wire.</li>
+<li>public <a href="#invoke">invoke</a>: Invokes a specified function that exists on the wire.</li>
+<li>public <a href="#invokeHardWireAction">invokeHardWireAction</a>: Invokes the action of a hardened wire.</li>
+<li>public <a href="#invokeHardWireHandler">invokeHardWireHandler</a>: Invokes the handler of a hardened wire.</li>
+<li>public <a href="#invokePrimitive">invokePrimitive</a>: Invokes a wire, causing the action-handler chain to be processed.</li>
+<li>public <a href="#primitiveWire">primitiveWire</a>: Creates and returns a PrimiteWire based on the specified parameters.</li>
+<li>public <a href="#setCanSignal">setCanSignal</a>: Specifies whether the underlying PrimitiveWire objects signal to each other based on commonality between actions and handlers.</li>
+<li>public <a href="#sigterm">sigterm</a>: Sends termination signal to destroy object.</li>
+<li>public <a href="#wire">wire</a>: Creates and returns a wire based on the specified parameters.  This function creates an underlying PrimitiveWire as well as creating linkage to be connected with other wires.</li>
+</ul>
+<h3>Examples</h3>
+<a name="Signal and slot example with wires"></a>
+<h3 class="membertitle">Signal and slot example with wires</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplexampleindex">Examples</a>
+</li>
+</ul>
+<p class="exampledesc">This demonstrates the use of wires to connect a set of functions in a loose signal and slot implementation. The demonstration uses a single wire that connects test1 to test2, test1 to testC, testC to testX, and testX to testC. The wire is invoked with an array of arguments that is passed to all wired functions. When the wire is invoked, the test1 function is invoked. test1 is wired to two handlers, test2 and testC, and both those handlers are invoked if test1 returns true, or handler execution is forced. If the wire is set to signal, the testC causes the testX handler to be invoked, because testC is also an action. When testX is invoked, it invokes testC again because that handler was used twice. The propogation stops after testC is invoked a second time because handlers can only signal a single time. </p>
+<h4>Example Code</h4>
+<pre class="example">function testWire(){  var _w = Hemi.wires.wire,w,w2,co;  co = new CObj();  w = _w.newInstance();  /// Test 1 will invoke test 2  /// This results in 2 function invocations  ///  w.wire(0,"test1",0,"test2");    /// With multiple handlers  ///	Test 1 signals to both.  ///  w.wire(0,"test1",co,"testC");    /// AUTO SIGNAL LINK  /// Because testC is both an action and a handler,  ///	The first instance of the handler carries over as a signal  /// This results in 1 function invocation of testX  ///  w.wire(co,"testC",0,"testX");  /// AUTO SIGNAL LINK  ///	Same as above, except back on testC  ///	TestX is not invoked again because it is auto-signalling  /// TestC is invoked again as a handler, but it will not auto-signal a second time  ///  w.wire(0,"testX",co,"testC");  /// Invoke the wire        ///  w.invoke([{id:1,data:"the data"}],0,"test1");}function test1(o){  alert('test1');  return 1;}function testX(o){  alert('testX');}function test2(o){  alert('test 2');}function test1_1(o){  alert('test 1_1');  return 1;}function CObj(){  this.id = "XX";  this.object_id = "swc_debug_obj";  this.testC = function(o){  	alert("TestC = " + this.id + "\n" + arguments[0].data);  }}</pre>
+<h3>Properties</h3>
+<a name="object_id"></a>
+<h3 class="membertitle">object_id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique instance identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_id</p>
+<a name="object_type"></a>
+<h3 class="membertitle">object_type</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The type of this object.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_type</p>
+<a name="object_version"></a>
+<h3 class="membertitle">object_version</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Version of the object class.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_version</p>
+<a name="ready_state"></a>
+<h3 class="membertitle">ready_state</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">int = <i>object</i>.ready_state</p>
+<h3>Methods</h3>
+<a name="getCanSignal"></a>
+<h3 class="membertitle">getCanSignal</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns whether the underlying PrimitiveWire objects signal to each other based on commonality between actions and handlers.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getCanSignal(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether PrimitiveWires signal to each other.</p>
+<a name="getObjectId"></a>
+<h3 class="membertitle">getObjectId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the unique id of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getObjectId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The unique object instance id.</p>
+<a name="getObjectType"></a>
+<h3 class="membertitle">getObjectType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the type of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getObjectType(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as String: The type of the object instance.</p>
+<a name="getObjectVersion"></a>
+<h3 class="membertitle">getObjectVersion</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the version of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getObjectVersion(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as String: The version of the object instance.</p>
+<a name="getReadyState"></a>
+<h3 class="membertitle">getReadyState</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the state of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReadyState(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as int: The object ready state.</p>
+<a name="getWires"></a>
+<h3 class="membertitle">getWires</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an array of wires.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">w = getWires(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>w</b> as Array: Array of wire objects.</p>
+<a name="getWiresHash"></a>
+<h3 class="membertitle">getWiresHash</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a hash of wire identifiers where the key is the id and the value is the index into the wires array.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">w = getWiresHash(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>w</b> as Hash: Hash of wire identifiers.</p>
+<a name="hardWire"></a>
+<h3 class="membertitle">hardWire</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes the action of a hardened wire.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = hardWire(
+o, i, <i>aa</i>, <i>ha</i>, xp, x, yp, y, ep, e, <i>ea</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as PrimitiveWire : A PrimitiveWire object.</li>
+<li>
+<b>i</b> as String : Identifier of a primitive wire.</li>
+<li>
+<b>aa</b> as array <i>(optional)</i>: Arguments to pass to the action function.</li>
+<li>
+<b>ha</b> as array <i>(optional)</i>: Arguments to pass to the handler function.</li>
+<li>
+<b>xp</b> as variant : Object, or string evaluation, to which the action function is defined.</li>
+<li>
+<b>x</b> as function : The action function.</li>
+<li>
+<b>yp</b> as variant : Object, or string evaluation, to which the handler function is defined.</li>
+<li>
+<b>y</b> as function : The hander function.</li>
+<li>
+<b>ep</b> as variant : Object, or string evaluation, to which the error function is defined.</li>
+<li>
+<b>e</b> as function : The error function.</li>
+<li>
+<b>ea</b> as array <i>(optional)</i>: Arguments to pass to the error function.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: Returns the identifier of the newly created hardened wire.</p>
+<a name="invoke"></a>
+<h3 class="membertitle">invoke</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes a specified function that exists on the wire.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = invoke(
+a, x, f, b, o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>a</b> as array : Arguments to pass to the wired functions.</li>
+<li>
+<b>x</b> as variant : String evaluation or object on which the specified wire function exists.</li>
+<li>
+<b>f</b> as String : Name of function to invoke.</li>
+<li>
+<b>b</b> as boolean : Force the wire handler to execute.</li>
+<li>
+<b>o</b> as boolean : Bit specifying only the handler should fire.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as variant: Returns false if unsuccessful, true otherwise.</p>
+<a name="invokeHardWireAction"></a>
+<h3 class="membertitle">invokeHardWireAction</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes the action of a hardened wire.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = invokeHardWireAction(
+o, i, <i>a</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as PrimitiveWire : A PrimitiveWire object.</li>
+<li>
+<b>i</b> as String : Identifier of a wire.</li>
+<li>
+<b>a</b> as array <i>(optional)</i>: Arguments to pass to the wired functions.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as boolean: Returns true if the chain completed successfully, false if otherwise.</p>
+<a name="invokeHardWireHandler"></a>
+<h3 class="membertitle">invokeHardWireHandler</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes the handler of a hardened wire.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = invokeHardWireHandler(
+o, i, <i>a</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as PrimitiveWire : A PrimitiveWire object.</li>
+<li>
+<b>i</b> as String : Identifier of a wire.</li>
+<li>
+<b>a</b> as array <i>(optional)</i>: Arguments to pass to the wired functions.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as boolean: Returns true if the chain completed successfully, false if otherwise.</p>
+<a name="invokePrimitive"></a>
+<h3 class="membertitle">invokePrimitive</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes a wire, causing the action-handler chain to be processed.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = invokePrimitive(
+<i>a</i>, i, <i>b</i>, <i>z</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>a</b> as array <i>(optional)</i>: Arguments to pass to the wired functions.</li>
+<li>
+<b>i</b> as String : Identifier of the primitive wire to invoke.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating only the handler should be fired.</li>
+<li>
+<b>z</b> as boolean <i>(optional)</i>: Bit indicating the handler should be skipped.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as boolean: Returns true if the chain completed successfully, false if otherwise.</p>
+<a name="primitiveWire"></a>
+<h3 class="membertitle">primitiveWire</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates and returns a PrimiteWire based on the specified parameters.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = primitiveWire(
+xp, x, yp, y, ep, e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>xp</b> as variant : Object, or string evaluation, to which the action function is defined.</li>
+<li>
+<b>x</b> as function : The action function.</li>
+<li>
+<b>yp</b> as variant : Object, or string evaluation, to which the handler function is defined.</li>
+<li>
+<b>y</b> as function : The hander function.</li>
+<li>
+<b>ep</b> as variant : Object, or string evaluation, to which the error function is defined.</li>
+<li>
+<b>e</b> as function : The error function.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: Returns the identifier of the PrimitiveWire object.</p>
+<a name="setCanSignal"></a>
+<h3 class="membertitle">setCanSignal</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the underlying PrimitiveWire objects signal to each other based on commonality between actions and handlers.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setCanSignal(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating similar PrimitiveWires signal to each other.</li>
+</ul>
+<a name="sigterm"></a>
+<h3 class="membertitle">sigterm</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends termination signal to destroy object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void sigterm(
+
+)
+</p>
+<a name="wire"></a>
+<h3 class="membertitle">wire</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates and returns a wire based on the specified parameters.  This function creates an underlying PrimitiveWire as well as creating linkage to be connected with other wires.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = wire(
+xp, x, yp, y, ep, e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>xp</b> as variant : Object, or string evaluation, to which the action function is defined.</li>
+<li>
+<b>x</b> as function : The action function.</li>
+<li>
+<b>yp</b> as variant : Object, or string evaluation, to which the handler function is defined.</li>
+<li>
+<b>y</b> as function : The hander function.</li>
+<li>
+<b>ep</b> as variant : Object, or string evaluation, to which the error function is defined.</li>
+<li>
+<b>e</b> as function : The error function.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: Returns the identifier of the wire object.</p>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

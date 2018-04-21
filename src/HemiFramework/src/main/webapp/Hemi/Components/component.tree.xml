@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<application-components>
+   <application-component id = "tree">
+       <!-- participant-id ="datagrid" -->
+      <![CDATA[
+         component_init:function(){
+         	var _p = this.getProperties();
+            Hemi.include("hemi.data.io");
+			Hemi.include("hemi.css");
+            Hemi.include("hemi.text");
+            
+            var sP = Hemi.GetSpecifiedAttribute(this.getContainer(),"participant-id");
+            if(!sP) sP = "datagrid";
+            this.joinTransactionPacket(sP);
+            _p.SharedTransaction = sP;
+            
+			this.joinTransactionPacket("iobus");
+			Hemi.css.loadStyleSheet("Styles/TreeStyles.css","Tree");
+            
+            this.scopeHandler("update_subject",0,0,1);			   
+			this.scopeHandler("io_response",0,0,1);
+			this.scopeHandler("expandnode",0,0,1);
+			this.scopeHandler("switchbranch",0,0,1);
+			_p.subject_update = 0;
+            _p.merge = 1;
+            _p.busType = parseInt(Hemi.GetSpecifiedAttribute(this.getContainer(),"BusType")); 
+            if(isNaN(_p.busType) || _p.busType <= 0) _p.busType = Hemi.data.io.service.getBusType().STATIC;
+            
+		    _p.tree_loaded = 0;
+		    _p.current_path = 0;
+		    _p.current_group_id = 0;
+		    _p.current_group_name = 0;
+		    this.getObjects().current_node = 0;
+		    this.getObjects().cache = [];
+            var app = this.getContainer().getAttribute("Application");
+            if(!app || !app.length) app = "HemiFramework";
+            _p.application = app;
+            Hemi.message.service.subscribe(this, "onupdatesubject", "_prehandle_update_subject");
+            this.FormatTree();
+			_p.root_name = Hemi.GetSpecifiedAttribute(this.getContainer(),"DirectoryId");	
+
+            // if(Hemi.data.io.service.getSubject().isAuthenticated){
+            //    this._handle_update_subject(0, Hemi.data.io.service);
+            // }
+			
+			this.RePopulateTree();
+		},
+		
+        component_post_init: function(){
+         	// var dir_id = this.getContainer().getAttribute("DirectoryId");
+			// if(dir_id != null && dir_id.length > 0) this.RePopulateTree();
+			this.serveTransaction("change_bus",this.getProperties().busType, 1, "iobus");
+         },
+		component_destroy : function(){
+			/// Todo: Why is this not being automatically cleaned up?
+			///
+			Hemi.message.service.unsubscribe(this, "onupdatesubject", "_prehandle_update_subject");
+			this.removeFromTransactionPacket(this.getProperties().SharedTransaction);
+			this.removeFromTransactionPacket("iobus");
+            this._prehandle_update_subject = 0;
+			this._prehandle_loadxml = 0;
+			this._prehandle_expandnode = 0;
+			this._prehandle_switchbranch = 0;
+    	 },
+		 _handle_change_bus : function(s, v){
+			if(v && typeof v.data.src == "number"){
+				this.getProperties().busType = v.data.src;
+				Hemi.xml.removeChildren(this.getContainer());
+				this.RePopulateTree();
+			}
+		 },
+
+          _handle_update_subject : function(s, v){
+
+            var _p = this.getProperties();
+            if(!this.getProperties().root_name){
+                Hemi.log("Skip update tree for subjectchange without root directory id");
+                return;
+            }
+            if(v.getSubject().isAuthenticated && !_p.subject_update){
+                _p.subject_update = 1;
+                this.getProperties().busType = Hemi.data.io.service.getBusType().ONLINE;
+				this.serveTransaction("change_bus",this.getProperties().busType, 0, "iobus");
+                this.RePopulateTree();
+            }
+            else if(!v.getSubject().isAuthenticated  & _p.subject_update){
+                _p.subject_update = 0;
+				_p.tree_loaded = 0;
+				_p.current_path = 0;
+				_p.current_group_id = 0;
+				_p.current_group_name = 0;
+				this.getObjects().current_node = 0;
+                this.getProperties().busType = Hemi.data.io.service.getBusType().STATIC;
+				this.serveTransaction("change_bus",this.getProperties().busType, 0, "iobus");
+                Hemi.xml.removeChildren(this.getContainer());
+                this.RePopulateTree();
+            }
+            else{
+                Hemi.log("Don't repopulate: " + v.getSubject().isAuthenticated + ":" + _p.subject_update);
+            }
+          },
+
+          FormatTree : function(oParent, sParentPath){
+            /// Format any existing trees in the control
+            var oChild;
+            var oDP = Hemi.data.io.service.newPolicy();
+            oDP.read = 1;
+            var sPath = "";
+            var sName = "";
+            if(!oParent) oParent = this.getContainer();
+            if(oParent.nodeName.match(/^ul$/i)) this.PrepareElement(oParent);
+            for(var i = 0; i < oParent.childNodes.length;i++){
+                oChild = oParent.childNodes[i];
+                if(oChild.nodeType != 1) continue;
+                if(oChild.nodeName.match(/^ul$/i)){
+                    this.PrepareElement(oChild);
+                }
+                else if(oChild.nodeName.match(/^li$/i)){
+                    sName = Hemi.text.trim(Hemi.xml.getInnerText(oChild,1));
+                    this.PrepareElement(oChild, sName, 0, 0, sPath + "/" + sName, 1, oDP);
+                }
+                this.FormatTree(oChild,sPath + "/" + sName);
+            }
+          },
+				GetCurrentBusType : function(){
+					return this.getProperties().busType;
+				},
+				GetCurrentApplication : function(){
+					return this.getProperties().application;
+				},
+				GetCurrentRootName : function(){
+					return this.getProperties().root_name;
+				},
+				 GetCurrentGroupName : function(){
+						return this.getProperties().current_group_name;
+				 },
+				 GetCurrentGroupId : function(){
+						 return this.getProperties().current_group_id;
+				 },
+				 GetCurrentPath : function(){
+						 return this.getProperties().current_path;
+				 },
+				 BuildDirectoryUri : function(sDir){
+					return g_application_path + "Explorer/Directory/" + sDir + "?is-xml=1&ts=" + (new Date()).getTime();
+				 },
+				 RePopulateTree : function(){
+				 	if(this.getProperties().render){
+						alert('cannot repop mid-render');
+						return;
+					}
+						this.getObjects().cache = [];
+						this.PopulateTree(this.getContainer(),this.getProperties().root_name);
+				 },
+				 PopulateTree : function(oParent, sId, oSubParent){
+
+				 	this.getProperties().render = 1;
+  					var sReq = "";
+                    var bId = 0;
+					if(oParent.path){
+						sReq = oParent.path;
+						Hemi.log("Path vs Name: " + oParent.path + ":" + oParent.group_name);
+					}
+					else if((typeof sId == "string" && sId.length) || (typeof sId == "number" && sId > 0)){
+					    sReq = sId;
+					}
+				   this.getObjects().parent = oParent;
+                   this.getObjects().sub_parent = oSubParent;
+                    Hemi.log("Tree request: Bus " + this.getProperties().busType + " /" + this.getProperties().application + "/Directory/" + sReq + "/List [sid=" + sId + "]");
+                    var oRequest = Hemi.data.io.service.newIORequest(
+                        this.getProperties().busType,
+                        this.getProperties().application,
+                        "Directory",
+                        sReq,
+                        "List", 
+                        sId,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0
+                    );
+
+					Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest, this._prehandle_io_response);
+				},
+				_handle_viewerload : function(s, v){
+						if(this.getProperties().tree_loaded) this.serveTransaction("treeload",this,0,this.getProperties().SharedTransaction);
+				},
+				_handle_contextload : function(s, v){
+						if(this.getProperties().tree_loaded) this.serveTransaction("treeload",this,0,this.getProperties().SharedTransaction);
+				},
+				_handle_io_response : function(oService, oSubject, oRequest, oResponse){
+					Hemi.log("Tree response on bus " + this.getProperties().busType);
+                    var _p = this.getObjects();
+					try{
+                        
+						if(oResponse.authenticationRequired){
+							alert("Login required to browse persistent storage.");
+							return;
+						}
+						/// If this is an interior level:
+						/// Interior level is when the parent is the returned object,
+						/// So start with the first child group, which should be the parent
+						///
+						if(_p.sub_parent){
+							
+                            Hemi.log("Interior Populate");
+                            
+							var oSubGroup = oResponse.responseGroups[0];
+							if(!oSubGroup){
+								Hemi.logWarning("Tree - No data on bus " + this.getProperties().busType);
+								return;
+							}
+							Hemi.log("Interior Populate - " + oSubGroup.path + " From " + oResponse.responseGroups.length + " items");
+							
+							_p.sub_parent.group_path = oSubGroup.path;
+							this.PrintSubDataTree(_p.sub_parent, oSubGroup);
+							//this.PrintTree(_p.sub_parent, oResponse.responseGroups, 0);
+							//this.PrintTree(_p.sub_parent, oSubGroup., 0);
+							this.SetActiveLeaf(_p.sub_parent);
+						}
+						else if(oResponse.responseGroups.length > 0){
+                            Hemi.log("Exterior Populate");
+							this.PrintTree(this.getObjects().parent, oResponse.responseGroups);
+							this.getObjects().parent.group_path = oResponse.responseGroups[0].path;
+							this.getObjects().parent.group_name = oResponse.responseGroups[0].name;
+							this.getObjects().parent.group_id = oResponse.responseGroups[0].id;
+							this.SetActiveLeaf(this.getObjects().parent);
+						}
+						this.getProperties().render = 0;
+						this.getObjects().parent =0;
+						this.getObjects().sub_parent = 0;
+						if(!this.getProperties().tree_loaded){
+							this.getProperties().tree_loaded = 1;
+							Hemi.log("Tree announce: treeload");
+							this.serveTransaction("treeload",this,0,this.getProperties().SharedTransaction);
+						}
+						else{
+							Hemi.log("Tree announce: treenavigate");
+							this.serveTransaction("treenavigate",this,0,this.getProperties().SharedTransaction);
+						}
+					}
+					catch(e){
+						alert(e.name + "\n" + e.number + "\n" + e.description + "\n" + e.message);
+					}
+				},
+
+				SelectLeaf : function(sName){
+					var aLi = this.getContainer().getElementsByTagName("li");
+					//alert(sName);
+					for(var i = 0; i < aLi.length; i++){
+						if(aLi[i].group_name == sName){
+							this.SetActiveLeaf(aLi[i]);
+							if(!aLi[i].is_populated){
+								this._handle_expandnode(aLi[i].firstChild, 1);
+							}
+							else{
+								this._handle_switchbranch(aLi[i].firstChild, 1);
+							}
+							break;
+						}
+					}
+				},
+				SetActiveLeaf : function(oLi){
+                    var oFirst;
+					if(this.getObjects().current_node && this.getObjects().current_node != oLi){
+                        oFirst = this.getObjects().current_node.firstChild;
+                        while(oFirst && oFirst.nodeType != 1) oFirst=oFirst.nextSibling;
+
+						oFirst.className = oFirst.className.replace(/\s?branch\_selected/,"");
+					}
+					this.getObjects().current_node = oLi;
+                    oFirst = oLi.firstChild;
+                    while(oFirst && oFirst.nodeType != 1) oFirst=oFirst.nextSibling;
+					if(!oFirst.className.match(/\s?branch\_selected/)) oFirst.className += " branch_selected";
+					this.getProperties().current_path = oLi.group_path;
+					this.getProperties().current_group_name = oLi.group_name;
+					this.getProperties().current_group_id = oLi.group_id;
+				},
+				_handle_switchbranch : function(e, b){
+					e = (e ? e : event);
+					var o = b ? e : (e.target ? e.target : e.srcElement);
+					if(!o){
+						return;
+					}
+					var oP = o.parentNode;
+					if(oP.className.match(/branch\_empty/)){
+					}
+					else if(oP.className.match(/branch\_open/)) oP.className = "branch_close";
+					else if(oP.className.match(/branch\_close/)) oP.className = "branch_open";
+					this.SetActiveLeaf(oP);
+
+					this.serveTransaction("treenavigate",this,1,this.getProperties().SharedTransaction);
+					
+					/*
+					if(oP.className.match(/branch\_open/)) oP.className = "branch_close";
+					else oP.className = "branch_open";
+					*/
+					return false;
+				},
+				_handle_expandnode : function(e,b){
+					var oLink = (b ? e : Hemi.event.getEventSource(e));
+					oLink.onclick = this._prehandle_switchbranch;
+					
+					var oLi = oLink.parentNode;
+					oLi.is_populated = 1;
+					oLi.className = "branch_open";
+                      var sId = oLi.group_id;
+                      if(!sId) sId = oLi.group_path;
+                     Hemi.log("Expand with: " + oLi.group_path + ":" + sId);
+					this.PopulateTree(oLi,oLi.group_id,oLi);
+                    return false;
+					//this.SetActiveLeaf(oLi);
+					
+				},
+        PrepareElement : function(oNode, sName, sId, sParentId, sPath, bPop, oPolicy){
+            if(oNode.nodeName.match(/^ul$/i)){
+                oNode.className = "tree";
+            }
+            else if(oNode.nodeName.match(/^li$/i)){
+                var bL = 0;     
+                var oA;
+                var oF = oNode.firstChild;
+                if(!oF) alert("Dbg: " + Hemi.xml.serialize(oNode));
+                if(oF && oF.nodeType == 3){
+				        oA = document.createElement("a");
+				        oA.setAttribute("href","#");
+                        oA.appendChild(document.createTextNode(oF.nodeValue));
+                        Hemi.xml.swapNode(oF,oA);
+                        bL = 1;
+                }
+
+                    
+                if(!oNode.group_id) oNode.group_id = sId;
+			    if(!oNode.group_name) oNode.group_name = sName;
+			    if(!oNode.parent_id) oNode.parent_id = sParentId;
+                if(sPath && !oNode.group_path){
+                    oNode.group_path = sPath;
+                }
+			    oNode.policy = oPolicy;
+			    if(oPolicy && !oPolicy.read){
+				    oNode.className = "branch_lock";
+			    }
+			    else{
+                if(oNode.is_populated && !bPop){   
+                    Hemi.log("Depopulate " + oNode.group_name);
+                    if(!bL && oNode.firstChild && oNode.firstChild.nodeName.match(/^a$/i)){
+                        bL = 1;
+                        oA = oNode.firstChild;
+                                   
+                    }
+                }
+			    oNode.is_populated = bPop;
+			    if(bPop){
+				    oNode.className = "branch_open";
+				    /// if(!oNode.group_path) oNode.group_path = sPath;
+                        if(bL) oA.onclick = this._prehandle_switchbranch;
+			    }
+			    else{
+				    oNode.className = "branch_close";
+                        if(bL) oA.onclick = this._prehandle_expandnode;
+			    }
+			    this.InstrumentDraggable(oNode);
+		    }
+              }
+          },
+				PrintTree : function(oXhtmlParent, aGroups, iDepth){
+					/// TODO
+					/// Need to check for a locked tree while processing
+					/// if(!oXhtmlParent) return;
+					/// if(!oXhtmlParent) alert(oXhtmlParent + ":" + aGroups.length + ":" + iDepth);
+					if(!iDepth){
+                        /// If in merge mode, look in the parent for the first UL control
+                        ///
+                        var oUL;
+						
+                        if(this.getProperties().merge){
+                            for(var i = 0; i < oXhtmlParent.childNodes.length;i++){
+                                if(oXhtmlParent.childNodes[i].nodeName.match(/^ul$/i)){
+                                    oUL = oXhtmlParent.childNodes[i];
+                                    break;
+                                }
+                            }
+                        }
+                        if(!oUL){
+                            Hemi.log("Merge tree");
+                            oUL = document.createElement("ul");
+						                this.PrepareElement(oUL);
+						                oXhtmlParent.appendChild(oUL);
+                        }
+                        else{
+                          /// Hemi.log("Add tree from " + oXhtmlParent.nodeName);
+                        }
+						iDepth = 1;
+						oXhtmlParent = oUL;
+					}
+					var xLast = 0;
+					for(var i = 0; i < aGroups.length; i++){
+						var oC = aGroups[i];
+                        if(xLast && xLast != oXhtmlParent){
+                            alert('break!');
+                            return;
+                        }
+                        xLast = oXhtmlParent;
+                        
+						var sName = oC.name;
+						var sId = oC.id;
+                        var sPath = oC.path;
+                        //Hemi.log("Process: " + i + " of " + aGroups.length + " " + oC.name + " (#" + oC.id + ")");
+                        /// if(!sPath) sPath = 
+						var oLI = 0;
+                        if(this.getProperties().merge){
+                            for(var c = 0; c < oXhtmlParent.childNodes.length; c++){
+                                /// Hemi.log("Comp '" + oXhtmlParent.childNodes[c].group_name + "' == '" + sName + "'");
+                                if(oXhtmlParent.childNodes[c].nodeType == 1 && oXhtmlParent.childNodes[c].nodeName.match(/^li$/i) && oXhtmlParent.childNodes[c].group_name == sName){
+                                    oLI = oXhtmlParent.childNodes[c];
+                                    break;
+                                }
+                            }
+                        }
+                        if(!oLI){
+                            ///Hemi.log("Add to " + oXhtmlParent.nodeName + ": " + sName);
+                            oLI = document.createElement("li");
+    						oXhtmlParent.appendChild(oLI);
+    						// + ": " + sId
+                            oLI.appendChild(document.createTextNode(sName));
+                        }
+                        this.PrepareElement(oLI, sName, sId, oC.parentId, sPath, oC.populated, (oC.policies.length ? oC.policies[0] : 0));
+						this.PrintSubDataTree(oLI, oC);
+					}
+				},
+				PrintSubDataTree : function(oXhtmlParent, oGroup){
+					
+					var aSub = oGroup.groups;
+					var aDat = oGroup.data;
+					Hemi.logDebug("Print sub tree " +oGroup.name + " with " + aSub.length + " groups");
+					if(!aSub.length && !aDat.length && oXhtmlParent.is_populated){
+						oXhtmlParent.className = "branch_empty";
+						
+						return;
+					}
+                    var oUL;
+                    if(this.getProperties().merge){
+                        for(var c = 0; c < oXhtmlParent.childNodes.length; c++){
+                            if(oXhtmlParent.childNodes[c].nodeName.match(/^ul$/i)){
+                                oUL = oXhtmlParent.childNodes[c];
+                                break;
+                            }
+                        }
+                     }
+                     if(!oUL){
+					    oUL = document.createElement("ul");
+					    oUL.className = "tree";
+					    oXhtmlParent.appendChild(oUL);
+                      }
+					if(aSub.length) this.PrintTree(oUL, aSub, 1);
+					for(var c = 0; c < aDat.length; c++){
+						oLI = document.createElement("li");
+						var oA = document.createElement("a");
+						oA.setAttribute("href","#");
+						oLI.appendChild(oA);
+						oA.appendChild(document.createTextNode(aDat[c].name));
+						oLI.className = "leaf";
+						oLI.data_id = parseInt(aDat[c].id);
+						oLI.policy = (aDat[c].policies.length ? aDat[c].policies[0] : 0);
+						this.InstrumentDraggable(oLI);
+						oUL.appendChild(oLI);
+					}
+				},
+				InstrumentDraggable : function(oNode){
+					if(oNode.draggable) return;
+                    oNode.draggable = 1;
+					var oX = Hemi.object.xhtml.newInstance(oNode,1);
+					var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);
+					oA.setAsync(0);
+					oA.loadComponent("draggable","Components/component.draggable.xml");
+					
+				}
+			]]>
+		</application-component>
+</application-components>

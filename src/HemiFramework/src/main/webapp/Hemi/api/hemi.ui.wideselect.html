@@ -1,0 +1,2198 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.ui.wideselect Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.ui.wideselect</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The WideSelect control is a list control which supports buffered and paginated presentation.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#ImportPageItem">Hemi.ui.wideselect.ImportPageItem</a>: Object construct used to bulk load paginated items.</li>
+<li>
+<a href="#WideSelect"><i>static </i>Hemi.ui.wideselect.WideSelect</a>: Control for buffering and paging large sets of data for display.</li>
+<li>
+<a href="#WideSelectInstance">Hemi.ui.wideselect.WideSelectInstance</a>: A buffering and pagination control for displaying large and incremental sets of data.</li>
+<li>
+<a href="#WideSelectItem">Hemi.ui.wideselect.WideSelectItem</a>: Object representing an item in the WideSelect control.</li>
+</ul>
+<a name="WideSelect"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.ui.wideselect.WideSelect</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Control for buffering and paging large sets of data for display.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="WideSelectmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#newInstance">newInstance</a>: Creates a new WideSelectInstance object.</li>
+</ul>
+<h3>Methods</h3>
+<a name="newInstance"></a>
+<h3 class="membertitle">newInstance</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelect">WideSelect</a>
+</li>
+<li>
+<a href="#WideSelectmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new WideSelectInstance object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">u = newInstance(
+o, <i>cf</i>, <i>pf</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as HTMLNode : Parent HTML Node in which the control will be created.</li>
+<li>
+<b>cf</b> as function <i>(optional)</i>: Click event handler.</li>
+<li>
+<b>pf</b> as function <i>(optional)</i>: Paginate event handler.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>u</b> as WideSelectInstance: Instance of a WideSelect control.</p>
+<a name="WideSelectItem"> </a>
+<h3 class="membertitle">Hemi.ui.wideselect.WideSelectItem</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Object representing an item in the WideSelect control.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="WideSelectItempropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#data">data</a>: The data referenced or held by the item.</li>
+<li>public <a href="#id">id</a>: Unique identifier.</li>
+<li>public <a href="#index">index</a>: Index of this item in the items array.</li>
+<li>public <a href="#name">name</a>: Visible name of the item.</li>
+<li>private <a href="#object">object</a> (<b>internal</b>): The HTML object used to display the item.</li>
+</ul>
+<h3>Properties</h3>
+<a name="data"></a>
+<h3 class="membertitle">data</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectItem">WideSelectItem</a>
+</li>
+<li>
+<a href="#WideSelectItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The data referenced or held by the item.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">variant = <i>object</i>.data</p>
+<p class="propertysyntax">
+<i>object</i>.data = variant</p>
+<a name="id"></a>
+<h3 class="membertitle">id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectItem">WideSelectItem</a>
+</li>
+<li>
+<a href="#WideSelectItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.id</p>
+<a name="index"></a>
+<h3 class="membertitle">index</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectItem">WideSelectItem</a>
+</li>
+<li>
+<a href="#WideSelectItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Index of this item in the items array.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">integer = <i>object</i>.index</p>
+<a name="name"></a>
+<h3 class="membertitle">name</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectItem">WideSelectItem</a>
+</li>
+<li>
+<a href="#WideSelectItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Visible name of the item.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.name</p>
+<p class="propertysyntax">
+<i>object</i>.name = String</p>
+<a name="object"></a>
+<h3 class="membertitle">object</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectItem">WideSelectItem</a>
+</li>
+<li>
+<a href="#WideSelectItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The HTML object used to display the item. Property is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">HTMLNode = <i>object</i>.object</p>
+<a name="ImportPageItem"> </a>
+<h3 class="membertitle">Hemi.ui.wideselect.ImportPageItem</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Object construct used to bulk load paginated items.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="ImportPageItempropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#id">id</a>: Unique identifier</li>
+<li>public <a href="#index">index</a>: Index of this item in the items array.</li>
+<li>public <a href="#label">label</a>: Name of the item.</li>
+<li>private <a href="#value">value</a> (<b>internal</b>): Value of the item.</li>
+</ul>
+<h3>Properties</h3>
+<a name="id"></a>
+<h3 class="membertitle">id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ImportPageItem">ImportPageItem</a>
+</li>
+<li>
+<a href="#ImportPageItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique identifier</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.id</p>
+<p class="propertysyntax">
+<i>object</i>.id = String</p>
+<a name="index"></a>
+<h3 class="membertitle">index</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ImportPageItem">ImportPageItem</a>
+</li>
+<li>
+<a href="#ImportPageItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Index of this item in the items array.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">integer = <i>object</i>.index</p>
+<a name="label"></a>
+<h3 class="membertitle">label</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ImportPageItem">ImportPageItem</a>
+</li>
+<li>
+<a href="#ImportPageItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Name of the item.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.label</p>
+<p class="propertysyntax">
+<i>object</i>.label = String</p>
+<a name="value"></a>
+<h3 class="membertitle">value</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ImportPageItem">ImportPageItem</a>
+</li>
+<li>
+<a href="#ImportPageItempropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Value of the item. Property is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">variant = <i>object</i>.value</p>
+<a name="WideSelectInstance"> </a>
+<h3 class="membertitle">Hemi.ui.wideselect.WideSelectInstance</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">A buffering and pagination control for displaying large and incremental sets of data.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="WideSelectInstancepropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: object_config.pointers and object_config.status.</li>
+<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
+<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
+<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
+<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
+</ul>
+<a name="WideSelectInstancemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>private <a href="#_addItem">_addItem</a> (<b>internal</b>): Creates and renders a WideSelectItem object.</li>
+<li>private <a href="#_handle_buffer_check">_handle_buffer_check</a> (<b>internal</b>): Internal operation for testing the state of the buffer.</li>
+<li>private <a href="#_handle_click">_handle_click</a> (<b>internal</b>): Internal handler for mouseout event.</li>
+<li>private <a href="#_handle_commit_buffer">_handle_commit_buffer</a> (<b>internal</b>): Internal operation for committing the buffer into the WideSelectItem array.</li>
+<li>private <a href="#_handle_mouseout">_handle_mouseout</a> (<b>internal</b>): Internal handler for mouseout event.</li>
+<li>private <a href="#_handle_mouseover">_handle_mouseover</a> (<b>internal</b>): Internal handler for mouseover event.</li>
+<li>private <a href="#_handle_window_destroy">_handle_window_destroy</a> (<b>internal</b>): Message subscription handler invoked when the host window is unloading.</li>
+<li>public <a href="#addItem">addItem</a>: Adds an item to the WideSelect control.  The item is displayed based on buffering, and maximum display settings and restrictions.  Use pageItem to add items for pagination.  Specify a value of "_avoid" to create non-selectable labels.</li>
+<li>public <a href="#alignControl">alignControl</a>: Aligns the WideSelectInstance to the bottom border of the specified HTML Node.</li>
+<li>public <a href="#clearItem">clearItem</a>: Removes the specified WideSelectItem.</li>
+<li>public <a href="#clearItems">clearItems</a>: Removes all WideSelectItem objects.</li>
+<li>public <a href="#clearPagingValues">clearPagingValues</a>: Removes all paged WideSelectItem objects.</li>
+<li>public <a href="#commitBuffer">commitBuffer</a>: Commits the buffer up to the next buffer offset.  Invoked automatically when AutoCommit is enabled.</li>
+<li>public <a href="#deselectAllItems">deselectAllItems</a>: Deselects all selected items in the WideSelect control.</li>
+<li>public <a href="#destroy">destroy</a>: Cleans up internal pointers, empties buffers, and removes HTML artifacts.  Invoked when the window is unloaded.</li>
+<li>public <a href="#endRequest">endRequest</a>: Hides the WideSelectInstance control if requested.</li>
+<li>public <a href="#getActiveItem">getActiveItem</a>: Returns the selected WideSelectItem object.</li>
+<li>public <a href="#getBufferMark">getBufferMark</a>: Returns the current position in the buffer, after which additional items will be rendered.</li>
+<li>public <a href="#getBufferSize">getBufferSize</a>: Returns the current size of the buffer.</li>
+<li>public <a href="#getCanMoveNext">getCanMoveNext</a>: Checks whether there is an additional page beyond the current.</li>
+<li>public <a href="#getCanMovePrevious">getCanMovePrevious</a>: Checks whether there is a previous page prior to the current.</li>
+<li>public <a href="#getContainer">getContainer</a>: Returns the the HTML Node in which the control is created.</li>
+<li>public <a href="#getCurrentPageItemCount">getCurrentPageItemCount</a>: Returns the number of items in the current page.</li>
+<li>public <a href="#getIsPaging">getIsPaging</a>: Returns whether the WideSelect control is in paging mode.</li>
+<li>public <a href="#getItem">getItem</a>: Returns the WideSelectItem object at the specified index.</li>
+<li>public <a href="#getItems">getItems</a>: Returns an array of WideSelectItem objects.</li>
+<li>public <a href="#getItemSize">getItemSize</a>: Returns the current size of all items in the control.</li>
+<li>public <a href="#getMaximumItems">getMaximumItems</a>: Returns the maximum number of items supported by the control.</li>
+<li>public <a href="#getMaximumPageItems">getMaximumPageItems</a>: Returns the maximum number of items to display per page, if paging is enabled.</li>
+<li>public <a href="#getMultiple">getMultiple</a>: Returns whether multiple selection is enabled.</li>
+<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
+<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
+<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
+<li>public <a href="#getPageStop">getPageStop</a>: Returns whether the WideSelect control is no longer expecting data.</li>
+<li>public <a href="#getPointers">getPointers</a>: Returns the object_config.pointers sub structure.</li>
+<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
+<li>virtual <a href="#handle_pagenavigate">handle_pagenavigate</a>: Handler is specified in the WideSelectInstance constructor; newInstance.</li>
+<li>public <a href="#importPageItems">importPageItems</a>: Imports a variant-length array of data into the paginated set of WideSelectItem objects.</li>
+<li>private <a href="#init">init</a> (<b>internal</b>): Initializes the WideSelect control.</li>
+<li>public <a href="#moveFirst">moveFirst</a>: Moves the paginated result set to the first page.  Invokes any specified handle_pagenavigate handler.</li>
+<li>public <a href="#moveLast">moveLast</a>: Moves the paginated result set to the last page.  Invokes any specified handle_pagenavigate handler.</li>
+<li>public <a href="#moveNext">moveNext</a>: Moves the paginated result set to the next page.  Invokes any specified handle_pagenavigate handler.</li>
+<li>public <a href="#movePrevious">movePrevious</a>: Moves the paginated result set to the previous page.  Invokes any specified handle_pagenavigate handler.</li>
+<li>public <a href="#pageItem">pageItem</a>: Adds an item for pagination within the WideSelect control.  The item is displayed based on pagination settings.</li>
+<li>public <a href="#request">request</a>: If requesting is enabled, displays and positions the WideSelectInstance control.</li>
+<li>public <a href="#reset">reset</a>: Clears both paged and non-paged WideSelectItem objects, and ends any active request.</li>
+<li>public <a href="#scrollToItem">scrollToItem</a>: Scrolls to control to the specified WideSelectItem.</li>
+<li>public <a href="#selectItem">selectItem</a>: Selects the specified WideSelectItem.</li>
+<li>public <a href="#setActiveItem">setActiveItem</a>: Selects the specified WideSelectItem .  Blocks publication of the onresultclick message.</li>
+<li>public <a href="#setAutoCommit">setAutoCommit</a>: Specifies whether the WideSelect control should render items as they are added.  If buffering is enabled, items will automatically begin rendering.</li>
+<li>public <a href="#setAutoScroll">setAutoScroll</a>: Specifies whether the WideSelect control will automatically scroll to the last rendered item.</li>
+<li>public <a href="#setAutoSelect">setAutoSelect</a>: Specifies whether the WideSelect control will automatically select the last rendered item.</li>
+<li>public <a href="#setBufferDelay">setBufferDelay</a>: Specifies the number of milliseconds to pause between rendering the buffer offset.</li>
+<li>public <a href="#setBufferOffset">setBufferOffset</a>: Specifies the number of items to be rendered at a time.</li>
+<li>public <a href="#setCanRequest">setCanRequest</a>: Specifies whether the WideSelect control can be requested.  The request featureset is used when the control is a pop-up or conditionally visible.</li>
+<li>public <a href="#setIsBuffered">setIsBuffered</a>: Specifies whether the control should buffer new items.  Buffered items are incrementally rendered.</li>
+<li>public <a href="#setIsPaging">setIsPaging</a>: Specifies whether the WideSelect control is in paging mode.  Changing this value will clear paged items, and the control will need to be repopulated.</li>
+<li>public <a href="#setMaximumItems">setMaximumItems</a>: Sets the maximum number of items supported by the control.   Specify zero to indicate no limit.  Any items over the maximum when rollover is enabled will cause the top-most item to be removed.  When rollover is disabled, the addItem method will fail on the last item.</li>
+<li>public <a href="#setMaximumPageItems">setMaximumPageItems</a>: Sets the maximum number of items displayed per page, if paging is enabled.</li>
+<li>public <a href="#setMaximumRollover">setMaximumRollover</a>: Specifies whether the WideSelect control will rollover when the maximum number of items is reached; deleting the first item and adding the new item to the end.  If disabled and a maximum limit is stipulated, then new items won't be added.</li>
+<li>public <a href="#setMultiple">setMultiple</a>: Sets whether multiple selection is enabled.</li>
+<li>public <a href="#setPageStop">setPageStop</a>: Specifies whether the WideSelect control should stop expecting more data, when in paging mode.</li>
+<li>public <a href="#setResultHandler">setResultHandler</a>: Specifies the handler to invoke when a result item is activated.</li>
+<li>public <a href="#updatePage">updatePage</a>: Renders the current page of WideSelectItem objects.</li>
+</ul>
+<a name="WideSelectInstancemessageindex"> </a>
+<h4>Message Index</h4>
+<ul class="index">
+<li>public <a href="#onbuffercommitted">onbuffercommitted</a>: Message published to all subscribers when a buffered resultset was committed; being completely rendered and/or paginated.</li>
+<li>public <a href="#onresultclick">onresultclick</a>: Message published to all subscribers when the state changes for a WideSelectItem object.</li>
+</ul>
+<h3>Properties</h3>
+<a name="object_config"></a>
+<h3 class="membertitle">object_config</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object API structure for storing sub structures: object_config.pointers and object_config.status.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">object = <i>object</i>.object_config</p>
+<a name="object_id"></a>
+<h3 class="membertitle">object_id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique instance identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_id</p>
+<a name="object_type"></a>
+<h3 class="membertitle">object_type</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The type of this object.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_type</p>
+<a name="object_version"></a>
+<h3 class="membertitle">object_version</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Version of the object class.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_version</p>
+<a name="ready_state"></a>
+<h3 class="membertitle">ready_state</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">int = <i>object</i>.ready_state</p>
+<h3>Methods</h3>
+<a name="_addItem"></a>
+<h3 class="membertitle">_addItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates and renders a WideSelectItem object. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _addItem(
+n, <i>d</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the item.  The name is used for the label.</li>
+<li>
+<b>d</b> as variant <i>(optional)</i>: The value of the item.</li>
+</ul>
+<a name="_handle_buffer_check"></a>
+<h3 class="membertitle">_handle_buffer_check</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Internal operation for testing the state of the buffer. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_buffer_check(
+
+)
+</p>
+<a name="_handle_click"></a>
+<h3 class="membertitle">_handle_click</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Internal handler for mouseout event. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_click(
+v, <i>b</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>v</b> as variant : Overloaded variant which may be an event or index.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the "onresultclick" message should be suppressed.</li>
+</ul>
+<a name="_handle_commit_buffer"></a>
+<h3 class="membertitle">_handle_commit_buffer</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Internal operation for committing the buffer into the WideSelectItem array. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_commit_buffer(
+
+)
+</p>
+<a name="_handle_mouseout"></a>
+<h3 class="membertitle">_handle_mouseout</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Internal handler for mouseout event. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_mouseout(
+e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>e</b> as event : Event object</li>
+</ul>
+<a name="_handle_mouseover"></a>
+<h3 class="membertitle">_handle_mouseover</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Internal handler for mouseover event. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_mouseover(
+e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>e</b> as event : Event object</li>
+</ul>
+<a name="_handle_window_destroy"></a>
+<h3 class="membertitle">_handle_window_destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Message subscription handler invoked when the host window is unloading. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_window_destroy(
+
+)
+</p>
+<a name="addItem"></a>
+<h3 class="membertitle">addItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Adds an item to the WideSelect control.  The item is displayed based on buffering, and maximum display settings and restrictions.  Use pageItem to add items for pagination.  Specify a value of "_avoid" to create non-selectable labels.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void addItem(
+n, <i>d</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the item.  The name is used for the label.</li>
+<li>
+<b>d</b> as variant <i>(optional)</i>: The value of the item.</li>
+</ul>
+<a name="alignControl"></a>
+<h3 class="membertitle">alignControl</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Aligns the WideSelectInstance to the bottom border of the specified HTML Node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void alignControl(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as HTMLNode : HTML Node to which the control should be aligned.</li>
+</ul>
+<a name="clearItem"></a>
+<h3 class="membertitle">clearItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes the specified WideSelectItem.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearItem(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Index of WideSelectItem to remove.</li>
+</ul>
+<a name="clearItems"></a>
+<h3 class="membertitle">clearItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes all WideSelectItem objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearItems(
+
+)
+</p>
+<a name="clearPagingValues"></a>
+<h3 class="membertitle">clearPagingValues</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes all paged WideSelectItem objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clearPagingValues(
+
+)
+</p>
+<a name="commitBuffer"></a>
+<h3 class="membertitle">commitBuffer</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Commits the buffer up to the next buffer offset.  Invoked automatically when AutoCommit is enabled.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void commitBuffer(
+
+)
+</p>
+<a name="deselectAllItems"></a>
+<h3 class="membertitle">deselectAllItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Deselects all selected items in the WideSelect control.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void deselectAllItems(
+
+)
+</p>
+<a name="destroy"></a>
+<h3 class="membertitle">destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Cleans up internal pointers, empties buffers, and removes HTML artifacts.  Invoked when the window is unloaded.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void destroy(
+
+)
+</p>
+<a name="endRequest"></a>
+<h3 class="membertitle">endRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Hides the WideSelectInstance control if requested.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void endRequest(
+
+)
+</p>
+<a name="getActiveItem"></a>
+<h3 class="membertitle">getActiveItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the selected WideSelectItem object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getActiveItem(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as WideSelectItem: WideSelectItem object.</p>
+<a name="getBufferMark"></a>
+<h3 class="membertitle">getBufferMark</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the current position in the buffer, after which additional items will be rendered.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getBufferMark(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Current insert position in the buffer.</p>
+<a name="getBufferSize"></a>
+<h3 class="membertitle">getBufferSize</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the current size of the buffer.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getBufferSize(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Current size of the buffer.</p>
+<a name="getCanMoveNext"></a>
+<h3 class="membertitle">getCanMoveNext</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Checks whether there is an additional page beyond the current.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getCanMoveNext(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether there is an additional page.</p>
+<a name="getCanMovePrevious"></a>
+<h3 class="membertitle">getCanMovePrevious</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Checks whether there is a previous page prior to the current.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getCanMovePrevious(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether there is a previous page.</p>
+<a name="getContainer"></a>
+<h3 class="membertitle">getContainer</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the the HTML Node in which the control is created.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getContainer(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as HTMLNode: HTML Node in which the control is created.</p>
+<a name="getCurrentPageItemCount"></a>
+<h3 class="membertitle">getCurrentPageItemCount</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the number of items in the current page.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getCurrentPageItemCount(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Number of items in the current page.</p>
+<a name="getIsPaging"></a>
+<h3 class="membertitle">getIsPaging</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns whether the WideSelect control is in paging mode.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getIsPaging(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the control is in paging mode.</p>
+<a name="getItem"></a>
+<h3 class="membertitle">getItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the WideSelectItem object at the specified index.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getItem(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Index of WideSelectItem in items array.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as WideSelectItem: WideSelectItem object.</p>
+<a name="getItems"></a>
+<h3 class="membertitle">getItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an array of WideSelectItem objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">a = getItems(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>a</b> as Array: Array of WideSelectItem objects.</p>
+<a name="getItemSize"></a>
+<h3 class="membertitle">getItemSize</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the current size of all items in the control.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getItemSize(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Count of all rendered and paginated items.</p>
+<a name="getMaximumItems"></a>
+<h3 class="membertitle">getMaximumItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the maximum number of items supported by the control.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getMaximumItems(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Maximum number of items supported by the control.  Zero indicates no limit.</p>
+<a name="getMaximumPageItems"></a>
+<h3 class="membertitle">getMaximumPageItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the maximum number of items to display per page, if paging is enabled.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getMaximumPageItems(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as integer: Maximum number of items displayed per page.</p>
+<a name="getMultiple"></a>
+<h3 class="membertitle">getMultiple</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns whether multiple selection is enabled.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getMultiple(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether multiple selection is enabled.</p>
+<a name="getObjectId"></a>
+<h3 class="membertitle">getObjectId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the unique id of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getObjectId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The unique object instance id.</p>
+<a name="getObjectType"></a>
+<h3 class="membertitle">getObjectType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the type of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getObjectType(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as String: The type of the object instance.</p>
+<a name="getObjectVersion"></a>
+<h3 class="membertitle">getObjectVersion</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the version of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getObjectVersion(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as String: The version of the object instance.</p>
+<a name="getPageStop"></a>
+<h3 class="membertitle">getPageStop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns whether the WideSelect control is no longer expecting data.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getPageStop(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the control is no longer expecting additional data.</p>
+<a name="getPointers"></a>
+<h3 class="membertitle">getPointers</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object_config.pointers sub structure.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getPointers(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object_config.pointers substructure.</p>
+<a name="getReadyState"></a>
+<h3 class="membertitle">getReadyState</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the state of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReadyState(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as int: The object ready state.</p>
+<a name="handle_pagenavigate"></a>
+<h3 class="membertitle">handle_pagenavigate</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Handler is specified in the WideSelectInstance constructor; newInstance. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_pagenavigate(
+s, i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as String : Static parameter: </li>
+<li>
+<b>i</b> as integer : Current page index.</li>
+</ul>
+<a name="importPageItems"></a>
+<h3 class="membertitle">importPageItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Imports a variant-length array of data into the paginated set of WideSelectItem objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void importPageItems(
+a, b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>a</b> as Array : Array of ImportPageItem objects.</li>
+<li>
+<b>b</b> as boolean : Bit indicating whether this is the last page.</li>
+</ul>
+<a name="init"></a>
+<h3 class="membertitle">init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Initializes the WideSelect control. Method is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void init(
+
+)
+</p>
+<a name="moveFirst"></a>
+<h3 class="membertitle">moveFirst</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Moves the paginated result set to the first page.  Invokes any specified handle_pagenavigate handler.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void moveFirst(
+
+)
+</p>
+<a name="moveLast"></a>
+<h3 class="membertitle">moveLast</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Moves the paginated result set to the last page.  Invokes any specified handle_pagenavigate handler.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void moveLast(
+
+)
+</p>
+<a name="moveNext"></a>
+<h3 class="membertitle">moveNext</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Moves the paginated result set to the next page.  Invokes any specified handle_pagenavigate handler.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void moveNext(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the operation is a test.</li>
+</ul>
+<a name="movePrevious"></a>
+<h3 class="membertitle">movePrevious</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Moves the paginated result set to the previous page.  Invokes any specified handle_pagenavigate handler.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void movePrevious(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the operation is a test.</li>
+</ul>
+<a name="pageItem"></a>
+<h3 class="membertitle">pageItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Adds an item for pagination within the WideSelect control.  The item is displayed based on pagination settings.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void pageItem(
+n, <i>d</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the item.  The name is used for the label.</li>
+<li>
+<b>d</b> as variant <i>(optional)</i>: The value of the item.</li>
+</ul>
+<a name="request"></a>
+<h3 class="membertitle">request</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">If requesting is enabled, displays and positions the WideSelectInstance control.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void request(
+
+)
+</p>
+<a name="reset"></a>
+<h3 class="membertitle">reset</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears both paged and non-paged WideSelectItem objects, and ends any active request.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void reset(
+
+)
+</p>
+<a name="scrollToItem"></a>
+<h3 class="membertitle">scrollToItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Scrolls to control to the specified WideSelectItem.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void scrollToItem(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Index of WideSelectItem to activate.</li>
+</ul>
+<a name="selectItem"></a>
+<h3 class="membertitle">selectItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Selects the specified WideSelectItem.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void selectItem(
+i, <i>b</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Index of WideSelectItem to activate.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether to block the </li>
+</ul>
+<a name="setActiveItem"></a>
+<h3 class="membertitle">setActiveItem</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Selects the specified WideSelectItem .  Blocks publication of the onresultclick message.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setActiveItem(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Index of WideSelectItem to activate.</li>
+</ul>
+<a name="setAutoCommit"></a>
+<h3 class="membertitle">setAutoCommit</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control should render items as they are added.  If buffering is enabled, items will automatically begin rendering.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setAutoCommit(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control will automatically render items as they are added.</li>
+</ul>
+<a name="setAutoScroll"></a>
+<h3 class="membertitle">setAutoScroll</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control will automatically scroll to the last rendered item.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setAutoScroll(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control will automatically scroll to the last rendered item.</li>
+</ul>
+<a name="setAutoSelect"></a>
+<h3 class="membertitle">setAutoSelect</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control will automatically select the last rendered item.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setAutoSelect(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control will automatically select the last rendered item.</li>
+</ul>
+<a name="setBufferDelay"></a>
+<h3 class="membertitle">setBufferDelay</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies the number of milliseconds to pause between rendering the buffer offset.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setBufferDelay(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Number of milleseconds.</li>
+</ul>
+<a name="setBufferOffset"></a>
+<h3 class="membertitle">setBufferOffset</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies the number of items to be rendered at a time.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setBufferOffset(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Number of items to render at a time.</li>
+</ul>
+<a name="setCanRequest"></a>
+<h3 class="membertitle">setCanRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control can be requested.  The request featureset is used when the control is a pop-up or conditionally visible.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setCanRequest(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control can be requested.</li>
+</ul>
+<a name="setIsBuffered"></a>
+<h3 class="membertitle">setIsBuffered</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the control should buffer new items.  Buffered items are incrementally rendered.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setIsBuffered(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control should buffer new items.</li>
+</ul>
+<a name="setIsPaging"></a>
+<h3 class="membertitle">setIsPaging</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control is in paging mode.  Changing this value will clear paged items, and the control will need to be repopulated.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setIsPaging(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control is in paging mode.</li>
+</ul>
+<a name="setMaximumItems"></a>
+<h3 class="membertitle">setMaximumItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sets the maximum number of items supported by the control.   Specify zero to indicate no limit.  Any items over the maximum when rollover is enabled will cause the top-most item to be removed.  When rollover is disabled, the addItem method will fail on the last item.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setMaximumItems(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Maximum number of items supported by the control.</li>
+</ul>
+<a name="setMaximumPageItems"></a>
+<h3 class="membertitle">setMaximumPageItems</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sets the maximum number of items displayed per page, if paging is enabled.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setMaximumPageItems(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as integer : Maximum number of items to be displayed per page.</li>
+</ul>
+<a name="setMaximumRollover"></a>
+<h3 class="membertitle">setMaximumRollover</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control will rollover when the maximum number of items is reached; deleting the first item and adding the new item to the end.  If disabled and a maximum limit is stipulated, then new items won't be added.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setMaximumRollover(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control will rollover when the maximum number of items is reached.</li>
+</ul>
+<a name="setMultiple"></a>
+<h3 class="membertitle">setMultiple</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sets whether multiple selection is enabled.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setMultiple(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether multiple selection is enabled.</li>
+</ul>
+<a name="setPageStop"></a>
+<h3 class="membertitle">setPageStop</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether the WideSelect control should stop expecting more data, when in paging mode.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setPageStop(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the control should stop expecting more data.</li>
+</ul>
+<a name="setResultHandler"></a>
+<h3 class="membertitle">setResultHandler</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies the handler to invoke when a result item is activated.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setResultHandler(
+f
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>f</b> as function : Function pointer to click handler.</li>
+</ul>
+<a name="updatePage"></a>
+<h3 class="membertitle">updatePage</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Renders the current page of WideSelectItem objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void updatePage(
+
+)
+</p>
+<h3>Messages</h3>
+<a name="onbuffercommitted"></a>
+<h3 class="membertitle">onbuffercommitted</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemessageindex">Messages</a>
+</li>
+</ul>
+<p class="messagedesc">Message published to all subscribers when a buffered resultset was committed; being completely rendered and/or paginated.</p>
+<h4>Syntax</h4>
+<p class="messagesyntax">
+// User-specified script to subscribe to message
+<br>
+org.cote.js.message.MessageService.subscribe("onbuffercommitted",<i>_handle_message</i>);
+<br>
+// Internal: how the message is published to subscribers
+<br>
+org.cote.js.message.MessageService.publish("onbuffercommitted" 
+, o
+);
+<br>
+// User-specified script to handle the message subscription
+<br>
+function <i>_handle_message</i>("onbuffercommitted"
+, o
+){
+<br>
+// message handler code
+<br>
+}
+</p>
+<h4>Parameters</h4>
+<ul class="messageparams">
+<li>
+<b>o</b> as WideSelectInstance : The WideSelect control for which the buffer was committed.</li>
+</ul>
+<a name="onresultclick"></a>
+<h3 class="membertitle">onresultclick</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#WideSelectInstance">WideSelectInstance</a>
+</li>
+<li>
+<a href="#WideSelectInstancemessageindex">Messages</a>
+</li>
+</ul>
+<p class="messagedesc">Message published to all subscribers when the state changes for a WideSelectItem object.</p>
+<h4>Syntax</h4>
+<p class="messagesyntax">
+// User-specified script to subscribe to message
+<br>
+org.cote.js.message.MessageService.subscribe("onresultclick",<i>_handle_message</i>);
+<br>
+// Internal: how the message is published to subscribers
+<br>
+org.cote.js.message.MessageService.publish("onresultclick" 
+, o
+);
+<br>
+// User-specified script to handle the message subscription
+<br>
+function <i>_handle_message</i>("onresultclick"
+, o
+){
+<br>
+// message handler code
+<br>
+}
+</p>
+<h4>Parameters</h4>
+<ul class="messageparams">
+<li>
+<b>o</b> as WideSelectInstance : The WideSelect control for which the item state was changed.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

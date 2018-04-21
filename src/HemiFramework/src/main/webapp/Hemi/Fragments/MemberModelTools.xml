@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<embedded-script>
+			<![CDATA[
+      embedded_init : function(){
+        Hemi.include("hemi.text");
+      },
+		BuildFunction : function(vF){
+			var aBuff = [];
+			aBuff.push(vF.name + " : function(");
+			for(var p = 0; p < vF.parameter_names.length; p++){
+				if(p > 0) aBuff.push(", ");
+				aBuff.push(vF.parameter_names[p]);
+			}
+			aBuff.push(")\n{\n")
+			for(var s = 0; s < vF.statements.length; s++){
+				var aSL = vF.statements[s].split("\n");
+				for(var l = 0; l < aSL.length; l++){
+					var st = aSL[l];
+					st = st.replace(/\r/,"");
+					if(!st.match(/^\s+/)) aBuff.push("   ");
+					aBuff.push(st + "\n");
+				}
+			}						
+					
+			aBuff.push("}");
+			return aBuff.join("");
+		},
+		BuildFunctions : function(oConstruct){
+			var i = 0;
+			var aBuff = [];
+			for(var fN in oConstruct.functions){
+				if(i > 0) aBuff.push(",\n\n");
+				var vF = oConstruct.functions[fN];
+				aBuff.push(this.BuildFunction(vF));
+				i++;
+			}
+			return aBuff.join("");
+		},
+		NewComponentConstruct : function(oWideSelect){
+			return {
+				id : 0,
+				name : 0,
+				changes : 0,
+				functions : [],
+				properties : [],
+				objects : [],
+				tasks : [],
+				list : oWideSelect,
+				xhtml_content : ""
+			}
+		},
+		AddTaskParameterConstruct : function(oConstruct, sId, sValue, bEval){
+			if(!oConstruct.tasks[sId]) return;
+			var vTP = {
+				value : sValue,
+				eval : bEval
+			};
+			oConstruct.tasks[sId].params.push(vTP);
+			return vTP;
+		},
+		AddTaskDependencyConstruct : function(oConstruct, sId, sRid, bNamedDependency, bAutoExecute){
+			if(!oConstruct.tasks[sId] || oConstruct.tasks[sId].depends[sRid]) return;
+			var vTD = {
+				rid : sRid,
+				auto_execute : bAutoExecute,
+				named_dependency : bNamedDependency
+			}
+			oConstruct.tasks[sId].depends[sRid] = vTD;
+			return vTD;
+		},
+		AddTaskConstruct : function(oConstruct, sId, sActionType, sAction, sHandlerType, sHandler){
+			var vT = {
+				id: sId,
+				action: sAction,
+				action_type: sActionType,
+				handler: sHandler,
+				handler_type: sHandlerType,
+				depends : [],
+                params : []
+			}
+			oConstruct.tasks[sId] = vT;
+			oConstruct.list.addItem(sId,sId);
+		},
+		AddFunctionConstruct : function(oConstruct, sName){
+			var vF = {
+				name : sName,
+				parameter_names : [],
+				statements : []
+			}
+			oConstruct.functions[sName] = vF;
+			oConstruct.list.addItem(sName,sName);
+		},
+		AddFunctionParameter : function(oConstruct, sFunc, sParm){
+			if(!oConstruct){
+				alert("Invalid component construct");
+				return;
+			}
+			if(!oConstruct.functions[sFunc]) this.AddFunctionConstruct(oConstruct, sFunc);
+			oConstruct.functions[sFunc].parameter_names.push(sParm);
+		},
+		AddFunctionStatement : function(oConstruct,sFunc, sState){
+			if(!oConstruct){
+				alert("Invalid component construct");
+				return;
+			}
+			if(!oConstruct.functions[sFunc]) this.AddFunctionConstruct(oConstruct, sFunc);
+			oConstruct.functions[sFunc].statements.push(sState);
+		},
+		NewFunction : function(oConstruct){
+			if(!oConstruct){
+				alert("Invalid construct");
+				return;
+			}
+			var sName = prompt("Enter function name");
+			if(!sName || sName.length == 0) return;
+			this.AddFunctionStatement(oConstruct, sName, "");
+			oConstruct.changes++;
+			oConstruct.list.commitBuffer();
+			oConstruct.list.selectItem(oConstruct.list.getItemSize() - 1);
+		},
+		UpdateFunction : function(oConstruct, sText){
+			if(!oConstruct){
+				alert("Invalid construct");
+				return;
+			}
+
+			var oItem = oConstruct.list.getActiveItem();
+			if(!oItem &&!confirm("No item is selected.  Updating will overwrite any existing item with the specified name.  Continue?")) return;
+			var v;
+			
+			var mFunc = /([\S^\,]+)\s*:\s*function\s*\(([A-Za-z0-9_\-\$,\s^\)]*)\s*\)[\s^\{]+/;
+			var oM = sText.match(mFunc);
+			if(oM == null){
+				alert("Error: Model function does not match the expected format: FunctionName : function(){ ... }");
+				return;
+			}
+			try{
+				eval("v={" + sText + "};");
+			}
+			catch(e){
+				if(!confirm("Error check: " + (e.description ? e.description : e.message) + "\nContinue updating?")) return;
+			}
+			
+			var sName = oM[1];
+			var vFunc = 0;
+
+			if(oItem){
+				// If the names don't match
+				if(oItem.data != sName){
+					if(oConstruct.functions[sName] && !confirm("Overwrite unselected function '" + sName + "' and remove '" + oItem.data + "'?")) return;
+
+					// Remove the function association
+					delete oConstruct.functions[oItem.data];
+					// Remove the matching item
+					var aItems = oConstruct.list.getItems();
+					for(var i = 0; i < aItems.length; i++){
+						if(aItems[i].data && aItems[i].data == sName){
+							oConstruct.list.clearItem(aItems[i].index);
+							break;
+						}
+					}
+				}
+				oConstruct.list.clearItem(oItem.index);
+				oConstruct.changes++;
+			}
+
+			// Remove any reference to the function in the associative array
+			//
+			delete oConstruct.functions[sName];
+			
+			// Rebuild the param list
+			//
+			var aParams = oM[2].split(",");
+			var sParam = "";
+			for(var p = 0; p < aParams.length; p++){
+				sParam = Hemi.text.trim(aParams[p]);
+				if(sParam.length == 0) continue;
+				this.AddFunctionParameter(oConstruct, sName,sParam);
+			}
+			
+			// Replace the code statements with the current value
+			sText = Hemi.text.trim(sText.substring(sText.indexOf("{") + 1,sText.lastIndexOf("}")));
+			this.AddFunctionStatement(oConstruct, sName, sText);
+			// Reselect the item
+			//
+			oConstruct.list.commitBuffer();
+			oConstruct.list.selectItem(oConstruct.list.getItemSize() - 1);
+		},
+		ParseConstruct : function(oWideSelect, sCodeText){
+			var oConstruct = this.NewComponentConstruct(oWideSelect);
+			if(oWideSelect) oWideSelect.clearItems();
+			var sCurrent = 0;
+			if(!sCodeText || !sCodeText.length) return oConstruct;
+
+			var mFunc = /([\S^\,]+)\s*:\s*function\s*\(([A-Za-z0-9_\-\$,\s^\)]*)\s*\)[\s^\{]+/;
+			var oM = 0;
+			var iF = 0;
+			var iLastIndex = -1;
+			while((oM = sCodeText.match(mFunc))){
+				if(iF > 0){
+					var sFunction = sCodeText.substring(0,oM.index);
+					sFunction = sFunction.replace(/^\s*{/,"").replace(/\s*}(,)?\s*$/,"");
+					this.AddFunctionStatement(oConstruct, sCurrent, sFunction);
+				}
+				sCurrent = oM[1];
+				var aParams = oM[2].split(",");
+				var sParam = "";
+				for(var p = 0; p < aParams.length; p++){
+					sParam = Hemi.text.trim(aParams[p]);
+					if(sParam.length == 0) continue;
+					this.AddFunctionParameter(oConstruct, sCurrent,sParam);
+				}
+				iLastIndex = oM.index + oM[0].length;
+				iF++;
+				sCodeText = sCodeText.substring(iLastIndex,sCodeText.length);
+			}
+			if(iF >= 1){
+				var sFunction = sCodeText.substring(0,sCodeText.length);
+				sFunction = sFunction.replace(/^\s*{/,"").replace(/\s*}(,)?\s*$/,"");
+				this.AddFunctionStatement(oConstruct, sCurrent, sFunction); 
+			}
+			return oConstruct;
+		},
+		/// Copy from script  profiler
+		///
+		getTabs : function(iTabs){
+			var sRet="";
+			for(var i=0;i<iTabs;i++){
+				sRet+="   ";
+			}
+			return sRet;
+		},
+
+		/// Copy from script  profiler
+		///
+		Deobfuscate : function(sVal){
+
+			var aLines = sVal.split("\n");
+
+			var sParsed="";
+			var iTabs=0;
+			for(var l=0;l<aLines.length;l++){
+
+				var sLine=aLines[l];
+				//	chop spaces
+				sLine=sLine.replace(/\s*$/,"");
+				sLine=sLine.replace(/^\s*/,"");
+				// chop '//' comments
+
+				// BUGBUG: this removes everything up to the first //, so needs to be fixed for http://, etc.
+
+				var oR=new RegExp("//[\\w\\s\\S]*$","gi");
+				sLine=sLine.replace(oR,"");
+				var sCharLen=sLine.length;
+				var sReplace="";
+				
+				var bInStr1=false;
+				var bInStr2=false;			
+				var iInCond=0;
+				var bInComment=false;
+
+				for(var i=0;i<sCharLen;i++){
+					var sTack="";
+					var sChar=sLine.charAt(i);
+					if(sChar=="(") iInCond++;
+					if(sChar==")") iInCond--;
+					if(sChar=="{"){	
+						iTabs++;
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					if(sChar=="}"){
+						iTabs--;
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					if(sChar=="\"") bInStr1=(bInStr1==true)?false:true;
+					if(sChar=="'") bInStr2=(bInStr2==true)?false:true;
+					
+					if(sChar==";" && bInStr1==false && bInStr2==false && iInCond==0){
+						sTack+="\n" + this.getTabs(iTabs);
+					}
+					sReplace+=sChar + sTack;
+				}
+				sParsed+=sReplace;
+			}
+			return sParsed;
+		}
+	]]></embedded-script>
+</html-fragment>

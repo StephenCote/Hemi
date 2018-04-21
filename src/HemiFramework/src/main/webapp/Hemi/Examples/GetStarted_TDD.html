@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head>
+		<title>Hemi - JavaScript Framework - Get Started with TDD</title>
+		<link rel="stylesheet" href="/Styles/PageStyles2.css" type="text/css" title = "noauth" />
+		<link id = "oAuthStyle" rel="alternate stylesheet" href="/Styles/PageStyles2Auth.css" type="text/css" title = "auth" />
+		<link rel="stylesheet" href="/Hemi/Styles/hemi.css" type="text/css" />
+        <link rel="stylesheet" href="/Hemi/Styles/tabs.css" type="text/css" />
+		<script type = "text/javascript" src = "/Hemi/hemi.comp.js"></script>
+		<script type = "text/javascript" src = "/Scripts/PageScripts2.js"></script>
+        <script type = "text/javascript">
+
+            function LoadTestSuite(sId) {
+                LoadCustomTest((sId ? Hemi.xml.getInnerText(document.getElementById(sId)) : ""));
+            }
+            function LoadCustomTest(sText) {
+                var oW = Hemi.app.createWindow("Test Suite", 'Templates/TestSuite.xml', 'Test Suite', 0, 0, { custom_test: sText });
+                if (!oW && (oW = Hemi.app.getWindowManager().GetWindowByName("Test Suite"))) {
+                    oW.GetElementByRID("custom_test_text").value = sText;
+                    oW.GetElementByRID("select_test").selectedIndex = 1;
+                    oW.ResetSelectedTest();
+                }
+            }
+            Hemi.message.service.subscribe("ontemplateload", function (s, v) {
+                if (v.getContainerComponentId() != "Test Suite") return;
+                v.GetElementByRID("suite_commands").style.display = "none";
+            });
+            function ShowLog() {
+                Hemi.app.createWindow("Log Viewer", 'Templates/LogViewer.xml', 'LogViewer');
+            }
+            function ShowProfiler() {
+                Hemi.app.createWindow(0, 'Templates/FrameworkProfiler.xml', 'Templates/FrameworkProfiler.xml');
+            }
+        </script>
+	</head>
+	<body>
+
+		<h1>Hemi - JavaScript Framework - Get Started with TDD</h1>
+		<h3>AJAX, Monitoring, Portal Sevices, Templates, HTML-Code-Behind - Since 2002</h3>
+		<ul class = "menu">
+			<li class = "home"><a href = "/">Home</a></li>
+			<li class = "hemi"><a href = "/Hemi">Hemi</a></li>
+			<li class = "projects"><a href = "/projects/">Projects</a></li>
+			<li class = "forum"><a href = "/Forum/">Forum</a></li>
+			<li class = "documents"><a href = "/documents/">Documents</a></li>
+			<li class = "contact"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/FeedbackForm.xml">Contact</a></li>
+			<li class = "signup"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/SignupWizard1.xml">Signup</a></li>
+			<li class = "infomercial"><a href = "#" component = "/Gizmos/component.window_control.xml" template = "/Templates/Infomercial.xml">Special Note</a></li>
+			<li class = "login">
+				<form action = "/Login.aspx" method = "post">
+					<input type = "text" value = "" name = "UserName" /> 
+					<input type = "password" value = "" name = "Password" />
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Login" />
+				</form>
+			</li>
+			<li class = "session">
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/Profile.xml" class = "profile" title = "My Profile" href = "#">My Profile</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/BlogAdmin.xml" class = "blog" href = "#">My Blog</a>
+				<a component = "/Gizmos/component.window_control.xml" template = "/ActionForms/MediaAdmin.xml" class = "media" href = "#">My Media</a>
+				<form action = "/Login.aspx?logout=1" method = "post">
+					<input type = "hidden" value = "return" name = "direction" />
+					<input type = "submit" value = "Logout" />
+				</form>
+			</li>
+			<li class = "tools">
+				<a component = "/Gizmos/component.window_control.xml" template = "Templates/FrameworkProfiler.xml" title = "Developer Tools" class = "tools" href = "#">Tools</a>
+			</li>
+
+		</ul>
+		<div>
+            <div  class = "tabstrip">
+                <div class = "tab"><a href = "../index.html">Hemi Framework</a></div>
+                <div class = "tab"><a href = "../downloads.html">Downloads</a></div>
+                <div class = "tab"><a href = "../documentation.html">Documentation</a></div>
+                <div class = "tab"><a href = "../studies.html">Case Studies</a></div>
+                <div class = "tab"><a href = "../examples.html">Examples</a></div>
+            </div>
+
+			<div class = "tab_pane content_container">
+				<h2>Get Started with Hemi and TDD</h2>
+                <h3>Overview</h3>
+				<div class = "content_data">
+                       <p>
+                            Hemi includes framework-level unit testing capabilities with the <a href = "../api/hemi.app.module.test.html">Test Module</a> and on-demand performance testing with <a href = "/documents/html/technical/dhtml/funmon.html">JavaScript Function Monitor</a>.
+                            The included <i>Test Suite</i> Template and Fragment make it very easy to write in-page unit tests for existing applications, or to implement Hemi while following TDD best practices.
+                        </p>
+                        <p>
+                            The goal of this <i>Get Started with Hemi</i> article will be to create the same objects as are created in the <a href = "GetStarted_DWAC.html">Get Started with Hemi and DWAC</a>, except to do the testing up front.
+                            If you read and worked through the <i>Get Started with Hemi and DWAC</i>, you can reference your project files from these tests, assuming both this page and the <i>DWAC</i> tool are on the same domain.
+                            The objects we want to create are:
+                        </p>
+                        <ul>
+                           <li>"Example Template Container", a template that will serve as the entry point.</li> 
+                           <li>"ExampleComponent", a component that will be referenced within the first template, and be used to load a second template.</li>
+                           <li>"Embedded Template", a template that will include a fragment.</li>
+                           <li>"Example Fragment", a fragment that will include some XHTML.</li>
+                        </ul>
+                    </div>
+                    <h3>Introduction to the Test API and Test Tools</h3>
+                    <div class = "content_data">
+                        <p>
+                            First, let's get familiar with the test tool, <a href = "#" onclick = "LoadTestSuite();return false;">Test Suite</a>, and the <a href = "../api/hemi.app.module.test.html#TestModule">Test API</a>.
+                            <i>Test Suite</i> may load tests from external <i>.js</i> files, or from custom text.
+                            The syntax of a test is straightforward: A JavaScript function that starts with <i>Test</i>, which receives one parameter, <i>TestResult</i>, and which may return true or false.
+                            The JavaScript is loaded through the <a href = "../api/hemi.app.module.test.html">Test Module</a> into the <a href = "../api/hemi.app.module.html">Module</a> service.
+                            The result is that the once global Javascript function becomes an intimate part of a unique Test Module instance.
+                            The test has its own context, lifecycle, and works with other tests defined in the same text block or script file to form a <i>Test Suite</i>.
+                          </p>
+
+                        <p>Consider the following example test:</p>
+                    <pre id = "oPre1">
+// A test created for 'something'.
+function TestSomething(oTestResult){
+   // Log results are visible from the console
+   this.log("Example test");
+   this.Assert(true);
+}
+                    </pre>
+                    <p>
+                      <input type = "button" onclick = "LoadTestSuite('oPre1');return false;" value = "Load Test #1" />
+                      <input type = "button" value = "Log" onclick = "ShowLog()" />
+                      <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                       Click the 'Run Current Test' button to try it out. <i>Tip:</i> You can type in your own test function into the text field and click the 'Reset Current Test' button.
+                    </p>
+                          <p>
+                            Apart from writing a javascript function that begins with <i>Test</i>, one other important feature to keep in mind is synchronicity.
+                            Every test is assumed to by synchronous, and, therefore, the return value is assumed to be <b>true</b>.
+                            By returning <b>false</b>, the <i>Test</i> indicates it is not finished processing.
+                            To finish processing, the <i>Test</i> must at some point invoke the <i>EndTest</i> method.
+                            Behind the scenes, the test service uses the <a href = "../api/hemi.task.html">Task Service</a> to keep track of the test states.
+                        </p>
+                        <p>
+                            The following example test demonstrates asynchronous tests.
+                        </p>
+                    <pre id = "oPre2">
+function TestStartAsyncSomething(oTestResult){
+   // Do something, waiting for a reult
+   return false;
+}
+function TestFinishAsyncSomething(oTestResult){
+   // Use this test to finish the previous test.
+   EndTestStartAsyncSomething(true);
+}
+                    </pre>
+                    <p>
+                      <input type = "button" onclick = "LoadTestSuite('oPre2');return false;" value = "Load Test #2" />
+                      <input type = "button" value = "Log" onclick = "ShowLog()" />
+                      <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                      Notice there are two tests.  Click 'Run' next to the first test.  Notice that the test does not complete.  Click 'Run' next to the second test and notice the first test finishes.
+
+                    </p>
+                    </div>
+                    <h3>Creating Tests for the Custom Objects</h3>
+                    <div class = "content_data">
+                    <p>
+                        The first set of tests should be to try to load each of the non-existent objects: two templates, one fragment, and one component.
+                        The templates and components are easy because they are first-class <a href = "../api/hemi.app.comp.html">Application Component</a> features.
+                        In fact, the <a href = "../api/hemi.app.html">hemi.app</a> library includes wrappers to make it pretty easy to load, the <i>Feature Verification Tests</i> (FVTs) include examples (template tests : <a href = "../Tests/test.app.comp.js">test.app.comp.js</a>),
+                        and the <a href = "../Fragments/RuntimeContainer.xml">Runtime Container</a> fragment used for <i>DWAC</i> projects provides ever more example material.
+                    </p>
+                    <h4>Template Tests</h4>
+                    <p>
+                        This test will assume that at some point a file named <i>ExampleTemplateContainer.xml</i> will exist in the same directory as the page running the test..
+                    </p>
+                    <p>
+                        There are several ways to load templates.  An XML request, a direct node reference, via the <i>hemi.app.createApplicationComponent</i> wrapper, or building up the necessary <i>hemi.object.xhtml</i> and <i>hemi.app.comp</i> objects, or using the <i>template</i> attribute within an <i>Application  Space</i>.
+                        The easiest way to load a template is with the attribute, such as: &lt;div rid = "ExampleTemplateContainer" template = "ExampleTemplateContainer.xml" /&gt;
+                        This is also a hard test to reuse because it is so dependent on a clean environment, and assumes the test host already made an attempt to load the test template.
+                    </p>
+                    <div rid = "ExampleTemplateContainer" template = "Examples/ExampleTemplateContainer.xml"></div>
+<pre id = "oPre3">
+// Given some HTML on the page
+// &lt;div rid = "ExampleTemplateContainer" template = "ExampleTemplateContainer.xml" /&gt;
+function TestTemplateWithSpaces(oResult){
+    var oSpace = Hemi.app.space.service.getPrimarySpace();
+    var oObject = oSpace.getSpaceObjectByName("ExampleTemplateContainer");
+    if(oObject && oObject.object)
+        this.Assert(oObject.object.getContainer().innerHTML.match(/Example Template Container/),"Example text not found");
+}
+</pre>
+                    <p>
+                        <input type = "button" onclick = "LoadTestSuite('oPre3');return false;" value = "Load Test #3.1" />
+                        <input type = "button" value = "Log" onclick = "ShowLog()" />
+                        <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                    </p>
+                    <p>
+                        Although it is more work on the testing side, adding a few extra lines makes it more reusable.
+                    </p>
+<pre id = "oPre7">
+function TestFragment(){
+    var oDiv = document.createElement("div");
+    var oX = Hemi.object.xhtml.newInstance(oDiv, 1);
+    var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);
+    oA.setTemplateIsSpace(1);
+    oA.setAsync(false);
+    var oXml = Hemi.xml.getXml("Examples/ExampleTemplateContainer.xml");
+    this.Assert(oXml != null, "Template not found");
+	oA.loadTemplateFromNode(oXml.documentElement);
+    this.Assert(oA.getContainer().innerHTML.match(/Example Template Container/i),"Example text not found");
+}
+</pre>
+                    <p>
+                        <input type = "button" onclick = "LoadTestSuite('oPre7');return false;" value = "Load Test #3.2" />
+                        <input type = "button" value = "Log" onclick = "ShowLog()" />
+                        <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                    </p>
+                    <p>
+                        Testing can be a bit tricky when using <i>loadTemplate</i> because the method only serves as an input and not an output, primarily to handle asynchronous requests.
+                        Therefore, the test would need to be asynchronous  and listen for the <a href = "../api/hemi.app.comp.html#ontemplateload">ontemplateload</a> message.
+                        Because the template doesn't exist, we also need an extra check to determine it failed to load.
+                        A setTimeout is used for two seconds.  If the template loads within that two seconds, a property is set on the test.  At the end of two seconds, the test is ended with the result being the state of that property.
+                        Whenever the template loads, the property will be true and the test will pass.
+                    </p>
+                    <pre id = "oPre4">
+this.Initialize = function(){
+    Hemi.message.service.subscribe("ontemplateload",HandleTemplateLoad);
+};
+this.Unload = function(){
+    Hemi.message.service.unsubscribe("ontemplateload",HandleTemplateLoad);
+    var oComp = Hemi.app.space.service.getPrimarySpace().getSpaceObjectByName("Test Example Template");
+    if(oComp && oComp.object) oComp.object.destroy();
+};
+function CheckTemplateLoad(){
+    EndTestLoadExampleTemplateContainer((Module.getProperties().template_loaded ? true : false));
+}
+
+function HandleTemplateLoad(sMessage, vData){
+    if (vData.getContainerComponentId() == "Test Example Template")
+        Module.getProperties().template_loaded = 1;
+    
+}
+function TestLoadExampleTemplateContainer(oTestResult){
+    // Make an HTML element for the Template
+    var oDiv = document.createElement("div");
+    oDiv.appendChild(document.createTextNode("Test"));
+	document.body.appendChild(oDiv);
+    this.getObjects().div = oDiv;
+
+    // Give the component the RID: "Test Example Template"
+	var oComp = Hemi.app.createApplicationComponent(0, oDiv, Hemi.app.space.service.getPrimarySpace(),"Test Example Template");
+    window.setTimeout(CheckTemplateLoad,2000);
+	oComp.loadTemplate("Examples/ExampleTemplateContainer.xml");
+    return false;
+}
+                    </pre>
+                    <p>
+                    <input type = "button" onclick = "LoadTestSuite('oPre4');return false;" value = "Load Test #4" />
+                    <input type = "button" value = "Log" onclick = "ShowLog()" />
+                    <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                    </p>
+                    <h4>Component Test</h4>
+                    <p>
+                         Component tests are straight forward, provided the component file name follows the convention <i>component.[name].xml</i>.
+                    </p>
+                    <pre id = "oPre5">
+function TestLoadComponent(){
+	var oComp = Hemi.app.createApplicationComponent("Examples/component.test.xml");
+	this.Assert(oComp, "Component was not created");
+    this.Assert((oComp.getReadyState() == 4), "Component readyState is unexpected.");
+}  
+                    </pre>
+                    <p>
+                    <input type = "button" onclick = "LoadTestSuite('oPre5');return false;" value = "Load Test #5" />
+                    <input type = "button" value = "Log" onclick = "ShowLog()" />
+                    <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                    </p>
+
+                    <h4>Fragment Test</h4>
+                    <p>
+                        Fragments are bits of XHTML and script that are reusable components within the object space of a template.
+                        Fragments are largely conceptual in nature in that they exist as <a href = "../api/hemi.app.space.definitions.html">a space definition</a>, <i>import-xml</i>, and that, like Templates, they are pre-processed by <a href = "../api/hemi.app.comp.html">Application Components</a> for special tokens and <i>embedded-script</i> statements.
+                        Application Space configuration provides the abstraction and primary processing mechanism for Fragments and Templates.
+                        In fact, Fragments ande Templates look very similar, with three notable exceptions:
+                    </p>
+                    <ol>
+                        <li>Templates may define both template_init and template_destroy, and embedded_init and embedded_destroy handler sets, while Fragments may only define the embedded_init and embedded_destroy handlers.</li>
+                        <li>Templates must have a &lt;Template /&gt; root node, while fragments must define a root node that matches the space definition (default is &lt;html-fragment /&gt;)</li>
+                        <li>Templates can be loaded directly from an application component while Fragments must be loaded indirectly through a template or space configuration.</li>
+                    </ol>
+
+                    <p>
+                        Much like testing Templates, there are several ways to test Fragments.
+                        The easiest way would be to define the fragment in an existing template, and then reuse the existing Template test.
+                        However, this does not make for maintainable tests.
+                        Ideally, the Fragment test would not be dependent on a Template.
+                        So, that is the unit test we will make.
+                    </p>
+<pre id = "oPre6">
+function TestFragment(){
+    var oDiv = document.createElement("div");
+    var oX = Hemi.object.xhtml.newInstance(oDiv, 1);
+    var oA = Hemi.app.comp.newInstance(0,0,oX.getObjectId(),0,0,1);
+    oA.setTemplateIsSpace(1);
+    oA.setAsync(false);
+    var oTemplate = Hemi.xml.parseXmlDocument("&lt;Template&gt;&lt;import-xml src = \"Examples/ExampleFragment.xml\" /&gt;&lt;/Template&gt;");
+	oA.loadTemplateFromNode(oTemplate.documentElement);
+    this.Assert(oA.getContainer().innerHTML.match(/example fragment/i),"Fragment text not found");
+}
+</pre>
+                <p>
+                <input type = "button" onclick = "LoadTestSuite('oPre6');return false;" value = "Load Test #6" />
+                <input type = "button" value = "Log" onclick = "ShowLog()" />
+                <input type = "button" value = "Profile" onclick = "ShowProfiler()" />
+                </p>
+
+
+				</div>
+			</div>
+		
+		</div>
+    	<p class="copyright">[ Stephen W. Cote, 2010 - <a href = "hemi.license.txt">BSD</a> ]</p>
+	</body>
+</html>

@@ -1,0 +1,1745 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.app.comp Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.app.comp</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Application Component is a portable and reusable set of code that can act as code-behind for HTML elements, quickly instrument event handling, and quickly load external templates within their own Application Space.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#ApplicationComponent"><i>static </i>Hemi.app.comp.ApplicationComponent</a>: Static initializer for ApplicationComponentInstance objects.</li>
+<li>
+<a href="#ApplicationComponentInstance">Hemi.app.comp.ApplicationComponentInstance</a>: A code fragment in a private scope that may be bound to HTML Nodes, and/or XHTMLComponent objects, and which provides a controlled environment for code execution and management.</li>
+</ul>
+<a name="ApplicationComponent"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.app.comp.ApplicationComponent</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static initializer for ApplicationComponentInstance objects.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="ApplicationComponentmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#bindComponent">bindComponent</a>: Binds the specified HTML Node or XHTMLComponent object to the specified Application Component, and returns the Application Component.</li>
+<li>public <a href="#newInstance">newInstance</a>: Creates a new ApplicationComponentInstance object.</li>
+</ul>
+<h3>Methods</h3>
+<a name="bindComponent"></a>
+<h3 class="membertitle">bindComponent</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponent">ApplicationComponent</a>
+</li>
+<li>
+<a href="#ApplicationComponentmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Binds the specified HTML Node or XHTMLComponent object to the specified Application Component, and returns the Application Component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">a = bindComponent(
+o, i, c, <i>p</i>, <i>a</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as variant : HTML DOM Node or String id of registered XHTMLComponent.</li>
+<li>
+<b>i</b> as String : Identifier of the component to bind to.</li>
+<li>
+<b>c</b> as String : Path to the external XML file containing the component definition.</li>
+<li>
+<b>p</b> as String <i>(optional)</i>: Participant id.</li>
+<li>
+<b>a</b> as boolean <i>(optional)</i>: Load synchronously.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>a</b> as ApplicationComponentInstance: Instance of an ApplicationComponent.</p>
+<a name="newInstance"></a>
+<h3 class="membertitle">newInstance</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponent">ApplicationComponent</a>
+</li>
+<li>
+<a href="#ApplicationComponentmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a new ApplicationComponentInstance object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">a = newInstance(
+i, o, <i>c</i>, <i>f</i>, <i>p</i>, <i>b</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as String : Identifier of the component to create.</li>
+<li>
+<b>o</b> as variant : XHTML/HTML Node or function pointer.</li>
+<li>
+<b>c</b> as String <i>(optional)</i>: Container identifier.</li>
+<li>
+<b>f</b> as function <i>(optional)</i>: Load handler.  Handler is invoke with two parameters: The string "onloadappcomp", and the ApplicationComponentInstance object that was loaded.</li>
+<li>
+<b>p</b> as String <i>(optional)</i>: Participant id.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether the application component should bind to its XHTMLComponent container.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>a</b> as ApplicationComponentInstance: Instance of an ApplicationComponent.</p>
+<a name="ApplicationComponentInstance"> </a>
+<h3 class="membertitle">Hemi.app.comp.ApplicationComponentInstance</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">A code fragment in a private scope that may be bound to HTML Nodes, and/or XHTMLComponent objects, and which provides a controlled environment for code execution and management.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="ApplicationComponentInstanceexampleindex"> </a>
+<h4>Example Index</h4>
+<ul class="index">
+<li>
+<a href="#Bind HTML Node to Application Component #1">Bind HTML Node to Application Component #1</a>: Demonstrate how an ApplicationComponent can be used to bind an HTML Node to a external code.</li>
+</ul>
+<a name="ApplicationComponentInstancepropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: object_config.pointers and object_config.status.</li>
+<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
+<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
+<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
+<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
+</ul>
+<a name="ApplicationComponentInstancemethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>virtual <a href="#_handle_event">_handle_event</a>: Handler for a specific event, where event is one of the following: change, focus, blur, mouseover, mouseout, click.  When binding a component with one of these handlers, the event instrumentation is done automatically.</li>
+<li>public <a href="#_handle_template_processor">_handle_template_processor</a> (<b>internal</b>): Buffered handler for Space Processor override.</li>
+<li>public <a href="#_handle_xhtml_token">_handle_xhtml_token</a>: Token pre-processor.  Tokens include: ${this} returns a string representing a request to the registry for the context object, ${this.id} represents the running object id, ${hemi.hemi_base} represents the framework base path, and ${form.[name]} may be used to access virtual form fields.</li>
+<li>public <a href="#cleanTemplate">cleanTemplate</a>: Invokes virtual template_destroy and embedded_destroy methods, and removes embedded script that had been loaded.  This will not remove any XHTMLComponent or Space objects, or clear the XHTML contents.</li>
+<li>public <a href="#clearBean">clearBean</a>: Clears a local reference to the specified object.  Otherwise, the object will be cleaned up and removed from the registry when the component is destroyed.</li>
+<li>virtual <a href="#component_destroy">component_destroy</a>: Invoked when the ApplicationComponent destroy method is invoked, but before internal references are removed or cleaned up.</li>
+<li>virtual <a href="#component_init">component_init</a>: Invoked when the component has been initialized and is ready to be used.</li>
+<li>virtual <a href="#component_post_init">component_post_init</a>: Invoked after the component and any children have been initialized.</li>
+<li>public <a href="#destroy">destroy</a>: Prepares the ApplicationComponent to be destroyed.  Removes all tokens created for this object, removes this object from participating in any transactions, removes it from the registry, and invokes the component_destroy method.</li>
+<li>virtual <a href="#embedded_destroy">embedded_destroy</a>: Invoked prior to a template being loaded, or the containing object being destroyed. This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_destroy method is unique to the object, there can be any number of embedded_destroy declarations.</li>
+<li>virtual <a href="#embedded_init">embedded_init</a>: Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_init method is unique to the object, there can be any number of embedded_init declarations.</li>
+<li>public <a href="#evaluateWireReference">evaluateWireReference</a>: Evaluates the wire reference. Deprecated.</li>
+<li>public <a href="#getBean">getBean</a>: Retrieves the named object.</li>
+<li>public <a href="#getBindingEnabled">getBindingEnabled</a>: Bit indicating whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</li>
+<li>public <a href="#getComponentName">getComponentName</a>: Returns the container name.</li>
+<li>public <a href="#getContainer">getContainer</a>: Returns the object that contains the application component.</li>
+<li>public <a href="#getContainerComponentId">getContainerComponentId</a>: Returns the specified identifier of the component's container component.</li>
+<li>public <a href="#getContainerId">getContainerId</a>: Returns the container id, which is the object to which the component belongs.</li>
+<li>public <a href="#getDataStack">getDataStack</a>: Returns the StackStack used by this component.</li>
+<li>public <a href="#getDefinitionId">getDefinitionId</a>: Returns the definition id, which is the code executed to construct the component.</li>
+<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
+<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
+<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
+<li>public <a href="#getPointers">getPointers</a>: Returns the object_config.pointers sub structure.</li>
+<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
+<li>public <a href="#getReferenceId">getReferenceId</a>: Returns the specified identifier of the component container, such as the containing Space identifier.</li>
+<li>public <a href="#getStatus">getStatus</a>: Returns the object_config.status sub structure.</li>
+<li>virtual <a href="#getTemplateContainer">getTemplateContainer</a>: Returns the XHTML object into which a template is copied.</li>
+<li>virtual <a href="#getTemplateObjectByName">getTemplateObjectByName</a>: Returns an object reference from the current template.  Used when setTemplateIsSpace is set to true.</li>
+<li>public <a href="#getTemplateSpace">getTemplateSpace</a>: Returns the Space object created for the template container.  Used when setTemplateIsSpace is set to 1.</li>
+<li>public <a href="#importComponentDefinition">importComponentDefinition</a> (<b>internal</b>): Imports the definition node.  Invokes the handler specified in newInstance with the String "onloadappcomp" and the ApplicationComponentInstance object.  Invokes the component_init method if it was defined.</li>
+<li>public <a href="#importEmbeddedScript">importEmbeddedScript</a>: Imports embedded-script elements from an XML document.</li>
+<li>public <a href="#importNodeDefinition">importNodeDefinition</a> (<b>internal</b>): Imports the definition node.</li>
+<li>public <a href="#init">init</a> (<b>internal</b>): Initializes the Application Component with the specified definition node.</li>
+<li>public <a href="#loadComponent">loadComponent</a>: Loads the specified component definition.</li>
+<li>public <a href="#loadTemplate">loadTemplate</a>: Loads the specified template into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</li>
+<li>public <a href="#loadTemplateFromNode">loadTemplateFromNode</a>: Loads the specified template node into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</li>
+<li>virtual <a href="#local_handle_xhtml_token">local_handle_xhtml_token</a>: Virtual token pre-processor to be implemented as needed for substituting tokenized values (eg: ${this})</li>
+<li>virtual <a href="#local_template_init">local_template_init</a>: Invoked after template_init and all embedded_init functions.  Used for specifying load handlers.</li>
+<li>public <a href="#post_init">post_init</a> (<b>internal</b>): Invokes a post initialization after the component has been initialized, and after any child content and objects have been added and initialized.  Automatically invoked by Space servire through XHTMLComponent. Or, can be manually invoked as needed.  Causes any virtual component_post_init function to be invoked.</li>
+<li>public <a href="#release">release</a>: Releases the ApplicationComponent object so that it can be reinitialized with another definition.</li>
+<li>public <a href="#sanitizeBean">sanitizeBean</a>: Returns a version of the bean with only the expected properties, stripping out any framework related properties.</li>
+<li>public <a href="#setAsync">setAsync</a>: Specify whether load operations should be handled asynchronously.</li>
+<li>public <a href="#setBean">setBean</a>: Creates a local reference to the specified object.  The object will be prepared and registered as a framework object if it is not already.  All bean objects will be cleaned up and removed from the registry when the component is destroyed.</li>
+<li>public <a href="#setBindingEnabled">setBindingEnabled</a>: Specify whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</li>
+<li>public <a href="#setContainerId">setContainerId</a>: Specifies the container id, which is the object to which the component belongs.</li>
+<li>public <a href="#setTemplateIsSpace">setTemplateIsSpace</a>: Specifies whether to instrument a template container as an Application Space.  Note: When a component is set as a space, the space-id attribute artifact is stripped.  The space-id attribute is used as a processing boundary by the Application Space service.  If the marker is not removed, the spaces will overlap and may result in errors due to expected objects not existing in the expected spaces.</li>
+<li>virtual <a href="#setTitle">setTitle</a> (<b>internal</b>): Invoked by _handle_load_template, and sets a title for a component based on a loaded template.</li>
+<li>public <a href="#sigterm">sigterm</a>: Sends a termination signal to the ApplicationComponent.</li>
+<li>virtual <a href="#template_destroy">template_destroy</a>: Invoked prior to a template being loaded, or the containing object being destroyed.</li>
+<li>virtual <a href="#template_init">template_init</a>: Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each template must define it in order for it to be invoked.</li>
+</ul>
+<a name="ApplicationComponentInstancemessageindex"> </a>
+<h4>Message Index</h4>
+<ul class="index">
+<li>public <a href="#oncomponentload">oncomponentload</a>: Message published to all subscribers when a component has been loaded.</li>
+<li>public <a href="#ontemplateload">ontemplateload</a>: Message published to all subscribers when a template has been loaded.</li>
+</ul>
+<h3>Examples</h3>
+<a name="Bind HTML Node to Application Component #1"></a>
+<h3 class="membertitle">Bind HTML Node to Application Component #1</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstanceexampleindex">Examples</a>
+</li>
+</ul>
+<p class="exampledesc">Demonstrate how an ApplicationComponent can be used to bind an HTML Node to a external code.</p>
+<h4>Example Code</h4>
+<pre class="example">&lt;!-- XML Component File --&gt;&lt;application-components&gt;   &lt;application-component id = "demo_ac1"&gt;      &lt;![CDATA[         component_init:function(){            alert('loaded');         },         component_destroy:function(){         },         _handle_click:function(e){            alert('click');         }      ]]&gt;   &lt;/application-component&gt;&lt;/application-components&gt;&lt;!-- HTML Page --&gt;&lt;p id = "oTest"&gt;This is a test&lt;/p&gt;&lt;script type = "text/javascript"&gt;window.onload = init;function init(){   var oAC = Hemi.app.comp.ApplicationComponent;   var oComponent = oAC.bindComponent(document.getElementById("oTest"),"demo_ac1","/path/to/file.xml");}&lt;/script&gt;</pre>
+<h3>Properties</h3>
+<a name="object_config"></a>
+<h3 class="membertitle">object_config</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object API structure for storing sub structures: object_config.pointers and object_config.status.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">object = <i>object</i>.object_config</p>
+<a name="object_id"></a>
+<h3 class="membertitle">object_id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique instance identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_id</p>
+<a name="object_type"></a>
+<h3 class="membertitle">object_type</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The type of this object.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_type</p>
+<a name="object_version"></a>
+<h3 class="membertitle">object_version</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Version of the object class.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_version</p>
+<a name="ready_state"></a>
+<h3 class="membertitle">ready_state</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancepropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">int = <i>object</i>.ready_state</p>
+<h3>Methods</h3>
+<a name="_handle_event"></a>
+<h3 class="membertitle">_handle_event</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Handler for a specific event, where event is one of the following: change, focus, blur, mouseover, mouseout, click.  When binding a component with one of these handlers, the event instrumentation is done automatically. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_event(
+e
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>e</b> as event : Event object.  This is determined cross browser, so there should be no need to query for the global event object in browsers such as Internet Explorer.</li>
+</ul>
+<a name="_handle_template_processor"></a>
+<h3 class="membertitle">_handle_template_processor</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Buffered handler for Space Processor override.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void _handle_template_processor(
+o, v
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as Space : A Space object.</li>
+<li>
+<b>v</b> as variant : An XHTML Node, or string.</li>
+</ul>
+<a name="_handle_xhtml_token"></a>
+<h3 class="membertitle">_handle_xhtml_token</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Token pre-processor.  Tokens include: ${this} returns a string representing a request to the registry for the context object, ${this.id} represents the running object id, ${hemi.hemi_base} represents the framework base path, and ${form.[name]} may be used to access virtual form fields.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = _handle_xhtml_token(
+i, s
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as int : Integer representing the nodeType.</li>
+<li>
+<b>s</b> as String : String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as String: The substituted value</p>
+<a name="cleanTemplate"></a>
+<h3 class="membertitle">cleanTemplate</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes virtual template_destroy and embedded_destroy methods, and removes embedded script that had been loaded.  This will not remove any XHTMLComponent or Space objects, or clear the XHTML contents.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void cleanTemplate(
+
+)
+</p>
+<a name="clearBean"></a>
+<h3 class="membertitle">clearBean</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Clears a local reference to the specified object.  Otherwise, the object will be cleaned up and removed from the registry when the component is destroyed.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = clearBean(
+v
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>v</b> as variant : The object or object_id of the locally referenced object.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the bean was cleared.</p>
+<a name="component_destroy"></a>
+<h3 class="membertitle">component_destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when the ApplicationComponent destroy method is invoked, but before internal references are removed or cleaned up. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void component_destroy(
+
+)
+</p>
+<a name="component_init"></a>
+<h3 class="membertitle">component_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when the component has been initialized and is ready to be used. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void component_init(
+
+)
+</p>
+<a name="component_post_init"></a>
+<h3 class="membertitle">component_post_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked after the component and any children have been initialized. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void component_post_init(
+
+)
+</p>
+<a name="destroy"></a>
+<h3 class="membertitle">destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Prepares the ApplicationComponent to be destroyed.  Removes all tokens created for this object, removes this object from participating in any transactions, removes it from the registry, and invokes the component_destroy method.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void destroy(
+
+)
+</p>
+<a name="embedded_destroy"></a>
+<h3 class="membertitle">embedded_destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked prior to a template being loaded, or the containing object being destroyed. This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_destroy method is unique to the object, there can be any number of embedded_destroy declarations. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void embedded_destroy(
+
+)
+</p>
+<a name="embedded_init"></a>
+<h3 class="membertitle">embedded_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each embedded-script must define it in order for it to be invoked.  Where the template_init method is unique to the object, there can be any number of embedded_init declarations. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void embedded_init(
+
+)
+</p>
+<a name="evaluateWireReference"></a>
+<h3 class="membertitle">evaluateWireReference</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Evaluates the wire reference. Deprecated.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">w = evaluateWireReference(
+b, <i>n</i>, <i>a</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether only the wire action should be evaluated.</li>
+<li>
+<b>n</b> as String <i>(optional)</i>: Wire name to supercede the hardcoded definition.</li>
+<li>
+<b>a</b> as array <i>(optional)</i>: Argument array.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>w</b> as boolean: Returns true if the wire was evaluated, false otherwise.</p>
+<a name="getBean"></a>
+<h3 class="membertitle">getBean</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Retrieves the named object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getBean(
+n
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : The name assigned to the object.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: A JavaScript object.</p>
+<a name="getBindingEnabled"></a>
+<h3 class="membertitle">getBindingEnabled</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Bit indicating whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = getBindingEnabled(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the component should bind to any specified XHTMLComponent.</p>
+<a name="getComponentName"></a>
+<h3 class="membertitle">getComponentName</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the container name.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getComponentName(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The name of the component.</p>
+<a name="getContainer"></a>
+<h3 class="membertitle">getContainer</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object that contains the application component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getContainer(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object that contains the application component.</p>
+<a name="getContainerComponentId"></a>
+<h3 class="membertitle">getContainerComponentId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the specified identifier of the component's container component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getContainerComponentId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as String: Identifier of the component's container component.</p>
+<a name="getContainerId"></a>
+<h3 class="membertitle">getContainerId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the container id, which is the object to which the component belongs.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getContainerId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: Identifier of the registered object to which this application component belongs.</p>
+<a name="getDataStack"></a>
+<h3 class="membertitle">getDataStack</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the StackStack used by this component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getDataStack(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as StackStack: DataStack object.</p>
+<a name="getDefinitionId"></a>
+<h3 class="membertitle">getDefinitionId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the definition id, which is the code executed to construct the component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getDefinitionId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: Application component definition id.</p>
+<a name="getObjectId"></a>
+<h3 class="membertitle">getObjectId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the unique id of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getObjectId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The unique object instance id.</p>
+<a name="getObjectType"></a>
+<h3 class="membertitle">getObjectType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the type of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getObjectType(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as String: The type of the object instance.</p>
+<a name="getObjectVersion"></a>
+<h3 class="membertitle">getObjectVersion</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the version of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getObjectVersion(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as String: The version of the object instance.</p>
+<a name="getPointers"></a>
+<h3 class="membertitle">getPointers</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object_config.pointers sub structure.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getPointers(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object_config.pointers substructure.</p>
+<a name="getReadyState"></a>
+<h3 class="membertitle">getReadyState</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the state of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReadyState(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as int: The object ready state.</p>
+<a name="getReferenceId"></a>
+<h3 class="membertitle">getReferenceId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the specified identifier of the component container, such as the containing Space identifier.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReferenceId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as String: Identifier of the component container.</p>
+<a name="getStatus"></a>
+<h3 class="membertitle">getStatus</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the object_config.status sub structure.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getStatus(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: The object_config.status substructure.</p>
+<a name="getTemplateContainer"></a>
+<h3 class="membertitle">getTemplateContainer</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the XHTML object into which a template is copied. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getTemplateContainer(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: XHTML object.</p>
+<a name="getTemplateObjectByName"></a>
+<h3 class="membertitle">getTemplateObjectByName</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an object reference from the current template.  Used when setTemplateIsSpace is set to true. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = getTemplateObjectByName(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: XHTML object.</p>
+<a name="getTemplateSpace"></a>
+<h3 class="membertitle">getTemplateSpace</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the Space object created for the template container.  Used when setTemplateIsSpace is set to 1.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">e = getTemplateSpace(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>e</b> as SpaceObject: Space object created for the template container.</p>
+<a name="importComponentDefinition"></a>
+<h3 class="membertitle">importComponentDefinition</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Imports the definition node.  Invokes the handler specified in newInstance with the String "onloadappcomp" and the ApplicationComponentInstance object.  Invokes the component_init method if it was defined.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void importComponentDefinition(
+s, i, <i>pn</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as String : The Application Component code.</li>
+<li>
+<b>i</b> as String : The component identifier.</li>
+<li>
+<b>pn</b> as String <i>(optional)</i>: The transaction name this component should participate in.</li>
+</ul>
+<a name="importEmbeddedScript"></a>
+<h3 class="membertitle">importEmbeddedScript</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Imports embedded-script elements from an XML document.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void importEmbeddedScript(
+n, b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as XML node : An XML node.</li>
+<li>
+<b>b</b> as bool : Bit indicating whether the embedded script element should be preserved in the parent node.  The default action is to remove it.</li>
+</ul>
+<a name="importNodeDefinition"></a>
+<h3 class="membertitle">importNodeDefinition</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Imports the definition node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void importNodeDefinition(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Application Component definition node.  This should be an XML node.</li>
+</ul>
+<a name="init"></a>
+<h3 class="membertitle">init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Initializes the Application Component with the specified definition node.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void init(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Application Component definition node.  This should be an XML node.</li>
+</ul>
+<a name="loadComponent"></a>
+<h3 class="membertitle">loadComponent</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Loads the specified component definition.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void loadComponent(
+l, c
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>l</b> as String : The identifier of the component to load.</li>
+<li>
+<b>c</b> as String : Path to the external XML file containing the component definitions.</li>
+</ul>
+<a name="loadTemplate"></a>
+<h3 class="membertitle">loadTemplate</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Loads the specified template into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void loadTemplate(
+s, <i>i</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as String : Path to the XML file containing the template data.</li>
+<li>
+<b>i</b> as String <i>(optional)</i>: Optional id of the template to load.</li>
+</ul>
+<a name="loadTemplateFromNode"></a>
+<h3 class="membertitle">loadTemplateFromNode</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Loads the specified template node into the component container, or, if specified, into the object returned by the optional getTemplateContainer function defined on the component.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void loadTemplateFromNode(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as Node : Xml node representing the template to load.</li>
+</ul>
+<a name="local_handle_xhtml_token"></a>
+<h3 class="membertitle">local_handle_xhtml_token</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Virtual token pre-processor to be implemented as needed for substituting tokenized values (eg: ${this}) Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = local_handle_xhtml_token(
+i, s
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as int : Integer representing the nodeType.</li>
+<li>
+<b>s</b> as String : String value provided by HemiEngine.xml.setInnerXHTML, when this method is provided as the callback argument.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as String: The substituted value</p>
+<a name="local_template_init"></a>
+<h3 class="membertitle">local_template_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked after template_init and all embedded_init functions.  Used for specifying load handlers. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void local_template_init(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as ApplicationComponent : The application component.</li>
+</ul>
+<a name="post_init"></a>
+<h3 class="membertitle">post_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invokes a post initialization after the component has been initialized, and after any child content and objects have been added and initialized.  Automatically invoked by Space servire through XHTMLComponent. Or, can be manually invoked as needed.  Causes any virtual component_post_init function to be invoked.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void post_init(
+x, <i>ri</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>x</b> as XHTMLComponent : XHTMLComponent object representing an HTML Form Element.</li>
+<li>
+<b>ri</b> as String <i>(optional)</i>: Reference id for field containment.</li>
+</ul>
+<a name="release"></a>
+<h3 class="membertitle">release</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Releases the ApplicationComponent object so that it can be reinitialized with another definition.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void release(
+
+)
+</p>
+<a name="sanitizeBean"></a>
+<h3 class="membertitle">sanitizeBean</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a version of the bean with only the expected properties, stripping out any framework related properties.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">o = sanitizeBean(
+s, t
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as object : The bean object.</li>
+<li>
+<b>t</b> as object : A new object with the expected properties.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>o</b> as object: A copy of the bean object including only the properties identified in the reference object.</p>
+<a name="setAsync"></a>
+<h3 class="membertitle">setAsync</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specify whether load operations should be handled asynchronously.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setAsync(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether load operations should be asynchronous.</li>
+</ul>
+<a name="setBean"></a>
+<h3 class="membertitle">setBean</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Creates a local reference to the specified object.  The object will be prepared and registered as a framework object if it is not already.  All bean objects will be cleaned up and removed from the registry when the component is destroyed.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">b = setBean(
+o, n
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A JavaScript object.</li>
+<li>
+<b>n</b> as String : The name to assign to the object.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>b</b> as boolean: Bit indicating whether the bean was set.</p>
+<a name="setBindingEnabled"></a>
+<h3 class="membertitle">setBindingEnabled</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specify whether the component should bind to an XHTMLComponent.  Binding is used to automatically instrument event handlers with the corresponding DOM Node represented by the XHTMLComponent.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setBindingEnabled(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether the component should bind to any specified XHTMLComponent.</li>
+</ul>
+<a name="setContainerId"></a>
+<h3 class="membertitle">setContainerId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies the container id, which is the object to which the component belongs.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setContainerId(
+i
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>i</b> as String : Identifier of the registered object to which this application component belongs.</li>
+</ul>
+<a name="setTemplateIsSpace"></a>
+<h3 class="membertitle">setTemplateIsSpace</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specifies whether to instrument a template container as an Application Space.  Note: When a component is set as a space, the space-id attribute artifact is stripped.  The space-id attribute is used as a processing boundary by the Application Space service.  If the marker is not removed, the spaces will overlap and may result in errors due to expected objects not existing in the expected spaces.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setTemplateIsSpace(
+b
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>b</b> as boolean : Bit indicating whether to treate the template container as an engine.</li>
+</ul>
+<a name="setTitle"></a>
+<h3 class="membertitle">setTitle</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked by _handle_load_template, and sets a title for a component based on a loaded template. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void setTitle(
+s
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>s</b> as String : Text of the title.</li>
+</ul>
+<a name="sigterm"></a>
+<h3 class="membertitle">sigterm</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Sends a termination signal to the ApplicationComponent.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void sigterm(
+
+)
+</p>
+<a name="template_destroy"></a>
+<h3 class="membertitle">template_destroy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked prior to a template being loaded, or the containing object being destroyed. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void template_destroy(
+
+)
+</p>
+<a name="template_init"></a>
+<h3 class="membertitle">template_init</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Invoked when a template is loaded via the loadTemplate method.  This method is automatically removed after invocation, so each template must define it in order for it to be invoked. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void template_init(
+
+)
+</p>
+<h3>Messages</h3>
+<a name="oncomponentload"></a>
+<h3 class="membertitle">oncomponentload</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemessageindex">Messages</a>
+</li>
+</ul>
+<p class="messagedesc">Message published to all subscribers when a component has been loaded.</p>
+<h4>Syntax</h4>
+<p class="messagesyntax">
+// User-specified script to subscribe to message
+<br>
+org.cote.js.message.MessageService.subscribe("oncomponentload",<i>_handle_message</i>);
+<br>
+// Internal: how the message is published to subscribers
+<br>
+org.cote.js.message.MessageService.publish("oncomponentload" 
+, o
+);
+<br>
+// User-specified script to handle the message subscription
+<br>
+function <i>_handle_message</i>("oncomponentload"
+, o
+){
+<br>
+// message handler code
+<br>
+}
+</p>
+<h4>Parameters</h4>
+<ul class="messageparams">
+<li>
+<b>o</b> as ApplicationComponent : The application component that was just loaded.</li>
+</ul>
+<a name="ontemplateload"></a>
+<h3 class="membertitle">ontemplateload</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstance">ApplicationComponentInstance</a>
+</li>
+<li>
+<a href="#ApplicationComponentInstancemessageindex">Messages</a>
+</li>
+</ul>
+<p class="messagedesc">Message published to all subscribers when a template has been loaded.</p>
+<h4>Syntax</h4>
+<p class="messagesyntax">
+// User-specified script to subscribe to message
+<br>
+org.cote.js.message.MessageService.subscribe("ontemplateload",<i>_handle_message</i>);
+<br>
+// Internal: how the message is published to subscribers
+<br>
+org.cote.js.message.MessageService.publish("ontemplateload" 
+, o
+);
+<br>
+// User-specified script to handle the message subscription
+<br>
+function <i>_handle_message</i>("ontemplateload"
+, o
+){
+<br>
+// message handler code
+<br>
+}
+</p>
+<h4>Parameters</h4>
+<ul class="messageparams">
+<li>
+<b>o</b> as ApplicationComponent : The application component for which the template was recently loaded and initialized.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

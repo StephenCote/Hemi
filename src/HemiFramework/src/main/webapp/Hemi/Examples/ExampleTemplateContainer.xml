@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template>
+  <p>Example Template Container</p>
+  <embedded-script><![CDATA[
+    template_init : function(){
+      
+    }
+   ]]></embedded-script>
+  
+</Template>

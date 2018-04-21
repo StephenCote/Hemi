@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FunctionMonitor>
+<![CDATA[
+/*
+	Stephen W. Cote
+	
+	Function Monitor v2.1
+*/
+
+{
+		___pointer_marker : "never",
+		version:"2.1",
+		can_trace:1,
+		functions:[],
+		function_index:[],
+		stack_len:20,
+		hold_max:1,
+		clearMetrics:function(){
+			var iFLen=FunctionMonitor.function_index.length,i=0, vFP;
+			for(;i<iFLen;){
+				vFP=FunctionMonitor.functions[FunctionMonitor.function_index[i++]];
+				vFP.metrics.length=0;
+				vFP.stackCount=0;
+			}
+		},
+		getAllMetrics:function(){
+			var iFLen=FunctionMonitor.function_index.length,i = 0, s = [];
+			for(;i<iFLen;){
+				s.push(FunctionMonitor.getMetrics(FunctionMonitor.function_index[i++]));
+			}
+			return s.join("\n");
+		},
+		getMetrics:function(sFunctionName){
+			var vFP=FunctionMonitor.functions[sFunctionName], r = [], i = 0, oM, iL, aM, iMLen, sTab;
+			if(typeof(vFP)=="object"){
+				r.push(sFunctionName + ":");
+				aM=vFP.metrics;
+				iMLen=aM.length;
+				var sTab="   ";
+				for(;i<iMLen;i++){
+					oM=aM[i];
+					iL=-1;
+					if(oM && oM.stop && oM.start){
+						iL=oM.stop - oM.start;
+					}
+					r.push(sTab + "#" + i + " time=" + iL);
+					if(oM.valOffset > 0){
+						r.push(sTab + sTab + "process: " + oM.valOffset);
+					}
+					if(oM.route!=null && oM.route!="null"){
+						r.push(sTab + sTab + "trace = " + oM.route);
+					}
+				}
+			}
+			else{
+				r.push(sFunctionName + " is not a registered function.");
+			}
+			return r.join("\n");
+		},
+		
+		getWindowName : function(windowRef){
+			var sFrameName = "window", oFrame;
+			if(windowRef && windowRef != window){
+				oFrame = windowRef;
+				if(oFrame.name){
+					sFrameName=oFrame.name;
+				}
+				else{
+					sFrameName="frame";
+				}
+			}
+			return sFrameName;
+		},
+		getIsRegistered : function(sFunctionName, windowRef, sClassRef){
+			var oFr = window, sFrameName = FunctionMonitor.getWindowName(windowRef), sRefer = "", sFuncStore;
+				
+			if(sFrameName != "window") sRefer = sFrameName + "-";
+			if(sClassRef) sRefer += sClassRef + "--";
+			sFuncStore="dispatch-" + sRefer + sFunctionName;
+
+
+			return (typeof FunctionMonitor.functions[sFuncStore] == "object" ? 1 : 0);
+		},
+		unregisterAll : function(){
+			var l = FunctionMonitor.function_index.length, i,o;
+			for(i = l - 1;i >= 0; i--){
+				o = FunctionMonitor.functions[FunctionMonitor.function_index[i]];
+				if(!o) continue;
+				if(o.proto) FunctionMonitor.unregister(o.name, o.window, o.proto);
+				else FunctionMonitor.unregister(o.name, o.window);
+			}
+			return l;
+		},
+		unregister : function(sFunctionName,windowRef,sClassRef){
+			var oFrame=window, sFrameName = FunctionMonitor.getWindowName(windowRef), sRefer = "", sFuncStore, vFP, iIndex,vPFP, oPtr, bSet = 0;
+			if(windowRef && windowRef!=window){
+				oFrame=windowRef;
+			}
+				
+			if(sFrameName!="window") sRefer=sFrameName + "-";
+			if(sClassRef) sRefer+=sClassRef + "--";
+			sFuncStore="dispatch-" + sRefer + sFunctionName;
+
+
+			vFP = FunctionMonitor.functions[sFuncStore];
+	
+			if(!vFP){
+				alert(sFuncStore + " is not a monitored function");
+				return;
+			}
+	
+	
+			iIndex=vFP.index;
+			FunctionMonitor.function_index[iIndex] = null;
+			if(!sClassRef &&  sFunctionName.indexOf(".") > -1){
+				oPtr = FunctionMonitor.getObject(sFunctionName.substring(0,sFunctionName.lastIndexOf(".")), oFrame);
+				if(oPtr){
+					bSet = 1;
+					oPtr[sFunctionName.substring(sFunctionName.lastIndexOf(".") + 1,sFunctionName.length)] = vFP.fp;
+				}
+			}
+			else if(sClassRef && sClassRef.indexOf(".") > -1){
+				oPtr = FunctionMonitor.getObject(sClassRef, oFrame);
+				if(oPtr && oPtr.prototype){
+					bSet = 1;
+					oPtr.prototype[sFunctionName] = vFP.fp;
+				}
+			}
+			if(!bSet){	
+				if(!sClassRef){
+					if(oFrame[sFunctionName]){
+						oFrame[sFunctionName] = vFP.fp;
+					}
+					else{
+						alert(sFunctionName + " does not exist");
+					}
+				}
+				else{
+					if(oFrame[sClassRef].prototype[sFunctionName]){
+						oFrame[sClassRef].prototype[sFunctionName]=vFP.fp;
+					}
+					else{
+						alert(sClassRef + "." + sFunctionName + " does not exist.");
+					}
+				}
+			}
+
+			if(!FunctionMonitor[sFuncStore]){
+				alert(sFuncStore + " does not have a monitor definition.");
+				return;
+			}
+
+			vPFP = FunctionMonitor[sFuncStore];
+			if(oFrame.onload == vPFP) oFrame.onload = vFP.fp;
+			FunctionMonitor[sFuncStore] = null;
+			FunctionMonitor._pack();
+		},
+		_pack:function(){
+			var aTemp1=FunctionMonitor.functions, aTemp2=FunctionMonitor.function_index, iL, i=0, iIndex, vD;
+			FunctionMonitor.functions=[];
+			FunctionMonitor.function_index=[];
+			iL=aTemp2.length;
+			for(;i<iL;i++){
+				if(aTemp2[i]!=null){
+					iIndex=FunctionMonitor.function_index.length;
+					FunctionMonitor.function_index[iIndex]=aTemp2[i];
+					vD=aTemp1[aTemp2[i]];
+					vD.index=iIndex;
+					FunctionMonitor.functions[aTemp2[i]]=vD;
+				}
+			}
+		},
+
+		register:function(sFunctionName, windowRef, sClassRef){
+			/// , bPointer
+			var oFrame=window,sFrameName = FunctionMonitor.getWindowName(windowRef), vFP, sRefer="", sFuncStore, iIndex=-1, oPtr;
+			if(windowRef && windowRef!=window){
+				oFrame=windowRef;
+			}
+
+			if(!sClassRef &&  sFunctionName.indexOf(".") > -1){
+				vFP = FunctionMonitor.getObject(sFunctionName, oFrame);
+			}
+			else if(sClassRef && sClassRef.indexOf(".") > -1){
+				oPtr = FunctionMonitor.getObject(sClassRef, oFrame);
+				if(oPtr && oPtr.prototype)
+					vFP = oPtr.prototype[sFunctionName];
+				
+			}
+			if(!vFP){
+				if(!sClassRef){
+					vFP=oFrame[sFunctionName];
+				}
+				else{
+					vFP=oFrame[sClassRef];
+					if(vFP){
+						if(vFP.prototype) vFP=vFP.prototype[sFunctionName];
+						else vFP = vFP[sFunctionName];
+					}
+				}
+			}
+			// alert(vFP + " / " + typeof vFP);
+			if(typeof vFP == "function"){
+				if(sFrameName != "window") sRefer=sFrameName + "-";
+				if(sClassRef) sRefer += sClassRef + "--";
+				sFuncStore = "dispatch-" + sRefer + sFunctionName;
+				if(!FunctionMonitor.functions[sFuncStore]){
+					iIndex=FunctionMonitor.function_index.length;
+					FunctionMonitor.function_index[iIndex]=sFuncStore;
+				}
+				else{
+					iIndex=FunctionMonitor.functions[sFuncStore].index;
+				}
+
+				FunctionMonitor.functions[sFuncStore] = 
+					{name:sFunctionName,classRef:sClassRef,refName:sFrameName,ref:oFrame,fp:vFP,index:iIndex,metrics:[],stackCount:0};
+				eval('FunctionMonitor["' + sFuncStore + '"]=function(){return FunctionMonitor.dispatch("' + sFuncStore + '",this,arguments);}');
+				
+				var bSet = 0;
+				if(!sClassRef &&  sFunctionName.indexOf(".") > -1){
+					oPtr = FunctionMonitor.getObject(sFunctionName.substring(0,sFunctionName.lastIndexOf(".")), oFrame);
+					if(oPtr){
+						bSet = 1;
+						oPtr[sFunctionName.substring(sFunctionName.lastIndexOf(".") + 1,sFunctionName.length)] = FunctionMonitor[sFuncStore];
+					}
+				}
+				else if(sClassRef && sClassRef.indexOf(".") > -1){
+					oPtr = FunctionMonitor.getObject(sClassRef, oFrame);
+					if(oPtr && oPtr.prototype){
+						bSet = 1;
+						oPtr.prototype[sFunctionName] = FunctionMonitor[sFuncStore];
+					}
+				}
+				if(!bSet){
+					if(!sClassRef){
+						oFrame[sFunctionName]=FunctionMonitor[sFuncStore];
+					}
+					else{
+						if(oFrame[sClassRef].prototype) oFrame[sClassRef].prototype[sFunctionName]=FunctionMonitor[sFuncStore];
+						else oFrame[sClassRef][sFunctionName]=FunctionMonitor[sFuncStore];
+					}
+				}
+				if(oFrame.onload == vFP) oFrame.onload=FunctionMonitor[sFuncStore];
+			}
+			else{
+				alert(sFunctionName + " is not a function");
+			}
+		},
+		makeMetric : function(){
+			return {start:null,stop:null,valOffset:-1,route:null,monStatus:-1,duration:-1,caller:null,parentName:null};
+		},
+		
+	dispatch : function(sFuncStore,vThis,aArgs){
+		var retVal, vFun = FunctionMonitor.functions[sFuncStore], z, vMet, vCaller, sCaller, oFr, d, iZ, iMLen, vM, iM1, iM2;
+		if(!vFun){
+			if(!FunctionMonitor.alert_error){
+				FunctionMonitor.alert_error = 1;
+				alert("Error: invalid function reference: " + sFuncStore);
+			}
+			return;
+		}
+		z=new Date();
+		vMet = FunctionMonitor.makeMetric();
+		vCaller=null;
+		sCaller=null;
+		if(FunctionMonitor.dispatch.caller && FunctionMonitor.dispatch.caller.caller)
+			vCaller=FunctionMonitor.dispatch.caller.caller;
+		
+		if(FunctionMonitor.can_trace){
+			vMet.route=FunctionMonitor.traceRoute(vCaller);
+			if(vMet.route) vMet.route += "->";
+			vMet.route += vFun.name + FunctionMonitor.printArguments(aArgs);
+		}
+		oFr=vFun.ref;
+		d=new Date();
+		vMet.start=d.getTime();	
+		try{
+			if(!vFun.classRef){
+				retVal=vFun.fp.apply(vCaller,aArgs);
+			}
+			else{
+				retVal=vFun.fp.apply(vThis,aArgs);
+			}
+			vMet.monStatus=1;
+		}
+		catch(e){
+			vMet.monStatus=2;
+			retVal=e;
+		}
+		d=new Date();
+		vMet.stop=d.getTime();
+
+		iZ=z.getTime();
+		z=new Date();
+		vMet.valOffset=z.getTime() - iZ - (vMet.stop - vMet.start);		
+		iMLen;
+		if(FunctionMonitor.stack_len > 0){
+			if(vFun.stackCount >= FunctionMonitor.stack_len) vFun.stackCount=0;
+			iMLen=vFun.stackCount;
+			vM=vFun.metrics[iMLen];			
+			if(vM){
+				iM1=vM.stop - vM.start;
+				iM2=vMet.stop - vMet.start;
+				if(iM1 > iM2) vMet=vM;
+			}
+			vFun.stackCount++;
+		}
+		else{
+			iMLen=vFun.metrics.length;
+		}
+		vFun.metrics[iMLen]=vMet;
+		return retVal;
+	},
+
+	printArguments : function(a){
+		var i = 0, n = "(", q,v, dt;
+		for(; i < a.length; i++){
+			 if(i > 0) n += ", ";
+			 q = "";
+             v = a[i];
+			 t = typeof v;
+			 ///dt = t;
+			 dt = 0;
+			 switch(t){
+				case "string":
+					q = "\"";
+					v = v.replace(/\r/gi,"\\r");
+					v = v.replace(/\n/gi,"\\n");
+					v = v.replace(/\t/gi,"\\t");
+					v = v.replace(/\s+/gi," ");
+					if(v.length > 25) v = v.substring(0,17) + "... (" + v.length + ")";
+					break;
+				case "object":
+					if(v instanceof Array){
+						v = "{array(" + v.length + ")}";
+					}
+					else if(v instanceof Date){
+						v = "{date(" + v.toString() + ")}";
+					}
+					else{
+						v = "{obj}";
+					}
+					dt = 0;
+					break;
+				case "function":
+					v = "{function}";
+					dt = 0;
+					break;
+             }
+			 n += q + v + q + (dt ? " {as " + dt + "}" : "");
+		}
+		n += ")";
+		return n;
+	},
+
+	traceRoute : function(v){
+		  var r = "",a = [],i = 0, n, q, g, t;
+		  if(v != null){
+			   while(v && v != null ){
+					n = FunctionMonitor.getFunctionName(v.toString());
+					if(n == null){
+						 v = null;
+						 break;
+					}
+
+					a.push(n + FunctionMonitor.printArguments(v.arguments));
+					v = v.caller;
+			   }
+			   r = a.reverse().join("->");
+		  }
+		  else{
+			   r = "null";
+		  }
+		  return r;
+	 },
+	 
+	getFunctionName:function(sFP){
+		var aM=sFP.match(/function\s([A-Za-z0-9_]*)\(/gi);	
+		if(sFP==null) return sFP;
+	
+		if(aM!=null && aM.length){
+			sFP=aM[0];
+			sFP=sFP.replace(/^function\s+/,"");
+			sFP=sFP.replace(/^\s*/,"");
+			sFP=sFP.replace(/\s*$/,"");
+			sFP=sFP.replace(/\($/,"");
+			return sFP;
+		}
+		else{
+			return null;
+		}
+	},
+	getObject : function(c,b){
+		var a,i=0,s,w = (b ? b : window),o,l;
+		o = w;
+		if(typeof c == "string"){
+			a = c.split(".");
+			l = a.length;
+			if(l==0) return 0;
+			for(;i<l;){
+				s=a[i++];
+				if(typeof o[s] != "object" && typeof o[s] != "function") return 0;
+				o = o[s];
+			}
+		}
+		else
+			return 0;
+		
+		if(typeof o != "function" && typeof o != "object") return 0;
+		return o;
+	}
+}
+
+
+]]>
+</FunctionMonitor>

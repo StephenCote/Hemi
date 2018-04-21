@@ -1,0 +1,44 @@
+<html-fragment>
+	<div>XML</div>
+	<textarea style = "height:100px;width:95%;font: normal 8pt courier;" wrap="off" rid="oXmlSource">
+	</textarea>
+	<div>XSL</div>
+	<textarea style = "height:100px;width:95%;font: normal 8pt courier;" wrap="off" rid="oXslSource">
+	</textarea>
+	<div>
+	<input type = "button" value = "Test" onclick = "${this}.Test()" />
+	<input type = "button" value = "Transform" onclick = "${this}.Transform()" />
+	</div>
+	<textarea style = "height:100px;width:95%;font: normal 8pt courier;" wrap="off" rid="oResults">
+	</textarea>
+	<embedded-script>
+      <![CDATA[
+		embedded_init : function(){
+      Hemi.include("hemi.text");
+			this.GetElementByRID("oXmlSource").value = "<?xml version=\"1.0\" encoding=\"utf-8\" ?> \n<Root />";
+			this.GetElementByRID("oXslSource").value = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n"
+				+ "<xsl:stylesheet version=\"2.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" >\n"
+				+ "<xsl:output omit-xml-declaration = \"yes\" />\n"
+				+ "<xsl:template match=\"/Root\">\n"
+				+ "Root!\n"
+				+ "</xsl:template>\n"
+				+ "</xsl:stylesheet>\n"
+			;
+		},
+		Test : function(){
+			var oX = Hemi.xml.parseXmlDocument(Hemi.text.trim(this.GetElementByRID("oXmlSource").value));
+			var oXS = Hemi.xml.parseXmlDocument(Hemi.text.trim(this.GetElementByRID("oXslSource").value));
+			this.GetElementByRID("oResults").value = 
+				"XML : " + (oX != null && oX.documentElement != null ? true :false) + "\n"
+				+ "XSL : " + (oXS != null && oXS.documentElement != null ? true : false)
+			;
+		},
+		Transform : function(){
+			var oX = Hemi.xml.parseXmlDocument(Hemi.text.trim(this.GetElementByRID("oXmlSource").value).replace(/\t/gi,"    "));
+			var oXS = Hemi.xml.parseXmlDocument(Hemi.text.trim(this.GetElementByRID("oXslSource").value.replace(/\t/gi,"    ")));
+			var oR = Hemi.xml.transformNode(oX, oXS, 0, 0, 0, 0, 1);
+			var s = "";
+			this.GetElementByRID("oResults").value = oR;
+		}
+	]]></embedded-script>
+</html-fragment>

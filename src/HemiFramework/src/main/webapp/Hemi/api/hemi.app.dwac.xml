@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.app.dwac</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.app.dwac</path>
+<library>Hemi</library>
+<description>Distributed Application Components extends the Application Component to support a single file deployment.  Application Components, Templates, Fragments, Modules, and Tasks may be combined into a single XML file for ease of sharing and reuse.</description>
+<static-class>
+<name>DistributedComponent</name>
+<description>Static initializer for DWAC objects.  DWAC objects are special constructs of Application Components.</description>
+<version>3.5.1</version>
+<method>
+<name>newInstance</name>
+<param name="o" type="variant">XHTML Node or XHTMLComponent Instance</param>
+<param name="u" type="String">URI to DWAC file.</param>
+<param name="t" type="String">DWAC Template Id</param>
+<param name="k" optional="1" type="String">Task ID.</param>
+<param name="i" optional="1" type="String">Component ID</param>
+<return-value name="d" type="DWACInstance">Instance of an ApplicationComponent instrumented with the DWAC loader.</return-value>
+</method>
+</static-class>
+<class>
+<name>DistributedComponentInstance</name>
+<version>3.5.1</version>
+<description>An Application Component instance decorated with the DWAC loading modifiers.</description>
+<example>
+<description>Demonstrate how a DWAC can be used.</description>
+<name>Create a new DWAC Instance #1</name>
+<code><![CDATA[<div id = "oExampleDiv"></div>]]></code>
+<code><![CDATA[<script type = "text/javascript">]]></code>
+<code>window.onload = function(){</code>
+<code>   var oDWAC = Hemi.app.dwac.newInstance(;</code>
+<code>      document.getElementById("oExampleDiv")</code>
+<code>      ,"/Path/To/Dwac.xml"</code>
+<code>      ,"Example Template 1"</code>
+<code>   );</code>
+<code>}</code>
+<code><![CDATA[</script>]]></code>
+</example>
+this.setAttribute("avoid","1");
+alert(this.getTemplateSpace().space_id + ":" + Hemi.app.space.service.getPrimarySpace().space_id);
+</class>
+</package>
+<index><description>Distributed Application Components extends the Application Component to support a single file deployment.  Application Components, Templates, Fragments, Modules, and Tasks may be combined into a single XML file for ease of sharing and reuse.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

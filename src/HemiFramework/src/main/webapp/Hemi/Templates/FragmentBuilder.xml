@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+<Template Title ="Fragment Builder">
+	<import-style src ="Styles/jsprof.css" id ="jsprof" />
+	<import-style src ="Styles/wideselect.css" id ="wideselect" />
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<import-xml src = "Fragments/BuilderControls.xml" id = "BuilderControls" />
+
+	<div class="title">Fragment Description</div>
+		<div>
+			<select rid ="run_fragment_as"><option>Scripted</option><!--<option>Declarative</option>--></select>
+			<input type ="button" onclick ="${this}.RunFragment()" value ="Run" />
+			<span rid ="fragment_info">[ Volatile Fragment ]</span>
+		</div>
+	<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "fragment_name" />
+			<input type = "hidden" value ="0" rid = "fragment_id" />
+		</div>
+	</div>
+	
+	<div class ="field">
+		<div class = "field_label">
+			Description: (<i>optional</i>)
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "fragment_description" />
+		</div>
+	</div>
+		<div style ="clear:both;" >
+			<div class="title">Embedded Model</div>
+			<div ___pointer_marker = "never" component = "wideselect" rid = "embedded_fragment_model">
+			</div>
+	</div>
+	<div style ="clear:left;">
+		<input type = "button" value = "Import" onclick ="${this}.LoadFragmentText()" />
+		<input type ="button" value ="New Function" onclick ="${this}.NewFragmentFunction();" />
+		<select onchange ="${this}.BuildFragment()" rid = "build_fragment"><option>Fragment XML</option><option>Fragment XHTML</option><option>Embedded Script</option><option>Selected Function</option></select>
+		<span rid ="fragment_model_controls" style ="display:none;">
+			<input type ="button" value ="Deobfuscate" onclick ="${this}.DeobfuscateFragment()" />
+			<input type ="button" value ="Update" onclick ="${this}.UpdateFragmentMember()" />
+			<input type ="button" value ="Remove" onclick ="${this}.RemoveFragmentMember()" />
+		</span>
+		<br />
+		<textarea rid ="fragment_text" wrap ="off" style ="border:0px;margin:0px;width:100%;height:250px;"></textarea>
+	</div>
+	<embedded-script>
+        <![CDATA[
+		template_init : function (){
+			 Hemi.include("hemi.text");
+
+			this.scopeHandler("fragmentmodelclick",0,0,1);
+			this.scopeHandler("fragment_load",0,0,1);
+			this.getObjects().fragment_construct = 0;
+			this.GetFragmentModel().setResultHandler( this._prehandle_fragmentmodelclick);
+			this.refreshBuilderUI();
+			this.RefreshFragmentBuilder();
+			this.getProperties().builder_title = "Fragment Builder";
+		},
+		RefreshFragmentBuilder : function(){
+			var b = (this.getObjects().fragment_construct ? 1 : 0);
+			this.GetElementByRID("fragment_name").disabled = (b ? false : true);
+			this.GetElementByRID("fragment_description").disabled = (b ? false : true);
+			this.GetElementByRID("build_fragment").disabled = (b ? false : true);
+		},
+		template_destroy : function(){
+			this._prehandle_fragment_load = 0;
+			this._prehandle_fragmentmodelclick = 0;
+		},
+		RunFragment : function(s){
+			if(!this.getObjects().fragment_construct) return;
+			var aBuff = [];
+
+			// Get the XHTML Value
+			//
+			this.GetElementByRID("build_fragment").selectedIndex = 1;
+			this.BuildFragment();
+			aBuff.push(this.GetElementByRID("fragment_text").value);
+			// Get the embedded script value
+			//
+			this.GetElementByRID("build_fragment").selectedIndex = 2;
+			this.BuildFragment();
+			aBuff.push(this.GetElementByRID("fragment_text").value);
+
+			// Move the display back to the whole fragment to avoid confusion about what is being run
+			//
+			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			this.BuildFragment();
+			
+			var sName = this.GetElementByRID("fragment_name").value;
+			var aParams = [this.GetElementByRID("fragment_name").value, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_fragment_as").selectedIndex];
+
+
+			this.RunControl("RunApplicationFragment", aParams);
+		},
+		SetLabel : function(s){
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment-builder-label"),s);
+		},
+		LoadObject : function(i){
+			this.SetLabel("Loading ...");
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"[ Volatile Fragment ]");
+			this.getProperties().fragment_id = i;
+			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			AM6Client.get("DATA",i,this._prehandle_fragment_load);
+
+		},
+		_handle_fragment_load : function(s, v){
+			this.SetLabel("");
+			if(v && v.json) v = v.json;
+			if(!v || v == null){
+				 this.SetComponentLabel("Failed to load fragment");
+				 return;
+			}
+
+			var oData = v;
+			this.SetDataPath(oData.groupPath);
+			var sTemp = uwm.base64Decode(oData.dataBytesStore);
+
+			this.GetElementByRID("fragment_text").value = sTemp;
+
+			if(this.LoadFragmentText()){
+				this.GetElementByRID("fragment_name").value = oData.name;
+				this.GetElementByRID("fragment_description").value = oData.description;
+
+				this.getObjects().fragment_construct.id = this.getProperties().fragment_id;
+				this.RefreshFragmentBuilder();
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"Id: " + this.getProperties().fragment_id + " / Path: " + oData.path);
+				this.SetDataPath(oData.path);
+			}
+
+			this.GetElementByRID("fragment_id").value = this.getProperties().fragment_id + "";
+	
+		},
+
+		DeleteCurrentObject : function(){
+			var id = this.getProperties().fragment_id;
+			if(!id){
+				 this.SetLabel("Invalid fragment data id");
+				 return;
+			}
+			if(!confirm("Are you sure you want to delete this fragment?")) return;
+			var oResp = AM6Client.delete("DATA",id);
+			if(oResp){
+					this.ClearFragment();
+					/// this.RefreshDWACLists();
+			}
+			else{
+				 this.SetLabel("Failed to delete data #" + id);
+			}
+		},
+		ClearFragment : function(){
+				this.GetElementByRID("build_fragment").selectedIndex = 0;
+				this.GetElementByRID("fragment_text").value = "";
+				this.GetElementByRID("fragment_id").value = "0";
+				this.GetElementByRID("fragment_name").value = "";
+				this.GetElementByRID("fragment_description").value = "";
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"[ Volatile Fragment ]");
+				this.getObjects().fragment_construct = 0;
+				this.getProperties().fragment_id = 0;
+				this.GetFragmentModel().clearItems();
+				this.SetLabel("");
+				this.RefreshFragmentBuilder();
+				delete this.getProperties().data_object;
+		},
+		SaveCurrentObject : function(){
+			if(
+				 !this.getObjects().fragment_construct
+				 ||
+					(
+						this.getObjects().fragment_construct.changes == 0
+						&&
+						!confirm("No changes detected.  Save anyway?")
+					)
+			){				 
+				 this.SetLabel("Didn't save - Nothing to do");
+				 return;
+			}
+			if(this.GetElementByRID("build_fragment").selectedIndex != 0){
+				this.GetElementByRID("build_fragment").selectedIndex = 0;
+				this.BuildFragment();
+			}
+			var sName = this.GetElementByRID("fragment_name").value;
+
+			var sTemp = this.GetElementByRID("fragment_text").value;
+
+			var bRet = 0;
+			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
+			var oND = 0;
+			if(this.getObjects().fragment_construct.id && this.getProperties().data_object){
+				oND = this.getProperties().data_object;
+				oND.name = sName;
+			}
+			else{
+				oND = this.newData(sName,"text/plain",this.getProperties().current_path);
+			}
+
+						oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
+
+			if(bRet){
+				oND = (oND.objectId ? AM6Client.get("DATA",oND.objectId) : AM6Client.getByName("DATA",oG.objectId,sName));
+				if(!oND){
+					this.SetLabel("Failed to retrieve object data");
+					return;
+				}
+				this.getObjects().fragment_construct.changes = 0;
+				var sId = oND.objectId;
+				if(!sId || sId.length == 0){
+						this.SetLabel("Error retrieving data id");
+						delete this.getObjects().fragment_construct.id;
+				}
+				else{
+					this.getObjects().fragment_construct.id = sId;	
+					this.GetElementByRID("fragment_id").value = sId;
+					/// this.RefreshDWACLists();
+					this.SetLabel("Saved!");
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"Id: " + sId + " / Path: " + this.getProperties().current_path);
+					this.SetDataPath(oResp.responsePath);
+				}
+			}
+			else{
+				this.SetLabel("Failed to save fragment");
+			}
+			this.GetElementByRID("fragment_text").value = sTemp;
+		},
+
+		CreateNewObject : function(){
+				if(this.getObjects().fragment_construct && this.getObjects().fragment_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
+
+				var oW = Hemi.app.createWindow(0,"Templates/NewFragment.xml","NewFragment-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
+				oW.resizeTo(500,350);
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+				//this.SetLabel("New Fragment - Remember to Save!");
+		},
+
+		BuildFragment : function(){
+			if(!this.getObjects().fragment_construct){
+				this.SetLabel("Invalid fragment construct");
+				return;	 
+			}
+			var sName = Hemi.text.trim(this.GetElementByRID("fragment_name").value);
+			this.getObjects().fragment_construct.name = sName;
+			
+			var aBuff = [];	
+			var iIndex = this.GetElementByRID("build_fragment").selectedIndex;
+			var bXml = (iIndex == 0 ? 1 : 0);
+			var bXhtml = (iIndex == 1 ? 1 : 0);
+			var bEmbScr = (iIndex == 2 ? 1 : 0);
+			if(bEmbScr || bXhtml){
+				 this.GetElementByRID("fragment_model_controls").style.display = "inline";
+			}
+			else{
+				 this.GetElementByRID("fragment_model_controls").style.display = "none";
+			}
+			if(bXml){
+				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<html-fragment>\n");
+			}
+			if(bXml || bXhtml) aBuff.push(this.getObjects().fragment_construct.xhtml_content);
+			
+			if(bXml || bEmbScr){
+				var sEmbedded = Hemi.text.trim(this.BuildFunctions(this.getObjects().fragment_construct));
+				if(sEmbedded.length){
+					aBuff.push("\n<embedded-script><![CDATA[\n");
+					aBuff.push(sEmbedded);
+					aBuff.push("\n]" + "]></embedded-script>\n"); 
+				}
+			}
+			if(bXml){
+				aBuff.push("</html-fragment>\n"); 
+			}
+			var sText = aBuff.join("");
+
+			this.GetElementByRID("fragment_text").value = sText;
+		},
+		GetFragmentModel : function(){
+			return this.GetComponentByRID("embedded_fragment_model").GetWideSelect();
+		},
+		NewFragmentFunction : function(){
+				this.NewFunction(this.getObjects().fragment_construct);
+				this.SetLabel("New Function - Remember to Save!");
+		},
+
+		UpdateFragmentMember : function(){
+			var iIndex = this.GetElementByRID("build_fragment").selectedIndex;
+			if(iIndex == 1){
+				var sXhtml = this.GetElementByRID("fragment_text").value;
+				var oX = 0;
+				try{
+						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
+				}
+				catch(e){
+				}
+				if(!oX && !confirm("Warning - content is not valid XHTML/XML.  Continue updating?")) return;
+				
+				this.getObjects().fragment_construct.xhtml_content = sXhtml;
+				this.getObjects().fragment_construct.changes++;
+				if(oX) this.SetLabel("Updated Member - Remember to Save!");
+				else this.SetLabel("Updated Member - The content is invalid!");
+			}
+			else if(iIndex == 3){
+				this.UpdateFunction(this.getObjects().fragment_construct, this.GetElementByRID("fragment_text").value);
+				this.SetLabel("Updated Fragment - Remember to Save!");
+			}
+		},
+		_handle_fragmentmodelclick : function(sEvent,oItem){
+
+			if(!oItem || typeof oItem.data != "string" || !this.getObjects().fragment_construct){
+				 this.GetElementByRID("fragment_text").value = "";
+				 return;
+			}
+			var vFunc = this.getObjects().fragment_construct.functions[oItem.name];
+			if(!vFunc){
+				this.GetElementByRID("fragment_text").value = "Member '" + oItem.name + "' is not constructed.";
+				return;
+			}
+			this.GetElementByRID("fragment_model_controls").style.display = "inline";
+			this.GetElementByRID("build_fragment").selectedIndex = 3;
+			this.GetElementByRID("fragment_text").value = 
+			"/// Notes: Comments before and after members will be lost.\n"
+			+ "\n" + this.BuildFunction(vFunc)
+			;
+			
+		},
+		LoadFragmentText : function(){
+
+			var bXml = (this.GetElementByRID("build_fragment").selectedIndex == 0 ? 1 : 0);
+			if(this.getObjects().fragment_construct && this.getObjects().fragment_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
+
+			if(!bXml){
+				this.SetLabel("Parsing only available for full html-fragment XML file format.  Select Fragment XML.");
+				return 0;
+			}
+			
+			var oXml = null;
+			var sFragText = this.GetElementByRID("fragment_text").value
+			try{
+				 oXml = Hemi.xml.parseXmlDocument(sFragText);
+			}
+			catch(e){
+				 //alert("Error parsing XML");
+				 //return 0;
+			}
+			if(oXml == null || oXml.documentElement == null){
+				this.SetLabel("Failed to parse Fragment XML");
+				return 0;
+			}
+
+			var aAppComp = oXml.getElementsByTagName("html-fragment");
+			if(aAppComp.length == 0){
+				this.SetLabel("No html-fragment definitions found");
+				return 0;
+			}
+			
+			this.GetFragmentModel().clearItems();
+			var regEmb = /<embedded\-script>[\s\S]*?<\/embedded\-script>/;
+			var regFrag = /<html\-fragment>([\s\S]*?)<\/html\-fragment>/mi;
+			var oM;
+			var sXhtmlContent = "";
+
+			if((oM = sFragText.match(regFrag)) && oM.length > 1){
+					 sXhtmlContent = Hemi.text.trim(oM[1].replace(regEmb,""));
+			}
+
+			if(aAppComp.length > 1){
+				this.SetLabel("Multiple fragment definitions found.  Displaying the first fragment only.  Saving any changes will only save the one fragment.");
+			}
+			var oComp = aAppComp[0];
+			var n;
+
+			this.GetElementByRID("fragment_description").value = "";
+			this.GetElementByRID("fragment_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+
+			
+			var aE = oComp.getElementsByTagName("embedded-script");
+			var sCodeText = "";
+				 
+			if(aE.length) sCodeText = Hemi.xml.getInnerText(aE[0]);
+			this.getObjects().fragment_construct = this.ParseConstruct(this.GetFragmentModel(), sCodeText);
+			this.getObjects().fragment_construct.xhtml_content = sXhtmlContent;
+			this.RefreshFragmentBuilder();
+ 		 return 1;
+		},
+		RemoveFragmentMember : function(){
+			if(this.GetElementByRID("build_fragment").selectedIndex != 3) return;
+			var o = this.GetFragmentModel().getActiveItem();
+			var oConstruct = this.getObjects().fragment_construct;
+			if(!o || !oConstruct || !oConstruct.functions[o.data]){
+					this.SetLabel("Remove Fragment Member - Nothing to do");
+					return;
+			}
+			delete oConstruct.functions[o.data];
+			this.GetFragmentModel().clearItem(o.index);
+			oConstruct.changes++;
+			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			this.BuildFragment();
+			this.SetLabel("Removed Member - Remember to Save!");
+		},
+		DeobfuscateFragment : function(){
+			if(this.GetElementByRID("build_fragment").selectedIndex != 3) return;
+			this.GetElementByRID("fragment_text").value = this.Deobfuscate(this.GetElementByRID("fragment_text").value);
+		}
+
+	]]></embedded-script>
+</Template>

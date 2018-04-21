@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id ="getbeanform" Title ="Get Bean Form">
+	<import-xml src = "Templates/TemplateTools.xml" id ="TemplateTools" />
+	<import-xml src = "dwac:/DWAC/Anonymous/Fragments/demobean" />
+	<p>
+		This template continues from the <i>setbeanform</i> template and demonstrates using a JSON object as backing bean for form field values.
+		If this template is loaded first, then the EL expression for <i>bean.demo.testText</i> will be blank on the first view.
+	</p>
+	<p>
+		Bind: <input type ="text" name ="testText" bind = "${bean.demo}" />
+	</p>
+	<p>
+		Echo bean.demo.testText: "${bean.demo.testText}"
+		<br />
+		Bean Id: "${bean.demo}"
+	</p>
+	<p>
+		<input type ="button" value ="Back" onclick ="${this}.loadTemplate('dwac:/DWAC/Anonymous/Templates/setbeanform')" />
+		<input type ="button" value ="Next" onclick ="${this}.loadTemplate('dwac:/DWAC/Anonymous/Templates/elform')" />
+	</p>
+</Template>

@@ -1,0 +1,548 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.data.stack Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.data.stack</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Data Stack is a class for storing and retrieving values that may or may not have unique identifiers, and which don't qualify for or need to be stored in the Hemi.registry service.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#service"><i>static </i>Hemi.data.stack.service</a>: Static instance of TokenStackImpl.</li>
+<li>
+<a href="#serviceImpl">Hemi.data.stack.serviceImpl</a>: A class for storing stacks of variant values and filtering the stack by owner.</li>
+</ul>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.data.stack.service</h3>
+<h4>version </h4>
+<p class="desc">Static instance of TokenStackImpl.</p>
+<p class="desc"></p>
+<a name="serviceImpl"> </a>
+<h3 class="membertitle">Hemi.data.stack.serviceImpl</h3>
+<h4>version </h4>
+<p class="desc">A class for storing stacks of variant values and filtering the stack by owner.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="serviceImplobjectindex"> </a>
+<h4>Object Index</h4>
+<ul class="index">
+<li>public <a href="#Token">Token</a> (<b>internal</b>): Internal object used to store the references that comprise a token.</li>
+</ul>
+<a name="serviceImplpropertyindex"> </a>
+<h4>Property Index</h4>
+<ul class="index">
+<li>private <a href="#enable_overstack">enable_overstack</a>: Allows Token objects to be overstacked, meaning that names do not have to be unique.  Defaults to false.</li>
+<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
+<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
+<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
+<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
+</ul>
+<a name="serviceImplmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#add">add</a>: Adds a token with the specified name and value for the specified owner.</li>
+<li>public <a href="#clear">clear</a>: Removes all tokens for the specified owner.</li>
+<li>public <a href="#get">get</a>: Returns the specified token.</li>
+<li>public <a href="#getAll">getAll</a>: Returns an array of tokens that match the specified name.</li>
+<li>public <a href="#getAllByOwner">getAllByOwner</a>: Returns all tokens for the specified owner.</li>
+<li>public <a href="#getByOwner">getByOwner</a>: Returns the specified token.</li>
+<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
+<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
+<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
+<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
+<li>public <a href="#getTokenValue">getTokenValue</a>: Returns the value of the specified token.</li>
+<li>public <a href="#remove">remove</a>: Removes all tokens for the specified owner.</li>
+</ul>
+<h3>Objects</h3>
+<a name="Token"></a>
+<h3 class="membertitle">Token</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">Internal object used to store the references that comprise a token.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>owner_id</b> as String: The id of the Token owner.</li>
+<li>
+<b>index</b> as int: The index of the Token in the local stack.</li>
+<li>
+<b>token_name</b> as String: The specified name of the token.</li>
+<li>
+<b>token_value</b> as variant: The specified value of the token.</li>
+</ul>
+<h3>Properties</h3>
+<a name="enable_overstack"></a>
+<h3 class="membertitle">enable_overstack</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Allows Token objects to be overstacked, meaning that names do not have to be unique.  Defaults to false. Property is private and should not be directly referenced.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax"> = <i>object</i>.enable_overstack</p>
+<p class="propertysyntax">
+<i>object</i>.enable_overstack = </p>
+<a name="object_id"></a>
+<h3 class="membertitle">object_id</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Unique instance identifier.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_id</p>
+<a name="object_type"></a>
+<h3 class="membertitle">object_type</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">The type of this object.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_type</p>
+<a name="object_version"></a>
+<h3 class="membertitle">object_version</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Version of the object class.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">String = <i>object</i>.object_version</p>
+<a name="ready_state"></a>
+<h3 class="membertitle">ready_state</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplpropertyindex">Properties</a>
+</li>
+</ul>
+<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+<h4>Syntax</h4>
+<p class="propertysyntax">int = <i>object</i>.ready_state</p>
+<h3>Methods</h3>
+<a name="add"></a>
+<h3 class="membertitle">add</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Adds a token with the specified name and value for the specified owner.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = add(
+o, n, v, <i>b</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : Registered object that will own the token.</li>
+<li>
+<b>n</b> as String : Name of the token.</li>
+<li>
+<b>v</b> as variant : Value of the token.</li>
+<li>
+<b>b</b> as boolean <i>(optional)</i>: Bit indicating whether a token with the same name for the same owner should be overwritten with the new value if it exists.  If overstacking is enabled, the new value would be added without overwriting.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as boolean: Bit indicating whether the token was added.</p>
+<a name="clear"></a>
+<h3 class="membertitle">clear</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes all tokens for the specified owner.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void clear(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A registered object that owns one or more tokens.</li>
+</ul>
+<a name="get"></a>
+<h3 class="membertitle">get</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the specified token.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = get(
+n, <i>i</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the token.</li>
+<li>
+<b>i</b> as int <i>(optional)</i>: Index of the array for this token name to use to retrieve the value.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as Token: The specified token object.</p>
+<a name="getAll"></a>
+<h3 class="membertitle">getAll</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an array of tokens that match the specified name.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">a = getAll(
+n
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the token.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>a</b> as array: Array of tokens that match the specified name.</p>
+<a name="getAllByOwner"></a>
+<h3 class="membertitle">getAllByOwner</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns all tokens for the specified owner.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = getAllByOwner(
+o
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A registered object that owns one or more tokens.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as array: Array of tokens belonging to the specified owner.</p>
+<a name="getByOwner"></a>
+<h3 class="membertitle">getByOwner</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the specified token.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = getByOwner(
+o, n
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A registered object that owns a token with the specified name.</li>
+<li>
+<b>n</b> as String : Name of the token.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as Token: The specified token object belonging to the specified owner.</p>
+<a name="getObjectId"></a>
+<h3 class="membertitle">getObjectId</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the unique id of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">i = getObjectId(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>i</b> as String: The unique object instance id.</p>
+<a name="getObjectType"></a>
+<h3 class="membertitle">getObjectType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the type of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">t = getObjectType(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>t</b> as String: The type of the object instance.</p>
+<a name="getObjectVersion"></a>
+<h3 class="membertitle">getObjectVersion</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the version of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">v = getObjectVersion(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>v</b> as String: The version of the object instance.</p>
+<a name="getReadyState"></a>
+<h3 class="membertitle">getReadyState</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the state of the object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">s = getReadyState(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>s</b> as int: The object ready state.</p>
+<a name="getTokenValue"></a>
+<h3 class="membertitle">getTokenValue</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the value of the specified token.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">r = getTokenValue(
+n, <i>i</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>n</b> as String : Name of the token.</li>
+<li>
+<b>i</b> as int <i>(optional)</i>: Index of the array for this token name to use to retrieve the value.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>r</b> as variant: The value of the specified token.</p>
+<a name="remove"></a>
+<h3 class="membertitle">remove</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Removes all tokens for the specified owner.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void remove(
+o, n
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>o</b> as object : A registered object that owns one or more tokens.</li>
+<li>
+<b>n</b> as String : The name of a token.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

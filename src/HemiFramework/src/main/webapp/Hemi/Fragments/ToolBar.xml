@@ -1,0 +1,10 @@
+<html-fragment>
+    <import-style src ="Styles/ToolBar.css" id ="toolbar" />
+    <p class ="framework_toolbar">
+        <input title ="Framework Profiler" type ="button" class ="toolbar_button toolbar_button_profiler" onclick = "Hemi.app.createWindow('Framework Profiler','Templates/FrameworkProfiler.xml','Profiler');" />
+        <input title ="Framework Designer" type ="button" class ="toolbar_button toolbar_button_designer" onclick = "Hemi.app.createWindow('Framework Designer','Templates/FrameworkDesigner.xml','FrameworkDesigner');" />
+        <input title = "API Browser" type ="button" class ="toolbar_button toolbar_button_api" onclick = "Hemi.app.createWindow('API Browser','Templates/FrameworkAPIBrowser.xml', 'FrameworkAPIBrowser');" />
+        <input title = "Log Viewer" type ="button" class ="toolbar_button toolbar_button_log" onclick = "Hemi.app.createWindow('Log Viewer','Templates/LogViewer.xml', 'LogViewer');" />
+        <input title = "Test Suite" type ="button" class ="toolbar_button toolbar_button_test" onclick = "Hemi.app.createWindow('FVT Test Suite','Templates/FVTs.xml', 'FVTTestSuite');" />
+    </p>
+</html-fragment>

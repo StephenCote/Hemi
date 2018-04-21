@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.ui.util</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.ui</path>
+<library>Hemi</library>
+<description>The utility class includes Web UI help functions.</description>
+<static-class>
+<name>util</name>
+<version>3.5.1</version>
+<description>Hemi framework utilities</description>
+<method>
+<name>getIsRequested</name>
+<param name="o" type="object">Object to test whether it has been requested.</param>
+<return-value name="b" type="boolean">Bit indicating whether the control is currently requested for display.</return-value>
+<description>Returns a bit indicating whether or not the control is requested for display.</description>
+</method>
+<method>
+<name>request</name>
+<param name="t" type="FrameworkObject">Control that is making the request.</param>
+<param name="o" type="Node">Target node for which the control is being requested.</param>
+<param name="c" type="Node">Container node used by the control for display.</param>
+<description>Associates a control with a node, and keeps track of the request status.</description>
+</method>
+<method>
+<name>endRequest</name>
+<param name="t" type="FrameworkObject">Control that is making the request.</param>
+<param name="c" type="Node">Container node used by the control for display.</param>
+<description>Hides the WideSelectInstance control if requested.</description>
+</method>
+Relying on consistency that {hemi-object}.objects.c is the holder for the container object
+Otherwise use .getContainer()
+
+if(_s.is_paging) t.clearItems();
+<method>
+<name>alignControl</name>
+<param name="t" type="FrameworkObject">Control to be aligned.</param>
+<param name="o" type="Node">Target node for which the control is being aligned.</param>
+<param name="c" type="Node">Container node used by the control for display.</param>
+<return-value name="b" type="boolean">Bit indicating whether the control is currently requested for display.</return-value>
+<description>Returns a bit indicating whether or not the control is requested for display.</description>
+</method>
+</static-class>
+</package>
+<index><description>The utility class includes Web UI help functions.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

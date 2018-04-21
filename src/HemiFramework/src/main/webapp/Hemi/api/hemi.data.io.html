@@ -1,0 +1,1412 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>API Hemi.data.io Hemi JavaScript Framework</title>
+<link rel="stylesheet" href="ApiStyles.css" type="text/css">
+</head>
+<body>
+<h1>Hemi JavaScript Framework</h1>
+<h2>Hemi.data.io</h2>
+<ul class="top-nav">
+<li>
+<a href="/Hemi/">Hemi JavaScript Framework Project</a>
+</li>
+<li>
+<a href="Hemi_api.html">API Index</a>
+</li>
+</ul>
+<h3>Description</h3>
+<p>The Data IO service is used to broker data requests with configured data providers.  The built-in interchange format is loosely modelled on the Account Manager 4 Data and Group object model, but the implementation is open for any object type.</p>
+<a name="classindex"> </a>
+<h3>Class Index</h3>
+<ul class="index">
+<li>
+<a href="#DataIOProvider"><i>static </i>Hemi.data.io.DataIOProvider</a>: This static class describes the interface an object must expose to provide data via the Data IO Service. A provider must be registered with the ObjectRegistry.  The addServiceAPI method may be used to instrument this API for quick access to the service.</li>
+<li>
+<a href="#service"><i>static </i>Hemi.data.io.service</a>: Static implementation of the hemi.app.module.serviceImpl class.</li>
+<li>
+<a href="#serviceImpl">Hemi.data.io.serviceImpl</a>: The Data IO service provides a bus to registered Data Providers.  IORequest and IOSubject objects are used to convey a description of the request to the providers.  Each provider may then determine whether and when to handled the request, and return results as an IOResponse.</li>
+</ul>
+<a name="DataIOProvider"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.data.io.DataIOProvider</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">This static class describes the interface an object must expose to provide data via the Data IO Service. A provider must be registered with the ObjectRegistry.  The addServiceAPI method may be used to instrument this API for quick access to the service.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="DataIOProvidermethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#handle_io_open_request">handle_io_open_request</a>: A notification that a request has been opened.</li>
+<li>public <a href="#handle_io_register">handle_io_register</a>: A notification that the provider was registered with the service.</li>
+<li>public <a href="#handle_io_request">handle_io_request</a>: A notification that a request should be processed.</li>
+<li>public <a href="#handle_io_unregister">handle_io_unregister</a>: A notification that the provider is being unregistered.</li>
+<li>public <a href="#handle_proxy_xml">handle_proxy_xml</a>: When registered as a protocol proxy, matching URI requests made from the context of the registered bus are diverted to this provider. The provider implements the handle_proxy_xml method to compose a Data IO Request based on the URI pattern. NOTE: Only one provider may register for a particular protocol, regardless of bus type.</li>
+<li>virtual <a href="#implement">implement</a>: Registers a specific implementation.  The order of the invocation is: requestCatalog{Action}, requestAction{Action}. This method is injected onto a provider after registration.</li>
+<li>virtual <a href="#requestTypeAction">requestTypeAction</a>: The virtual method is invoked based on the combination of the implements method.</li>
+</ul>
+<h3>Methods</h3>
+<a name="handle_io_open_request"></a>
+<h3 class="membertitle">handle_io_open_request</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">A notification that a request has been opened.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_io_open_request(
+ioService, vSubj, ioRequest, ioResponse
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioService</b> as DataIOService : The service that is unregistering the provider.</li>
+<li>
+<b>vSubj</b> as IOSubject : Subject of the requestor (E.G.: The authenticated user, anonymous user, etc).</li>
+<li>
+<b>ioRequest</b> as IORequest : The request that is being opened.</li>
+<li>
+<b>ioResponse</b> as IOResponse : The response to the request.</li>
+</ul>
+<a name="handle_io_register"></a>
+<h3 class="membertitle">handle_io_register</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">A notification that the provider was registered with the service.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_io_register(
+ioService
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioService</b> as DataIOService : The service that registered the provider.</li>
+</ul>
+<a name="handle_io_request"></a>
+<h3 class="membertitle">handle_io_request</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">A notification that a request should be processed.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bComplete = handle_io_request(
+ioService, vSubj, IORequest, ioResponse
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioService</b> as DataIOService : The service that is unregistering the provider.</li>
+<li>
+<b>vSubj</b> as IOSubject : Subject of the requestor (E.G.: The authenticated user, anonymous user, etc).</li>
+<li>
+<b>IORequest</b> as IORequest : The request that is being opened.</li>
+<li>
+<b>ioResponse</b> as IOResponse : The response to the request.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bComplete</b> as boolean: Bit indicating that the request response was completed.</p>
+<a name="handle_io_unregister"></a>
+<h3 class="membertitle">handle_io_unregister</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">A notification that the provider is being unregistered.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_io_unregister(
+ioService
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioService</b> as DataIOService : The service that is unregistering the provider.</li>
+</ul>
+<a name="handle_proxy_xml"></a>
+<h3 class="membertitle">handle_proxy_xml</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">When registered as a protocol proxy, matching URI requests made from the context of the registered bus are diverted to this provider. The provider implements the handle_proxy_xml method to compose a Data IO Request based on the URI pattern. NOTE: Only one provider may register for a particular protocol, regardless of bus type.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oRequest = handle_proxy_xml(
+sPath, sId, bPost, vData, <i>c</i>, <i>t</i>, iBusType
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sPath</b> as String : The URI to an XML/Text/JSON Resource decorated with the proxy protocol.</li>
+<li>
+<b>sId</b> as String : Identifier associated with the request.</li>
+<li>
+<b>bPost</b> as bit : Bit indicating wether the request should be made via HTTP POST.</li>
+<li>
+<b>vData</b> as variant : Data to be included as the POST payload, such as an XMLDocument, text, or JSON structure.</li>
+<li>
+<b>c</b> as boolean <i>(optional)</i>: Bit indicating whether the response should be cached.</li>
+<li>
+<b>t</b> as int <i>(optional)</i>: Int indicating whether the request and response as text (1) or JSON (2) instead of XML (0).</li>
+<li>
+<b>iBusType</b> as int : The bus type the proxy service is currently operating in.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oRequest</b> as DataIORequest: Returns a Data IO Request based on the supplied input.</p>
+<a name="implement"></a>
+<h3 class="membertitle">implement</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Registers a specific implementation.  The order of the invocation is: requestCatalog{Action}, requestAction{Action}. This method is injected onto a provider after registration. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void implement(
+sContext, sAction
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>sContext</b> as String : The context of the implementation.</li>
+<li>
+<b>sAction</b> as String : The action of the implementation.</li>
+</ul>
+<a name="requestTypeAction"></a>
+<h3 class="membertitle">requestTypeAction</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#DataIOProvider">DataIOProvider</a>
+</li>
+<li>
+<a href="#DataIOProvidermethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">The virtual method is invoked based on the combination of the implements method. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bHandled = requestTypeAction(
+oService, oSubject, oRequest, oResponse
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oService</b> as IOService : The Data IO service raising the request.</li>
+<li>
+<b>oSubject</b> as IOSubject : Subject of the requestor (E.G.: The authenticated user, anonymous user, etc).</li>
+<li>
+<b>oRequest</b> as IORequest : Parameters and filters of the request.</li>
+<li>
+<b>oResponse</b> as IOResponse : Data, status, and policies of the response.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bHandled</b> as bit: Bit indicating the request was handled.</p>
+<a name="service"> </a>
+<h3 class="membertitle">
+<i>static </i>Hemi.data.io.service</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">Static implementation of the hemi.app.module.serviceImpl class.</p>
+<p class="desc"></p>
+<a name="serviceImpl"> </a>
+<h3 class="membertitle">Hemi.data.io.serviceImpl</h3>
+<h4>version 3.5.1</h4>
+<p class="desc">The Data IO service provides a bus to registered Data Providers.  IORequest and IOSubject objects are used to convey a description of the request to the providers.  Each provider may then determine whether and when to handled the request, and return results as an IOResponse.</p>
+<p class="desc"></p>
+<h3>Index</h3>
+<a name="serviceImplobjectindex"> </a>
+<h4>Object Index</h4>
+<ul class="index">
+<li>public <a href="#Data">Data</a>: An object representing variable data.</li>
+<li>public <a href="#Group">Group</a>: An object representing a group.</li>
+<li>public <a href="#IOInstruction">IOInstruction</a>: Instructions relevent to the request.</li>
+<li>public <a href="#IORequest">IORequest</a>: An object representing the subject of a request.  This object is determined and set by the framework context.  The parameters are modeled after the Core Web and Account Manager Core Handler request processor.</li>
+<li>public <a href="#IOResponse">IOResponse</a>: An object representing the response to a request.</li>
+<li>public <a href="#IOSubject">IOSubject</a>: An object representing the subject of a request.  This object is determined and set by the framework context.</li>
+<li>public <a href="#Policy">Policy</a>: Authorization policy affecting a particular object.</li>
+</ul>
+<a name="serviceImplmethodindex"> </a>
+<h4>Method Index</h4>
+<ul class="index">
+<li>public <a href="#arrayToData">arrayToData</a>: Returns an array of data objects.</li>
+<li>public <a href="#arrayToGroup">arrayToGroup</a>: Returns an array of group objects.</li>
+<li>public <a href="#continueRequest">continueRequest</a> (<b>internal</b>): For asynchronous requests, continues processing the request transaction.  The instance invoking this method may indicate that it completed processing its portion of the request, and therefore it should not receive a subsequent transaction processing callback.</li>
+<li>public <a href="#createRequest">createRequest</a> (<b>internal</b>): Constructs a request object from the specified parameters,  opens a new request transaction, and returns a new request object, registered with the io service, prepared with a response, and ready for use.</li>
+<li>virtual <a href="#endRequest">endRequest</a> (<b>internal</b>): Specified for, and invoked as, the transaction packet handler for transactions opened for requests.</li>
+<li>public <a href="#getBusName">getBusName</a>: Returns the name of the specified bus type.</li>
+<li>public <a href="#getBusType">getBusType</a>: Returns the enumeration of bus types.</li>
+<li>public <a href="#getList">getList</a>: Opens a catalog request, where the requestName is 'catalog', </li>
+<li>public <a href="#getSubject">getSubject</a>: Returns the current IOSubject.  This is assumed to be updated by any session handling mechanism (E.G.: Refer component.session.xml for implementation when used with Core Web 4 project).</li>
+<li>virtual <a href="#handle_io_response">handle_io_response</a>: A notification that a response was created for a pending request.</li>
+<li>public <a href="#isRegistered">isRegistered</a>: Determines whether an object is registered as a provider.</li>
+<li>public <a href="#mapSession">mapSession</a> (<b>internal</b>): Maps the Core Session component data to the DataIO subject.</li>
+<li>public <a href="#newData">newData</a>: Returns a new data object.</li>
+<li>public <a href="#newGroup">newGroup</a>: Returns a new group object.</li>
+<li>public <a href="#newIOInstruction">newIOInstruction</a>: Returns a new request object.</li>
+<li>public <a href="#newIORequest">newIORequest</a> (<b>internal</b>): Returns a new request object.</li>
+<li>public <a href="#newIOResponse">newIOResponse</a> (<b>internal</b>): Returns a new response object.</li>
+<li>public <a href="#newPolicy">newPolicy</a>: Returns a new policy object.</li>
+<li>public <a href="#openRequest">openRequest</a> (<b>internal</b>): Opens a new request transaction, and returns a new request object, registered with the io service, prepared with a response, and ready for use.</li>
+<li>public <a href="#register">register</a>: Registers a Data IO Provider.</li>
+<li>public <a href="#unregister">unregister</a>: Unregisteres a provider from the Data IO service.</li>
+<li>virtual <a href="#updateSubject">updateSubject</a>: Notifies subscribers to onupdatesubject message that the subject was updated.</li>
+</ul>
+<a name="serviceImplmessageindex"> </a>
+<h4>Message Index</h4>
+<ul class="index">
+<li>public <a href="#onupdatesubject">onupdatesubject</a>: Message published to all subscribers when the default subject for the service has been updated.</li>
+</ul>
+<h3>Objects</h3>
+<a name="Data"></a>
+<h3 class="membertitle">Data</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">An object representing variable data.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>provider</b> as String: The provider of the data.</li>
+<li>
+<b>path</b> as String: The path to the data.</li>
+<li>
+<b>value</b> as String: Value of the data.</li>
+<li>
+<b>hash</b> as String: Hash of the data value.</li>
+<li>
+<b>name</b> as String: Name of the data.</li>
+<li>
+<b>type</b> as String: Type of the data value.</li>
+<li>
+<b>mimeType</b> as String: Content type of the data value.</li>
+<li>
+<b>id</b> as String: Unique identifier.</li>
+<li>
+<b>createdDate</b> as Date: Date/time when the data was created.</li>
+<li>
+<b>modifiedDate</b> as Date: Date/time when the data was last modified.</li>
+<li>
+<b>size</b> as int: Size of the data</li>
+<li>
+<b>detailsOnly</b> as boolean: Bit indicating whether the data value is included.  For data lists, this is usually false.</li>
+<li>
+<b>postData</b> as boolean: Bit indicating whether the data value represents a post payload.</li>
+<li>
+<b>group</b> as String: Group identifier.  This may be used to differentiate the data relative to other data, such as a directory.</li>
+<li>
+<b>description</b> as String: Description of the data.</li>
+<li>
+<b>namespace</b> as String: Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</li>
+<li>
+<b>bus</b> as Enum&lt;BusType&gt;: The bus via which the data was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</li>
+</ul>
+<a name="Group"></a>
+<h3 class="membertitle">Group</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">An object representing a group.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>populated</b> as boolean: Bit indicating whether child data and groups has been populated.</li>
+<li>
+<b>provider</b> as String: The provider of the group.</li>
+<li>
+<b>parentId</b> as String: The group parent id.</li>
+<li>
+<b>name</b> as String: Name of the group.</li>
+<li>
+<b>path</b> as String: Path of the group.</li>
+<li>
+<b>type</b> as String: Type of the group.</li>
+<li>
+<b>id</b> as String: Unique identifier.</li>
+<li>
+<b>namespace</b> as String: Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</li>
+<li>
+<b>data</b> as Array&lt;Data&gt;: List of data contained by the group.</li>
+<li>
+<b>groups</b> as Array&lt;Group&gt;: List of groups contained by the group.</li>
+<li>
+<b>detailsOnly</b> as boolean: Bit indicating whether the group pointers (such as children) are populated.</li>
+<li>
+<b>bus</b> as Enum&lt;BusType&gt;: The bus via which the group was transferred. Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</li>
+</ul>
+<a name="IOInstruction"></a>
+<h3 class="membertitle">IOInstruction</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">Instructions relevent to the request.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>paginate</b> as String: Bit indicating whether multiple results should be paginate by the </li>
+<li>
+<b>recordCount</b> as int: For paginated sets of data, the number of records requested for the set.</li>
+<li>
+<b>startRecord</b> as int: For paginated sets of data, the start index of the returned set of data from the total set.</li>
+<li>
+<b>totalCount</b> as int: For paginated sets of data, the total set of available data.</li>
+<li>
+<b>paginate</b> as boolean: Bit indicating the data set is paginated.</li>
+<li>
+<b>orderBy</b> as String: Instruction on how the response should be ordered.</li>
+<li>
+<b>groupBy</b> as String: Instruction on how the response should be grouped.</li>
+</ul>
+<a name="IORequest"></a>
+<h3 class="membertitle">IORequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">An object representing the subject of a request.  This object is determined and set by the framework context.  The parameters are modeled after the Core Web and Account Manager Core Handler request processor.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>requestApplication</b> as String: The name of a preferred application to handle the requested action.</li>
+<li>
+<b>requestAction</b> as String: The requested action (eg: get, put, delete).</li>
+<li>
+<b>async</b> as String: The request may be made asynchronously, and the results returned via a handler callback.</li>
+<li>
+<b>cache</b> as String: The request results may be cached.</li>
+<li>
+<b>requestName</b> as String: Name of the request (eg: data name).</li>
+<li>
+<b>requestId</b> as String: UID of the request being made (eg: data id).</li>
+<li>
+<b>requestCatalog</b> as String: The catalog (or group) of the request being made (eg: Home group). This may be used to differentiate the data relative to other data, such as a directory.</li>
+<li>
+<b>id</b> as String: UID to track this IORequest.</li>
+<li>
+<b>detailsOnly</b> as boolean: Bit indicating whether returned data should include all information, or only meta information.</li>
+<li>
+<b>requestContext</b> as String: Context is used to distinguish where the data request originated, and where it may be delivered.</li>
+<li>
+<b>namespace</b> as String: Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</li>
+<li>
+<b>eBus</b> as Enum&lt;BusType&gt;: Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</li>
+<li>
+<b>requestData</b> as Array&lt;Variant&gt;: List of data accompanying the request.</li>
+<li>
+<b>serviceId</b> as String: The registered identifier of the service for which the request was created.</li>
+<li>
+<b>providerRequested</b> as Hash: Hash of provider identifiers to which the request was submitted.</li>
+<li>
+<b>transactionId</b> as String: The transaction packet identifier.</li>
+<li>
+<b>transactionName</b> as String: The transaction packet name.</li>
+<li>
+<b>responseId</b> as String: The id of the IOResponse created for this request. (IOResponse.id property, not IOResponse.responseId).</li>
+<li>
+<b>is_open</b> as boolean: Bit indicating that the request is still being processed.</li>
+<li>
+<b>instruction</b> as IOInstruction: A set of instructions for how a request for two or more records should be handled.</li>
+<li>
+<b>mimeType</b> as String: Expected content type of the response.</li>
+</ul>
+<a name="IOResponse"></a>
+<h3 class="membertitle">IOResponse</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">An object representing the response to a request.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>authenticationRequired</b> as boolean: One or more providers indicated invalid authentication.</li>
+<li>
+<b>id</b> as String: UID to track this IOResponse.</li>
+<li>
+<b>responseId</b> as String: UID of the response (eg: data_id).</li>
+<li>
+<b>responsePath</b> as String: Path of the response.</li>
+<li>
+<b>status</b> as String: Response status.</li>
+<li>
+<b>message</b> as String: Response messages, if any.</li>
+<li>
+<b>requestId</b> as String: The id of the IORequest submitted and instigating this response. (IORequest.id property, not IORequest.requestId).</li>
+<li>
+<b>serviceId</b> as String: The registered identifier of the service for which the response was created.</li>
+<li>
+<b>responseData</b> as Array&lt;Variant&gt;: List of data accompanying the response.</li>
+<li>
+<b>namespace</b> as String: Namespace.  This may be used to distinguish where the data originates and/or where and how it should be persisted.</li>
+<li>
+<b>eBus</b> as Enum&lt;BusType&gt;: Bus is a discriminator used to direct the flow of the request to a subject of IO Providers.</li>
+<li>
+<b>providerResponded</b> as Hash: Hash of providers which responded.</li>
+<li>
+<b>responseHandler</b> as function: Handler to be invoked for asynchronous requests.</li>
+</ul>
+<h4>Methods</h4>
+<ul class="methodparams">
+<li>void <b>writeData</b>(
+o, <i>p</i>, <i>r</i>, <i>b</i>)
+<p class="messagedesc">Adds the specified data object to the response.</p>
+</li>
+<li>void <b>writeDataArray</b>(
+a, <i>p</i>, <i>r</i>, <i>b</i>)
+<p class="messagedesc">Adds the specified data objects to the response.</p>
+</li>
+<li>void <b>writeGroup</b>(
+o, <i>p</i>, <i>r</i>, <i>b</i>)
+<p class="messagedesc">Adds the specified group object to the response.</p>
+</li>
+<li>void <b>writeGroupArray</b>(
+a, <i>p</i>, <i>r</i>, <i>b</i>)
+<p class="messagedesc">Adds the specified group objects to the response.</p>
+</li>
+</ul>
+<a name="IOSubject"></a>
+<h3 class="membertitle">IOSubject</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">An object representing the subject of a request.  This object is determined and set by the framework context.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>name</b> as String: Name of the subject (eg: user name).</li>
+<li>
+<b>id</b> as String: UID of the subject (eg: user id).</li>
+<li>
+<b>isAuthenticated</b> as boolean: Bit indicating whether or not the subject is known to be authenticated.</li>
+</ul>
+<a name="Policy"></a>
+<h3 class="membertitle">Policy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplobjectindex">Objects</a>
+</li>
+</ul>
+<p class="objectdesc">Authorization policy affecting a particular object.</p>
+<h4>Properties</h4>
+<ul class="methodparams">
+<li>
+<b>subjectId</b> as String: The id of the object that the policy affects.</li>
+<li>
+<b>subjectType</b> as String: The type of subject.</li>
+<li>
+<b>statement</b> as String: A plain text statement of the policy.</li>
+<li>
+<b>read</b> as boolean: Bit indicating whether the subjecrt is able to read the object.</li>
+<li>
+<b>write</b> as boolean: Bit indicating whether the subjecrt is able to write (or add-to) the object.</li>
+<li>
+<b>change</b> as boolean: Bit indicating whether the subjecrt is able to change the object.</li>
+<li>
+<b>del</b> as boolean: Bit indicating whether the subjecrt is able to delete the object.</li>
+</ul>
+<h3>Methods</h3>
+<a name="arrayToData"></a>
+<h3 class="membertitle">arrayToData</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an array of data objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">aData = arrayToData(
+aArray, oPolicy
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>aArray</b> as Array&lt;String&gt; : An array of data</li>
+<li>
+<b>oPolicy</b> as Policy : Default data policy.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>aData</b> as Array&lt;Data&gt;: An array of data objects.</p>
+<a name="arrayToGroup"></a>
+<h3 class="membertitle">arrayToGroup</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns an array of group objects.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">aGroups = arrayToGroup(
+aArray, <i>oPolicy</i>, <i>sParentPath</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>aArray</b> as Array&lt;String&gt; : An array of group names</li>
+<li>
+<b>oPolicy</b> as Policy <i>(optional)</i>: Default group policy.</li>
+<li>
+<b>sParentPath</b> as String <i>(optional)</i>: Parent path to the group.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>aGroups</b> as Array&lt;Group&gt;: An array of group objects.</p>
+<a name="continueRequest"></a>
+<h3 class="membertitle">continueRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">For asynchronous requests, continues processing the request transaction.  The instance invoking this method may indicate that it completed processing its portion of the request, and therefore it should not receive a subsequent transaction processing callback.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void continueRequest(
+ioRequest, <i>oProvider</i>, bComplete
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioRequest</b> as variount : Request object or request identifier.</li>
+<li>
+<b>oProvider</b> as ProviderObject <i>(optional)</i>: The provider object instigating the request to continue processing.</li>
+<li>
+<b>bComplete</b> as boolean : Bit indicating that the provider completed processing the request and that the underlying transaction may be marked as complete.</li>
+</ul>
+<a name="createRequest"></a>
+<h3 class="membertitle">createRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Constructs a request object from the specified parameters,  opens a new request transaction, and returns a new request object, registered with the io service, prepared with a response, and ready for use.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oReq = createRequest(
+oSubject, eBus, sApplication, sContext, sCatalog, sAction, sId, sName, bDetailsOnly, bAsync, bCache, oInstruction, <i>fHandler</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oSubject</b> as IOSubject : The subject making the request.</li>
+<li>
+<b>eBus</b> as Enum&lt;BusType&gt; : The request bus.</li>
+<li>
+<b>sApplication</b> as String : The request application.</li>
+<li>
+<b>sContext</b> as String : The context of the request.</li>
+<li>
+<b>sCatalog</b> as String : The name of the request catalog.</li>
+<li>
+<b>sAction</b> as String : The requested action.</li>
+<li>
+<b>sId</b> as String : The requested id.</li>
+<li>
+<b>sName</b> as String : The name of the request.</li>
+<li>
+<b>bDetailsOnly</b> as boolean : The request is for meta information.</li>
+<li>
+<b>bAsync</b> as boolean : The request is asynchronous.</li>
+<li>
+<b>bCache</b> as boolean : The request may be cached.</li>
+<li>
+<b>oInstruction</b> as IOInstruction : A set of instructions for how a request for two or more records should be handled.</li>
+<li>
+<b>fHandler</b> as function <i>(optional)</i>: Function pointer to be invoked with the service and response.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oReq</b> as IORequest: A request object.</p>
+<a name="endRequest"></a>
+<h3 class="membertitle">endRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Specified for, and invoked as, the transaction packet handler for transactions opened for requests. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void endRequest(
+oService, oPacket
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oService</b> as TransactionService : The transaction service handling the request.</li>
+<li>
+<b>oPacket</b> as TransactionPacket : The packet representing the transaction.</li>
+</ul>
+<a name="getBusName"></a>
+<h3 class="membertitle">getBusName</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the name of the specified bus type.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">sBusName = getBusName(
+iBus
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>iBus</b> as int : Bus type</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>sBusName</b> as String: The name of the specified of bus type.</p>
+<a name="getBusType"></a>
+<h3 class="membertitle">getBusType</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the enumeration of bus types.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">eBus = getBusType(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>eBus</b> as Enum&lt;BusType&gt;: The enumeration of bus types.</p>
+<a name="getList"></a>
+<h3 class="membertitle">getList</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Opens a catalog request, where the requestName is 'catalog', </p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oResp = getList(
+eBus, sApplication, sContext, sCatalog, <i>sRequest</i>, <i>bAsync</i>, <i>fHandler</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>eBus</b> as Enum&lt;BusType&gt; : The request bus.</li>
+<li>
+<b>sApplication</b> as String : The application to handle the request.</li>
+<li>
+<b>sContext</b> as String : The context of the request.</li>
+<li>
+<b>sCatalog</b> as String : The group catalog.  Reserved values are: directory, data</li>
+<li>
+<b>sRequest</b> as String <i>(optional)</i>: The request, or description, of the catalog. Reserved values are: list, listFull.</li>
+<li>
+<b>bAsync</b> as boolean <i>(optional)</i>: Bit indicating whether the request should be made asynchronously.</li>
+<li>
+<b>fHandler</b> as function <i>(optional)</i>: Function pointer to be invoked with the service and response.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oResp</b> as IOResponse: The response object created for the request.</p>
+<a name="getSubject"></a>
+<h3 class="membertitle">getSubject</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns the current IOSubject.  This is assumed to be updated by any session handling mechanism (E.G.: Refer component.session.xml for implementation when used with Core Web 4 project).</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oSub = getSubject(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oSub</b> as IOSubject: The current IOSubject.</p>
+<a name="handle_io_response"></a>
+<h3 class="membertitle">handle_io_response</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">A notification that a response was created for a pending request. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void handle_io_response(
+ioService, vSubj, ioRequest, ioResponse
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>ioService</b> as DataIOService : The service that is unregistering the provider.</li>
+<li>
+<b>vSubj</b> as IOSubject : Subject of the requestor (E.G.: The authenticated user, anonymous user, etc).</li>
+<li>
+<b>ioRequest</b> as IORequest : The request that is being opened.</li>
+<li>
+<b>ioResponse</b> as IOResponse : The response to the request.</li>
+</ul>
+<a name="isRegistered"></a>
+<h3 class="membertitle">isRegistered</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Determines whether an object is registered as a provider.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bRegistered = isRegistered(
+oObject
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oObject</b> as FrameworkObject : Hemi FrameworkObject.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bRegistered</b> as bit: Bit indicating whether the provider is registered.</p>
+<a name="mapSession"></a>
+<h3 class="membertitle">mapSession</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Maps the Core Session component data to the DataIO subject.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void mapSession(
+oSession
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oSession</b> as SessionComponent : The Session Component used by CoreWeb.</li>
+</ul>
+<a name="newData"></a>
+<h3 class="membertitle">newData</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new data object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oData = newData(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oData</b> as Data: A new data object.</p>
+<a name="newGroup"></a>
+<h3 class="membertitle">newGroup</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new group object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">alist = newGroup(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>alist</b> as Data: A new group object.</p>
+<a name="newIOInstruction"></a>
+<h3 class="membertitle">newIOInstruction</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new request object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oInst = newIOInstruction(
+bPaginate, iStartRecord, iRecordCount, sOrder, sGroup
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>bPaginate</b> as boolean : The requested results should be paginated.</li>
+<li>
+<b>iStartRecord</b> as int : For paginated results, the record to begin with.</li>
+<li>
+<b>iRecordCount</b> as int : For paginated results, the maximum number of records to return.</li>
+<li>
+<b>sOrder</b> as String : Record order instruction.</li>
+<li>
+<b>sGroup</b> as String : Record group instruction.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oInst</b> as IOInstruction: A new set of request instructions.</p>
+<a name="newIORequest"></a>
+<h3 class="membertitle">newIORequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new request object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oReq = newIORequest(
+eBus, sApplication, sContext, sCatalog, sAction, sId, sName, bDetailsOnly, bAsync, bCache, oInstruction
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>eBus</b> as Enum&lt;BusType&gt; : The request bus.</li>
+<li>
+<b>sApplication</b> as String : The request application.</li>
+<li>
+<b>sContext</b> as String : The context of the request.</li>
+<li>
+<b>sCatalog</b> as String : The name of the request catalog.</li>
+<li>
+<b>sAction</b> as String : The requested action.</li>
+<li>
+<b>sId</b> as String : The requested id.</li>
+<li>
+<b>sName</b> as String : The name of the request.</li>
+<li>
+<b>bDetailsOnly</b> as boolean : The request is for meta information.</li>
+<li>
+<b>bAsync</b> as boolean : The request is asynchronous.</li>
+<li>
+<b>bCache</b> as boolean : The request may be cached.</li>
+<li>
+<b>oInstruction</b> as IOInstruction : A set of instructions for how a request for two or more records should be handled.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oReq</b> as IORequest: A new request object.</p>
+<a name="newIOResponse"></a>
+<h3 class="membertitle">newIOResponse</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new response object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oReq = newIOResponse(
+vReq, <i>fHandler</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>vReq</b> as IORequest : The request object for which to create the response.</li>
+<li>
+<b>fHandler</b> as function <i>(optional)</i>: Function pointer to be invoked with the service and response for asynchronous requests.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oReq</b> as IOResponse: A new response object.</p>
+<a name="newPolicy"></a>
+<h3 class="membertitle">newPolicy</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Returns a new policy object.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oPolicy = newPolicy(
+
+)
+</p>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oPolicy</b> as Policy: A new policy object.</p>
+<a name="openRequest"></a>
+<h3 class="membertitle">openRequest</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Opens a new request transaction, and returns a new request object, registered with the io service, prepared with a response, and ready for use.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">oReq = openRequest(
+oSubject, IORequest, <i>fHandler</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oSubject</b> as IOSubject : The subject making the request.</li>
+<li>
+<b>IORequest</b> as function : A request object.</li>
+<li>
+<b>fHandler</b> as function <i>(optional)</i>: Function pointer to be invoked with the service and response.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>oReq</b> as IORequest: A request object.</p>
+<a name="register"></a>
+<h3 class="membertitle">register</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Registers a Data IO Provider.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bRegistered = register(
+oProvider, <i>sBusType</i>, <i>sProviderName</i>, <i>sProtocolProxy</i>
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oProvider</b> as ProviderObject : Hemi FrameworkObject that supports the Provider API.</li>
+<li>
+<b>sBusType</b> as String <i>(optional)</i>: The type of bus the provider will use.  Fixed types are: local, offline, online, any.</li>
+<li>
+<b>sProviderName</b> as String <i>(optional)</i>: A friendly name for refering to the provider.</li>
+<li>
+<b>sProtocolProxy</b> as String <i>(optional)</i>: A custom protocol for directing URI requests through the provider.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bRegistered</b> as bit: Bit indicating whether the provider was registered.</p>
+<a name="unregister"></a>
+<h3 class="membertitle">unregister</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Unregisteres a provider from the Data IO service.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">bRegistered = unregister(
+oProvider, bPointer
+)
+</p>
+<h4>Parameters</h4>
+<ul class="methodparams">
+<li>
+<b>oProvider</b> as ProviderObject : Hemi FrameworkObject that supports the Provider API.</li>
+<li>
+<b>bPointer</b> as boolean : Bit indicating the provider is an internal marker.</li>
+</ul>
+<h4>Returns</h4>
+<p class="returnvalue">
+<b>bRegistered</b> as bit: Bit indicating whether the provider was unregistered.</p>
+<a name="updateSubject"></a>
+<h3 class="membertitle">updateSubject</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmethodindex">Methods</a>
+</li>
+</ul>
+<p class="methoddesc">Notifies subscribers to onupdatesubject message that the subject was updated. Method is virtual and can be overridden.</p>
+<h4>Syntax</h4>
+<p class="methodsyntax">void updateSubject(
+
+)
+</p>
+<h3>Messages</h3>
+<a name="onupdatesubject"></a>
+<h3 class="membertitle">onupdatesubject</h3>
+<ul class="nav">
+<li>
+<a href="#">Top</a>
+</li>
+<li>
+<a href="#classindex">Class Index</a>
+</li>
+<li>
+<a href="#serviceImpl">serviceImpl</a>
+</li>
+<li>
+<a href="#serviceImplmessageindex">Messages</a>
+</li>
+</ul>
+<p class="messagedesc">Message published to all subscribers when the default subject for the service has been updated.</p>
+<h4>Syntax</h4>
+<p class="messagesyntax">
+// User-specified script to subscribe to message
+<br>
+org.cote.js.message.MessageService.subscribe("onupdatesubject",<i>_handle_message</i>);
+<br>
+// Internal: how the message is published to subscribers
+<br>
+org.cote.js.message.MessageService.publish("onupdatesubject" 
+, o
+);
+<br>
+// User-specified script to handle the message subscription
+<br>
+function <i>_handle_message</i>("onupdatesubject"
+, o
+){
+<br>
+// message handler code
+<br>
+}
+</p>
+<h4>Parameters</h4>
+<ul class="messageparams">
+<li>
+<b>o</b> as DataIOService : The service for which the subject was updated.</li>
+</ul>
+<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+</body>
+</html>

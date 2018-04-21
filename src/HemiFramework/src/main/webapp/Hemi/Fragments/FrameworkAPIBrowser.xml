@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+		<div rid ="api_title" class="title">Available API</div>
+		<div> 
+			<select onchange ="${this}.ChoosePackage()" rid ="package_list">
+				
+			</select>
+		  <select onchange ="${this}.ChoosePackage()" rid = "api_filter"><option>All</option><option>Virtual</option></select>
+		</div>
+		<div ___pointer_marker = "never"  component = "wideselect" rid = "available_api">
+		</div>
+<!--		 
+	<div class ="field">
+		<div class = "field_label">
+			Syntax:
+		</div>
+		<div class = "field_input" rid ="syntax">
+			[ ... ]
+		</div>
+	</div>
+-->
+	<div class ="field">
+		<div class = "field_label">
+			Description:
+		</div>
+		<div class = "field_input" rid ="description">
+			[ ... ]
+		</div>
+	</div>
+
+	<div style ="display:none;" class ="field" rid ="parameters_field">
+		<div class = "field_label">
+			Parameters:
+		</div>
+		<div class = "field_input" rid ="parameters">
+			[ ... ]
+		</div>
+	</div>
+
+	<div style ="display:none;" class ="field"  rid ="return_field">
+		<div class = "field_label">
+			Return Value:
+		</div>
+		<div class = "field_input" rid ="return-value">
+			[ ... ]
+		</div>
+	</div>
+	<p style ="clear:both"></p>
+	<embedded-script>
+		<![CDATA[
+		embedded_init : function(){
+			this.scopeHandler("apiclick",0,0,1);
+			this.scopeHandler("show_api", 0, 0, 1);
+
+			//this.RefreshPackageList();
+		},
+		_handle_show_api : function(){
+			if(this.GetElementByRID("package_list").options.length == 0){
+				this.GetAPIList().getContainer().style.height = "225px";
+				this.GetAPIList().setResultHandler( this._prehandle_apiclick);
+				this.RefreshPackageList();
+			}
+		},
+		GetAPIList : function(){
+			return this.GetComponentByRID("available_api").GetWideSelect();
+		},
+		ChoosePackage : function(){
+			var oSel = this.GetElementByRID("package_list");
+			//var oFil = this.GetElementByRID("api_filter");
+			var sText = oSel.options[oSel.selectedIndex].text;
+			//oFil.style.display = (sText.match(/appcomp/i) ? "inline" : "none");
+			this.GetAPIList().clearItems();
+			this.RefreshSelectedAPI(sText);
+		},
+		RefreshPackageList : function(){
+			var xPack = Hemi.xml.getXml(Hemi.hemi_base + "api/hemi_api.xml");
+			var oSel = this.GetElementByRID("package_list");
+			oSel.options.length = 0;
+			var aU = xPack.getElementsByTagName("indices")[0].getElementsByTagName("url");
+
+			for(var i= 0; i <aU.length; i++){
+				var sText = Hemi.xml.getInnerText(aU[i]).replace(/\.html$/i,"");
+				oSel.options[i] = new Option(sText);
+				if(sText.match(/appcomp/i)) oSel.selectedIndex = i;
+			}
+			this.ChoosePackage();
+		},
+		RefreshSelectedAPI : function(sPackage){
+
+			var xPackage = Hemi.xml.getXml(Hemi.hemi_base + "api/" + sPackage + ".xml");
+			var sText = this.GetElementText(xPackage.documentElement,"name");
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("api_title"),"API " + sText);
+			this.UnpackApi(xPackage,"static-class");
+			this.UnpackApi(xPackage,"class");
+			this.UnpackApi(xPackage,"object");
+		},
+		UnpackApi : function(xPackage, sType){
+			var aC = xPackage.getElementsByTagName(sType);
+			var oList = this.GetAPIList();
+			var bVirt = (this.GetElementByRID("api_filter").style.display != "none" && this.GetElementByRID("api_filter").selectedIndex == 1 ? 1 : 0);
+			for(var c = 0; c < aC.length; c++){
+				var oC = aC[c];
+				var sTName = Hemi.xml.getInnerText(oC.getElementsByTagName("name")[0]);
+				oList.addItem((sType + " " + sTName).toUpperCase());
+				var aP = oC.getElementsByTagName("property");
+				oList.addItem("..getProperties()");
+				for(var i = 0; i < aP.length; i++){
+					var bObj = aP[i].parentNode.nodeName.match(/^object$/);
+					var sName = (bObj ? aP[i].getAttribute("name") : this.GetElementText(aP[i],"name"));
+					var sDesc = (bObj ? Hemi.xml.getInnerText(aP[i]) : this.GetElementText(aP[i],"description"));
+					var sPropType = aP[i].getAttribute("type");
+					var bGet = ("1" == aP[i].getAttribute("get"));
+					var bSet = ("1" == aP[i].getAttribute("set"));
+					var vData = {type: "property", propType: sPropType, internal: ("1" == aP[i].getAttribute("internal")), name: sName,desc:sDesc, get:bGet, set:bSet};
+					oList.addItem("...." + vData.name + " as " + vData.propType + (vData.internal ? " (internal)" : ""),vData);
+				}
+				var aM = oC.getElementsByTagName("method");
+				oList.addItem("..Methods");
+				for(var i = 0; i < aM.length; i++){
+					 if(bVirt && "1" != aM[i].getAttribute("virtual")) continue;
+					 var oD = aM[i].getElementsByTagName("description")[0];
+					 var oN = aM[i].getElementsByTagName("name")[0];
+					 var aP = aM[i].getElementsByTagName("param");
+					 var aR = aM[i].getElementsByTagName("return-value");
+					 var aB = [];
+					
+					var sName = Hemi.xml.getInnerText(oN); 
+					var vData = {type: "method", internal: ("1" == aM[i].getAttribute("internal")), name: sName,params:[],desc:Hemi.xml.getInnerText(oD),retDesc:"No return value",retType:"void"};
+					 if(aR.length){
+								vData.retType = aR[0].getAttribute("type");
+								vData.retDesc = Hemi.xml.getInnerText(aR[0]);
+								aB.push(vData.retType);
+						}
+					 else aB.push("void");
+					
+					 aB.push(" " + sName + "(");
+					
+					 for(var p = 0; p < aP.length; p++){
+						if(p > 0) aB.push(", ");
+						vData.params[p] = {name:aP[p].getAttribute("name"),type:aP[p].getAttribute("type"),desc:Hemi.xml.getInnerText(aP[p])};
+						aB.push(vData.params[p].type);
+					 }
+					 aB.push(")");
+					 oList.addItem("...." + aB.join("") + (vData.internal ? " (internal)" : ""),vData);
+				}
+			}
+		},
+		_handle_apiclick : function(sEvent,oItem){
+			var sDesc = "[ ... ]";
+			
+			var sRet = sDesc;
+			Hemi.xml.removeChildren(this.GetElementByRID("parameters"));
+			if(oItem && oItem.data){
+				var bMethod = (oItem.data.type == "method");
+				var bProperty = (oItem.data.type == "property");
+				this.GetElementByRID("parameters_field").style.display = (bMethod ? "block" : "none");
+				this.GetElementByRID("return_field").style.display = (bMethod ? "block" : "none");
+				if(bMethod){
+					 sDesc = oItem.data.desc;
+					 sRet = oItem.data.retDesc;
+					 if(sRet == "void") sRet = "No return value";
+					 if(oItem.data.params.length){
+						var oUL = document.createElement("ul");
+						oUL.setAttribute("class","hemi-api");
+						for(var p = 0; p < oItem.data.params.length; p++){
+							var oLI = document.createElement("li");
+							oUL.appendChild(oLI);
+							oLI.appendChild(document.createTextNode(oItem.data.params[p].name + " as " + oItem.data.params[p].type + " - " + oItem.data.params[p].desc));
+						}
+						this.GetElementByRID("parameters").appendChild(oUL);
+					 }
+				}
+				else if(bProperty){
+					sDesc = oItem.data.desc;
+				}
+			}
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("description"),sDesc);
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("return-value"),sRet);
+			
+			
+		}
+
+
+  ]]>
+	</embedded-script>
+</html-fragment>

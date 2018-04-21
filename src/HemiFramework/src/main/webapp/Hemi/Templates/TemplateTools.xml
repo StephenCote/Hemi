@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<html-fragment>
+	<embedded-script>
+			<![CDATA[
+		embedded_init : function(){
+			Hemi.include("hemi.text");
+			if(this.getProperties().preferred_title && typeof this.setTitle == "function"){
+				this.setTitle(this.getProperties().preferred_title);
+			}
+			this.setupButtons("buttons-bar");
+			// Clear any status
+			//
+			if(typeof this.setStatus == "function") this.setStatus("");
+		},
+		extendSpaceConfiguration : function(oNode){
+			/// parseConfiguration won't operate on the parent node (oNode), so in this utility the parent (oNode) is specifically added to the space, and then the child nodes are processed.
+			///
+			Hemi.app.createComponent(oNode,this.getTemplateSpace(),0,1);
+			Hemi.app.space.service.parseConfiguration(this.getTemplateSpace(),0,"self",oNode);
+		},
+		GetSession : function(){
+			var o = Hemi.registry.service.getObject("session");
+			if(!o){
+				o = Hemi.app.createApplicationComponent("session",0, Hemi.app.space.service.getPrimarySpace(),"session");
+			}
+			return o;
+		},
+		FormatStringIntoHtml : function(oNode, sData){
+			if(!oNode || !sData) return;
+			var aDat = sData.split("\n");
+			for(var i = 0; i < aDat.length; i++){
+				var oD = document.createElement("p");
+				var sLine = Hemi.text.trim(aDat[i]);
+				if(sLine.length == 0) oD.appendChild(document.createElement("br"));
+				else oD.appendChild(document.createTextNode(sLine));
+				oNode.appendChild(oD);
+			}
+		},
+		GetElementByRID : function(n){
+			var o = this.getTemplateSpace().getSpaceObjectByName(n);
+			if(!o) return 0;
+			if(o.object){
+				if(typeof o.object.getContainer == 'function') return o.object.getContainer();
+				return o.object;
+			}
+			return o;
+		},
+		// TODO: Temporary fix until form set value is fixed for selects
+		//
+		/* TODO: Check to Deprecate
+		SetSelectValueByIndex : function(n,v){
+			var o = this.GetElementByRID(n);
+			if(!o || typeof o.selectedIndex != "number") return;
+			for(var i = 0; i < o.options.length; i++){
+				if(o.options[i].value == v || (o.options[i].value == "" && o.options[i].text == v)){
+					o.selectedIndex = i;
+					break;
+				}
+				
+			}
+		},
+		*/
+		// TODO: There is a bug in the setValue function in ocjxf.setValue where select options
+		// are not being selected
+		//
+		SetFormValue : function(n, v){
+			return Hemi.data.form.service.setValue(n,v, this.getTemplateSpace().space_id)
+		},
+		GetFormValue : function(n){
+			return Hemi.data.form.service.getValue(n,this.getTemplateSpace().space_id)
+		},
+		GetForm : function(){
+			return Hemi.data.form.service.getFormByName(this.getTemplateSpace().space_id);
+		},
+		ClearForm : function(){
+			return Hemi.data.form.service.clearDataForm(this.getTemplateSpace().space_id,0,0);
+		},
+		GetElementText : function(oParent, sName){
+			var aN = oParent.getElementsByTagName(sName);
+			if(aN.length == 0) return ""; // was 0;
+			return Hemi.xml.getInnerText(aN[0]);
+		},
+		SetText : function(sName, sValue){
+			var o = this.GetElementByRID(sName);
+			if(!o) return;
+			Hemi.xml.setInnerXHTML(o,sValue);
+		},
+
+		IsSuccess : function(oX){
+		  if(!oX || !oX.documentElement) return 0;
+		  return (oX.getElementsByTagName("Success").length > 0 ? 1 : 0);
+		},
+		IsLoginRequired : function(oX){
+		  if(!oX || !oX.documentElement) return 0;
+		  return (oX.getElementsByTagName("Login-Required").length > 0 ? 1 : 0);
+		},
+		ShowLogin : function(){
+			var oW = Hemi.app.getWindowManager().GetWindowByName("LoginWindow");
+			if(oW){
+				oW.open();
+				oW.restore();
+				this.GetSession().Refresh(1);
+				oW.setStatus("Logged out");
+				oW.loadTemplate("ActionForms/Login.xml");
+			}
+		},
+		SetElementParam : function(oX, name, val){
+		  if(!oX || !oX.documentElement) return 0;
+		  var oParams = oX.documentElement.getElementsByTagName("Params");
+		  if(oParams.length == 0){
+			oParams = oX.createElement("Params");
+		  }
+		  else{
+			oParams = oParams[0];
+		  }
+	      
+		  var oParam = oX.createElement("Param");
+				oParams.appendChild(oParam);
+		  oParam.setAttribute("Name",name);
+				oParam.setAttribute("Value","#cdata");
+				oParam.appendChild(oX.createCDATASection(val));
+		},
+		GetDataNameExists : function(sSubAppPath,aFields){
+			var oForm = this.SerializeForm(0,aFields);
+			var oX = Hemi.xml.postXml(sSubAppPath + "/CheckName?is-xml=1",oForm);
+			if(oX == null || oX.documentElement == null){
+				alert("Error retrieving response");
+				return 1;
+			}
+			if(oX.getElementsByTagName("True").length > 0) return 1;
+			return 0;
+		},
+		/// Synchronize the visible form with its backing elements
+		/// Note: This is only needed when trying to get a backing bean with the current values
+		/// while the form is still visible. Otherwise, if the template is destroyed, the values will automatically be sync'd
+		///
+		synchronizeForm : function(bSyncIn){
+			var aElements = this.GetForm().getElements();
+			for(var e = 0; e < aElements.length; e++){
+				if(!aElements[e]) continue;
+				if(aElements[e].getIsRendered()){
+					
+					var oX = Hemi.registry.service.getObject(aElements[e].getObjectId());
+					/// Keep the value linked in
+					Hemi.data.form.service.synchronizeComponent(oX,(bSyncIn ? 1 : 0),(bSyncIn ? 0 : 1));
+
+				}
+				else{
+					Hemi.logDebug("Don't synchronize visible element " + aElements[e].getName());
+				}
+			}
+		},
+
+		SerializeFormJSON : function(oJ, aLimit){
+			var eid = this.getTemplateSpace().space_id;
+			
+			if(!oJ) oJ = {};
+			oJ.cid = this.getObjectId();
+			oJ.eid = eid;
+				
+			var aElements = this.GetForm().getElements();
+			oJ.elements = [];
+			for(var e = 0; e < aElements.length;e++){
+				var name = aElements[e].getName();
+				if(typeof aLimit == "object" && aLimit.length){
+					var b = 0;
+					for(var m = 0; m < aLimit.length; m++){
+						if(aLimit[m] == name){
+							b = 1;
+							break;
+						}
+					}
+					if(!b) continue;
+				}
+				var val = Hemi.data.form.service.getValue(name,eid);
+				if(typeof val == "boolean") val = val.toString();
+				var sType = aElements[e].getType();
+				
+				if(!val || val.length == 0 || !sType) continue;
+				
+				oE = {};
+				oE.name = name;
+				oE.value = val;
+				oE.type = sType;
+				oJ.elements.push(oE);
+
+			}
+			return oJ;
+		},
+		SerializeForm : function(oX,aLimit){
+			var eid = this.getTemplateSpace().space_id;
+			
+			if(!oX) oX = Hemi.xml.newXmlDocument("Request");
+			var oForm = oX.createElement("Form");
+			oForm.setAttribute("cid",this.getObjectId());
+			oForm.setAttribute("eid",eid);
+			
+			oX.documentElement.appendChild(oForm);				
+			var aElements = this.GetForm().getElements();
+			for(var e = 0; e < aElements.length;e++){
+				var name = aElements[e].getName();
+				if(typeof aLimit == "object" && aLimit.length){
+					var b = 0;
+					for(var m = 0; m < aLimit.length; m++){
+						if(aLimit[m] == name){
+							b = 1;
+							break;
+						}
+					}
+					if(!b) continue;
+				}
+
+				/*
+					use the getValue() method to ensure that the value is taken from the visible element first, then the cache value
+					otherwise, the value of the element object - not the Form Element HTML node - may not be synchronized, and thus not the expected value
+				*/
+				var val = Hemi.data.form.service.getValue(name,eid);
+				if(typeof val == "boolean") val = val.toString();
+				var sType = aElements[e].getType();
+				
+				if(!val || val.length == 0 || !sType) continue;
+				 
+				var oElement = oX.createElement("Element");
+				oForm.appendChild(oElement);
+				var oName = oX.createElement("Name");
+				oName.appendChild(oX.createCDATASection(name));
+				oElement.appendChild(oName);
+				var oValue = oX.createElement("Value");
+				oValue.appendChild(oX.createCDATASection(val));
+				oElement.appendChild(oValue);
+				oElement.setAttribute("Type",sType);
+			}
+			return oX;
+		},
+		ValidateForm : function(b){
+			Hemi.include("hemi.data.validator");
+			var oF = this.GetForm();
+			return Hemi.data.form.service.validateForm(oF.i, b);
+		},
+		ValidateForPattern : function(n, p){
+			Hemi.include("hemi.data.validator");
+			var oF = this.GetForm();
+			if(!oF) return 0;
+			var oE = oF.getElementByName(n);
+			if(!oE) return 0;
+			return Hemi.data.validator.service.validateField(oE.getElement(),p);
+		},
+		DiagramStep : function(sLabel, iMark, iTotal){
+			var oLabel = this.GetElementByRID("step_label");
+			var oDiag = this.GetElementByRID("step_diagram");
+			if(!oLabel || !oDiag) return;
+			Hemi.xml.setInnerXHTML(oLabel,sLabel);
+			for(var i = 0; i < iTotal; i++){
+				var oI = document.createElement("img");
+				oI.setAttribute("src","Graphics/" + (iMark > i ? "star_hover.jpg" : "star_empty.jpg"));
+				oI.setAttribute("width","20");
+				oI.setAttribute("width","20");
+				oDiag.appendChild(oI);
+			}
+		},
+		EnableButton : function(n){
+			this.SwitchButton(n,false);
+		},
+		DisableButton : function(n){
+			this.SwitchButton(n,true);
+		},
+		SwitchButton : function(n, b){
+			var o = this.GetElementByRID(n),a,ac=" ";
+			if(!o) return;
+			a = o.getAttribute("button-action");
+			if(a) ac += a.toLowerCase() + "_button";
+			o.disabled = b;
+			o.className = "designer_button" + ac;
+		},
+		setupButtons : function(sName){
+			var o = this.getTemplateObjectByName(sName);
+			if(!o) return;
+			var aC = o.childNodes,a;
+			this.scopeHandler("toggle_highlight",0,0,1);
+			this.scopeHandler("exec_button",0,0,1);
+			for(var i = 0; i < aC.length; i++){
+				
+				if(aC[i].nodeType == 1){
+					a = aC[i].getAttribute("button-action");
+					if(!a || a.length == 0) continue;
+					aC[i].onmouseover = this._prehandle_toggle_highlight;
+					aC[i].onmouseout = this._prehandle_toggle_highlight;
+					if(a != "avoid" && typeof this._handle_exec_button == "function" && !aC[i].onclick) aC[i].onclick = this._prehandle_exec_button;
+				}
+			}
+		},
+		_handle_toggle_highlight : function(e){
+			var o = Hemi.event.getEventSource(e),a,ac = " ";
+			e = Hemi.event.getEvent(e);
+			a = o.getAttribute("button-action");
+			if(a) ac += a.toLowerCase() + "_button";
+			if(e.type == "mouseover")
+				o.className = "designer_button designer_button_highlight" + ac;
+			else
+				o.className = "designer_button" + ac;
+		},
+		
+		get_frame : function(n){
+			var aF = this.getContainer().getElementsByTagName("iframe");
+			for(var i = 0; i < aF.length; i++){
+				if(aF[i].getAttribute("rid") == n){
+					o = aF[i];
+					break;
+				}
+			}
+			if(o) o = (o.contentWindow || o.contentDocument);
+			if(!o) return null;
+			//if(o.document) o = o.document;
+			if(!o.document || !o.document.body) return null;
+			return o;
+		},
+		
+		GetComponentByRID : function(sRid){
+			var o = this.getTemplateSpace().getSpaceObjectByName(sRid);
+			//alert(this.getTemplateSpace().space_id);
+			if(!o || !o.object) return 0;
+			return o.object.getApplicationComponent();
+
+		},
+		ResizeFrame : function(n,iModWidth,iModHeight){
+			try{
+				var d = (typeof n == "object" ? n : this.getTemplateObjectByName(n));
+				
+				var iT = d.offsetTop;
+				// the parentNode x 3 is a bug
+				// where Engine is not correctly swapping out the html-fragment element
+				//
+				var iB = (this.getBody ? this.getBody() : d.parentNode.parentNode.parentNode).clientHeight; 
+					///d.parentNode.parentNode.parentNode.clientHeight;
+							//(typeof this.getBody == "function" ? this.getBody() : d.parentNode).clientHeight;
+							//n.parentNode.parentNode.parentNode.clientHeight;
+				var iH = (iB - iT );
+				if(iModHeight > 0) iH -= iModHeight;
+				
+				if(iH < 1) iH = 1;
+				
+				var iW = this.getContainer().clientWidth - 20;
+				if(iModWidth > 0) iW -= iModWidth;
+				if(iW < 1) iW = 1;
+				
+				d.style.height = iH + "px";
+				d.style.width = iW + "px";
+			}
+			catch(e){
+				if(this.setStatus) this.setStatus("Unexpected UI Error: " + (e.message ? e.message : e.description));
+			}
+		},
+		Assert : function(b,m){
+			if(!b) throw m;
+		}
+	]]></embedded-script>
+</html-fragment>

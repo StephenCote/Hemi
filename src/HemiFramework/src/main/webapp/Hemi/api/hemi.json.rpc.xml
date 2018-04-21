@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><source>
+<name>Hemi.json.rpc</name>
+<project>
+<name>Hemi JavaScript Framework</name>
+<url-title>Hemi JavaScript Framework Project</url-title>
+<url>/Hemi/</url>
+</project>
+
+<package>
+<path>Hemi.json.rpc</path>
+<library>Hemi</library>
+<description>The JSON RPC Service is used to register and generate JSON RPC clients.</description>
+<static-class>
+<name>service</name>
+<description>Static instance of serviceImpl.</description>
+<version>3.5.1</version>
+</static-class>
+<class>
+<name>JSONRPCServiceImpl</name>
+<description>A service for managing JSON RPC end points.</description>
+<version>3.5.1</version>
+NOTE: Synchronous call
+
+JSON Bug?  javaClass is 'cleared' in stringify if not set as a first-class property.
+Note: javaClass works when the service doesn't know the base class
+But, all the properties must be set BEFORE javaClass for certain parsers such as Jackson
+It's probably a parser bug, but this should be optional based on the service provider
+
+this.javaClass = this.javaClass;
+alert('emit:' + sPP + "::" + sN)
+if(p.match(/^javaclass$/gi)) continue;
+o[sN].prototype.javaClass = sP;
+LOCAL CONFIG
+fn = "post";
+Check if the last argument is the hemiSvcCfg object
+
+TODO: Note, the cache mechanism is currently not supported for async requests
+
+uwmServiceCache.removeFromCache(f.serviceName,d);
+}
+sink the parse error
+
+otherwise, assume json-rpc
+</class>
+</package>
+<index><description>The JSON RPC Service is used to register and generate JSON RPC clients.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

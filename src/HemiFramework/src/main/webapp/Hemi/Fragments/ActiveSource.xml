@@ -1,0 +1,600 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<html-fragment>
+	<table width = "600px" border="0" cellpadding="0" cellspacing="0">
+		<tbody>
+		<tr>
+			<td align="center">
+				<select rid = "oFrameSelect" onchange = "${this}.ChangeSrcWindow()"><option>-- Target Frame --</option></select>
+				<input onmouseover="${this}.ShowHelp(0)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" value="Root Source" onclick="${this}.ShowRootSource()" />
+				<input onmouseover="${this}.ShowHelp(1)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" value="Element Source" onclick="${this}.showElementSource()" />
+				<!--
+				<input onmouseover="${this}.ShowHelp(8)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" value="Scour" onclick="scour()" />
+				-->
+				<input onmouseover="${this}.ShowHelp(9)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" value="Scope" onclick="${this}.ScopeToTempText()" />
+				
+				<input onmouseover="${this}.ShowHelp(10)" onmouseout="${this}.ShowHelp(-1)" rid = "oBtnMetrics" class="cmdBtn" type="button" value="Metrics" onclick="${this}.GetMetrics()" />
+			</td>
+		</tr>
+		<tr>
+			<td align = "center">
+				<textarea class = "ActiveSource" onmouseover="${this}.ShowHelp(2)" onmouseout="${this}.ShowHelp(-1)" wrap="off" rid="oSource">
+				</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td align = "center">
+				<input onmouseover="${this}.ShowHelp(3)" onmouseout="${this}.ShowHelp(-1)" type="checkbox" rid="oThis" />
+				<input type="text"  onmouseover="${this}.ShowHelp(4)" onmouseout="${this}.ShowHelp(-1)" value="" SIZE="50" rid="oEval" />
+				<input onmouseover="${this}.ShowHelp(5)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" onclick="${this}.DoEval('oEval');" value="Eval" />
+				<input class="cmdBtn" onmouseover="${this}.ShowHelp(6)" onmouseout="${this}.ShowHelp(-1)" type="button" onclick="${this}.DoEval('oSource');" value="Eval Source" />
+				<input onmouseover="${this}.ShowHelp(12)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" onclick="${this}.Reflect()" value="Reflect" />
+				<input onmouseover="${this}.ShowHelp(11)" onmouseout="${this}.ShowHelp(-1)" class="cmdBtn" type="button" onclick="${this}.FindVar()" value="Find" />
+				<!--
+				<input class="cmdBtn" onmouseover="${this}.ShowHelp(7)" onmouseout="${this}.ShowHelp(-1)" type="button" onclick="window.close();" value="Exit" />
+				-->
+			</td>
+		</tr>
+		<tr><td rid="notes">[ ... ]</td></tr>
+		</tbody>
+	</table>
+	<embedded-script>
+				<![CDATA[
+		embedded_init : function(){
+			
+			Hemi.include("hemi.css");
+			
+			if(typeof g_window != "undefined") this.getProperties().target_window = g_window;
+            if(typeof g_element != "undefined") this.getProperties().target_element = g_element;
+
+			this.GetElementByRID("oThis").style.display = (this.getProperties().target_window && this.getProperties().target_window != window ? "inline" : "none");
+			
+			this.GetElementByRID("oSource").style.height = "415px";
+			this.getProperties().show_help = 1;
+			this.getObjects().srcEl = 0;
+			this.getObjects().srcWindow = this.getWindow();
+			this.getObjects().frames = [];
+			this.scopeHandler("input_keydown",0,0,1);
+			this.GetElementByRID("oEval").onkeydown = this._prehandle_input_keydown;
+			this.getProperties().debug_mode = 0;
+			this.getObjects().potential_models = [];
+			this.getProperties().pointer_marker = "___pointer_marker_" + (new Date().getTime());
+			this.getObjects().help = [
+				"Display the source code as it is being interpreted by the browser.",
+				"Display a prototype of the element at the point the context menu was opened.",
+				"The current source code, or the results of an evaluation.",
+				"Toggle whether the active source window is directed to the opening window, or itself.",
+				"Specify script  to query against the active DOM.",
+				"Evaluate the query typed into the adjacent text field (or press return).",
+				"Evaluate the query typed into the source window.",
+				"Close this dialog.",
+				"Scour context handlers from all frames.",
+				"Scope the DOM layout of the target window.",
+				"Retrieve function metrics collected using FunctionMonitor",
+				"Find the window reference and value of the specified variable",
+				"Reflect the specified object and display the discovered members and member values"
+			];
+			
+			this.RefreshFramesList();
+			this.GetElementByRID("oFrameSelect").selectedIndex = 0;
+			this.RefreshActiveSourceUI();
+			this.ShowRootSource();
+			
+			this.getWindow()["ActiveSource"] = this;
+			this.getWindow()["ActiveObjects"] = this.getObjects();
+            if(this.getProperties().target_element) window.oSrcEl = this.getProperties().target_element;
+            window.oSrcWindow = this.getObjects().srcWindow;
+            /*
+            this.getWindow()["oSrcEl"] = this.getObjects().srcEl;
+            this.getWindow()["oSrcWindow"] = this.getObjects().srcWindow;
+            */
+		},
+        getWindow : function(){
+            return (this.getProperties().target_window ? this.getProperties().target_window : window);
+        },
+		embedded_destroy : function(){
+			this.getObjects().frames = 0;
+			this.getObjects().potential_models = 0;
+			(this.getProperties().target_window ? this.getProperties().target_window : window)["ActiveSource"] = 0;
+			(this.getProperties().target_window ? this.getProperties().target_window : window)["ActiveObjects"] = 0;
+		},
+		StopHelping : function(){
+			this.getProperties().show_help = 0;
+			this.ShowHelp(-1);
+		},
+		ShowHelp : function(i){
+			var sHelp="[ ... ]";
+			if(i >= 0 && this.getProperties().show_help){
+				sHelp=this.getObjects().help[i];	
+			}
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("notes"),sHelp);
+		},
+		RefreshActiveSourceUI : function(){
+			if(typeof (this.getProperties().target_window ? this.getProperties().target_window : window).FunctionMonitor == "object"){
+				this.GetElementByRID("oBtnMetrics").style.display = "inline";
+			}
+			else{
+				this.GetElementByRID("oBtnMetrics").style.display = "none";
+			}
+		},
+		showElementSource : function(){
+            var oEl = this.getProperties().target_element;
+			if(oEl && oEl != null){
+				this.GetElementByRID("oEval").value="-- Access the Source Element with 'oSrcEl' --";
+				this.GetElementByRID("oSource").value = this.PrototypeElement(oEl);
+			}
+			else{
+				this.GetElementByRID("oSource").value="-- Could not glom onto the source element --";
+			}
+		},
+		PrototypeElement : function(oNode){
+			var sTab="   ";
+			var s="<" + oNode.nodeName.toUpperCase() + "\n";
+			var a=oNode.attributes;
+			for(var i=0;i<a.length;i++){
+				if(a[i].nodeType == 2 && typeof(a[i].nodeValue) != "unknown" && a[i].nodeValue){
+					s+=sTab + a[i].nodeName + " = \"" + a[i].nodeValue + "\"";
+					if(a[i].specified) s+=" (specified)";
+					s+="\n";
+				}
+			}
+			if(oNode.onclick){
+				s+=sTab + "onclick = \"" + oNode.onclick + "\"\n";
+			}
+			if(oNode.onload){
+				s+=sTab + "onload = \"" + oNode.onload + "\"\n";
+			}		
+			if(oNode.hasChildNodes()){
+				s+=">\n" + sTab + "[ children ]\n</" + oNode.nodeName.toUpperCase() + ">";
+			}
+			else{
+				s+=" />";
+			}
+			return s;
+		},
+		GetMetrics : function(){
+			try{
+				this.GetElementByRID("oSource").value = this.GetAllMetrics();
+			}
+			catch(e){
+				alert(e.message);
+			}
+		},
+		Reflect : function(){
+			var a = [];
+			var s = this.GetElementByRID("oEval").value;
+			var o = null;
+			a.push("Reflect '" + s + "'");
+			try{
+				o = this.getObjects().srcWindow.eval(s);
+				a.push("Type: " + (typeof o));
+				if(typeof o != "object" && typeof o != "function") a.push("Value: " + o);
+				for(var i in o){
+					try{
+						a.push(i + " = (" + (typeof o[i]) + ") " + o[i]);
+					}
+					catch(f){
+						a.push(i + " = [unknown]");
+					}
+				}
+			}
+			catch(e){
+				a.push("Caught Exception '" + (e.message ? e.message : e.description) + "'");
+			}
+			this.GetElementByRID("oSource").value = a.join("\n");
+		},
+		GetAllMetrics : function(){
+			var oTopWin = this.getObjects().srcWindow;
+			try{
+				while( (oTopWin = this.getObjects().srcWindow.parent) != oTopWin && oTopWin != null) {}
+			}
+			catch(e){
+				alert(e.message);
+			}
+			if(oTopWin == null) oTopWin = this.getObjects().srcWindow;
+			return this.DrillWindowForMetrics(oTopWin);
+		},
+		DrillWindowForMetrics : function(o){
+			var s = "";
+			if(o == null) return s;
+			if(o.name) s = "[" + o.name + "]";
+			else s = "[unnamed window]";
+			if(o == this.getObjects().srcWindow) s += " [context window]";
+			s+="\n\n";
+			if(typeof o.FunctionMonitor != "object"){
+				s += "Unmonitored\n\n";
+				// return s;
+			}
+			else{
+				s += o.FunctionMonitor.getAllMetrics() + "\n\n";
+			}
+			for(var i = 0; i < o.frames.length; i++){
+				var d = "";
+				try{
+					d = this.DrillWindowForMetrics(o.frames[i]);
+				}
+				catch(e){
+					d = "[window access error]\n\n";
+				}
+				s += d;
+			}
+			return s;
+
+		},
+
+		ChangeSrcWindow : function(){
+			var i = this.GetElementByRID("oFrameSelect").selectedIndex;
+			if(i < 0){
+				alert('invalid window');
+				return;
+			}
+			var o = this.getObjects().frames[i];
+			if(o == null && i > 0){
+				alert('denied');
+				this.GetElementByRID("oFrameSelect").selectedIndex = 0;		
+				return;
+			}
+			this.RefreshActiveSourceUI();
+			this.getPointercs().srcWindow = o;
+			this.showRootSource();
+		},
+		RefreshFramesList : function(){
+			this.getObjects().frames=[];
+			this.getObjects().frames[0]=(this.getProperties().target_window ? this.getProperties().target_window : window);
+			this.GetElementByRID("oFrameSelect").options.length = 0;
+			this.FindFrames((this.getProperties().target_window ? this.getProperties().target_window : window).top);
+		},
+
+		FindFrames : function(o,d){
+			if(typeof d != "number") d = 0;
+			var aFrames = this.getObjects().frames;
+			var s = "";
+			var n = d + ": ";
+			var b = 0;
+			try{
+				s = o.name;
+				if(!s) s = "<frame>";
+				if(o == (this.getProperties().target_window ? this.getProperties().target_window : window)) s += " (context)";
+				n += s;
+				aFrames[aFrames.length] = o;
+			}
+			catch(e){
+				b = 1;
+				aFrames[aFrames.length] = null;
+				n+= " denied";
+			}
+			if(n.length > 20) n = n.substring(0,17) + "...";
+
+			var op = document.createElement("option");
+			op.appendChild(document.createTextNode(n));
+			this.GetElementByRID("oFrameSelect").appendChild(op);
+
+			if(!b){
+				for(var i = 0; i < o.frames.length;i++){
+					this.FindFrames(o.frames[i],d+1);
+				}
+			}
+		},
+		ShowRootSource : function(){
+			/*
+			if(this.getObjects().srcWindow == window){
+				this.GetElementByRID("oSource").value = "-- Active Source Window --";
+				return;
+			}
+			*/
+			var sSrc=this.getObjects().srcWindow.document.documentElement.innerHTML;//window.dialogArguments.html.outerHTML;
+			if(this.getProperties().root_warn || sSrc.length < 10000){
+				this.GetElementByRID("oSource").value=sSrc;
+			}
+			else{
+				this.GetElementByRID("oSource").value="-- Access Source with oSrcWindow.document.documentElement.outerHTML --";
+			}
+			this.getProperties().root_warn = 1;
+			if(typeof(this.getObjects().srcWindow.eval)!="function"){
+				this.GetElementByRID("oEval").value="-- Access the DOM with 'oSrcWindow' --";
+			}
+			else{
+				this.GetElementByRID("oEval").value="";
+			}
+		},
+		_handle_input_keydown : function(e){
+			var evt=Hemi.event.getEvent(e);
+			var iCode=evt.keyCode;
+			if(iCode==13){
+				this.DoEval(this.GetElementByRID("oEval"));
+				Hemi.event.cancelEvent(evt);
+				return false;
+			}
+		},
+		DoEval : function(oObj){
+			if(typeof oObj == "string") oObj = this.GetElementByRID(oObj);
+			var sVal=oObj.value;
+			try{
+				sVal = sVal.replace(/\${this}/,"Hemi.registry.service.getObject(\"" + this.getObjectId() + "\")");
+				if(sVal.match(/^var/)) sVal="{" + sVal + "}";
+				if(typeof(this.getObjects().srcWindow.eval)!="function"){
+					this.GetElementByRID("oSource").value=(this.getProperties().target_window && !this.GetElementByRID("oThis").checked ? this.getProperties().target_window : window).eval.call(this.getObjects().srcWindow,sVal);
+				}
+				else{
+					this.GetElementByRID("oSource").value=((!this.getProperties().target_window || !this.GetElementByRID("oThis").checked) ? this.getObjects().srcWindow : window).eval(sVal);
+				}	
+
+			}
+			catch(e){
+				this.GetElementByRID("oSource").value = "Caught: " + (e.message ? e.message : e.description) + "\n\nInput: " + sVal;
+			}
+		},
+		FindVar : function(){
+			this.getObjects().varWindow = 0;
+			if(this.DrillForVar(this.getObjects().srcWindow.top)){
+				var i = -1;
+				for(var z = 1; z < this.getObjects().frames.length;z++){
+					if(this.getObjects().frames[z] == this.getObjects().varWindow){
+						i = z;
+						break;
+					}
+				}
+				if(i > 0 && i < this.GetElementByRID("oFrameSelect").options.length) this.GetElementByRID("oFrameSelect").selectedIndex = i;
+				this.GetElementByRID("oSource").value = "Found " + this.GetElementByRID("oEval").value + " in " + (this.getObjects().varWindow.name ? this.getObjects().varWindow.name : "[unnamed]") + " window\nAccess locally with 'ActiveObjects.varWindow." + this.GetElementByRID("oEval").value + " or 'ActiveObjects.val'\nValue is '" + this.getObjects().varWindow[this.GetElementByRID("oEval").value] + "'";;
+				this.getObjects().val = this.getObjects().varWindow[this.GetElementByRID("oEval").value];
+			}
+			else{
+				this.GetElementByRID("oSource").value = "Could not find variable '" + this.GetElementByRID("oEval").value + "'";
+			}
+		},
+		DrillForVar : function(o){
+			if(this.GetElementByRID("oEval").value.length == 0) return 0;		
+			if(typeof o[this.GetElementByRID("oEval").value] != "undefined"){
+				this.getObjects().varWindow = o;
+				return 1;
+			}
+			var ret_int = 0;
+			for(var i = 0; i < o.frames.length; i++){
+				if(this.DrillForVar(o.frames[i])){
+					ret_int = 1;
+					break;
+				}
+			}
+			return ret_int;
+		},
+		ModelDrill : function(w, x, f, o, d, p, z){
+
+			/*
+				w = window
+				x = frame index
+				f = discovery_callback
+				o = parent object
+				
+				/// recursive params
+				///
+				d = depth
+				p = path
+				
+				z = skip check for potential models
+			*/
+			
+			
+			if(!d) d = 0;
+			if( (o == null || (typeof o != "object" && typeof o != "function")) && d != 0) return "";
+			if(!o || o == null) o = w;
+			if(!p) p = "";
+
+			/// u = undefined
+			///
+			var u,
+				s,
+				v,
+				i,
+				q = this.getProperties().debug_mode
+			;
+			if(q) s = [];
+			if(d == 0 && !z){
+				z = 1;
+				for(i in this.getObjects().potential_models){
+					if(typeof w[i] != "undefined" && w[i] != null
+						// && (w[i] instanceof w.Object || w[i] instanceof w.Array || w[i] instanceof w.Function)
+					){
+						if(q){
+							/// JavaScriptProfiler.FunctionsList.addItem("Potential: '" + i + "'");
+							s.push("potential: " + i);
+						}
+						v = this.ModelDrill(w, x, f, w[i], 1, i, 1);
+						if(q) s.push(v);
+						
+					}
+				}
+			}
+
+			for(i in o){
+				//if(d > 20) break;
+				try{
+					if(
+						// w.Object is undefined if there is no <script /> in the frame 
+						//
+						typeof w.Object == "undefined"
+						||
+						o[i] == null
+						||
+						typeof o[i] == "undefined"
+						/*
+						||
+						(
+							!(o[i] instanceof w.Object)
+							&&
+							!(o[i] instanceof w.Array)
+							&&
+							!(o[i] instanceof w.Function)
+						)
+						*/
+					){
+						if(q) s.push(this.Pad(d) + "skip 1 " + i);
+						continue;
+					}
+
+					var t = typeof (o[i]);
+					/// 2009/04/23 - remove trailing _
+					if(i.match(/^___pointer_marker/) && o[i] == "never") continue;
+					/// Remove legacy pointer markers
+					///
+					if(i.match(/^___pointer_marker_/) && i != this.getProperties().pointer_marker){
+						o[i] = u;
+						continue;
+					}
+					
+					if(
+						(o == w && i == "event")
+						||
+						i == this.getProperties().pointer_marker
+					){
+						if(q) s.push(this.Pad(d) + "skip 2 " + i);
+						continue;
+					}
+					var sL = 0;
+
+					if(typeof o[i] == "object" && o[i][this.getProperties().pointer_marker]) sL = 1;
+
+					if(q) s.push(this.Pad(d) + i + " (" + typeof(o[i]) + ")" + (sL ? " (Pointer)" : (typeof o[i].nodeType == "number" ? " (Node)" : "")));
+					
+					//if(typeof o[i] == "function" && typeof f == "function") 
+					f(w, x, p, i, o[i], d);
+					var up = p;
+					if(o instanceof w.Array){
+						if(i.match(/^\d+$/gi)) up += "[" + i + "]";
+						else up += "[\"" + i + "\"]";
+					}
+					else up += (up.length > 0 ? "." : "") + i;
+					if(!sL && typeof o[i] == "object" && o[i] != null){
+						//g_pointer_hash[o[i].toString()] = i;
+						o[i][this.getProperties().pointer_marker] = 1;
+						//s.push(Drill(w, o[i],d+1, p, f));
+						v = this.ModelDrill(w, x, f, o[i], d + 1, up, 1);
+						if(q) s.push(v);
+					}
+				}
+				catch(e){
+					if(q) s.push(this.Pad(d) + "Error for " + i + " = " + e.message);
+					//JavaScriptProfiler.FunctionsList.addItem("Error for " + p + " --> " + i + " (" + (typeof o[i]) + ") = " + e.message);
+				}
+
+			} // end for;
+			
+			
+			
+			if(this.getProperties().debug_mode) return s.join("\n");
+		},
+
+
+		
+		Pad : function(i){
+			var s = "";
+			for(var c = 0; c < i; c++) s += "   ";
+			return s;
+		},
+
+		DrillNodes : function(o,d){
+			var exp_input = /^input$/i;
+			var exp_hidden = /^hidden$/i;
+		
+			if(typeof d == "undefined") d = 1;
+			var a = o.childNodes;
+			var l = a.length;
+			for(var i = 0; i < l; i++){
+				
+				var n = a[i];
+				if(n.nodeType != 1) continue;
+
+				var nm = n.nodeName;
+				
+				var iW = n.offsetWidth;
+				var iH = n.offsetHeight;
+				var iT = Hemi.css.getAbsoluteTop(n);
+				var iL = Hemi.css.getAbsoluteLeft(n);
+				var disp = n.style.display;
+				var ty = 0;
+				var id = 0;
+				if(n.id) id = n.id;
+				if(n.name) nm = nm + "_" + n.name;
+				else if( n.getAttribute("name")) nm = nm + "_" + n.getAttribute("name");
+				if(nm.match(exp_input)){
+					ty = n.type;
+					if(n.type.match(exp_hidden)){
+						disp = "none";
+					}
+				}
+				this.AddNode(nm,iW,iH,iT,iL,id,ty,disp,d,n.className);
+
+
+				this.DrillNodes(n,d + 1);
+			}
+		},
+
+		AddNode : function(n,w,h,t,l,z,y,d,i,c){
+			var exp_none = /^none$/i;
+			var exp_inline = /^inline$/i;
+			var exp_block = /^block$/i;
+
+			var ind = this.getObjects().aScopedMap[n];
+			if(typeof ind != "number"){
+				ind = this.getProperties().iScopeMapCount++;
+				this.getObjects().aScopedMap[n] = ind;
+			}
+			else n = ind;
+			
+			if(typeof w != "number" || typeof h != "number"){
+				w = 0;
+				h = 0;
+			}
+			if(typeof c != "string" || c.length == 0) c = 0;
+			
+			if(typeof d != "string" || d.match(exp_none)) d = 0;
+			else if(d.match(exp_inline)) d = 1;
+			else if(d.match(exp_block)) d = 2;
+			else if(d.length == 0) d = 2;
+			
+			if(!this.getProperties().scope_to_text) this.getObjects().aScoped[this.getProperties().iScopedLen++] = {n:n,i:z,y:y,w:w,h:h,t:t,l:l,d:d,p:i,c:c};
+			else this.getObjects().aScoped[this.getProperties().iScopedLen++] = "{n:" + (typeof n == "number" ? n : "'" + n + "'") + ",w:" + w + ",h:" + h + ",t:" + t + ",l:" + l + ",d:" + d + ",y:" + (typeof y == "string" ? "'" + y + "'" : 0) + ",i:" + (typeof z == "string" ? "'" + z + "'" : 0) + ",p:" + i + ",c:" + (typeof c == "string" ? "'" + c + "'":c) + "}"; 
+
+			/*
+			if(!scope_to_text) aScoped[aScoped.length] = {name:n,id:z,type:y,width:w,height:h,top:t,left:l,display:d,depth:i};
+			else aScoped[aScoped.length] = "{name:'" + n + "',width:'" + w + "',height:'" + h + "',top:'" + t + "',left:'" + l + "',display:'" + d + "'}"; 
+			*/
+		},
+		Scope : function(){
+			this.getObjects().aScoped = [];
+			this.getProperties().iScopedLen = 0;
+			this.getObjects().aScopedMap = [];
+			this.getObjects().aScopedHash = [];
+			this.getProperties().iScopeMapCount = 0;
+			this.DrillNodes((this.getProperties().target_window ? this.getProperties().target_window : window).document.body);
+		},
+		ScopeToTempText : function(){
+			if(!this.getProperties().target_window) this.getContainer().style.display = "none";
+			this.getProperties().scope_to_text = 1;
+			var is = new Date().getTime();
+			this.Scope();
+			var d = new Date().getTime() - is;
+			var oXml = Hemi.xml.getXml(Hemi.hemi_base + "Fragments/ScopeViewer.xml");
+			var scope_viewer = (
+				"<html><head><scr" + "ipt type = 'text/javascript'>" + Hemi.xml.getInnerText(oXml.documentElement)
+				+ "\nvar temp_text=\"" + this.getObjects().aScoped.join("~") + "\";\n"
+				+ "</scr" + "ipt></head><body onload='ScopeText()'></body></html>"
+			);
+			this.GetElementByRID("oSource").value = "Time to scope: " + d + "\n\n" + this.getObjects().aScoped.join("~"); //scope_viewer;
+
+			var oNewWin = window.open("about:blank");
+			if(oNewWin == null){
+				alert('popup was blocked');
+				return;
+			}
+			oNewWin.document.open();
+
+			oNewWin.document.write(scope_viewer);
+
+			oNewWin.document.close();
+			//oSource.value += "\n\nTime to scope: " + d;
+			if(!this.getProperties().target_window) this.getContainer().style.display = "block";
+		}
+
+
+	]]>
+	</embedded-script>
+</html-fragment>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id="reflect" Title ="Reflect">
+	<p>
+		Enter Text: <input type ="text" appcomp_path ="dwac:/DWAC/Anonymous/Components/reflector" acid ="reflector" />
+	</p>
+	<p>
+		Reflect: <span appcomp_path ="dwac:/DWAC/Anonymous/Components/reflected" acid ="reflected" />
+	</p>
+</Template>

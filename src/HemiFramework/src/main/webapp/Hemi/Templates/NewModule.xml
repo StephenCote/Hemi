@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title = "New Module">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "module_name" />
+		</div>
+		<div class = "field_description">
+			(<i>lower case, end with .js</i>)
+		</div>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Description:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "module_description" />
+		</div>
+		<div class = "field_description">
+			(<i>optional</i>)
+		</div>
+	</div>
+	<textarea rid ="module_text" wrap ="off" style ="background-color: #CFCFCF; overflow:auto;border:0px solid #000000;margin:0px;width:100%;height:125px;"></textarea>
+	<div>
+		<input type ="checkbox" rid ="chk_include_init" /> Include initializers.
+		<br />
+		<input type ="checkbox" rid ="chk_include_api_demo" /> Include API Demo.
+		<span rid ="nontest_features">
+			<br />
+			<input type ="checkbox" rid ="chk_include_log" /> Include log instrumentation.
+		</span>
+		<span rid ="test_features" style ="display:none;">
+			<br />
+			<input type ="checkbox" rid ="chk_include_test1" /> Include synchronous test.
+			<br />
+			<input type ="checkbox" rid ="chk_include_test2" /> Include asynchronous test.
+		</span>
+	</div>
+	<div>
+		<input type ="button"	value ="Create" onclick ="${this}.CreateNewModule()" />
+		<input type ="button"	value ="Close" onclick ="${this}.Close()" />
+	</div>
+	<embedded-script>
+		<![CDATA[
+		template_init : function(){
+			var bTest =  Hemi.registry.service.getObject(this.getProperties().opener_id).getProperties().testFeat;
+			if(bTest){
+				this.GetElementByRID("test_features").style.display = "inline";
+				this.GetElementByRID("nontest_features").style.display = "none";
+				if(this.setTitle) this.setTitle("New Test");
+			}
+			this.GetElementByRID("module_text").value = "/// "
+				+ "Enter anonymous or member methods"
+			;
+			
+		},
+		CreateNewModule : function(){
+				var sName = this.GetElementByRID("module_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				if(sName.length == 0 || sName.match(/\s/)){
+					this.setStatus("Invalid name.  Name must be specified,  should not include spaces, and end with .js.");
+					return;
+				}
+				sName = sName.toLowerCase();
+				if(!sName.match(/\.js$/))
+					sName = sName + ".js";
+
+				var sXhtml = this.GetElementByRID("module_text").value;
+				var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+				oBuilder.ClearModule();
+
+				var oConstruct = oBuilder.NewComponentConstruct();
+				oConstruct.changes++;
+				
+				var aBuff = [];
+				var bLog = this.GetElementByRID("chk_include_log").checked;
+				oBuilder.GetElementByRID("module_name").value = sName;
+				oBuilder.GetElementByRID("module_description").value = this.GetElementByRID("module_description").value;
+				if(bLog){
+					aBuff.push("Hemi.include(\"hemi.util.logger\");\nHemi.util.logger.addLogger(this, \"" + sName.replace(/\.js$/,"") + "\", \"" +  sName.replace(/\.js$/,"") + " Module\", \"121\");\n");
+				}
+				if(this.GetElementByRID("chk_include_api_demo").checked){
+					aBuff.push("/// Anonymouse reference\nfunction AnonymousExample(){\n\t//Use global 'Module' variable" + (bLog ? "\n\tModule.log(\"Anonymous Test\");" : "") + "\n\t// If the module is bound to a container, the container can be accessed as:\n\tif(Module.Container){\n\t\t// Module.Container\n\t}\n}\n");
+					aBuff.push("/// Member reference\nthis.MemberExample = function(){\n\t//Use 'this' to refer to the Module." + (bLog ? "\n\tthis.log(\"Member Test\");" : "") + "\n\t// If the module is bound to a container, the container can be accessed as:\n\tif(this.Container){\n\t\t// this.Container\n\t}\n};\n");
+				}
+				if(this.GetElementByRID("chk_include_init").checked){
+					aBuff.push("/// Module Initializer\nthis.Initialize = function(){\n\t" + (bLog ? "this.log(\"Initialized\");" : "") + "\n};\n");
+					aBuff.push("/// Module Cleanup\nthis.Unload = function(){\n\t" + (bLog ? "this.log(\"Unloaded\");" : "") + "\n};\n");
+				}
+				if(this.GetElementByRID("chk_include_test1").checked){
+					aBuff.push("/// Synchronous Test Example\nfunction TestSynchronous(oTestResult){\n\tthis.Assert(true,\"The test passed\");\n}\n");
+				}
+				if(this.GetElementByRID("chk_include_test2").checked){
+					aBuff.push("/// Aynchronous Test Example\n/// EndTestAsynchronous is automatically created when this module is loaded as a test\nfunction TestAsynchronous(oTestResult){\n\twindow.setTimeout(CompleteTest,1000);\n\t// Return false to indicate an async test\n\treturn false;\n}\nfunction CompleteTest(){\n\tEndTestAsynchronous(true);\n}\n");
+				}
+				oConstruct.xhtml_content = aBuff.join("\n") + sXhtml;
+				
+				oBuilder.getObjects().module_construct = oConstruct;
+				oBuilder.BuildModule();
+				this.getProperties().built = 1;
+				oBuilder.RefreshModuleBuilder();
+				this.Close();
+		},
+        local_handle_close : function(oWin){
+            var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oBuilder && typeof oBuilder.getFocus == "function") oBuilder.getFocus();
+		}
+  ]]>
+	</embedded-script>
+</Template>

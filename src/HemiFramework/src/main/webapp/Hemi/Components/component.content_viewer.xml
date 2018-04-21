@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<application-components>
+   <application-component id = "content_viewer">
+       <!-- participant-id ="datagrid" -->
+      <![CDATA[
+         component_init:function(){
+            var sP = Hemi.GetSpecifiedAttribute(this.getContainer(),"participant-id");
+            if(!sP) sP = "datagrid";
+            this.joinTransactionPacket(sP);
+            this.getProperties().SharedTransaction = sP;
+            
+            var sMode = Hemi.GetSpecifiedAttribute(this.getContainer(),"view");
+            if(!sMode) sMode = "list";
+            
+	        this.getProperties().current_path = 0;
+	        this.getProperties().current_group_id = 0;
+	        this.getProperties().view_mode = (sMode == "icon" ? 1 : 0);
+	        this.setTemplateIsSpace(1);
+	        this.getObjects().current_item = 0;
+	        this.getProperties().template_loaded = 0;
+	        this.getObjects().cache = [];
+        },
+        component_post_init:function(){
+	        this.loadTemplate("Templates/IOGridTemplate.xml");
+        },
+
+        local_template_init : function(ApplicationComponent)
+        {
+	        this.InitializeIOGrid();
+	        this.getProperties().template_loaded = 1;
+		    // Announce that the viewer is available
+		    // This could also be done with contextually sensitive MessageService publications
+		    // But using the transaction allows for a many-to-many communication on the same band
+	        this.serveTransaction("viewerload",this,1,this.getProperties().SharedTransaction);
+        },
+        ClearCache : function(b){
+	        this.getObjects().cache = [];
+	        if(b){
+		        this.getProperties().current_path = 0;
+		        this.getProperties().current_group_id = 0;
+	        }
+        },
+	    component_destroy : function(){
+		    this.getObjects().label = 0;
+		    this.getObjects().text = 0;							 
+	    },
+	    _handle_treeload : function(s, v){
+		    if(!this.getProperties().template_loaded) return;
+		    this.ChangePath(v.data.src.GetCurrentBusType(),v.data.src.GetCurrentApplication(),v.data.src.GetCurrentRootName(),v.data.src.GetCurrentGroupId(), v.data.src.GetCurrentGroupName(),v.data.src.GetCurrentPath());
+					 
+	    },
+	    _handle_treenavigate : function(s, v){
+		    if(!this.getProperties().template_loaded) return;
+		    this.ChangePath(v.data.src.GetCurrentBusType(),v.data.src.GetCurrentApplication(),v.data.src.GetCurrentRootName(),v.data.src.GetCurrentGroupId(), v.data.src.GetCurrentGroupName(), v.data.src.GetCurrentPath());
+	    },
+	    ChangePath : function(iBus,sApp, sRoot, sId, sName, sPath){
+		    Hemi.log("Change Path: " + sApp + " / " + sRoot + " / " + sId + " / " + sName + " / " + sPath);
+		    if(!sId && sName) sId = sName;
+		    /// if(typeof sId != "number") sId = parseInt(sId);
+		    ///if(sId != this.getProperties().current_group_id){
+			    this.getProperties().current_bus = iBus;
+			    this.getProperties().current_path = sPath;
+			    this.getProperties().current_group_id = sId;
+			    this.getProperties().current_application = sApp;
+			    this.getProperties().current_group_name = sName;
+			    this.getProperties().current_root = sRoot;
+			    this.RefreshList();
+		    /*
+		    }
+		    else if(this.getObjects().cache[sPath + "?start-record=" + this.getProperties().start_record + "&record-count=" + this.getProperties().record_count]){
+			    this.serveTransaction("xmlcontentavailable", this.getObjects().cache[sPath + "?start-record=" + this.getProperties().start_record + "&record-count=" + this.getProperties().record_count]);
+		    }
+		    */
+	    },
+	    GetCurrentItem : function(){
+			    return this.getObjects().current_item;
+	    },
+        CreateNewItem : function(){
+	        this.serveTransaction("newcontent",this,1,this.getProperties().SharedTransaction);
+        },
+        DeleteSelectedItem : function(o){
+	        this.getObjects().current_item = o;
+	        if(!this.getProperties().item_toggled && !o) return;
+	        this.serveTransaction("deletecontent",this,1,this.getProperties().SharedTransaction);
+        },
+        OpenListItem : function(o){
+	        this.getObjects().current_item = o;
+	        if(!this.getProperties().item_toggled && !o) return;
+	        this.serveTransaction("opencontent",this,0,this.getProperties().SharedTransaction);
+        },
+        RefreshList : function(){
+	        var _p = this.getProperties();
+	        _p.list_size = 0;
+	        /// var sUrl = g_application_path + "Explorer/Data/ID-" + this.getProperties().current_group_id + "/" + "List";
+	        /*
+	        this.getProperties().current_bus = iBus;
+	        this.getProperties().current_path = sPath;
+	        this.getProperties().current_group_id = sId;
+	        this.getProperties().current_application = sApp;
+	        this.getProperties().current_group_name = sName;
+	        this.getProperties().current_root = sRoot;
+	        */
+	        var sId = _p.current_group_id;
+  	        var sReq = "";
+            var bId = 0;
+	        if(_p.current_group_name){
+		        sReq = _p.current_group_name;
+	        }
+	        else if((typeof sId == "string" && sId.length) || (typeof sId == "number" && sId > 0)){
+		        sReq = sId;
+	        }
+	        this.LoadIOGrid(_p.current_bus, _p.current_application, "Data", sReq, sId);
+
+        },
+        DrawIOGridHeader : function(oService, oSubject, oRequest, oResponse, oXhtmlParent){
+	        /// this.getObjects().cache[this.getProperties().current_path + "?start-record=" + this.getProperties().start_record + "&record-count=" + this.getProperties().record_count] = oX;
+	        /// this.serveTransaction("xmlcontentavailable", oX);
+        },
+	    DrawIOGridItem : function(oService, oSubject, oRequest, oResponse, oData, oHNode){
+
+		    oHNode.media_path = oData.path;
+							
+		    // when showing the thumbs, give the date and title labels the max thumbnail height
+		    //
+		    var item_id = oData.id;
+		    var group_id = oData.group;
+		    oHNode.item_id = item_id;
+		    if(!oHNode.item_id) oHNode.item_id = oHNode.item_name;
+		    var mime_type = oData.mimeType;
+		    var sUrl = "http://" + location.host + g_application_path + this.getProperties().current_application + "/Data/ID-" + group_id + "/ID-" + item_id;
+		    oHNode.media_url = sUrl;
+									
+		    // Detail List
+		    if(this.getProperties().view_mode == 0){
+			    var oDate = document.createElement("div");
+			    oDate.appendChild(document.createTextNode(oData.createdDate));
+			    oHNode.appendChild(oDate);
+
+			    var oTitle = document.createElement("div");
+			    oTitle.appendChild(document.createTextNode(oHNode.item_name));
+			    oHNode.appendChild(oTitle);
+										 
+			    var sData = mime_type + " " + oData.size + " bytes";
+			    var oData = document.createElement("div");
+			    oData.appendChild(document.createTextNode(sData));
+
+			    oHNode.appendChild(oData);
+			    var oDesc = document.createElement("div");
+			    oDesc.className = "grid_item_description";
+			    var sDesc = oData.description;
+
+			    oDate.className = "grid_item_date";
+			    oTitle.className = "grid_item_title";
+		    }
+		    // Icon list
+		    else if(this.getProperties().view_mode == 1){
+				    var oI = document.createElement("img");
+				    oHNode.style.float = "left";
+				    oHNode.style.cssText = "padding:5px;border:1px solid #FFFFFF;clear:none;float:left;width:100px;height:100px;";
+				    var oI = document.createElement("img");
+				    var oA = document.createElement("a");
+				    if(mime_type.match(/^image/)){
+					    oHNode.media_is_image = 1;
+					    oI.setAttribute("src",sUrl + "/Thumbnail");
+					    sUrl = "javascript:Hemi.registry.service.getObject('" + this.getObjectId() + "').OpenImage('" + oHNode.item_name + "','" + oHNode.item_id + "','" + escape(sUrl) + "')";
+				    }
+				    else{
+					    oA.setAttribute("target","_blank");
+					    oI.setAttribute("src",g_application_path + "Graphics/Icons/crystal/48x48/gnome-library.png");
+					    oI.setAttribute("width","48");
+					    oI.setAttribute("height","48");
+				    }
+				    oI.setAttribute("border","0");
+				    oI.setAttribute("title",sUrl);
+								
+				    oA.setAttribute("href",sUrl);
+				    oA.appendChild(oI);
+				    var oData = document.createElement("div");
+				    oData.style.cssText = "text-align:center;height:50px;width:100px;margin:0px;padding:0px;";
+				    oData.appendChild(oA);
+				    oHNode.appendChild(oData);
+				    var oLabel = document.createElement("div");
+				    oLabel.appendChild(document.createTextNode(oHNode.item_name));
+				    oHNode.appendChild(oLabel);
+				    oLabel.style.cssText = "text-align:center;font:normal 8pt Arial;margin:0px;"
+		    }
+
+        },
+        OpenImage : function(sName,sId,sUrl){
+	        var oW = Hemi.app.getWindowManager().GetWindowByName("MediaViewer-" + sId);
+	        if(oW){
+		        oW.open();
+		        oW.restore();
+	        }
+	        else{
+		        oW = CreateWindow(0,"Templates/ImageViewer.xml","MediaViewer-" + sId,"oWindowManager",0,{user_name:GetSession().GetParam("UserName"),opener_id:this.getObjectId(),media_id:sId,media_name:sName,media_url:unescape(sUrl)});
+		        if(oW){
+				        oW.setHideOnClose(0);
+				        //oW.setIsBound(0);
+		        }
+	        }
+					
+
+        }
+				 
+			]]>
+		</application-component>
+</application-components>

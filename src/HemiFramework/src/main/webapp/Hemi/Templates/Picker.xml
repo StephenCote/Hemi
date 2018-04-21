@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Template Title ="Picker">
+		<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<!-- __pointer_marker is used to hide this control from the EngineStats modeller -->
+		 <div class="title" >Choose</div>
+		<div ___pointer_marker = "never" component ="wideselect"  rid = "picker_list"></div>
+		<div class="title" style = "display:none;" rid = "btnCont"><input type = "button" value = "Choose" onclick = "${this}.choose()" /></div>
+
+
+	<embedded-script>
+            <![CDATA[
+		template_init : function (){
+			this.scopeHandler("pickerlistclick",0,0,1);
+			this.GetComponentByRID("picker_list").setLoadHandler(this.scopeHandler("configList",0,1,1));
+		},
+		configList : function(){
+			var bM = this.getProperties().multiple;
+			this.GetPickerList().setResultHandler( this._prehandle_pickerlistclick);
+			this.GetPickerList().getContainer().style.height = "150px";
+			this.GetPickerList().setMultiple(bM ? 1 : 0);
+			/// not buffering the multi-select so it's easy enough to turn around and select the values.
+			/// otherwise, this would have to be paged in, committed, and then selected
+			///
+			this.GetPickerList().setIsBuffered((bM ? 0 : 1));
+			this.GetElementByRID("btnCont").style.display = (bM ? "block" : "none");
+			this.doSelectValues();
+			this.getProperties().configured = 1;
+		},
+		selectValues : function(aL){
+			Hemi.log("Set picker select values");
+			this.getObjects().selectList = aL;
+			if(this.getProperties().configured) this.doSelectValues();
+		},
+		doSelectValues : function(){
+			var aL = this.getObjects().selectList;
+			if(!aL || aL.length == 0){
+				Hemi.log("No list of values to select");
+				return;
+			}
+			delete this.getObjects().selectList;
+			var aH = {};
+			//if(!aL || aL == null) return;
+			for(var i = 0;i < aL.length;i++) aH[aL[i].name]=1;
+			var aI = this.GetPickerList().getItems();
+			Hemi.log("Looking through " + aI.length + " items to match selections");
+			for(var i = 0; i < aI.length;i++){
+				if(!aI[i] || !aI[i].data) continue;
+				if(aH[aI[i].data.name]){
+					this.GetPickerList().selectItem(i,1);
+				}
+			}
+			
+		},
+		SetPickerHandler : function(f){
+			this.getObjects().picker_handler = f;
+		},
+		template_destroy : function(){
+			this._prehandle_pickerlistclick = 0;
+			this.getObjects().picker_handler = 0;
+		},
+		GetPickerList : function(){
+			return this.GetComponentByRID("picker_list").GetWideSelect();
+		},
+		_handle_pickerlistclick : function(sEvent,oItem){
+			if(this.GetPickerList().getMultiple()) return;
+			this.returnChoices(oItem);
+		},
+		choose : function(){
+			this.returnChoices(this.GetPickerList().getActiveItems());
+		},
+		returnChoices : function(vItem){
+			var oOpener = Hemi.registry.service.getObject(this.getProperties().opener_id);
+			if(this.getObjects().picker_handler) this.getObjects().picker_handler(this, vItem);
+		},
+        local_handle_close : function(oWin){
+            var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
+            if(oBuilder && typeof oBuilder.getFocus == "function") oBuilder.getFocus();
+		}
+	
+
+	]]></embedded-script>
+</Template>

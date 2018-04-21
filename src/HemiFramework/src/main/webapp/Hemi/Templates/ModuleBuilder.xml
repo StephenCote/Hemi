@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+<Template Title ="Module Builder">
+	<import-style src ="Styles/jsprof.css" id ="jsprof" />
+	<import-style src ="Styles/wideselect.css" id ="wideselect" />
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<import-xml src = "Fragments/BuilderControls.xml" id = "BuilderControls" />
+
+	<div class="title">Module Description</div>
+	<div>
+		<select rid ="run_module_as">
+			<option>Scripted</option>
+			<option>Declarative</option>
+		</select>
+		<input type ="button" onclick ="${this}.RunModule()" value ="Run" />
+		<span rid ="module_info">[ Volatile Module ]</span>
+	</div>
+	<div class ="field">
+		<div class = "field_label">
+			Name:
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "module_name" />
+			<input type = "hidden" value ="0" rid = "module_id" />
+		</div>
+	</div>
+
+	<div class ="field">
+		<div class = "field_label">
+			Description: (<i>optional</i>)
+		</div>
+		<div class = "field_input">
+			<input type = "text" class = "input_text" rid = "module_description" />
+		</div>
+	</div>
+
+	<div style ="clear:left;">
+		<input type = "button" value = "Import" onclick ="${this}.LoadModuleText()" />
+		<select onchange ="${this}.BuildModule()" rid = "build_module">
+			<option>JavaScript</option>
+		</select>
+		<span rid ="module_model_controls" style ="display:none;">
+			<input type ="button" value ="Update" onclick ="${this}.UpdateModuleMember()" />
+		</span>
+		<br />
+		<textarea rid ="module_text" wrap ="off" style ="border:0px;margin:0px;width:100%;height:250px;"></textarea>
+	</div>
+	<embedded-script>
+		<![CDATA[
+		template_init : function (){
+			 Hemi.include("hemi.text");
+
+			this.scopeHandler("module_load",0,0,1);
+			this.getObjects().module_construct = 0;
+			this.refreshBuilderUI();
+			this.RefreshModuleBuilder();
+			if(this.getProperties().testFeat && this.setTitle){
+				this.setTitle("Test Builder");
+			}
+			this.getProperties().builder_title = (this.getProperties().testFeat ? "Test" : "Module") + " Builder";
+			
+		},
+		RefreshModuleBuilder : function(){
+			var b = (this.getObjects().module_construct ? 1 : 0);
+			this.GetElementByRID("module_name").disabled = (b ? false : true);
+			this.GetElementByRID("module_description").disabled = (b ? false : true);
+			this.GetElementByRID("build_module").disabled = (b ? false : true);
+		},
+		template_destroy : function(){
+			this._prehandle_module_load = 0;
+		},
+		RunModule : function(s){
+			if(!this.getObjects().module_construct) return;
+			var aBuff = [];
+			
+			this.BuildModule();
+			aBuff.push(this.GetElementByRID("module_text").value);
+
+			var sName = this.GetElementByRID("module_name").value;
+
+			var aParams = [sName.replace(/\.js$/,""), aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_module_as").selectedIndex];
+
+			this.RunControl((this.getProperties().testFeat ? "RunTestModule" : "RunModule"), aParams);
+		},
+		LoadObject : function(i){
+			this.SetLabel("Loading ...");
+			Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"[ Volatile Module ]");
+			this.getProperties().module_id = i;
+			this.GetElementByRID("build_module").selectedIndex = 0;
+			var _bt = Hemi.data.io.service.getBusType();
+			var sMT = (this.getProperties().busType != _bt.ONLINE ? "text/javascript" : 0);
+			AM6Client.get("DATA",i,this._prehandle_module_load);
+		},
+		_handle_module_load : function(s, v){
+			this.SetLabel("");
+			if(v && v.json) v = v.json;
+			if(!v || v == null){
+				 this.SetLabel("Failed to load module");
+				 return;
+			}
+			var oData = v;
+			this.SetDataPath(oData.groupPath);
+			var sTemp = uwm.base64Decode(oData.dataBytesStore);
+
+			this.GetElementByRID("module_text").value = sTemp;
+			if(this.LoadModuleText()){
+				this.GetElementByRID("module_name").value = oData.name;
+				this.GetElementByRID("module_description").value = oData.description;
+
+				this.getObjects().module_construct.id = this.getProperties().module_id;
+				this.RefreshModuleBuilder();
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"Id: " + this.getProperties().module_id + " / Path: " + oData.path);
+			}
+
+			this.GetElementByRID("module_id").value = this.getProperties().module_id + "";
+	
+		},
+
+		DeleteCurrentObject : function(){
+			var id = this.getProperties().module_id;
+			if(!id){
+				 this.SetLabel("Invalid fragment data id");
+				 return;
+			}
+			if(!confirm("Are you sure you want to delete this module?")) return;
+			var oResp = AM6Client.delete("DATA",id);
+			if(oResp){
+					this.ClearModule();
+					/// this.RefreshDWACLists();
+			}
+			else{
+				 this.SetLabel("Failed to delete data #" + id);
+				 delete this.getProperties().data_object;
+			}
+		},
+		ClearModule : function(){
+				this.GetElementByRID("build_module").selectedIndex = 0;
+				this.GetElementByRID("module_text").value = "";
+				this.GetElementByRID("module_id").value = "0";
+				this.GetElementByRID("module_name").value = "";
+				this.GetElementByRID("module_description").value = "";
+				Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"[ Volatile Module ]");
+				this.getObjects().module_construct = 0;
+				this.getProperties().module_id = 0;
+				this.SetLabel("");
+				this.RefreshModuleBuilder();
+		},
+		SaveCurrentObject : function(){
+			if(
+				 !this.getObjects().module_construct
+				 ||
+					(
+						this.getObjects().module_construct.changes == 0
+						&&
+						!confirm("No changes detected.  Save anyway?")
+					)
+			){				 
+				 this.SetLabel("Didn't save - Nothing to do");
+				 return;
+			}
+			if(this.GetElementByRID("build_module").selectedIndex != 0){
+				this.GetElementByRID("build_module").selectedIndex = 0;
+				this.BuildModule();
+			}
+			var sName = this.GetElementByRID("module_name").value;
+			var sTemp = this.GetElementByRID("module_text").value;
+			var bRet = 0;
+			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
+			var oND = 0;
+			if(this.getObjects().module_construct.id && this.getProperties().data_object){
+				oND = this.getProperties().data_object;
+				oND.name = sName;
+			}
+			else{
+				oND = this.newData(sName,"text/plain",this.getProperties().current_path);
+			}
+
+			oND.dataBytesStore = uwm.base64Encode(sTemp);
+			bRet = AM6Client.update("DATA",oND);
+
+			if(bRet){
+				oND = (oND.objectId ? AM6Client.get("DATA",oND.objectId) : AM6Client.getByName("DATA",oG.objectId,sName));
+				if(!oND){
+					this.SetLabel("Failed to retrieve object data");
+					return;
+				}
+
+				this.getObjects().module_construct.changes = 0;
+				var sId = oND.objectId;
+				if(!sId || sId.length == 0){
+						this.SetLabel("Error retrieving data id");
+						delete this.getObjects().module_construct.id;
+				}
+				else{
+					this.getObjects().module_construct.id = sId;	
+					this.GetElementByRID("module_id").value = sId;
+					this.SetLabel("Saved!");
+					Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					this.SetDataPath(oND.groupPath);
+				}
+			}
+			else{
+				this.SetLabel("Failed to save module");
+			}
+			this.GetElementByRID("module_text").value = sTemp;
+		},
+
+		CreateNewObject : function(){
+				if(this.getObjects().module_construct && this.getObjects().module_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
+
+				var oW = Hemi.app.createWindow(0,"Templates/NewModule.xml","NewModule-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
+				oW.resizeTo(500,350);
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+				//this.SetLabel("New Module - Remember to Save!");
+		},
+
+		BuildModule : function(){
+			if(!this.getObjects().module_construct){
+				this.SetLabel("Invalid module construct");
+				return;	 
+			}
+			var sName = Hemi.text.trim(this.GetElementByRID("module_name").value);
+			this.getObjects().module_construct.name = sName;
+			
+			var aBuff = [];	
+			var iIndex = this.GetElementByRID("build_module").selectedIndex;
+			var bScript = (iIndex == 0 ? 1 : 0);
+			if(bScript){
+				 this.GetElementByRID("module_model_controls").style.display = "inline";
+			}
+			else{
+				 this.GetElementByRID("module_model_controls").style.display = "none";
+			}
+			if(bScript){
+				aBuff.push(this.getObjects().module_construct.xhtml_content);
+
+			}
+			var sText = aBuff.join("");
+			this.GetElementByRID("module_text").value = sText;
+		},
+
+		UpdateModuleMember : function(){
+			var iIndex = this.GetElementByRID("build_module").selectedIndex;
+			if(iIndex == 0){
+				var sXhtml = this.GetElementByRID("module_text").value;
+				this.getObjects().module_construct.xhtml_content = sXhtml;
+				this.getObjects().module_construct.changes++;
+				this.SetLabel("Updated - Remember to Save!");
+			}
+		},
+
+		LoadModuleText : function(){
+
+			var bScr = (this.GetElementByRID("build_module").selectedIndex == 0 ? 1 : 0);
+			if(this.getObjects().module_construct && this.getObjects().module_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
+			
+			var oXml = null;
+			var sXhtmlContent = this.GetElementByRID("module_text").value
+			this.GetElementByRID("module_description").value = "";
+			this.GetElementByRID("module_name").value = "";
+			this.GetElementByRID("module_id").value = "";
+
+			this.getObjects().module_construct = this.NewComponentConstruct();
+			this.getObjects().module_construct.xhtml_content = sXhtmlContent;
+			this.RefreshModuleBuilder();
+ 			return 1;
+		}
+
+
+	]]>
+	</embedded-script>
+</Template>

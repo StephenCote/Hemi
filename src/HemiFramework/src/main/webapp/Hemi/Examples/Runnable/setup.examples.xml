@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Examples>
+	<Example Id ="setup.examples">
+		<Name><![CDATA[Setup Examples]]></Name>
+		<Description><![CDATA[Load examples into user's offline store.]]></Description>
+		<Html>
+			<![CDATA[
+				<p>Generated Offline Examples Database.</p>
+			]]>
+		</Html>
+		<Script>
+			<![CDATA[
+Hemi.include("hemi.app.module");
+var oDwac = Hemi.app.module.service.NewModule("dwac.offline.helper");
+var aStaticComponents = ["reflected","reflector"];
+var aStaticTemplates = ["form","setbeanform","getbeanform","elform","scriptform","reflect","formfieldsget","formfieldsset"];
+var aStaticFragments = ["contact","color","demobean"];
+var aStaticProjects = ["reflect"];
+var aStaticTasks = ["scriptxml","script","bootstrap"];
+var aStaticTests = ["asyncxml.js"];
+var aStaticModules = ["basic.js"];
+
+var sBase = "Examples/Runnable/";
+var bAlwaysReset = 1;
+var sNotify = "Examples database was created.";
+
+/// Module Hook
+this.Initialize = function(){
+   if(typeof this.Container == "object")
+      Hemi.xml.setInnerXHTML(this.Container,"Configuring ...");
+   RunSetup();
+   if(typeof this.Container == "object")
+      Hemi.xml.setInnerXHTML(this.Container,sNotify);
+   
+};
+
+
+function Setup(sGroup, aList, fSetup){
+	for(var i = 0; i < aList.length;i++){
+		var oResponse = oDwac.ReadData(sGroup,aList[i]);
+		if(oResponse.status && oResponse.responseData.length > 0){
+			if(!bAlwaysReset) continue;
+			oResponse = oDwac.DeleteData(sGroup, aList[i]);
+			if(!oResponse.status){
+				Hemi.logError("Failed to delete data for " + aList[i]);
+				continue;
+			}
+		}
+		fSetup(sGroup,aList[i]);
+	}
+}
+function SetupProject(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "project." + sId + ".xml", 1);
+}
+function SetupFragment(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "fragment." + sId + ".xml", 1);
+}
+function SetupTemplate(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "template." + sId + ".xml", 1);
+}
+function SetupComponent(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "component." + sId + ".xml", 1);
+}
+function SetupTask(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "task." + sId + ".xml", 1);
+}
+function SetupTest(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "test." + sId,0);
+}
+function SetupModule(sGroup, sId){
+    SetupObject(sGroup, sId, sBase + "module." + sId, 0);
+}
+function SetupObject(sGroup, sId, sUri, bXml){
+		var vData = Hemi.xml[bXml?"getXml":"getText"](sUri,0,0,sGroup + "-" + sId,1);
+		if((bXml && (!vData || vData.documentElement == null)) || (!vData || vData == null)){
+			Hemi.logError("Failed to load data for " + sId);
+			return;
+		}
+		oDwac.AddData(sGroup,sId,(bXml ? "text/xml" : "text/plain"),(bXml ? Hemi.xml.serialize(vData.documentElement) : vData));
+}
+function RunSetup(){
+    Setup("Components",aStaticComponents,SetupComponent);
+    Setup("Templates",aStaticTemplates,SetupTemplate);
+    Setup("Fragments",aStaticFragments,SetupFragment);
+    Setup("Projects",aStaticProjects,SetupProject);
+    Setup("Tasks",aStaticTasks,SetupTask);
+    Setup("Tests",aStaticTests,SetupTest);
+    Setup("Modules",aStaticModules,SetupModule);
+
+    Hemi.log(sNotify);
+}
+		]]>
+		</Script>
+	</Example>
+
+</Examples>

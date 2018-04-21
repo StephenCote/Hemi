@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<application-components>
+	<application-component id ="reflected" participant-id ="reflect"><![CDATA[
+		_handle_keypunch : function(s, v){
+			Hemi.xml.setInnerXHTML(this.getContainer(),v.data.data);
+		}
+		]]>
+	</application-component>
+</application-components>

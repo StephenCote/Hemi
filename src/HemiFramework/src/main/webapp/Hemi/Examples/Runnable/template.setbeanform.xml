@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template id ="setbeanform" Title ="Set Bean Form">
+	<import-xml src = "Templates/TemplateTools.xml" id ="TemplateTools" />
+	<import-xml src = "dwac:/DWAC/Anonymous/Fragments/demobean" />
+	<p>
+		This template imports a script fragment to simulate loading a JSON object from an external data source, and then binding that object as a bean to the Application Component that is hosting this Template.
+		The bean is then available to form fields and EL evaluation within templates.
+	</p>
+	<p>
+		<input type ="button" value ="Next" onclick ="${this}.loadTemplate('dwac:/DWAC/Anonymous/Templates/getbeanform')" />
+	</p>
+</Template>

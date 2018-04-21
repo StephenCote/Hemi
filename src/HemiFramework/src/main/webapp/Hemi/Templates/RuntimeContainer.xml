@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Template Title ="Runtime Container">
+	<import-xml src = "Templates/TemplateTools.xml" id = "TemplateTools" />
+	<import-xml src ="Fragments/RuntimeContainer.xml" id ="RuntimeContainerFragment" />
+</Template>

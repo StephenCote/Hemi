@@ -161,7 +161,7 @@
 				    var oA = document.createElement("a");
 				    if(mime_type.match(/^image/)){
 					    oHNode.media_is_image = 1;
-					    oI.setAttribute("src",sUrl + "/Thumbnail");
+					    oI.setAttribute("src",sUrl + "/thumbnail");
 					    sUrl = "javascript:Hemi.registry.service.getObject('" + this.getObjectId() + "').OpenImage('" + oHNode.item_name + "','" + oHNode.item_id + "','" + escape(sUrl) + "')";
 				    }
 				    else{

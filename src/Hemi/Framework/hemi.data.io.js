@@ -221,7 +221,7 @@
 			///			<description>Maps the Core Session component data to the DataIO subject.</description>
 			///		</method>
 			t.mapSession = function (i) {
-				if (!DATATYPES.TO(i)) return;
+				if (!DATATYPES.TO(i) || i == null || !DATATYPES.TF(i.RefreshSession)) return;
 				var o = t.getSubject();
 				o.isAuthenticated = i.GetBoolParam("IsLoggedIn");
 				o.name = i.GetParam("UserName");

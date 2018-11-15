@@ -974,6 +974,8 @@
 					{
 						x: x,
 						y: y,
+						width: e.width,
+						height: e.height,
 						image: e
 					}
 				);

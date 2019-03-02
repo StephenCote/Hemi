@@ -93,7 +93,9 @@ if (typeof window != "object") window = {};
         ///
         hemi_base: (location.protocol.match(/^file/i) ? "file://" + location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1) : "/") + "Hemi/",
         uid_prefix: "hemi-",
-        guid_counter: 0
+        guid_counter: 0,
+        version: "4.0.0-Beta",
+        build: "%FILE_VERSION%"
     };
     if(window.HemiConfig){
        if(window.HemiConfig.hemi_base) HemiEngine.hemi_base = window.HemiConfig.hemi_base;
@@ -128,7 +130,6 @@ if (typeof window != "object") window = {};
     var data_undefined;
 
     DATATYPES.XMLHTTPREQUEST = (typeof XMLHttpRequest != DATATYPES.TYPE_UNDEFINED ? XMLHttpRequest : data_undefined);
-    DATATYPES.ACTIVEXOBJECT = (typeof ActiveXObject != DATATYPES.TYPE_UNDEFINED ? ActiveXObject : data_undefined);
 
     if (typeof window.DATATYPES != DATATYPES.TYPE_OBJECT) window.DATATYPES = DATATYPES;
 
@@ -1314,45 +1315,7 @@ if (typeof window != "object") window = {};
         _xml_requests: [],
         _xml_requests_map: [],
 
-        /// <property type = "String" get = "1" set = "1">
-        /// <name>ax_http_control</name>
-        /// <description>Specifies the name of the registered ActiveX control to use for XML requests.</description>
-        /// </property>
-        ax_http_control: "MSXML2.XMLHTTP",
-		/*
-			MSXML2.XMLHTTP.6.0
-			MSXML2.XMLHTTP.5.0
-			MSXML2.XMLHTTP.4.0
-			MSXML2.XMLHTTP.3.0
-			MSXML2.XMLHTTP
-			Microsoft.XMLHTTP
-		*/
-
-        /// <property type = "String" get = "1" set = "1">
-        /// <name>ax_http_control</name>
-        /// <description>Specifies the name of the registered ActiveX control to use for XML requests.</description>
-        /// </property>
-        ax_dom_control: "MSXML.DOMDocument",
-/*
-        /// <property type = "boolean" get = "1" set = "1">
-        /// <name>gadget_mode</name>
-        /// <description>Specifies whether the xml package is operating in a mode that better supports Windows Sidebar Gadgets.</description>
-        /// </property>
-        gadget_mode: 0,
-
-        /// <property type = "String" get = "1" set = "1">
-        /// <name>gadget_control</name>
-        /// <description>Specifies the name of the registered ActiveX control to use for XML requests when in Gadget mode.</description>
-        /// </property>
-        gadget_xml_control: "Core.Gadget.GadgetXmlHttp",
-
-        /// <property type = "String" get = "1" set = "1">
-        /// <name>gadget_base_path</name>
-        /// <description>Specifies the base path to use when operating in Gadget mode.  The base path should be in the format of a file URI, such as <i>file:///c:/...</i>.</description>
-        /// </property>
-        gadget_base_path: 0,
-*/
-        _xml_http_cache_enabled: 1,
+         _xml_http_cache_enabled: 1,
 
         /// <method>
         /// <name>setCacheEnabled</name>
@@ -1373,30 +1336,13 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._xml_http_cache_enabled;
         },
 
-        /*
-        _xml_namespace_resolver: [
-			["soapenc", "http://schemas.xmlsoap.org/soap/encoding/"],
-			["wsdl", "http://schemas.xmlsoap.org/wsdl/"],
-			["soap", "http://schemas.xmlsoap.org/wsdl/soap/"],
-			["SOAP-ENV", "http://schemas.xmlsoap.org/soap/envelope/"]
-		],
-        _xml_namespace_url: {},
-        _xml_namespace_uri: {},
-        _xml_namespace_hashed: 0,
-		*/
-
         _xml_http_objects: [],
         _xml_http_object_use: 0,
         _xml_http_object_count: 0,
         _xml_http_object_pool_size: 5,
-        _xml_http_object_pool_max: 20,
-
-
+        _xml_http_object_pool_max: 50,
         _xml_http_pool_created: 0,
-
         _xml_http_pool_enabled: 1,
-
-
         si: 0,
 
         /// <method>
@@ -1432,12 +1378,8 @@ if (typeof window != "object") window = {};
                 e = new DOMParser();
                 r = e.parseFromString(s, "text/xml");
             }
-            else if (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED) {
-                r = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_dom_control);
-                r.async = false;
-                r.loadXML(s);
-            }
             else {
+
             }
             return r;
         },
@@ -1460,12 +1402,8 @@ if (typeof window != "object") window = {};
                     r.appendChild(r.createElement(n));
                 }
             }
-            else if (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED) {
-                r = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_dom_control);
-                e = r.createElement(n);
-                r.appendChild(e);
-            }
             else {
+
             }
             return r;
         },
@@ -1568,46 +1506,26 @@ if (typeof window != "object") window = {};
         ///
         newXmlHttpObject: function (b, i, z) {
 
-            var o = null, v, f, _m = HemiEngine.message.service, a = (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED);
+            var o = null, v, f, _m = HemiEngine.message.service, a = 0;
             /// 2011/04/26
             /// Work-around for IE 9 (which may break Opera offline) : 
             ///   If offline (file:) and ActiveX is supported, use ActiveX instead of XMLHTTPRequest
             ///   
-            if ((!a || !HemiEngine.hemi_base.match(/^file/gi)) && typeof DATATYPES.XMLHTTPREQUEST != DATATYPES.TYPE_UNDEFINED) {
-                o = new DATATYPES.XMLHTTPREQUEST();
-                if (z) return 1;
-            }
-            else if (a) {
-                try {
-
-                    o = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_http_control);
-                    if (z) return 1;
-
-                }
-                catch (e) {
-                    _m.sendMessage("XMLError: " + (e.description ? e.description : e.message), "512.4", (z ? 1 : 0));
-                }
-
-                if (z) return 0;
-            }
-
+            o = new DATATYPES.XMLHTTPREQUEST();
+            if (z) return 1;
             if (b && typeof i == DATATYPES.TYPE_NUMBER) {
                 v = {
                     o: o,
                     u: 0,
                     i: i,
-
                     v: -1,
                     h: 0
                 };
                 return v;
             }
             else {
-
                 return o;
-
             }
-
         },
 
         /// <method private = "1">
@@ -1630,24 +1548,10 @@ if (typeof window != "object") window = {};
 
 
                 try {
-
                     if (!y) {
-
-
-
-
-                        if (typeof DATATYPES.XMLHTTPREQUEST != DATATYPES.TYPE_UNDEFINED) {
-                            if (typeof o.o.removeEventListener == DATATYPES.TYPE_FUNCTION)
-                                o.o.removeEventListener("load", o.h, false);
-                            else
-                                o.o.onreadystatechange = _x._stub;
-                        }
-                        else if (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED && o.o instanceof DATATYPES.ACTIVEXOBJECT)
-                            o.o.onreadystatechange = _x._stub;
-
+                        o.o.removeEventListener("load", o.h, false);
                         o.h = 0;
                     }
-
                 }
                 catch (e) {
                     HemiEngine.message.service.sendMessage("Error in returnXmlHttpObjectToPool: " + (e.description ? e.description : e.message), "512.4", 1);
@@ -1656,8 +1560,6 @@ if (typeof window != "object") window = {};
                 o.o.abort();
                 o.u = 0;
                 o.v = -1;
-
-
                 _x._xml_http_object_use--;
             }
 
@@ -1705,39 +1607,16 @@ if (typeof window != "object") window = {};
                 o = a[b];
 
                 try {
-
                     if (!y) {
-
-
-
-
-
-                        if (typeof DATATYPES.XMLHTTPREQUEST != DATATYPES.TYPE_UNDEFINED) {
-                            if (typeof o.o.addEventListener == DATATYPES.TYPE_FUNCTION) {
-                                o.h = function () { HemiEngine.xml._handle_xml_request_load(b); };
-                                o.o.addEventListener("load", o.h, false);
-                            }
-                            else {
-                                o.h = function () { HemiEngine.xml._handle_xml_request_readystatechange(b); };
-                                o.o.onreadystatechange = o.h;
-                            }
-                        }
-                        else if (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED && o.o instanceof DATATYPES.ACTIVEXOBJECT) {
-                            o.h = function () { HemiEngine.xml._handle_xml_request_readystatechange(b); };
-
-                            o.o.onreadystatechange = o.h;
-                        }
+                        o.h = function () { HemiEngine.xml._handle_xml_request_load(b); };
+                        o.o.addEventListener("load", o.h, false);
                     }
-
                 }
                 catch (e) {
                     _m.sendMessage("Error in getXmlHttpObjectFromPool: " + (e.description ? e.description : e.message), "512.4", 1);
                 }
-
-
                 return o;
             }
-
             return null;
         },
 
@@ -1763,17 +1642,7 @@ if (typeof window != "object") window = {};
                     o = _x._xml_requests[_x._xml_requests_map[i]];
                     v = { text: null, xdom: null, json: null, id: (o.bi ? o.bi : i) };
 
-                    if (
-						o.u.match(/^file:/i)
-						&&
-						typeof DATATYPES.ACTIVEXOBJECT == "function"
-						&&
-						o.o instanceof DATATYPES.ACTIVEXOBJECT
-					) {
-                        var mp = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_dom_control);
-                        mp.loadXML(o.o.responseText);
-                        v.xdom = mp;
-                    } else if (o.o != null) {
+                     if (o.o != null) {
                         if (o.t) {
                             v.text = o.o.responseText;
                             if (o.t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED) {
@@ -1838,23 +1707,7 @@ if (typeof window != "object") window = {};
             }
 
         },
-        _handle_xml_request_readystatechange: function (i) {
-            var _x = HemiEngine.xml, o;
 
-
-            if (_x._xml_http_pool_enabled && typeof _x._xml_http_objects[i] == DATATYPES.TYPE_OBJECT) {
-                o = _x._xml_http_objects[i];
-                if (o != null && typeof o.o == DATATYPES.TYPE_OBJECT && o.o.readyState == 4) {
-                    _x._handle_xml_request_load(i);
-                }
-            }
-            else if (typeof _x._xml_requests_map[i] == DATATYPES.TYPE_NUMBER) {
-                o = _x._xml_requests[_x._xml_requests_map[i]];
-                if (typeof o.o == DATATYPES.TYPE_OBJECT && o.o.readyState == 4) {
-                    _x._handle_xml_request_load(i);
-                }
-            }
-        },
         /// <method>
         /// <name>getJSON</name>
         /// <description>Retrieve a JSON object from the specified path.</description>
@@ -1871,6 +1724,10 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 2);
         },
         
+        promiseJSON: function (p, m, d) {
+        	return HemiEngine.xml.promise(p, m, d, 2);
+        },
+ 
         deleteJSON: function (p, h, a, i, c) {
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, "DELETE", null, c, 2);
         },
@@ -1890,6 +1747,11 @@ if (typeof window != "object") window = {};
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 1);
         },
+        
+        promiseText: function (p, m, d) {
+        	return HemiEngine.xml.promise(p, m, d, 1);
+        },
+        
         deleteText: function (p, h, a, i, c) {
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, "DELETE", null, c, 1);
@@ -1909,6 +1771,9 @@ if (typeof window != "object") window = {};
         getXml: function (p, h, a, i, c) {
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c);
+        },
+        promiseXml: function (p, m, d) {
+        	return HemiEngine.xml.promise(p, m, d, 0);
         },
         deleteXml: function (p, h, a, i, c) {
 
@@ -1968,6 +1833,23 @@ if (typeof window != "object") window = {};
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 1, d, 0);
         },
+        
+        promise : function(p, m, d, t){
+        	var  n= ["xdom","text","json"][t];
+
+        	return new Promise(function (resolve, reject) {
+                HemiEngine.xml._request_xmlhttp(p,
+                	function(s,v){
+                		if(v && v[n] && (t == 1 || (DATATYPES.TO(v[n]) && v[n] != null))){
+                			resolve(v[n]);
+                		}
+                		else{
+                			reject(v.message);
+                		}
+                	},
+                	1, 0, (m ? m : (d ? "POST" : "GET")), (d ? d : null), 1, t);
+        	});
+        },
 
         /// <message>
         /// <name>onloadxml</name>
@@ -1991,7 +1873,7 @@ if (typeof window != "object") window = {};
         ///	
         _request_xmlhttp: function (p, h, a, i, x, d, c, t) {
 
-            var _x = HemiEngine.xml, f, o = null, v, _m = HemiEngine.message.service, y, z, r, b, b_ia, g, bi = 0;
+            var _x = HemiEngine.xml, f, o = null, v, _m = HemiEngine.message.service, y, z, r, b, g, bi = 0;
 
             if (!_x.si) _x.StaticInitialize();
             if (typeof p != DATATYPES.TYPE_STRING || p.length == 0) {
@@ -2006,31 +1888,11 @@ if (typeof window != "object") window = {};
             if (typeof i != DATATYPES.TYPE_STRING) i = HemiEngine.guid();
 
 			/// 2011/02/22 Only use the proxy if loaded
-			/// TODO - need to add in the feature tag support so statements like this check can be stripped from the whole compilation
-			/// Otherwise, it's wasted space
 			///
-
 			if( HemiEngine.lookup("hemi.data.io.proxy")){
-				/// 2011/02/22 - isProxied checks for a proxy protocol and supported data.io bus type
 				if(HemiEngine.data.io.proxy.service.isProxied(p)){
-					/// 2011/02/20 - This is an early phase proxy - the general data exchange across components needs to have a clean entry/exit through data.io instead of straight xml
-					/// For current compatibility, it's shimmed into the xml-handling.
-					/// NOTE: Because this is a shim, it does not use any of the xml utility level caching.
-					/// Also, it's an ugly duplication of the XML OM reconstruction
-					///
 					return HemiEngine.data.io.proxy.service.proxyXml(p, h, a, i, x, d, c, t);
-					/*
-					if(t){
-						b = {text : r, id : i};
-						if (t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED)
-							b.json = JSON.parse(r.ct, _x.JSONReviver);
-					}
-					else b = {xdom: r, id: i};
-					return b;
-					*/
 				}
-				/// 2011/02/22 - Strip any proxy protocol tags, which may occur for matching proxy protocols and unsupported bus types
-				///
 				p = HemiEngine.data.io.proxy.service.stripProxyProtocol(p);
 			}
 
@@ -2046,10 +1908,8 @@ if (typeof window != "object") window = {};
                     if (!t)
                         b = { xdom: r.cd, id: i };
                     else {
-						/// alert(i + "\n" + r.ct);
                         b = { text: r.ct, id: i };
                         if (t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED){
-                            /// b.json = JSON.parse(r.ct, _x.JSONReviver);
                             try {
                                 b.json = JSON.parse(r.ct, _x.JSONReviver);
                             }
@@ -2059,42 +1919,21 @@ if (typeof window != "object") window = {};
                                 Hemi.logError(e.message);
                             }
                         }
-
                     }
                     if (b) {
                         _m.publish("onloadxml", b);
                         if (typeof h == DATATYPES.TYPE_FUNCTION) h("onloadxml", b);
-
                         return (t ? (t==2 ? b.json : b.text) : b.xdom);
                     }
                 }
-
-
-
-
                 else if (!r.r) {
-
                     c = 0;
-
                     bi = i;
-
                     i = HemiEngine.guid();
-
                 }
-
             }
-
-
-
             b = _x._xml_http_pool_enabled;
-            /*
-            if (_x.gadget_mode) {
-                a = 0;
-                b = 0;
-                p = _x.gadget_base_path + p;
-                r = new ActiveXObject(_x.gadget_xml_control);
-            }
-            else */ if (b) {
+            if (b) {
 
                 r = _x.getXmlHttpObjectFromPool(!a);
 
@@ -2127,14 +1966,9 @@ if (typeof window != "object") window = {};
                 o: (b ? r.o : r),
                 ih: 0,
                 h: h,
-
-
                 pi: (b ? r.i : -1),
-
-
                 c: c,
                 cd: 0,
-
                 r: 0,
                 t: t
             };
@@ -2165,71 +1999,15 @@ if (typeof window != "object") window = {};
 
             _x._xml_requests[y].u = p;
 
-            b_ia = (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED && o instanceof DATATYPES.ACTIVEXOBJECT) ? 1 : 0;
-
-            if (b_ia && typeof XMLHttpRequest != DATATYPES.TYPE_UNDEFINED && p.match(/^file/i)) {
-
-                _x.returnXmlHttpObjectToPool(_x._xml_requests[y].pi, !a);
-                o = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_http_control);
-                if (bi) i = bi;
-
-                o.open(z, p, false);
-                o.send(null);
-                var rt = (t ? o.responseText : o.responseXML);
-                b = { xdom: null, text: null, json: null, id: i };
-                if (t) {
-                    b.text = rt;
-                    if (t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED) {
-                        try {
-                            b.json = JSON.parse(b.text, _x.JSONReviver);
-                        }
-                        catch (e) {
-                            b.json = null;
-                            b.error = e.message;
-                            Hemi.logError(e.message);
-                        }
-                    }
-                }
-                else {
-                    if (rt == null || rt.documentElement == null) {
-                        rt = _x.parseXmlDocument(o.responseText);
-                    }
-                    b.xdom = rt;
-                }
-                _m.publish("onloadxml", b);
-                if (typeof h == DATATYPES.TYPE_FUNCTION) h("onloadxml", b);
-
-                return rt;
-            }
-
             try {
-
-
-
-
-                if (!b && a && typeof DATATYPES.XMLHTTPREQUEST != DATATYPES.TYPE_UNDEFINED) {
-                    if (typeof o.addEventListener == DATATYPES.TYPE_FUNCTION) {
-                        _x._xml_requests[y].ih = function () { HemiEngine.xml._handle_xml_request_load(i); };
-                        o.addEventListener("load", _x._xml_requests[y].ih, false);
-                    }
-                    else {
-                        _x._xml_requests[y].ih = function () { HemiEngine.xml._handle_xml_request_readystatechange(i); };
-                        o.onreadystatechange = _x._xml_requests[y].ih;
-                    }
+                if (!b && a) {
+                    _x._xml_requests[y].ih = function () { HemiEngine.xml._handle_xml_request_load(i); };
+                    o.addEventListener("load", _x._xml_requests[y].ih, false);
                 }
-                else if (!b && a && b_ia) {
-                    _x._xml_requests[y].ih = function () { HemiEngine.xml._handle_xml_request_readystatechange(i); };
-
-                    o.onreadystatechange = _x._xml_requests[y].ih;
-                }
-
             }
             catch (e) {
                 _m.sendMessage("Error in _request_xmlhttp: " + (e.description ? e.description : e.message), "512.4", 1);
             }
-
-
-
 
             if (b && !a) {
                 _x._xml_http_objects[_x._xml_requests[y].pi] = 0;
@@ -2237,41 +2015,25 @@ if (typeof window != "object") window = {};
 
             g = (a ? true : false);
             o.open(z, p, g);
-            if (typeof o.setRequestHeader != DATATYPES.TYPE_UNDEFINED) {
-                z = (t ? (t==2?_x.json_content_type : _x.text_content_type) : _x.xml_content_type);
-                if (_x.auto_content_type && !t && typeof d == DATATYPES.TYPE_STRING) z = HemiEngine.xml.form_content_type;
-                o.setRequestHeader("Content-Type", z);
-            }
-
+            
+            z = (t ? (t==2?_x.json_content_type : _x.text_content_type) : _x.xml_content_type);
+            if (_x.auto_content_type && !t && typeof d == DATATYPES.TYPE_STRING) z = HemiEngine.xml.form_content_type;
+            o.setRequestHeader("Content-Type", z);
             o.send(d);
+            
             if (!a) {
 
                 z = (t ? o.responseText : o.responseXML);
-                	if (t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED){
-                		
-                     /// z = JSON.parse(z, _x.JSONReviver);
-                        try {
-                            z = JSON.parse(z, _x.JSONReviver);
-                        }
-                        catch (e) {
-                            z = null;
-                            Hemi.logError(e.message);
-                        }
-                	}
-				/// alert(z);
-                if (
-					!t
-					&&
-					p.match(/^file:/i)
-					&&
-					b_ia
-				) {
-                    var mp = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_dom_control);
-                    mp.loadXML(o.responseText);
-                    z = mp;
-                }
-                else if (!t && (o.responseXML == null || o.responseXML.documentElement == null)) {
-
+            	if (t == 2){
+                    try {
+                        z = JSON.parse(z, _x.JSONReviver);
+                    }
+                    catch (e) {
+                        z = null;
+                        Hemi.logError(e.message);
+                    }
+            	}
+                if (!t && (o.responseXML == null || o.responseXML.documentElement == null)) {
                     z = _x.parseXmlDocument(o.responseText);
                 }
 
@@ -2350,20 +2112,6 @@ if (typeof window != "object") window = {};
 
                     }
                 }
-
-				/*
-					 && x instanceof DATATYPES.ACTIVEXOBJECT
-				*/
-                else if (typeof DATATYPES.ACTIVEXOBJECT != DATATYPES.TYPE_UNDEFINED) {
-                    o = new DATATYPES.ACTIVEXOBJECT(HemiEngine.xml.ax_dom_control);
-                    xp = n.transformNode(s);
-                    if (t) o = xp;
-                    else {
-                        o.loadXML(xp);
-                        o = o.documentElement;
-                    }
-
-                }
                 else {
                     _m.sendMessage("Error in transformNode: " + (e.description ? e.description : e.message), "512.4", 1);
                 }
@@ -2374,44 +2122,6 @@ if (typeof window != "object") window = {};
 
             return o;
         },
-
-/*
-        HashNamespaces: function () {
-            var _x = HemiEngine.xml, a, i = 0, o;
-            _x._xml_namespace_uri = {};
-            _x._xml_namespace_url = {};
-            for (; i < _x._xml_namespace_resolver.length; i++) {
-                o = _x._xml_namespace_resolver[i];
-                _x._xml_namespace_uri[o[0]] = o[1];
-                _x._xml_namespace_url[o[1]] = o[0];
-            }
-            _x._xml_namespace_hashed = 1;
-        },
-        getURIForURL: function (u) {
-            var _x = HemiEngine.xml, q;
-            if (!_x._xml_namespace_hashed) _x.HashNamespaces();
-            q = _x._xml_namespace_url[u];
-            return (q ? q : "");
-        },
-        getURLForURI: function (i) {
-            var _x = HemiEngine.xml, q;
-            if (!_x._xml_namespace_hashed) _x.HashNamespaces();
-            q = _x._xml_namespace_uri[i];
-            return (q ? q : "");
-        },
-
-        lookupNamespaceURI: function (n) {
-
-            var _x = HemiEngine.xml;
-            if (!_x._xml_namespace_hashed) _x.HashNamespaces();
-            if (_x._xml_namespace_uri[n])
-
-                return _x._xml_namespace_uri[n];
-
-
-            return "";
-        },
-	*/
 
         /// <method>
         /// <name>selectSingleNode</name>

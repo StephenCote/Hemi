@@ -1,12 +1,14 @@
 
-Hemi.include("hemi.ui.wideselect");
-Hemi.include("hemi.css");
-
+this.dependencies.push("hemi.ui.wideselect","hemi.css");
 this._handle_clear = function(){
 	this.Select.clearItems();
-}
+};
 
 this.Initialize = function () {
+	console.log("Initialize");
+	this.postInitialize();
+};
+this.postInitialize = function(){
     Hemi.css.loadStyleSheet(Hemi.hemi_base + "Styles/wideselect.css");
     Hemi.transaction.service.register(this, true);
     var i = this.joinTransactionPacket("console");

@@ -30,7 +30,9 @@
 	<embedded-script>
       <![CDATA[
 		embedded_init : function (){
-
+			window.debugWindow = this;
+			console.log("Stat Init: " + this.GetComponentByRID("oRegistry"));
+			console.log("Stat Init: " + this.GetComponentByRID("oRegistry").getObjects().promise);
 			this.GetComponentByRID("oRegistry").setLoadHandler(this.scopeHandler("setupList",0,1,1));
 			this.GetComponentByRID("oModel").setLoadHandler(this.scopeHandler("setupModel",0,1,1));
 			this.getObjects().model_list = [];

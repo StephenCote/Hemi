@@ -2,10 +2,11 @@
 <application-components>
 	<application-component id="wideselect">
 		<![CDATA[
+		dependencies : ["hemi.ui.wideselect"],
 		component_init:function(){
 			// Create a contex-sensitive handler
 			//
-			Hemi.include("hemi.ui.wideselect");
+			/// alert('blah');
 			Hemi.css.loadStyleSheet("Styles/wideselect.css","wideselect");
 			this.scopeHandler("result_click",0,0,1);
 			this.getProperties().local_result_click = this.getContainer().getAttribute("localresultclick");

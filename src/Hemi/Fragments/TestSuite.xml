@@ -48,10 +48,11 @@
   -->
   <embedded-script>
     <![CDATA[
+    	dependencies : ["hemi.app.module","hemi.app.module.test"],
 		embedded_init : function(){
 			try{
-		    Hemi.include("hemi.app.module");
-            Hemi.include("hemi.app.module.test");
+			window.testWindow = this;
+			console.log("TestSuite init");
 			this.getObjects().test_cases = {};
 			this.scopeHandler("test_suite",0,0,1);
 			this.scopeHandler("test_status",0,0,1);
@@ -63,7 +64,7 @@
 			}
 			}
 			catch(e){
-			alert(e.description ? e.description : e.message);
+			console.error(e.description ? e.description : e.message);
 			}
       
     },
@@ -93,7 +94,7 @@
     
 		},
     LoadSelectedSuite : function(){
-
+		console.log("Load selected suite");
       var n = this.GetElementByRID("select_test").value,
         /// x = (this.GetElementByRID("select_test").selectedIndex == 1),
         pt = this.GetElementByRID("test_path").value,
@@ -113,20 +114,28 @@
       var a = (this.GetElementByRID("select_test").selectedIndex == 0 ? this.getObjects().tests : [n]);
         if(a.length == 1) oT.options[0].value = n + "::all";
         else oT.options[0].value = "all::all";
+        console.log("Processing " + a.length + " suites");
         for(var i = 0; i < a.length;i++){
           n = a[i];
           if(!tc[n]){
             x = (n == "custom");
-            tc[n] = Hemi.app.module.test.service.NewTest(n,0,this._prehandle_test_status, this._prehandle_test_suite, (x ? this.GetElementByRID("custom_test_text").value : pt),x);
+           var p1 = Hemi.app.module.test.service.NewTest(n,0,this._prehandle_test_status, this._prehandle_test_suite, (x ? this.GetElementByRID("custom_test_text").value : pt),x);
+         	p1.then((ts)=>{
+         	 tc[n] = ts;
+         	 return ts;
+         	});
           }
-          if(!tc[n] || !tc[n].TestMembers.length)
-            continue;
-          Hemi.log("Load Suite: " + n + " with " + tc[n].TestMembers.length);
-          for(var p = 0; p < tc[n].TestMembers.length; p++){
-            /// Hemi.log("Load Test Member: " + n + "::" + tc[n].TestMembers[p]);
-            oT.options[oT.options.length] = new Option(tc[n].TestMembers[p],n + "::" + tc[n].TestMembers[p]);
-            this.LoadTest(n, tc[n].TestMembers[p],1);  
-          }
+          else p1 = Promise.resolve(tc[n]);
+		  p1.then((ts)=>{
+	          if(!ts || !ts.TestMembers.length)
+	            return;
+	            
+	          Hemi.log("Load Suite: " + n + " with " + ts.TestMembers.length);
+	          for(var p = 0; p < ts.TestMembers.length; p++){
+	            oT.options[oT.options.length] = new Option(ts.TestMembers[p],n + "::" + ts.TestMembers[p]);
+	            this.LoadTest(n, ts.TestMembers[p],1);  
+	          }
+	      });
         }
 
     },
@@ -213,12 +222,17 @@
         /// All suites, all tests
         for(var i = 0; i < this.getObjects().tests.length; i++){
           var v = this.getObjects().test_cases[this.getObjects().tests[i]];
+          if(!v){
+          	Hemi.logError("No test case defined for '" + this.getObjects().tests[i] + "'");
+          	continue;
+          }
           v.RunTests();
         }
       }
       else if(p[1] == "all"){
         v = this.getObjects().test_cases[p[0]];
-        v.RunTests();
+        if(v) v.RunTests();
+        else Hemi.logError("Invalid object for 'all' tests");
       }
       else{
         this.RunTest(p[0],p[1]);
@@ -249,6 +263,7 @@
         Hemi.app.module.test.service.UnloadTest(n);
        
       delete this.getObjects().test_cases[n];
+      console.log("Reset Selected Test");
       this.LoadSelectedSuite();
 
     },
@@ -297,6 +312,7 @@
 
       //this.LoadTest(this.GetElementByRID("select_test").value, this.GetElementByRID("tests").value);
       this.GetElementByRID("custom_test").style.display = (this.GetElementByRID("select_test").value == "custom" ? "block" : "none");
+      console.log("Handle select test");
       this.LoadSelectedSuite();
     },
     handle_select_test_member : function(){

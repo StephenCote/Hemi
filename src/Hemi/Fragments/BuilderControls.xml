@@ -44,7 +44,7 @@
 			var oW = Hemi.app.createWindow("Runtime", "Templates/RuntimeContainer.xml", "Runtime-" + Hemi.guid(), 0, 0, oProps, this._prehandle_template_loaded);
             if (oW) {
             	oW.resizeTo(650, 650);
-            	Hemi.app.getWindowManager().CenterWindow(oW);
+            	Hemi.app.getWindowManager().then((oM)=>{oM.CenterWindow(oW);});;
             	// Destroy the window when closed
             	//
             	oW.setHideOnClose(0);

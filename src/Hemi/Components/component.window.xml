@@ -160,7 +160,7 @@
 			else _p.body.style.height = iH + "px";
 			_p.manager.RegisterWindow(this.getObjectId());
 			var sTemplate = this.getContainer().getAttribute("template");
-			this.loadTemplate(sTemplate);
+			if(sTemplate && sTemplate != null && sTemplate.length > 0) this.loadTemplate(sTemplate);
 
 		},
 		

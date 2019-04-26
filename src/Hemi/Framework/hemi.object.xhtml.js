@@ -340,6 +340,7 @@
                 /// If a component name was specified
                 ///
                 if (i) {
+
                     /// If a component path was specified in the constructor
                     ///
                     if (_s.cp) {
@@ -374,6 +375,7 @@
                     	/// 2017/01/10 - changed last bit from 1 to 0 for async load
                     	/// 01/13 - and, changed it back - there are some downstream dependencies on this being synchronous,
                     	/// 
+
                         _p.a = _ac.bindComponent(t.object_id, i, dp, 0, 1);
 
                     }
@@ -434,6 +436,7 @@
                 else if (_s.mp)
                     HemiEngine.app.module.service.NewModule(_s.mp, this);
 
+                return (_p.a && _p.a.objects.promise ? _p.a.objects.promise : Promise.resolve(this));
             };
 
             HemiEngine.registry.service.addObject(n);

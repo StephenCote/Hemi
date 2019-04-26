@@ -65,18 +65,10 @@
 /// </example>
 
 (function () {
-    /// 2011/05/03
-    /// IE 9 is balking at the check for the Storage object in some conditions, potentially due to corporate proxy/firewall settings
-    ///
-    if (typeof localStorage != "undefined") {
-        HemiEngine.include("hemi.storage.dom");
-    }
-    if (!DATATYPES.TU(document.documentElement.addBehavior)) {
-        HemiEngine.include("hemi.storage.iestore");
-    }
     HemiEngine.namespace("storage", HemiEngine, {
 
-
+    	dependencies : ["hemi.storage.dom"],
+    	
         /// Interface Support
         ///
         /// length : 0,

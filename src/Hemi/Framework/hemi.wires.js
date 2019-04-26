@@ -105,9 +105,9 @@
 */
 
 (function(){
-	HemiEngine.include("hemi.wires.primitive");
 
 	HemiEngine.namespace("wires",HemiEngine,{
+		dependencies : ["hemi.wires.primitive"],
 		service : null,
 		serviceImpl : function(){
 			var t = this;

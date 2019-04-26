@@ -14,10 +14,8 @@
 ///		<name>security</name>
 ///		<description>A utility class for providing client support for exploit mitigation (requires corresponding server-side support).</description>
 (function(){
-	HemiEngine.include("hemi.app");
 	HemiEngine.namespace("web.security", HemiEngine, {
-
-		/// <property type = "array" get = "1">
+		dependencies : ["hemi.app"],
 		/// 	<name>PageTickets</name>
 		/// 	<description>Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.</description>
 		/// </property>

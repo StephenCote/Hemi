@@ -52,10 +52,9 @@
 	///		<name>CanvasInstance</name>
 	///		<version>%FILE_VERSION%</version>
 	///		<description>The Canvas Graphics class provides a number of utitilies and helper methods for working with Canvas elements, and instrumenting and tracking objects created for the Canvas.</description>
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.transaction");
-	HemiEngine.include("hemi.util.logger");
+
 	HemiEngine.namespace("graphics.canvas", HemiEngine, {
+		dependencies : ["hemi.event","hemi.transaction","hemi.util.logger"],
 		newInstance: function (oContainer) {
 			var n = HemiEngine.newObject("canvas", "%FILE_VERSION%");
 			n.properties = {

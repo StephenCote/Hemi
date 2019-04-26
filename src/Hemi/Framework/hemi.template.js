@@ -79,15 +79,9 @@ It therefore necessary to first 'release' the component prior to initializing it
 TODO: Should the Template feature be refactored into its own class that inherits from an Application Component?  There is an obvious separation between the two, but separating them would result in a fair amount of duplicate handling.
 */
 (function () {
-    HemiEngine.include("hemi.util");
-    HemiEngine.include("hemi.util.logger");
-    HemiEngine.include("hemi.event");
-    HemiEngine.include("hemi.transaction");
-    HemiEngine.include("hemi.app.space");
-    HemiEngine.include("hemi.data.stack");
-    HemiEngine.include("hemi.data.form");
 
     HemiEngine.namespace("app.comp", HemiEngine, {
+    	dependencies : ["hemi.util","hemi.util.logger","hemi.event","hemi.transaction","hemi.app.space","hemi.data.stack","hemi.data.form"],
         properties: {
             /* id set on an element that refers back to the application component */
             r: "trid",

@@ -12,9 +12,8 @@
 ///	<description>Data provider for static file and data sets within the Hemi Framework.</description>
 
 (function () {
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.data.io");
 	HemiEngine.namespace("framework.io.provider", HemiEngine, {
+		dependencies : ["hemi.event","hemi.data.io"],
 		///	<static-class>
 		///		<name>service</name>
 		///		<version>%FILE_VERSION%</version>

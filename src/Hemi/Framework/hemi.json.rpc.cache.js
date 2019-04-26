@@ -21,12 +21,8 @@
 ///		<version>%FILE_VERSION%</version>
 
 (function () {
-
-	HemiEngine.include("hemi.object");
-	HemiEngine.include("hemi.util.logger");
-	HemiEngine.include("hemi.transaction");
-
 	HemiEngine.namespace("json.rpc.cache", HemiEngine, {
+		dependencies : ["hemi.object","hemi.util.logger","hemi.transaction"],
 		service: null,
 
 		serviceImpl: function () {

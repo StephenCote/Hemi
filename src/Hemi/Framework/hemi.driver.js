@@ -21,8 +21,8 @@
 ///		<description>Driver for starting up and shutting down the framework.</description>
 
 (function(){
-	HemiEngine.include("hemi.event");
 	HemiEngine.namespace("driver",HemiEngine,{
+		dependencies : ["hemi.event"],
 		service:null,
 		serviceImpl:function(){
 			var t = this,_x = HemiEngine.xml,_m = HemiEngine.message.service;
@@ -129,12 +129,16 @@
 			HemiEngine._implements(t,"base_object","driver_utility","%FILE_VERSION%");
 			HemiEngine.registry.service.addObject(t);
 
+			
 			t.scopeHandler("window_load",0,0,1);
 			t.scopeHandler("window_unload",0,0,1);
 
 			HemiEngine.event.addEventListener(window,"unbeforeload",t._prehandle_window_unload);
 			HemiEngine.event.addEventListener(window,"unload",t._prehandle_window_unload);
 			HemiEngine.event.addEventListener(window,"load",t._prehandle_window_load);
+			if(document.readyState == "complete"){
+				t._handle_window_load();
+			}
 			
 			t.ready_state = 4;
 

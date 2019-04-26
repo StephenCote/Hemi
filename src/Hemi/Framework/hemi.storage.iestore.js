@@ -32,21 +32,12 @@
 /// Requires engine framework for config reader
 ///
 (function () {
-    /// 2011/04/27 - Remove explicit exclude
-    /*
-    if(typeof Storage != "undefined" || DATATYPES.TU(document.documentElement.addBehavior)) return;
-    */
-    HemiEngine.include("hemi.util.config");
+
     HemiEngine.namespace("storage.iestore", HemiEngine, {
-        /*
-        session_storage : 0,
-        local_storage : 0,
-        global_storage : 0,
-        */
+    	dependencies : ["hemi.util.config"],
         storage_type: "IEStorage",
         behavior_storage: 0,
         behavior_storage_reader: 0,
-        /// preferred_storage : 0,
         check_support: 0,
         behavior_storage_name: "IEStorageProvider",
 
@@ -64,7 +55,6 @@
             o = document.createElement("div");
 
             o.style.cssText = "position:absolute;display:none;width:1px;height:1px;top:0px;left:0px;";
-            /// o.setAttribute("id","ocjsIESP");
             b.appendChild(o);
             o.addBehavior("#default#userData");
 

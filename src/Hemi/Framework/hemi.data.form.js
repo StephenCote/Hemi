@@ -158,10 +158,9 @@
 
 
 (function () {
-    HemiEngine.include("hemi.object");
-    HemiEngine.include("hemi.text");
     HemiEngine.namespace("data.form", HemiEngine, {
-        service: 0,
+    	dependencies : ["hemi.object","hemi.text"],
+        service: null,
         serviceImpl: function () {
 
 

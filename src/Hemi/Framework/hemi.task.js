@@ -50,10 +50,8 @@
 
 (function () {
 
-    HemiEngine.include("hemi.object");
-    HemiEngine.include("hemi.driver");
-    HemiEngine.include("hemi.transaction");
     HemiEngine.namespace("task", HemiEngine, {
+    	dependencies : ["hemi.object", "hemi.driver", "hemi.transaction"],
         service: null,
         serviceImpl: function () {
             var t = this,

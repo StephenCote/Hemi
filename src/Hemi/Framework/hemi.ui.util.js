@@ -15,8 +15,8 @@
 ///		<version>%FILE_VERSION%</version>
 ///		<description>Hemi framework utilities</description>
 (function(){
-	HemiEngine.include("hemi.css");
 	HemiEngine.namespace("ui.util", HemiEngine, {
+		dependencies : ["hemi.css"],
 		/// <method>
 		/// <name>getIsRequested</name>
 		/// <param name="o" type="object">Object to test whether it has been requested.</param>

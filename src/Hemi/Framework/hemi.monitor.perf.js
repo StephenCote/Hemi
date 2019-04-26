@@ -10,11 +10,9 @@
 */
 (function(){
 	if(typeof _TOP == DATATYPES.TYPE_UNDEFINED) _TOP = new Date();
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.monitor");
-	HemiEngine.include("hemi.util.url");
-	HemiEngine.namespace("monitor.perf",HemiEngine,{
 
+	HemiEngine.namespace("monitor.perf",HemiEngine,{
+		dependencies : ["hemi.event","hemi.monitor","hemi.util.url"],
 
 		///
 		/// Data Transfer Types ('d')

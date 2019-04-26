@@ -12,12 +12,8 @@
 ///	<description>The Data IO service is used to broker data requests with configured data providers.  The built-in interchange format is loosely modelled on the Account Manager 4 Data and Group object model, but the implementation is open for any object type.</description>
 (function () {
 
-	HemiEngine.include("hemi.util.logger");
-	HemiEngine.include("hemi.transaction");
-	HemiEngine.include("hemi.data.io");
-	HemiEngine.include("hemi.event");
-
 	HemiEngine.namespace("data.io.proxy", HemiEngine, {
+		dependencies : ["hemi.util.logger","hemi.transaction","hemi.data.io","hemi.event"],
 		service: null,
 		///	<static-class>
 		///		<name>service</name>

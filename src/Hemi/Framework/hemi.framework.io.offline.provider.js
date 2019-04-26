@@ -12,12 +12,8 @@
 ///	<description>Data provider for offline storage for use with Hemi Framework projects files.</description>
 
 (function () {
-    HemiEngine.include("hemi.event");
-    HemiEngine.include("hemi.data.io");
-    HemiEngine.include("hemi.storage");
-    HemiEngine.include("hemi.framework.io.provider");
-    HemiEngine.include("hemi.data.io.proxy");
     HemiEngine.namespace("framework.io.offline.provider", HemiEngine, {
+    	dependencies : ["hemi.event","hemi.data.io","hemi.storage","hemi.framework.io.provider","hemi.data.io.proxy"],
         ///	<static-class>
         ///		<name>service</name>
         ///		<version>%FILE_VERSION%</version>

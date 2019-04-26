@@ -133,11 +133,9 @@
 ///		<version>%FILE_VERSION%</version>
 ///		<description>A buffering and pagination control for displaying large and incremental sets of data.</description>
 (function(){
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.css");
-	HemiEngine.include("hemi.ui.util");
-	HemiEngine.namespace("ui.wideselect", HemiEngine, {
 
+	HemiEngine.namespace("ui.wideselect", HemiEngine, {
+		dependencies : ["hemi.event","hemi.css","hemi.ui.util"],
 		newInstance:function(o, h, ph){
 			/*
 				o = object parent

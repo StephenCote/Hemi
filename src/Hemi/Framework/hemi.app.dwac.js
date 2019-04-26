@@ -56,15 +56,14 @@
 ///		<code><![CDATA[</script>]]></code>
 /// </example>
 (function(){
-	HemiEngine.include("hemi.task");
-	HemiEngine.include("hemi.app.comp");
-	HemiEngine.include("hemi.app.space");
+
 	HemiEngine.namespace("app.dwac", HemiEngine, {
+		dependencies : ["hemi.task","hemi.app.comp","hemi.app.space"],
 		atkey : "is-dwac",
 		aturi : "DWacControlUri",
 		attk : "DWacControlTask",
 		attid : "DWacTemplateId",
-
+		
 		newInstance : function(o, u, t, k,i){
 			if(!o) return;
 			/* Late bind the component */

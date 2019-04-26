@@ -206,10 +206,9 @@
 ///		<description>A base class for creating beacon and XML transponders for monitoring Web pages.</description>
 ///		<version>%FILE_VERSION%</version>
 (function () {
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.util");
-	HemiEngine.include("hemi.util.logger");
+
 	HemiEngine.namespace("monitor", HemiEngine, {
+		dependencies : ["hemi.event","hemi.util","hemi.util.logger"],
 		service: null,
 		serviceImpl: function () {
 			var t = this;

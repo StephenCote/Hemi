@@ -44,8 +44,8 @@
 */
 
 (function(){
-	HemiEngine.include("hemi.data.validator.definitions");
 	HemiEngine.namespace("data.validator", HemiEngine, {
+		dependencies : ["hemi.data.validator.definitions"],
 		service:null,
 		serviceImpl:function(){
 			
@@ -291,7 +291,7 @@
 								}
 								break;
 							case "bool":
-								HemiEngine.log("Validating " + po.match + " against " + v);
+								HemiEngine.logDebug("Validating " + po.match + " against " + v);
 								if(
 									/*
 										Obviously, an allow-null won't work if the validation

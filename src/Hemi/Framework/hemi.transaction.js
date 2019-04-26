@@ -116,10 +116,8 @@
 
 (function () {
 
-	HemiEngine.include("hemi.object");
-	HemiEngine.include("hemi.util");
-	HemiEngine.include("hemi.util.logger");
 	HemiEngine.namespace("transaction", HemiEngine, {
+		dependencies : ["hemi.object","hemi.util","hemi.util.logger"],
 		service: null,
 		/// <static-class>
 		///		<name>transaction</name>

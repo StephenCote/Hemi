@@ -28,11 +28,8 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 */
 (function () {
 
-	HemiEngine.include("hemi.object");
-	HemiEngine.include("hemi.util.logger");
-	HemiEngine.include("hemi.json.rpc.cache");
-
 	HemiEngine.namespace("json.rpc", HemiEngine, {
+		dependencies : ["hemi.object","hemi.util.logger","hemi.json.rpc.cache"],
 		service: null,
 
 		serviceImpl: function () {
@@ -155,6 +152,7 @@ t.invokeMethod(0,"postMessage",[{in_message:{"name":"1","id":"1","data":"1"}}])
 						o = HemiEngine.namespace(sPP, o);
 					}
 					var sN = i.replace(/schema$/gi,""); 
+
 					o[sN] = function(){
 						/// JSON Bug?  javaClass is 'cleared' in stringify if not set as a first-class property.
 						/// Note: javaClass works when the service doesn't know the base class

@@ -23,10 +23,6 @@
         Hemi.is_worker = 1;
     }
     */
-    HemiEngine.include("hemi.event");
-    HemiEngine.include("hemi.app.module");
-    HemiEngine.include("hemi.object");
-    HemiEngine.include("hemi.util.logger");
 
     ///	<static-class>
     ///		<name>service</name>
@@ -42,6 +38,7 @@
     ///
 
     HemiEngine.namespace("worker", HemiEngine, {
+    	dependencies : ["hemi.event","hemi.app.module","hemi.object","hemi.util.logger"],
         service: null,
 
         serviceImpl: function () {

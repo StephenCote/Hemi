@@ -37,10 +37,9 @@
 ///		<version>%FILE_VERSION%</version>
 ///		<description>A control for displaying the date.</description>
 (function(){
-	HemiEngine.include("hemi.ui.wideselect");
-	HemiEngine.include("hemi.ui.util");
-	HemiEngine.include("hemi.task");
+
 	HemiEngine.namespace("ui.calendar", HemiEngine, {
+		dependencies : ["hemi.ui.wideselect","hemi.ui.util","hemi.task"],
 		newInstance:function(o, d){
 			/*
 				o = object parent

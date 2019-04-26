@@ -11,17 +11,8 @@
 ///	<library>Hemi</library>
 ///	<description>Application Spaces are controlled environments in which the content (XHTML and XML nodes) drives the implementation (via Application Space Definitions).  XHTML Nodes (Presentation Nodes) that match space definitions are represented as XHTML Components. XHTML Components can automatically load Application Components, Modules, and Templates (which in turn spawn their own Application Space).  These components can be retrieved using unique object identifiers, or more friendly reference identifiers which are contextually sensitive to the space.  Form fields are augmented by the Hemi.data.form service to create Virtual Forms. Spaces can load automatically, or use the Hemi.task service to bootstrap asynchronous dependencies.</description>
 (function () {
-    HemiEngine.include("hemi.task");
-    HemiEngine.include("hemi.util");
-    HemiEngine.include("hemi.object");
-    HemiEngine.include("hemi.object.xhtml");
-    HemiEngine.include("hemi.data.form");
-    HemiEngine.include("hemi.util.logger");
-    HemiEngine.include("hemi.driver");
-    HemiEngine.include("hemi.app.space.definitions");
-
-
     HemiEngine.namespace("app.space", HemiEngine, {
+    	dependencies : ["hemi.task", "hemi.util", "hemi.object", "hemi.object.xhtml","hemi.data.form","hemi.util.logger","hemi.driver","hemi.app.space.definitions"],
         ///	<static-class>
         ///		<name>service</name>
         ///		<version>%FILE_VERSION%</version>
@@ -73,74 +64,23 @@
             t.getPrimarySpace = function () {
                 return t.getSpaceByName(t.properties.pn);
             };
-            ///		<method>
-            ///			<name>clearAppSpace</name>
-            ///			<param name = "i" type = "variant">Name or object reference of the Space to clear.</param>
-            ///			<description>Clears the specified Space, and destroys all components of the Space.</description>
-            ///		</method>
-            t.clearAppSpace = function (i) {
-
-                /// TODO: Refactor
-                /// This is effectively identical with the configureSpace pre-step,
-                /// Without the cleanup routines for Form and Parent Node 
-                ///
-
-                var _p = t.objects, o, b, h;
-
-                if (typeof i == DATATYPES.TYPE_STRING) o = t.getSpace(i);
-                if (typeof i == DATATYPES.TYPE_OBJECT) o = i;
-
-                if (t.isSpace(o)) {
-
-                    b = o.space_objects;
-                    for (h = b.length - 1; h >= 0; h--) {
-                        HemiEngine.registry.service.sendDestroyTo(b[h].object);
-                    }
-
-                    /// 2007/02/03
-                    /// Clear out any XHTMLForm references to this Engine
-                    ///
-                    HemiEngine.data.form.service.removeDataForm(o.space_id);
-
-                    o.space_objects = [];
-                    o.space_object_names = [];
-                    o.space_object_index = [];
-                    o.space_css_map = [];
-
-                    o.space_implementations = [];
-
-
-                    if (o.space_element) {
-                        _x.removeChildren(o.space_element);
-                        if (o.space_element.parentNode) o.space_element.parentNode.removeChild(o.space_element);
-                    }
-
-                    this.removeSpace(o);
-                }
-                else {
-                    _m.sendMessage("Invalid space reference '" + i + "'", "200.4");
-                }
-            };
+ 
 
             ///		<method>
             ///			<name>clearAppSpaces</name>
             ///			<description>Clears all Spaces, and destroys all components in each Space.</description>
             ///		</method>
             t.clearAppSpaces = function () {
-
                 var _p = t.objects, a, i, o, h, b, _t;
                 a = _p.spaces;
                 _t = _p.local_task_service;
 
-                /*
-                Clean up any objects associated with the spaces
-                */
-                for (i = a.length - 1; i >= 0; i--) {
+                /// Clean up any objects associated with the spaces
+                for (i = a.length - 1; i >= 0; i--)
                     t.clearAppSpace(a[i]);
-                }
+                
                 this.clearSpaces();
                 _t.clearTasks();
-
             };
 
 
@@ -180,39 +120,33 @@
 
                 var _p = t.objects, m = [], i, p;
 
-
                 if (document.body == null) {
                     this.logError("Space unable to initialize due to unexpected DOM.");
                     return 0;
                 }
 
+                /// Use spread operator to make an array from the nodelist
+                /// Currently matching anything with is-space versus div,span,form
+                m = [...(d ? d : document.body).querySelectorAll("[is-space='1']")];
 
-                p = _x.queryNodes((d ? d : document.body), "div", null, "is-space", "1");
-                HemiEngine.util.absorb(p, m);
-                p = _x.queryNodes((d ? d : document.body), "span", null, "is-space", "1");
-                HemiEngine.util.absorb(p, m);
-                p = _x.queryNodes((d ? d : document.body), "form", null, "is-space", "1");
-                HemiEngine.util.absorb(p, m);
                 this.logDebug("Loading Spaces " + (b ? 1 : 0) + " : " + m.length);
-                /*
-                force load a primary space if none exists
-                */
+               
+                /// force load a primary space if none exists
                 if (!b && !m.length && !_p.spaces.length) {
                     m.push(document.body);
                     document.body.setAttribute("is-space", "1");
-                    /// return t.loadSpaces(1);
                 }
 
                 if (b) {
-                    this.logDebug("Force load a primary space", "1.2");
+                    this.logDebug("Force load a primary space");
                     m = [1];
                 }
+                
+                m.map(function(i){
+                    if (!b) e = i;
+                    t.createSpace(e, b, pr, xr);	
+                });
 
-                for (i = 0; i < m.length; i++) {
-                    if (!b) e = m[i];
-                    t.createSpace(e, b, pr, xr);
-
-                }
             };
             ///		<method>
             ///			<name>createSpace</name>
@@ -260,7 +194,7 @@
                 }
 
                 if (t.getSpaceByName(n)) {
-                    this.logDebug("Space " + n + " (" + z + ") is already loaded.", "1.3");
+                    this.logError("Space " + n + " (" + z + ") is already loaded.", "1.3");
                     return null;
                 }
 
@@ -292,7 +226,6 @@
                 if (!b && HemiEngine.IsAttributeSet(e, "space-config-task"))
                     _s.config_task = e.getAttribute("space-config-task");
 
-                /// alert(n + ":" + at + ":" + a + ":" + ht + ":" + h);
                 this.logDebug("Tasking space service: " + n + " / " + at + " / " + a + " / " + ht + " / " + h);
                 o = x(
 						n,
@@ -327,6 +260,63 @@
                 return v;
             };
 
+            
+            
+            ///		<method>
+            ///			<name>clearAppSpace</name>
+            ///			<param name = "i" type = "variant">Name or object reference of the Space to clear.</param>
+            ///			<description>Clears the specified Space, and destroys all components of the Space.</description>
+            ///		</method>
+            t.clearAppSpace = function (i) {
+
+                /// TODO: Refactor
+                /// This is effectively identical with the configureSpace pre-step,
+                /// Without the cleanup routines for Form and Parent Node 
+                ///
+
+                var _p = t.objects, o, b, h;
+
+                if (typeof i == DATATYPES.TYPE_STRING) o = t.getSpace(i);
+                if (typeof i == DATATYPES.TYPE_OBJECT) o = i;
+
+                if (t.isSpace(o)) {
+
+                   t.resetSpaceObject(o);
+                   o.space_state = 5;
+
+                    if (o.space_element) {
+                        _x.removeChildren(o.space_element);
+                        if (o.space_element.parentNode) o.space_element.parentNode.removeChild(o.space_element);
+                    }
+
+                    this.removeSpace(o);
+                }
+                else {
+                    _m.sendMessage("Invalid space reference '" + i + "'", "200.4");
+                }
+            };
+            
+            t.resetSpaceObject = function(o){
+                var b, h;
+
+                if (o && t.isSpace(o)) {
+                    b = o.space_objects;
+                    for (h = b.length - 1; h >= 0; h--)
+                        HemiEngine.registry.service.sendDestroyTo(b[h].object);
+                    
+                    HemiEngine.data.form.service.removeDataForm(o.space_id);
+                    
+                    o.space_state = 0;
+                    o.space_objects = [];
+                    o.space_object_names = [];
+                    o.space_object_index = [];
+                    o.space_css_map = [];
+                    o.space_implementations = {};
+                    o.config_name = 0;
+                }
+
+            }
+            
             ///		<method>
             ///			<name>configureSpace</name>
             ///			<param name = "o" type = "Space">A space object.</param>
@@ -342,39 +332,24 @@
 					
                 sf = self
                 */
-                var v, _s = t.properties, s, _t = t.objects.local_task_service, _p = t.objects, i, a, sf = 0;
+                let v, _s = t.properties, s, _t = t.objects.local_task_service, _p = t.objects, i, a, sf = 0, p1;
                 s = _s.config_default;
 
-                /// var d1 = new Date();
-
                 v = _t.getTaskByName(_s.config_task);
-                /// alert(_s.config_task);
                 if (typeof o == DATATYPES.TYPE_STRING) o = t.getSpace(o);
                 if (!c && !HemiEngine.IsAttributeSet(o.space_element, "space-config")) c = "self";
-                /// if (!c) c = "self";
                 if (t.isSpace(o)) {
 
+                	t.resetSpaceObject(o);
                     o.space_state = 3;
 
-                    a = o.space_objects;
-                    for (i = a.length - 1; i >= 0; i--)
-                        HemiEngine.registry.service.sendDestroyTo(a[i].object);
-
-                    o.space_objects = [];
-                    o.space_object_names = [];
-                    o.space_object_index = [];
-                    o.space_css_map = [];
-                    o.space_implementations = [];
-
-                    /* only allow 'self' if the space has an HTML element behind it */
+                    /// only allow 'self' if the space has an HTML element behind it
                     if (typeof c == DATATYPES.TYPE_STRING && c == "self" && o.space_element)
                         s = sf = 1;
 
-
                     if (!sf && o.space_element && o.space_element.getAttribute("space-config") != "self")
                         _x.removeChildren(o.space_element);
-                    o.config_name = 0;
-
+                    
                     /// Don't require external XML
                     ///
                     if (!v || (_t.isTask(v) && v.handled && typeof v.data == DATATYPES.TYPE_OBJECT)) {
@@ -382,7 +357,7 @@
                         if (!sf && (o.space_element && HemiEngine.IsAttributeSet(o.space_element, "space-config")) || DATATYPES.TS(c)) {
                             s = (DATATYPES.TS(c)) ? c : o.space_element.getAttribute("space-config");
                             if (s && s == "self") {
-                                /* self can only be used once */
+                                /// self can only be used once
                                 o.space_element.removeAttribute("space-config");
                                 sf = 1;
                             }
@@ -397,25 +372,53 @@
                         this.logDebug("Process configuration '" + s + "' for " + o.space_name);
 
                         t.parseConfiguration(o, v, s);
-
-                        o.space_implementations = [];
-                        o.space_state = 4;
-                        ///this.log("Time to configure = " + (new Date()).getTime() - d1.getTime());
-                        _m.publish("onspaceconfigload", o);
-
+                        
+                        o.promiseCount = o.promises.length;
+                        
+                        p1 = new Promise((res,rej)=>{
+                        	Promise.all(o.promises).then(()=>{
+                        		res(o);
+                        	});
+                        })
+                        .then((o)=>{
+                       			this.completeSpaceConfiguration(o);
+                   		});
+                            
+ 
                     }
                     else {
-                        this.logDebug("Space config not present.");
+                        this.logWarning("Space config not present.");
                     }
                 }
                 else {
                     this.logWarning("Invalid space reference for configureSpace", "200.4");
                 }
-
-                ///alert("Time to configure = " + ((new Date()).getTime() - d1.getTime()));
+                return p1;
             };
-
-
+            t.completeSpaceConfiguration = function(o){
+            	var _m = HemiEngine.message.service;
+            	
+            	
+            	if(o.promises.length != o.promiseCount){
+               		this.logDebug("Wait for additional promises: " + o.promiseCount + "->" + o.promises.length);
+            		o.promiseCount = o.promises.length;
+            		
+            		Promise.all(o.promises).then(()=>{
+            			this.completeSpaceConfiguration(o);
+            		});
+            		return;
+            	}
+            	
+            	o.space_implementations = {};
+            	o.promises = [];
+            	o.promiseCount = 0;
+                o.space_state = 4;
+                this.logDebug("Publishing space config: " + o.space_id);
+                _m.publish("onspaceconfigload", o);
+            };
+            /// 2018/03/07 - Rewrote portions of method to leverage promises in asynchronous dependencies
+            /// There are likely still some issues with resolving transitive asynchronous dependencies prior to publishing the spaceloaded notification
+            ///
             t.parseConfiguration = function (o, v, s, p, x, b) {
                 /*
                 o = (validated) space object
@@ -424,7 +427,9 @@
                 p = parent node
                 x = object instance
                 b = return value of parent impl
-
+				*/
+            	
+            	/*
                 cs = current config name
                 p = page config node
                 a = array of nodes
@@ -468,9 +473,9 @@
 
                 */
 
-                var a, i, n, q, r, m, u, g, j, def, f, b, c, h, k, l, e = 0, w, br, cx, cxv, cxp, ab, nr, sf = 0, ck, nl, ci;
+                let a, i;
 
-                /* self must have an space_element, and that becomes the default parent */
+                /// Self must have a space_element, and that becomes the default parent
                 if (s == "self" && typeof p == DATATYPES.TYPE_UNDEFINED) p = o.space_element;
                 else if (typeof p == DATATYPES.TYPE_UNDEFINED && v && v.data)
                     p = _x.queryNode(v.data.documentElement, "configuration", 0, "id", s);
@@ -480,388 +485,250 @@
                     return;
                 }
 
-                try {
-
-
-                    a = p.childNodes;
-                    nl = a.length;
-                    for (i = 0; i < nl; i++) {
-                        n = a[i];
-                        br = 1;
-
-                        /* g = namespace for implementation */
-                        /* k = bit used to specify whether the constructor is on the parent; eg: as with menuitems and resultitems */
+                [...p.childNodes].map(function(n){
+                    let q, r, m, u, 
+                    	/* g = namespace for implementation */
+                    	g = 0, 
                         /* j = params array used when applying a constructor */
+                        j = [], 
+                        def = 0, f, b, c, h,
+                        /* k = bit used to specify whether the constructor is on the parent; eg: as with menuitems and resultitems */
+                        k = 0,
+                        l, e = 0, w, 
+                        br=1, 
+                        cx = 0, 
+                        cxv, cxp, 
+                        ab = 0, nr, sf = 0, 
+                        ck = 0, 
+                        nl,
+                        ci = 0,
+                        cs = s
+                    ;
 
-                        def = ci = k = g = ab = cx = ck = 0;
-                        j = [];
-                        cs = s;
+                    if (s == "self") sf = 1;
 
-                        if (s == "self") sf = 1;
+                    if (n.nodeType == 1) {
+                        /// 2008/02/07 : Do not process nodes specifically marked for avoidance
+                        if (n.getAttribute("avoid") == "1" || n.getAttribute("is-space") == "1")
+                        	return;
 
-                        if (n.nodeType == 1) {
-                            /*
-                            * 2008/02/07
-                            * Do not process nodes specifically marked for avoidance
-                            *
-                            */
-                            if (n.getAttribute("avoid") == "1" || n.getAttribute("is-space") == "1") continue;
-                            /*
-                            * 2004/07/02
-                            * Make sure to cast the node name to lower case
-                            */
-                            q = n.nodeName.toLowerCase();
+                        //// 2004/07/02 : Make sure to cast the node name to lower case
+                        q = n.nodeName.toLowerCase();
 
-                            /*
-                            * Cache
-                            */
-                            w = o.space_implementations[q];
+                        /// Cache
+                        w = o.space_implementations[q];
 
-                            if (w) {
-                                k = w.p;
-                                cx = w.cs;
-                                cxp = w.cp;
-                                ab = w.ab;
-                                br = w.nr;
-                                sf = w.sf;
-                                ck = w.ck;
-                                g = w.g;
-                                f = w.f;
-                                def = w.def;
-                                cn = w.cn;
-                                ci = 1;
+                        /// If cached, import the cached values
+                        if (w) {
+                            k = w.p;
+                            cx = w.cs;
+                            cxp = w.cp;
+                            ab = w.ab;
+                            br = w.nr;
+                            sf = w.sf;
+                            ck = w.ck;
+                            g = w.g;
+                            f = w.f;
+                            def = w.def;
+                            cn = w.cn;
+                            ci = 1;
+                        }
+                        else if ((def = HemiEngine.app.space.definitions.service.getDefinition(q))) {
+                            k = def.use_parent;
+                            cx = def.context_switch;
+                            cxp = def.context_path;
+                            cn = def.swap_name;
+
+                            ab = def.is_abstract;
+                            br = (def.no_recursion ? 0 : 1);
+
+                            /// If this is a self reference, and the context switched, then push config reference to switchedself
+                            ///
+                            if (cx && cs == "self") {
+                                sf = 0;
+                                ck = 1;
                             }
-                            else if ((def = HemiEngine.app.space.definitions.service.getDefinition(q))) {
-                                k = def.use_parent;
-                                cx = def.context_switch;
-                                cxp = def.context_path;
-                                cn = def.swap_name;
 
-                                ab = def.is_abstract;
-                                br = (def.no_recursion ? 0 : 1);
+                            if (cxp) cxp = _parseORAParam(o, v, cxp, n, x, b, p, cs);
 
-                                /* if this is a self reference, and the context switched, then push config reference to switchedself */
-                                if (cx && cs == "self") {
-                                    sf = 0;
-                                    ck = 1;
-                                }
-
-                                if (cxp) cxp = t._parseORAParam(o, v, cxp, n, x, b, p, cs);
-
-                                if ((u = def.namespace) && (g = HemiEngine.lookup(def.namespace))) {
-                                    if (g && (u = def.method_reference)) {
-                                        if (DATATYPES.TF(g[u])) g = g[u](t._parseORAParam(o, v, def.method_reference_parameter, n, x, b, p, cs));
+                            if ((u = def.namespace) && (g = HemiEngine.lookup(def.namespace))) {
+                                if (g && (u = def.method_reference)) {
+                                    if (DATATYPES.TF(g[u])){
+                                    	g = g[u](_parseORAParam(o, v, def.method_reference_parameter, n, x, b, p, cs));
                                     }
-
                                 }
 
-                                w = {};
-                                w.p = k;
-                                w.cs = cx;
-                                w.cp = cxp;
-                                w.ab = ab;
-                                w.nr = br;
-                                w.sf = sf;
-                                w.ck = ck;
-                                w.g = g;
-                                w.def = def;
-                                w.cn = cn;
-                                if (o.space_implementations[q]) alert('overwrite ' + q + ' / ' + def);
-                                o.space_implementations[q] = w;
-                            } /* end  check for d */
+                            }
 
-                            if (def || ci) {
+                            w = {};
+                            w.p = k;
+                            w.cs = cx;
+                            w.cp = cxp;
+                            w.ab = ab;
+                            w.nr = br;
+                            w.sf = sf;
+                            w.ck = ck;
+                            w.g = g;
+                            w.def = def;
+                            w.cn = cn;
+                            o.space_implementations[q] = w;
+                        } /// End  check for definition
+                       
+                        /// If cached or defined
+                        if (def || ci) {
+                        	/// if cached
+                            if (ci)
+                                def = w.def;
 
-                                if (ci) {
-                                    def = w.def;
+                            if (def) {
+                                z = def.constructor_params;
+                                if (!ci) {
+                                    f = _parseORAParam(o, v, def.constructor, n, x, b, p, cs);
+                                    w.f = f;
                                 }
-                                /* 2009/08/26 -- need this?
-                                else{
-                                w.c = d;
+ 
+                                w = z.length;
+                                for (h = 0; h < w; ) {
+                                    m = z[h++];
+                                    u = 0;
+                                    if (DATATYPES.TS(m) && m.match(/^ora:/i))
+                                        u = _parseORAParam(o, v, m, n, x, b, p, cs);
+                                    else
+                                        u = m;
+
+                                    j[j.length] = u;
                                 }
-                                */
+                            } /// End if (check_constructor)
 
-                                if (def) {
-                                    z = def.constructor_params;
-                                    if (!ci) {
-                                        f = t._parseORAParam(o, v, def.constructor, n, x, b, p, cs);
-                                        w.f = f;
-                                    }
-                                    else if (!f) {
-                                        var s1 = [];
-                                        for (var s2 in w) s1.push(s2);
+                            nr = HemiEngine.GetSpecifiedAttribute(n, "aid");
 
-                                    }
-                                    w = z.length;
-
-                                    for (h = 0; h < w; ) {
-                                        m = z[h++];
-                                        u = 0;
-                                        if (DATATYPES.TS(m) && m.match(/^ora:/i))
-                                            u = t._parseORAParam(o, v, m, n, x, b, p, cs);
-                                        else
-                                            u = m;
-
-                                        j[j.length] = u;
-                                    }
-                                } /* end if (check_constructor) */
-
-                                /*
-                                g is a package
-                                */
-                                nr = HemiEngine.GetSpecifiedAttribute(n, "aid");
-
-                                if (nr)
-                                    n.setAttribute("id", nr + (++t.properties.space_autoid_counter));
-
-                                try {
-
-                                    if (!ab) {
-                                        if (typeof g == DATATYPES.TYPE_OBJECT && g != null && typeof g[f] == DATATYPES.TYPE_FUNCTION) {
-                                            w = g[f].apply(0, j);
-                                        }
-                                        else if (k && typeof x[f] == DATATYPES.TYPE_FUNCTION) {
-
-                                            w = x[f].apply(x, j);
-                                        }
-                                        else {
-                                            this.logError("Unexpected implementation for " + q + " with g=" + g + " and f=" + f, "200.4");
-                                        }
-                                    } /* end if not abstracted */
-                                    else {
-                                        /*
-                                        Abstracted: just push out w to x
-                                        */
-                                        _m.sendMessage("apply #3 " + q + " abstracted", "200.1");
-                                        w = x;
-                                    } /* end if abstracted*/
-
+                            if (nr)
+                                n.setAttribute("id", nr + (++t.properties.space_autoid_counter));
+							
+                            if (!ab) {
+                            	/// g is a package
+                                if (typeof g == DATATYPES.TYPE_OBJECT && g != null && typeof g[f] == DATATYPES.TYPE_FUNCTION) {
+                                	w = g[f].apply(0, j);
                                 }
-                                catch (e) {
-                                    this.logError("Parse Configuration:" + (e.description ? e.description : e.message) + " from q = " + q + " and f = " + f + " and k = " + k + " and x = " + x + " and g = " + g, "12.1");
-                                }
-
-                                /* if use parent */
-                                if (k) {
-                                    e = w;
-                                    w = x;
-                                } /* end if use parent*/
-                                /*
-                                if (w.properties && w.properties.cid) {
-                                    Hemi.log(w.properties.cid + "==" + HemiEngine.GetSpecifiedAttribute(n, "rid"));
-                                }
-                                */
-                                o.addSpaceObject(w, w && w.properties && w.properties.cid ? w.properties.cid : HemiEngine.GetSpecifiedAttribute(n, "rid"));
-                                if (cx && w) {
-                                    if (ck && cn) {
-                                        k = document.createElement(cn);
-                                        n.parentNode.insertBefore(k, n);
-                                        n.parentNode.removeChild(n);
-                                        n = k;
-                                    }
-                                    if (!w.documentElement) {
-                                        o.Processor(o, w);
-                                        if (!sf) _x.setInnerXHTML(n, w, 0, (!ck ? v.data : 0), 0, 0, 0, o.XhtmlHandler);
-
-                                    }
-                                    else {
-                                        if (o.dp) cxp = o.dp;
-
-                                        /* reuse nr */
-
-                                        nr = (cxp ? _x.selectSingleNode(w, cxp, w.documentElement) : w.documentElement);
-                                        if (!nr) nr = w.documentElement;
-                                        o.Processor(o, nr);
-                                        if (!sf) _x.setInnerXHTML(n, nr, 0, (!ck ? v.data : 0), 0, 0, 0, o.XhtmlHandler);
-
-                                    }
-                                    /*
-                                    Switch the context back to the parent
-                                    */
-                                    w = x;
-                                }
-
-                                if (br) t.parseConfiguration(o, v, cs, n, w, e);
-
-                                if (w && w.object_type && w.object_type.match(/^xhtml_component$/)) {
-                                    w.post_init();
-                                }
-
-                            } /* end check for implementation or cached implementation */
-                            else {
-                                /* just copy the whole node */
-
-                                if (typeof x == DATATYPES.TYPE_UNDEFINED) x = o;
-                                if (typeof x == DATATYPES.TYPE_OBJECT && x != null && typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
-                                    o.Processor(o, n);
-                                    if (!sf) _x.setInnerXHTML(x.getContainer(), n, true, 0, 0, 0, 0, o.XhtmlHandler);
+                                else if (k && typeof x[f] == DATATYPES.TYPE_FUNCTION) {
+                                    w = x[f].apply(x, j);
                                 }
                                 else {
-                                    _m.sendMessage("No object definition for " + n.nodeName + " (1); treating as HTML", "200.1");
+                                    this.logError("Unexpected implementation for " + q + " with g=" + g + " and f=" + f, "200.4");
                                 }
-                            }
-                        }
-                        else if (n.nodeType == 3) {
-                            if (n.nodeValue.replace(/\s/g, "").length && typeof x == DATATYPES.TYPE_OBJECT && typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
-                                o.Processor(o, n);
-                                if (!sf) _x.setInnerXHTML(x.getContainer(), n, 1, 0, 0, 0, 0, o.XhtmlHandler);
-                            }
+                            } /// End if not abstracted
+                            else {
+                                /// Abstracted: just push out w to x
+                                this.logDebug("Apply #3 " + q + " abstracted");
+                                w = x;
+                            } /// End if abstracted
 
-                        }
-
-                    } /* end for(i;childNodes.length) */
-
-                }
-                catch (e) {
-                    this.logError("parseConfiguration Error: " + (e.message ? e.message : e.description), "200.4");
-                    this.logError("parseConfiguration Error: n = " + n + " / q = " + q, "200.4");
-                }
-
-            };
-
-            /*
-            ORA = object request alias; just a token that is used to reference a context object
-            */
-            t._parseORAParam = function (o, v, r, e, x, b, q, s) {
-                /*
-                o = engine object
-                v = task object
-                r = ora value
-                e = originating xml element
-                x = parent object instance
-                b = parent reference; return value from where the parent object was created
-                q = html parent
-                s = config name
-					
-                a = variant used for name substring.
-                z = return value;
-					
-					
-                p = variant
-                c = counter
-                d = variant
-                f = variant
-                */
-                var z = 0, a, n, p, d, f, c, up, i;
-                if (typeof r != DATATYPES.TYPE_STRING) return;
-                r = r.replace(/^ora:/i, "");
-
-                if (r.match(/(\S*)_parent$/i)) {
-                    r = r.match(/(\S*)_parent$/i)[1];
-                    up = 1;
-                }
-
-                if (r.match(/(\S*)_attr$/i)) {
-                    a = r.match(/(\S*)_attr$/i)[1];
-                    r = "attr";
-                }
-                if (r.match(/integer_(\S*)$/i)) {
-                    a = r.match(/integer_(\S*)$/i)[1];
-                    r = "integer";
-                }
-                if (r.match(/xpath-node-value:(\S*)/i)) {
-                    a = r.match(/xpath-node-value:(\S*)/i)[1];
-                    r = "xpath-node-value";
-                }
-                if (r.match(/xpath-node-value-list:(\S*)/i)) {
-                    a = r.match(/xpath-node-value-list:(\S*)/i)[1];
-                    r = "xpath-node-value-list";
-                }
-
-                switch (r) {
-                    case "node_context":
-                        z = e;
-                        break;
-                    case "element_context":
-                        z = q;
-                        break;
-                    case "bool_true":
-                        z = 1;
-                        break;
-                    case "data_source":
-                        z = o.ds;
-                        break;
-                    case "parent_reference":
-                        z = b;
-                        break;
-                    case "xml_document":
-                        z = v.data;
-                        break;
-                    case "xpath-node-value-list":
-                        f = _x.selectNodes(v.data, a, e);
-                        p = [];
-                        for (c = 0; c < f.length; c++) {
-                            d = f[c];
-                            if (HemiEngine.IsAttributeSet(d, "value")) {
-                                p[p.length] = t._parseORAParam(o, v, d.getAttribute("value"), e, x, b, q, s);
-                            }
-                        }
-                        z = p;
-                        break;
-                    case "xpath-node-value":
-                        n = _x.selectSingleNode(v.data, a, e);
-                        if (n) {
-                            z = n.nodeValue;
-                        }
-                        break;
-                    case "params_array":
-                        a = e.getElementsByTagName("param");
-                        p = [];
-                        for (c = 0; c < a.length; c++) {
-                            d = a[c];
-                            if (HemiEngine.IsAttributeSet(d, "value")) {
-                                p[p.length] = d.getAttribute("value");
-                            }
-                        }
-                        z = p;
-                        break;
-                    case "integer":
-                        z = parseInt(a);
-                        if (isNaN(z)) z = 0;
-                        break;
-                    case "node_name":
-                        if (up) {
-                            z = e.parentNode.nodeName;
-                        }
+                        	var p1, pd = {
+                            		o:o,
+                            		cn:cn,
+                            		cx:cx,
+                            		ck:ck,
+                            		cxp:cxp,
+                            		sf:sf,
+                            		v:v,
+                            		n:n,
+                            		nr:nr,
+                            		q:q,
+                            		br:br,
+                            		cx:cx,
+                            		e:e,
+                            		k:k,
+                            		w:w,
+                            		i:i,
+                            		cs:cs
+                            	};
+                        	
+                        	if(w instanceof Promise)
+                        		p1 = w;
+                        	
+                        	else
+                        		p1 = Promise.resolve(w);
+                        	
+                        	
+                        	p1.then((xd)=>{
+                        		t.completeParseConfiguration(pd.o, pd.cn, pd.ck, pd.cx, pd.cxp, pd.sf, pd.nr, pd.br, pd.n, pd.v, xd, pd.k, pd.e, pd.cs);
+                        	});
+                        	o.promises.push(p1);
+                        } /// End check for implementation or cached implementation 
                         else {
-                            z = e.nodeName;
-                        }
-                        break;
-                    case "attr":
-                        if (a) {
-                            if (up) {
-                                z = e.parentNode.getAttribute(a);
+                            /// Copy the whole node
+                            if (typeof x == DATATYPES.TYPE_UNDEFINED) x = o;
+                            if (typeof x == DATATYPES.TYPE_OBJECT && x != null && typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
+                            	this.logDebug("Copy node " + n.nodeName);
+                            	o.Processor(o, n);
+                                if (!sf) _x.setInnerXHTML(x.getContainer(), n, true, 0, 0, 0, 0, o.XhtmlHandler);
                             }
                             else {
-                                z = e.getAttribute(a);
+                                this.logWarning("No object definition for " + n.nodeName + " (1); treating as HTML");
                             }
                         }
-                        break;
-                    case "space_object":
-                        z = o;
-                        break;
-                    case "space_config":
-                        z = s;
-                        break;
-                    case "space_element":
-                        z = o[r];
-                        break;
-                    case "parent_element":
-                        if (typeof x == DATATYPES.TYPE_UNDEFINED) x = o;
-                        if (typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
-                            z = x.getContainer();
+                    }
+                    else if (n.nodeType == 3) {
+                        if (n.nodeValue.replace(/\s/g, "").length && typeof x == DATATYPES.TYPE_OBJECT && typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
+                            o.Processor(o, n);
+                            if (!sf) _x.setInnerXHTML(x.getContainer(), n, 1, 0, 0, 0, 0, o.XhtmlHandler);
                         }
-                        break;
-                    case "space_id":
-                        z = o.space_id;
-                        break;
-                    default:
-                        z = r;
-                        break;
+                    }
+                },this); /// end for(i;childNodes.length)
+
+                return;
+            };
+
+            t.completeParseConfiguration = function(o, cn, ck, cx, cxp, sf, nr, br, n, v, w, k, e, cs){
+
+                /// If use parent */
+            	/// this.logDebug("Complete configuration for " + n.nodeName);
+
+                /// Use parent
+            	if (k) {
+                	this.logDebug("Use parent");
+                    e = w;
+                    w = x;
                 }
 
-                return z;
+                o.addSpaceObject(w, w && w.properties && w.properties.cid ? w.properties.cid : HemiEngine.GetSpecifiedAttribute(n, "rid"),cs);
+                if (cx && w) {
+                    if (ck && cn) {
+                        k = document.createElement(cn);
+                        n.parentNode.insertBefore(k, n);
+                        n.parentNode.removeChild(n);
+                        n = k;
+                    }
+                    if (!w.documentElement) {
+                        o.Processor(o, w);
+                        if (!sf) _x.setInnerXHTML(n, w, 0, (!ck ? v.data : 0), 0, 0, 0, o.XhtmlHandler);
+                    }
+                    else {
+                        if (o.dp) cxp = o.dp;
+                        nr = (cxp ? _x.selectSingleNode(w, cxp, w.documentElement) : w.documentElement);
+                        if (!nr) nr = w.documentElement;
+                        o.Processor(o, nr);
+                        if (!sf) _x.setInnerXHTML(n, nr, 0, (!ck ? v.data : 0), 0, 0, 0, o.XhtmlHandler);
+                    }
+                    
+                    /// Switch the context back to the parent
+                    w = x;
+                }
+
+                /// If recursive
+                if (br) t.parseConfiguration(o, v, cs, n, w, e);
+                
+                if (w && w.object_type && w.object_type.match(/^xhtml_component$/)) {
+                	let p1 = w.post_init();
+                	if(p1 instanceof Promise){
+                		/// console.log("Include object post_init promise");
+                		o.promises.push(p1);
+                	}
+                }
+
+                return;
             };
+ 
             ///		<object>
             ///			<name>Space</name>
             ///			<property name = "space_element" type = "object">The DOM Node associated with this Space.</property>
@@ -948,7 +815,8 @@
             t.newSpaceObject = function (e, i, n, k, x, f) {
 
                 var r = {
-                    space_element: e,
+                	promises : [],
+                	space_element: e,
                     space_id: i,
                     space_name: n,
                     space_index: x,
@@ -961,7 +829,7 @@
                     space_css_map: [],
                     Processor: function (o, n) { },
                     XhtmlHandler: 0,
-                    space_implementations: [],
+                    space_implementations: {},
                     space_state: 0,
                     space_callback: f,
                     removeSpaceObject: function (i) {
@@ -974,7 +842,7 @@
                         o[x[x]] = 0;
                         delete x[i];
                     },
-                    addSpaceObject: function (w, q) {
+                    addSpaceObject: function (w, q, cs) {
                         var l = this.space_objects.length, n;
 
                         if (
@@ -1028,7 +896,16 @@
             };
 
             t.handle_window_load = function () {
-                if (t.properties.auto_load) t.loadSpaces();
+                if (t.properties.auto_load){
+                	if(Object.keys(HemiEngine.including).length){
+                		t.logDebug("Waiting for dependent libraries to load");
+                		setTimeout(HemiEngine.registry.getEvalStatement(t) + ".handle_window_load()",10);
+                	}
+                	else{
+                		t.logDebug("Auto loading spaces");
+                		t.loadSpaces();
+                	}
+                }
             };
 
             t.handle_space_initialized = function (s, v) {
@@ -1050,10 +927,12 @@
                     else {
                         this.logDebug("Space " + e.space_id + " initialized", "11.3");
                     }
-
-                    t.configureSpace(e);
-                    if (DATATYPES.TF(e.space_callback)) e.space_callback(this, e);
-                    HemiEngine.util.evaluateElementHandler(e.space_element, "space-onload");
+                    var p1 = t.configureSpace(e);
+                    p1.then(()=>{
+                    	this.logDebug("Publishing space-onload: " + e.space_id);
+	                    if (DATATYPES.TF(e.space_callback)) e.space_callback(this, e);
+	                    HemiEngine.util.evaluateElementHandler(e.space_element, "space-onload");
+                    });
                 }
                 else {
                     this.logError("Invalid space reference for space_initialized", "11.4");
@@ -1066,10 +945,14 @@
                 this.logDebug("Starting space service", "10.1");
                 _p.spaces[0].space_state = 2;
                 if (_p.spaces.length) {
-                    e = _p.spaces[0].space_element;
-                    t.configureSpace(_p.spaces[0]);
-                    if (DATATYPES.TF(e.space_callback)) e.space_callback(this, e);
-                    HemiEngine.util.evaluateElementHandler(e, "space-onload");
+                    e = _p.spaces[0];
+                    
+                    var p1 = t.configureSpace(e);
+                    p1.then(()=>{
+                    	this.logDebug("Publishing space-onload for primary space: " + e.space_id);
+	                    if (DATATYPES.TF(e.space_callback)) e.space_callback(this, e);
+	                    HemiEngine.util.evaluateElementHandler(e.space_element, "space-onload");
+                    });
                 }
                 return 1;
             };
@@ -1101,10 +984,159 @@
 
             HemiEngine.registry.service.addObject(t);
             t.ready_state = 4;
+			if(document.readyState == "complete"){
+				t.handle_window_load();
+			}
 
         }
         /// </class>
     }, 1);
+    
+    
+    /*
+    ORA = object request alias; just a token that is used to reference a context object
+    */
+    function _parseORAParam(o, v, r, e, x, b, q, s) {
+        /*
+        o = engine object
+        v = task object
+        r = ora value
+        e = originating xml element
+        x = parent object instance
+        b = parent reference; return value from where the parent object was created
+        q = html parent
+        s = config name
+			
+        a = variant used for name substring.
+        z = return value;
+			
+			
+        p = variant
+        c = counter
+        d = variant
+        f = variant
+        */
+        var z = 0, a, n, p, d, f, c, up, i;
+        if (typeof r != DATATYPES.TYPE_STRING) return;
+        r = r.replace(/^ora:/i, "");
+
+        if (r.match(/(\S*)_parent$/i)) {
+            r = r.match(/(\S*)_parent$/i)[1];
+            up = 1;
+        }
+
+        if (r.match(/(\S*)_attr$/i)) {
+            a = r.match(/(\S*)_attr$/i)[1];
+            r = "attr";
+        }
+        if (r.match(/integer_(\S*)$/i)) {
+            a = r.match(/integer_(\S*)$/i)[1];
+            r = "integer";
+        }
+        if (r.match(/xpath-node-value:(\S*)/i)) {
+            a = r.match(/xpath-node-value:(\S*)/i)[1];
+            r = "xpath-node-value";
+        }
+        if (r.match(/xpath-node-value-list:(\S*)/i)) {
+            a = r.match(/xpath-node-value-list:(\S*)/i)[1];
+            r = "xpath-node-value-list";
+        }
+
+        switch (r) {
+            case "node_context":
+                z = e;
+                break;
+            case "element_context":
+                z = q;
+                break;
+            case "bool_true":
+                z = 1;
+                break;
+            case "data_source":
+                z = o.ds;
+                break;
+            case "parent_reference":
+                z = b;
+                break;
+            case "xml_document":
+                z = v.data;
+                break;
+            case "xpath-node-value-list":
+                f = _x.selectNodes(v.data, a, e);
+                p = [];
+                for (c = 0; c < f.length; c++) {
+                    d = f[c];
+                    if (HemiEngine.IsAttributeSet(d, "value")) {
+                        p[p.length] = _parseORAParam(o, v, d.getAttribute("value"), e, x, b, q, s);
+                    }
+                }
+                z = p;
+                break;
+            case "xpath-node-value":
+                n = _x.selectSingleNode(v.data, a, e);
+                if (n) {
+                    z = n.nodeValue;
+                }
+                break;
+            case "params_array":
+                a = e.getElementsByTagName("param");
+                p = [];
+                for (c = 0; c < a.length; c++) {
+                    d = a[c];
+                    if (HemiEngine.IsAttributeSet(d, "value")) {
+                        p[p.length] = d.getAttribute("value");
+                    }
+                }
+                z = p;
+                break;
+            case "integer":
+                z = parseInt(a);
+                if (isNaN(z)) z = 0;
+                break;
+            case "node_name":
+                if (up) {
+                    z = e.parentNode.nodeName;
+                }
+                else {
+                    z = e.nodeName;
+                }
+                break;
+            case "attr":
+                if (a) {
+                    if (up) {
+                        z = e.parentNode.getAttribute(a);
+                    }
+                    else {
+                        z = e.getAttribute(a);
+                    }
+                }
+                break;
+            case "space_object":
+                z = o;
+                break;
+            case "space_config":
+                z = s;
+                break;
+            case "space_element":
+                z = o[r];
+                break;
+            case "parent_element":
+                if (typeof x == DATATYPES.TYPE_UNDEFINED) x = o;
+                if (typeof x.getContainer == DATATYPES.TYPE_FUNCTION) {
+                    z = x.getContainer();
+                }
+                break;
+            case "space_id":
+                z = o.space_id;
+                break;
+            default:
+                z = r;
+                break;
+        }
+
+        return z;
+    }
+    
 } ());
 /// </package>
 /// </source>

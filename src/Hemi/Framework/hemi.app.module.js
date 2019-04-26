@@ -62,7 +62,7 @@
 							return;
 						}
 						if(!DATATYPES.TO(m)){
-							this.logDebug("Promise passing old value for some reason.  Compensating.")
+							this.logDebug("Promise passing old value for some reason.  Compensating.");
 							m = this.getModuleByName(n);
 						}
 						var v = new m.impl(), aP = [];

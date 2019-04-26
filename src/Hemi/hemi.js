@@ -491,7 +491,7 @@ if (typeof window != "object") window = {};
     
     HemiEngine.prepareObject = function (n, v, r, o, d) {
         var p, aP = [];    
-    	if (!o) o = {}	
+    	if (!o) o = {};
 
         if (!o.objects) o.objects = {};
         if (!o.properties) o.properties = {};

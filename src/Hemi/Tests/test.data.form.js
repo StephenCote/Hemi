@@ -1,4 +1,4 @@
-Hemi.include("hemi.data.form");
+this.dependencies.push("hemi.data.form");
 function TestVirtualForm(){
 	var oSpace = Hemi.app.space.service.getPrimarySpace();
 	this.Assert(oSpace,"A primary space is required for this test");

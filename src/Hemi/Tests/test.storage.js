@@ -1,5 +1,4 @@
-Hemi.include("hemi.storage");
-Hemi.include("hemi.storage.iestore")
+this.dependencies.push("hemi.storage", "hemi.storage.iestore");
 
 function TestStorageSupported(){
 	this.Assert(Hemi.storage.testStorageSupported(), "Storage is not supported");

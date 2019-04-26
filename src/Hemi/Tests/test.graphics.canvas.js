@@ -1,4 +1,4 @@
-Hemi.include("hemi.graphics.canvas");
+this.dependencies.push("hemi.graphics.canvas");
 
 function TestCanvas(){
 	var oDiv = document.createElement("div");

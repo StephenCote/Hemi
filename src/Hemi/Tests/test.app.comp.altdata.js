@@ -1,6 +1,4 @@
-﻿Hemi.include("hemi.data.io");
-Hemi.include("hemi.data.io.proxy");
-Hemi.include("hemi.framework.io.offline.provider");
+﻿this.dependencies.push("hemi.data.io","hemi.data.io.proxy","hemi.framework.io.offline.provider");
 
 function TestProxies(oTest) {
 	var oService = Hemi.data.io.proxy.service;

@@ -1,6 +1,4 @@
-﻿Hemi.include("hemi.data.io");
-Hemi.include("hemi.framework.io.provider");
-Hemi.include("hemi.framework.io.offline.provider");
+﻿this.dependencies.push("hemi.data.io", "hemi.framework.io.provider","hemi.framework.io.offline.provider");
 function ReadData(sGroup, sName) {
 	var oRequest = Hemi.data.io.service.newIORequest(
         Hemi.data.io.service.getBusType().OFFLINE,

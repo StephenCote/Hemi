@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.task");
+﻿this.dependencies.push("hemi.task");
 
 function TestTaskAPI(oResult) {
     var oTask = Hemi.task.service.addTask("example_api_task", 0, 0, "function", HandleTaskAPICallback);

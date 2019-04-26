@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.util.config");
+﻿this.dependencies.push("hemi.util.config");
 
 function NewXML(){
  return Hemi.xml.newXmlDocument("Config");

@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.object");
+﻿this.dependencies.push("hemi.object");
 function TestNewFrameworkObject(oTest) {
     var bDest = 0;
     var oObject = Hemi.newObject("SomeObject", "1.0", 1, 1, {
@@ -12,13 +12,16 @@ function TestNewFrameworkObject(oTest) {
             bDest = 1;
         }
     });
-
-    this.Assert(oObject.getProperties().prepared, "Object is not prepared");
-    this.Assert(oObject.getProperties().created, "Object is not created");
-
-    oObject.destroy();
-
-    this.Assert(bDest && oObject.getReadyState() == 5, "Object is not destroyed.  bDest=" + (!bDest) + "/RS=" + (oObject.getReadyState() < 5));
+	oObject.getObjects().promise.then(()=>{
+	    this.Assert(oObject.getProperties().prepared, "Object is not prepared");
+	    this.Assert(oObject.getProperties().created, "Object is not created");
+	
+	    oObject.destroy();
+	
+	    this.Assert(bDest && oObject.getReadyState() == 5, "Object is not destroyed.  bDest=" + (!bDest) + "/RS=" + (oObject.getReadyState() < 5));
+	    EndTestNewFrameworkObject(true);
+	});
+	return false;
 }
 
 function TestPrepareFrameworkObject(oTest) {
@@ -36,11 +39,14 @@ function TestPrepareFrameworkObject(oTest) {
     }
     Hemi.prepareObject("SomeObject", "1.0", 1, oObject, 1);
     
-
-    this.Assert(oObject.getProperties().prepared, "Object is not prepared");
-    this.Assert(!oObject.getProperties().created, "Object should not have been created");
-
-    oObject.destroy();
-
-    this.Assert(bDest && oObject.getReadyState() == 5, "Object is not destroyed.  bDest=" + (!bDest) + "/RS=" + (oObject.getReadyState() < 5));
+    oObject.getObjects().promise.then(()=>{
+	    this.Assert(oObject.getProperties().prepared, "Object is not prepared");
+	    this.Assert(!oObject.getProperties().created, "Object should not have been created");
+	
+	    oObject.destroy();
+	
+	    this.Assert(bDest && oObject.getReadyState() == 5, "Object is not destroyed.  bDest=" + (!bDest) + "/RS=" + (oObject.getReadyState() < 5));
+	    EndTestPrepareFrameworkObject(true);
+    });
+    return false;
 }

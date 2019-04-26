@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.monitor");
+﻿this.dependencies.push("hemi.monitor");
 function TestMonitorBase(){
 	var CMonitor = function(){
 		Hemi.util.logger.addLogger(this, "Monitor", "Monitor Class", "201");

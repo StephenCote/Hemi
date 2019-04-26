@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.data.io");
+﻿this.dependencies.push("hemi.data.io");
 function GetSyncProviderTemplate() {
     return Hemi.newObject("sync_data_io", "1.0", 1, 1, {
         handle_io_register: function (oService) {
@@ -146,16 +146,22 @@ function TestDataIOBussedTransaction(oTest) {
 function TestDataIOProviderDirtyCleanup(oTest) {
 
     var oProvider = GetSyncProviderTemplate();
-    var b1 = Hemi.data.io.service.register(oProvider);
-    this.Assert((b1), "Provider was not registered");
-    this.Assert(oProvider.getProperties().isRegistered, "Provider did not receive registration callback");
-    this.Assert(!(Hemi.data.io.service.register(oProvider)), "Provider was registered twice");
-    var oCheck = Hemi.data.io.service.getProvider(sId);
-    this.Assert(!oCheck, "Provider was retrieved from service");
-    var sId = oProvider.getObjectId();
-    oProvider.destroy();
-    oCheck = Hemi.data.io.service.getProvider(sId);
-    this.Assert(!oCheck, "Provider was not cleaned up from service");
+    var p = (oProvider.getObjects().promise ? oProvider.getObjects().promise : Promise.resolve(oProvider));
+    p.then(()=>{
+	    var b1 = Hemi.data.io.service.register(oProvider);
+	    this.Assert((b1), "Provider was not registered");
+	    this.Assert(oProvider.getProperties().isRegistered, "Provider did not receive registration callback");
+	    this.Assert(!(Hemi.data.io.service.register(oProvider)), "Provider was registered twice");
+	    var oCheck = Hemi.data.io.service.getProvider(sId);
+	    this.Assert(!oCheck, "Provider was retrieved from service");
+	    var sId = oProvider.getObjectId();
+	    oProvider.destroy();
+	    oCheck = Hemi.data.io.service.getProvider(sId);
+	    this.Assert(!oCheck, "Provider was not cleaned up from service");
+	    oProvider.destroy();
+	    EndTestDataIOProviderDirtyCleanup(true);
+	});
+	return false;
     /// Don't check unregistered property here because the post destroy action is to flush all the properties
     /// from the object
     /// this.Assert(!oProvider.getProperties().isRegistered, "Provider did not receive unregistration callback");
@@ -164,14 +170,21 @@ function TestDataIOProviderDirtyCleanup(oTest) {
 function TestDataIOProviderCleanCleanup(oTest) {
 
     var oProvider = GetSyncProviderTemplate();
-    var b1 = Hemi.data.io.service.register(oProvider);
-    this.Assert((b1), "Provider was not registered");
-    var oCheck = Hemi.data.io.service.getProvider(sId);
-    this.Assert(!oCheck, "Provider was retrieved from service");
-    var sId = oProvider.getObjectId();
-    Hemi.data.io.service.unregister(oProvider);
-    oCheck = Hemi.data.io.service.getProvider(sId);
-    this.Assert(!oCheck, "Provider was not cleaned up from service");
-    this.Assert(!oProvider.getProperties().isRegistered, "Provider did not receive unregistration callback");
-    oProvider.destroy();
+    var p = (oProvider.getObjects().promise ? oProvider.getObjects().promise : Promise.resolve(oProvider));
+    p.then(()=>{
+	    var b1 = Hemi.data.io.service.register(oProvider);
+	    this.Assert((b1), "Provider was not registered");
+	    var oCheck = Hemi.data.io.service.getProvider(sId);
+	    this.Assert(!oCheck, "Provider was retrieved from service");
+	    var sId = oProvider.getObjectId();
+	    Hemi.data.io.service.unregister(oProvider);
+	    oCheck = Hemi.data.io.service.getProvider(sId);
+	    this.Assert(!oCheck, "Provider was not cleaned up from service");
+	    this.Assert(!oProvider.getProperties().isRegistered, "Provider did not receive unregistration callback");
+	    window.debugObj = oProvider;
+	    oProvider.destroy();
+
+	    EndTestDataIOProviderCleanCleanup(true);
+    });
+    return false;
 }

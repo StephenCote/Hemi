@@ -1,5 +1,4 @@
-Hemi.include("hemi.data.form");
-Hemi.include("hemi.data.validator");
+this.dependencies.push("hemi.data.form", "hemi.data.validator");
 function TestVirtualFormValidation(){
 		var oSpace = Hemi.app.space.service.getPrimarySpace();
 		this.Assert(oSpace,"A primary space is required for this test");

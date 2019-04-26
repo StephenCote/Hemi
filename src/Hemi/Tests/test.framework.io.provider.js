@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.framework.io.provider");
+﻿this.dependencies.push("hemi.framework.io.provider");
 
 function TestProviderLoaded() {
     /// Check loaded

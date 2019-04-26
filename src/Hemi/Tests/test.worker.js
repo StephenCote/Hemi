@@ -1,4 +1,4 @@
-﻿Hemi.include("hemi.worker");
+﻿this.dependencies.push("hemi.worker");
 function TestHemiWorker(oTest) {
     var oWorker = Hemi.worker.service.NewWorker("worker.test");
     oWorker.onmessage = function (v) {

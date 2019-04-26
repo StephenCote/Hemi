@@ -1,7 +1,7 @@
 /// Example
 /// File: Hemi/Tests/mytest.js
 /// Script:
-/// Hemi.include("hemi.app.module");
+/// this.dependencies.push("hemi.app.comp");
 /// var oTest = Hemi.app.module.service.NewTest("mytest");
 /// oTest.RunTests();
 
@@ -30,6 +30,7 @@
 /// function Test[Name]() -- any function in the format "function Test..." is included in the available tests
 /// Test functions are invoked in the context of the TestModule, and include the Test object as a parameter
 /// Example:
+
 function TestMyExample(oTest){
 
 }

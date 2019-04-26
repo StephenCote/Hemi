@@ -315,7 +315,7 @@
                     o.config_name = 0;
                 }
 
-            }
+            };
             
             ///		<method>
             ///			<name>configureSpace</name>
@@ -416,7 +416,7 @@
                 this.logDebug("Publishing space config: " + o.space_id);
                 _m.publish("onspaceconfigload", o);
             };
-            /// 2018/03/07 - Rewrote portions of method to leverage promises in asynchronous dependencies
+            /// 2019/03/07 - Rewrote portions of method to leverage promises in asynchronous dependencies
             /// There are likely still some issues with resolving transitive asynchronous dependencies prior to publishing the spaceloaded notification
             ///
             t.parseConfiguration = function (o, v, s, p, x, b) {
@@ -674,7 +674,7 @@
                             if (!sf) _x.setInnerXHTML(x.getContainer(), n, 1, 0, 0, 0, 0, o.XhtmlHandler);
                         }
                     }
-                },this); /// end for(i;childNodes.length)
+                },this);
 
                 return;
             };

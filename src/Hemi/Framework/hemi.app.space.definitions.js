@@ -129,8 +129,6 @@
 					"Hemi.xml",
 					"promiseXml",
 					["ora:src_attr", "GET", "ora:integer_0", "ora:id_attr"],
-					/// "getXml",
-					/// ["ora:src_attr", "ora:integer_0", "ora:integer_0", "ora:id_attr", "ora:integer_1"],
 					1,
 					"/html-fragment",
 					"span"

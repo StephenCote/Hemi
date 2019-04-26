@@ -17,6 +17,7 @@
 (function () {
 
     HemiEngine.namespace("app", HemiEngine, {
+    	dependencies : ["hemi.app.space","hemi.app.comp","hemi.data.form","hemi.object.xhtml"],
         /// <method>
         /// 	<name>createApplicationSpace</name>
         ///		<param name="oElement" type="Node" optional = "1">XHTML Node in which the space will be created.</param>
@@ -27,8 +28,6 @@
         /// 	<description>Creates a new application space at the specified location.</description>
         /// </method>
         createApplicationSpace: function (e, p, s, f) {
-            HemiEngine.include("hemi.app.space");
-            HemiEngine.include("hemi.app.comp");
             if (!e) {
                 e = document.createElement("div");
                 e.className = "space";
@@ -60,8 +59,6 @@
                 return;
             }
 
-            HemiEngine.include("hemi.data.form");
-            HemiEngine.include("hemi.object.xhtml");
             r = (r ? r : HemiEngine.GetSpecifiedAttribute(o, "rid"));
 
             x = HemiEngine.object.xhtml.newInstance(o, 1, r, (s ? s.space_id : 0), HemiEngine.data.form.service, 0, 0, 0);
@@ -93,9 +90,7 @@
                 HemiEngine.logError("Cannot dynamically create and bind a node to a component inside an initializing space");
                 return;
             }
-            HemiEngine.include("hemi.app.comp");
-            HemiEngine.include("hemi.data.form");
-            HemiEngine.include("hemi.object.xhtml");
+
             _a = HemiEngine.app.comp;
             var h = 0;
             if (s) {
@@ -114,18 +109,31 @@
             else {
                 a = _a.newInstance(r, 0, (p ? p.getObjectId() : 0));
             }
-            a.setAsync(0);
-            if (s)
-                a.loadComponent(s, h);
 
-            else a.importComponentDefinition("", 0, r);
-            if (x && p) {
-                p.addSpaceObject(x, (r ? r : HemiEngine.GetSpecifiedAttribute(o, "rid")));
-                /// post_init won't propogate to an application component unless the appcomp is set on the xcomp
-                ///
-                x.post_init();
+            var p1;
+            if (s){
+                p1 = new Promise((res,rej)=>{
+                	a.loadComponent(s, h).then(()=>{
+                		res(a);
+                	});
+                });
             }
-            return a;
+            else {
+            	a.importComponentDefinition("", 0, r);
+            	p1 = Promise.resolve(a);
+            }
+            
+            if (x && p) {
+            	p1.then((a) => {
+	                p.addSpaceObject(x, (r ? r : HemiEngine.GetSpecifiedAttribute(o, "rid")));
+	                /// post_init won't propogate to an application component unless the appcomp is set on the xcomp
+	                ///
+	                x.post_init();
+	                return a;
+            	});
+            }
+
+            return p1;
         },
         /// <method>
         /// 	<name>getWindowManager</name>
@@ -133,13 +141,20 @@
         /// 	<description>Returns a global instance of the component.manager.xml component, dynamically creating it if it does not already exist in the registry.</description>
         /// </method>
         getWindowManager: function () {
-            var o, m = "manager";
+            var o, m = "manager",p1;
             o = HemiEngine.registry.service.getObject(m);
             if (!o) {
-                HemiEngine.app.createApplicationComponent(m, 0, HemiEngine.app.getPrimarySpace(), m);
-                o = HemiEngine.registry.service.getObject(m);
+            	p1 = new Promise((res,rej)=>{
+	                var p = HemiEngine.app.createApplicationComponent(m, 0, HemiEngine.app.getPrimarySpace(), m);
+	                p.then(()=>{
+	                	res(HemiEngine.registry.service.getObject(m));
+	                });
+            	});
             }
-            return o;
+            else{
+            	p1 = Promise.resolve(o);
+            }
+            return p1;
         },
         /// <method>
         /// 	<name>createWindow</name>
@@ -155,72 +170,78 @@
         /// </method>
         createWindow: function (t, l, n, v, b, a, f) {
 
-            HemiEngine.include("hemi.app.comp");
-            HemiEngine.include("hemi.app.space");
-            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), m, c, b1, b2, u, d;
+            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), c, b1, b2, u, d, p, p1;
             if (!o) o = HemiEngine.app.getPrimarySpace();
             if (!o) {
                 HemiEngine.logError("Invalid space");
                 return;
             }
+            p1 = new Promise( (res, rej) => {
+	            var p = HemiEngine.app.getWindowManager();
 
-            m = HemiEngine.app.getWindowManager();
-            if (n) {
-                c = m.GetWindowByName(n);
-                if (c) {
-                    if (c.getHideOnClose() && c.getIsClosed()) {
-                        c.open();
-                    }
-                    b1 = c.getManageMaximize();
-                    b2 = c.getManageMinimize();
-                    c.setManageMaximize(0);
-                    c.setManageMinimize(0);
-                    c.restore();
-                    c.getFocus();
-                    c.setManageMaximize(b1);
-                    c.setManageMinimize(b2);
-                    m.CenterWindow(c);
-                    if(f) f(c);
-                    return;
-                }
-            }
+	            p.then((m)=>{
 
+		            if (n) {
+		                c = m.GetWindowByName(n);
+		                if (c) {
+		                    if (c.getHideOnClose() && c.getIsClosed()) {
+		                        c.open();
+		                    }
+		                    b1 = c.getManageMaximize();
+		                    b2 = c.getManageMinimize();
+		                    c.setManageMaximize(0);
+		                    c.setManageMinimize(0);
+		                    c.restore();
+		                    c.getFocus();
+		                    c.setManageMaximize(b1);
+		                    c.setManageMinimize(b2);
+		                    m.CenterWindow(c);
+		                    if(f) f(c);
+		                    res(c);
+		                    return c;
+		                }
+		            }
 
-            u = HemiEngine.guid();
-            if (!n) n = u;
-            if (!t) t = n;
+		        	u = HemiEngine.guid();
+		            if (!n) n = u;
+		            if (!t) t = n;
+		
+		            d = document.createElement("div");
+		            if (b)
+		                document.body.appendChild(d);
+		            else
+		                o.space_element.appendChild(d);
+		
+		            var p2 = HemiEngine.app.createApplicationComponent("window", d, o, n);
+		            p2.then((c)=>{
+			            c.setTemplateIsSpace(1);
+			            if (typeof a == "object") {
+			                for (var i in a) {
+			                    c.properties[i] = a[i];
+			                }
+			            }
+			
+			            c.post_init();
+			
+			            c.objects.body.appendChild(document.createTextNode("[ ... loading ...]"));
+			
+			            c.setCanResize(1);
+			            c.resizeTo(500, 300);
+			            c.setIsBound((b ? 0 : 1));
+			            c.local_template_init = f;
+			            c.setTitle(t);
+			            c.setStatus("");
+			            c.setHideOnClose(1);
+			            m.CenterWindow(c);
+			            c.getFocus();
+			            c.loadTemplate(l);
+			            res(c);
+		            });
+			        
+	            });
 
-            d = document.createElement("div");
-            if (b)
-                document.body.appendChild(d);
-            else
-                o.space_element.appendChild(d);
-
-            c = HemiEngine.app.createApplicationComponent("window", d, o, n);
-            c.setTemplateIsSpace(1);
-            if (typeof a == "object") {
-                for (var i in a) {
-                    c.properties[i] = a[i];
-                }
-            }
-
-            c.post_init();
-
-            c.objects.body.appendChild(document.createTextNode("[ ... loading ...]"));
-
-            c.setCanResize(1);
-            c.resizeTo(500, 300);
-            c.setIsBound((b ? 0 : 1));
-            c.local_template_init = f;
-            c.setTitle(t);
-            c.setStatus("");
-            c.setHideOnClose(1);
-            m.CenterWindow(c);
-            c.getFocus();
-            c.loadTemplate(l);
-
-
-            return c;
+            });
+            return p1;
         },
         /// <method>
         /// 	<name>getPrimarySpace</name>
@@ -228,7 +249,6 @@
         /// 	<description>Returns the primary Application Space object.  The primary space is loaded if not already done so.</description>
         /// </method>
         getPrimarySpace: function () {
-            HemiEngine.include("hemi.app.space");
             var o, _s = HemiEngine.app.space.service;
             o = _s.getPrimarySpace();
             if (!o) _s.loadSpaces();

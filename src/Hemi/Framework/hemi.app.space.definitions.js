@@ -11,8 +11,8 @@
 ///	<library>Hemi</library>
 ///	<description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description>
 (function () {
-    HemiEngine.include("hemi.util.logger");
     HemiEngine.namespace("app.space.definitions", HemiEngine, {
+    	dependencies : ["hemi.util.logger"],
         ///	<static-class>
         ///		<name>service</name>
         ///		<version>%FILE_VERSION%</version>
@@ -127,8 +127,10 @@
 				t.newDefinition(
 					["import-xml"],
 					"Hemi.xml",
-					"getXml",
-					["ora:src_attr", "ora:integer_0", "ora:integer_0", "ora:id_attr", "ora:integer_1"],
+					"promiseXml",
+					["ora:src_attr", "GET", "ora:integer_0", "ora:id_attr"],
+					//"getXml",
+					//["ora:src_attr", "ora:integer_0", "ora:integer_0", "ora:id_attr", "ora:integer_1"],
 					1,
 					"/html-fragment",
 					"span"

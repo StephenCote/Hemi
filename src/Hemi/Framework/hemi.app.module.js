@@ -11,9 +11,10 @@
 ///	<library>Hemi</library>
 ///	<description>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the <a href = "../Tests/test.app.comp.js">Application Component Tests</a> includes several unit tests for vetting the Application Component class.</description>
 (function () {
-	HemiEngine.include("hemi.object");
-	HemiEngine.include("hemi.util.logger");
+	
 	HemiEngine.namespace("app.module", HemiEngine, {
+    	dependencies : ["hemi.object","hemi.util.logger"],
+
 		///	<static-class>
 		///		<name>service</name>
 		///		<version>%FILE_VERSION%</version>
@@ -48,19 +49,44 @@
 			/// 	<description>Creates a new Module object.</description>
 			/// </method>
 			t.NewModule = function (n, x, p, d, b, q) {
-				var m = this.LoadModule(n, p, d, b, q), v;
-				if (!m) return null;
-				var v = new m.impl();
-				if (x) {
-					v.Container = x;
-					if (DATATYPES.TF(x.getObjectType) && x.getObjectType().match(/xhtml_component/)) {
-						v.Container = x.getContainer();
-						v.Component = x;
-					}
+				var pm = this.LoadModule(n, p, d, b, q), v, p1;
+				if (!pm){
+					console.warn("Module '" + n + "' is null");
+					return null;
 				}
-				/// vMod._IMod();
-				if (DATATYPES.TF(v.Initialize)) v.Initialize();
-				return v;
+				p1 = new Promise((res,rej)=>{
+					pm.then( (m) => {
+						this.logDebug("Complete loading new module");
+						if(!m || m == null){
+							console.error("Null module for " + n);
+							return;
+						}
+						if(!DATATYPES.TO(m)){
+							this.logDebug("Promise passing old value for some reason.  Compensating.")
+							m = this.getModuleByName(n);
+						}
+						var v = new m.impl(), aP = [];
+						if (x) {
+							v.Container = x;
+							if (DATATYPES.TF(x.getObjectType) && x.getObjectType().match(/xhtml_component/)) {
+								v.Container = x.getContainer();
+								v.Component = x;
+							}
+						}
+						
+		        		v.dependencies.map(function(x){
+		        			if(!HemiEngine.isImported(x)){
+		        				aP.push(HemiEngine.include(x));
+		        			}
+		        		});
+		        		Promise.all(aP).then(()=>{
+		        			if (DATATYPES.TF(v.Initialize)) v.Initialize();
+		        			res(v);
+		        		});
+		        		return v;
+					});
+				});
+				return p1;
 			};
 			/// <method>
 			/// 	<name>UnloadModuleImplementations</name>
@@ -94,12 +120,7 @@
 				if (!o) return b;
 				t.UnloadModuleImplementations(v);
 				HemiEngine.dereference(v);
-				/*
-				if (DATATYPES.TN((i = HemiEngine.LibraryMap[v]))) {
-				delete HemiEngine.LibraryMap[v];
-				delete HemiEngine.Libraries[i];
-				}
-				*/
+
 				return t.removeModule(o);
 			};
 			/// <method internal = "1">
@@ -113,82 +134,86 @@
 			/// 	<description>Loads a Module definition.</description>
 			/// </method>
 			t.LoadModule = function (n, p, d, b, q) {
-				var m = this.getModuleByName(n), o, s = "", r, x;
+				var m = this.getModuleByName(n), o, s = "", r, x, p1;
 				if (m)
-					return m;
-				if (b) x = p;
+					return Promise.resolve(m);
+				if (b){
+					x = p;
+					p1 = Promise.resolve(x);
+				}
 				else {
-					o = HemiEngine.include(n, (p ? p : "Modules/"), 1);
-					if (!o || !o.raw) {
-						HemiEngine.logError("Failed to load module: " + n);
+					p1 = new Promise((res,rej)=>{
+						HemiEngine.include(n, (p ? p : "Modules/"), 1).then((xd) =>{
+							if (!xd) {
+								HemiEngine.logError("Failed to load module: " + n);
+								return;
+							}
+							res(xd);
+						});
+					});
+
+				}
+				p1.then((x)=>{
+					if (d && DATATYPES.TF(d.DecorateModuleContent))
+						s = d.DecorateModuleContent(n, p, x);
+					/// <object>
+					///	<name>ModuleBase</name>
+					/// 	<description>The ModuleBase is the raw definition from which a Module implementation is created.</description>
+					///		<property type = "String[]" get = "1" name = "Impls">An array of object ids representing instances of this ModuleBase.</property>
+					/// </object>
+					/// <object>
+					///	<name>Module</name>
+					/// 	<description>A Module encapsulates the imported JavaScript and an API for operating within the framework.</description>
+					///		<method virtual = "1">
+					///			<name>Initialize</name>
+					/// 		<description>Invoked when the module is loaded.</description>
+					///		</method>
+					///		<method virtual = "1">
+					///			<name>Unload</name>
+					/// 		<description>Invoked when the module is unloaded or destroyed.</description>
+					///		</method>
+					///		<property type = "XHTMLComponent" get = "1" name = "Component">A pointer to an underlying XHTMLComponent, if the module is bound to an HTML element via an XHTMLComponent.</property>
+					///		<property type = "String" get = "1" name = "name">The name of the module.</property>
+					///		<property type = "Module" get = "1" name = "Module">An anonymous pointer to the Module instance, for refering to the instance from the anonymous scope enclosure.</property>
+					///		<property type = "Node" get = "1" name = "Container">A pointer to the XHTML Node for which the module was loaded.</property>
+					///		<property type = "XHTMLComponent" get = "1" name = "Component">A pointer to the XHTMLComponent created for any Container, if a Container was used.</property>
+					/// </object>
+	
+					r = "(function(){" + (d && d.DecorateModuleHeader ? d.DecorateModuleHeader(n, p, x) : "") + "\nHemiEngine.app.module.service.Register(\"" + n + "\",{ impl : func" + "tion(){"
+	                + "\nthis.dependencies = [];"
+					+ (s ? s + "\n" : "")
+					+ x
+					+ "\nthis.Component = null;"
+					+ "this.Container = null;"
+	                + "var Module = null;"
+	                + "this.name = \"" + n + "\";"
+	                + "this.object_prepare = function(){ Module = this; HemiEngine.app.module.service.AddImpl(\"" + n + "\",this.object_id);};"
+	                + "this.object_destroy = function(){if(DATATYPES.TF(this.Unload)){this.Unload();}};"
+	                + "HemiEngine.prepareObject(\"" + (q ? q : "module") + "\",\"%FILE_VERSION%\",1,this,1);"
+	                + "this.ready_state = 4;"
+					+ "},"
+	                + "Impls : [],"
+	                + "name : \"" + n + "\""
+	                + "});}());";
+	
+					r = r.replace(/^\s+/, "").replace(/\s+$/, "");
+					try {
+						eval(r);
+					}
+					catch (e) {
+						HemiEngine.logError("Error loading module '" + n + "'\n\n" + (e.message ? e.message : e.description));
 						return 0;
 					}
-					x = o.raw;
-				}
-
-				if (d && DATATYPES.TF(d.DecorateModuleContent))
-					s = d.DecorateModuleContent(n, p, x);
-				/// <object>
-				///	<name>ModuleBase</name>
-				/// 	<description>The ModuleBase is the raw definition from which a Module implementation is created.</description>
-				///		<property type = "String[]" get = "1" name = "Impls">An array of object ids representing instances of this ModuleBase.</property>
-				/// </object>
-				/// <object>
-				///	<name>Module</name>
-				/// 	<description>A Module encapsulates the imported JavaScript and an API for operating within the framework.</description>
-				///		<method virtual = "1">
-				///			<name>Initialize</name>
-				/// 		<description>Invoked when the module is loaded.</description>
-				///		</method>
-				///		<method virtual = "1">
-				///			<name>Unload</name>
-				/// 		<description>Invoked when the module is unloaded or destroyed.</description>
-				///		</method>
-				///		<property type = "XHTMLComponent" get = "1" name = "Component">A pointer to an underlying XHTMLComponent, if the module is bound to an HTML element via an XHTMLComponent.</property>
-				///		<property type = "String" get = "1" name = "name">The name of the module.</property>
-				///		<property type = "Module" get = "1" name = "Module">An anonymous pointer to the Module instance, for refering to the instance from the anonymous scope enclosure.</property>
-				///		<property type = "Node" get = "1" name = "Container">A pointer to the XHTML Node for which the module was loaded.</property>
-				///		<property type = "XHTMLComponent" get = "1" name = "Component">A pointer to the XHTMLComponent created for any Container, if a Container was used.</property>
-				/// </object>
-
-				r = "(function(){" + (d && d.DecorateModuleHeader ? d.DecorateModuleHeader(n, p, x) : "") + "\nHemiEngine.app.module.service.Register(\"" + n + "\",{ impl : func" + "tion(){"
-				+ (s ? s + "\n" : "")
-				+ x
-				+ "\nthis.Component = null;"
-				+ "this.Container = null;"
-                + "var Module = null;"
-                + "this.name = \"" + n + "\";"
-				///+ "this._IMod = function(){ Module = this; };"
-                + "this.object_prepare = function(){ Module = this; HemiEngine.app.module.service.AddImpl(\"" + n + "\",this.object_id);};"
-                + "this.object_destroy = function(){if(DATATYPES.TF(this.Unload)){this.Unload();}};"
-                + "HemiEngine.prepareObject(\"" + (q ? q : "module") + "\",\"%FILE_VERSION%\",1,this,1);"
-                + "this.ready_state = 4;"
-				+ "},"
-                + "Impls : [],"
-                + "name : \"" + n + "\""
-                + "});}());";
-
-				r = r.replace(/^\s+/, "").replace(/\s+$/, "");
-				/// if(!b) o.raw = x;
-				/*
-				var oT = document.createElement("textarea");
-				document.body.appendChild(oT);
-				oT.value = r;
-				*/
-				try {
-					eval(r);
-				}
-				catch (e) {
-					HemiEngine.logError("Error loading module '" + n + "'\n\n" + (e.message ? e.message : e.description));
-					return 0;
-				}
-
-				m = this.getModuleByName(n);
-				if (!m) {
-					HemiEngine.logError("Module could not be retrieved");
-					return 0;
-				}
-				return m;
+	
+					m = this.getModuleByName(n);
+					if (!m) {
+						HemiEngine.logError("Module could not be retrieved");
+						return 0;
+					}
+				
+					return m;
+				});
+				return p1;
 
 			};
 			/// <method virtual = "1">
@@ -215,9 +240,7 @@
 			/// 	<description>Registers a Module object.</description>
 			/// </method>
 			t.Register = function (n, c) {
-				/// m = { name: n, data: c, impls: [] };
 				this.addNewModule(c, n);
-				/// return m;
 			};
 			t.AddImpl = function (n, i) {
 				var o = t.getModuleByName(n);

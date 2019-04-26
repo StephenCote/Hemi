@@ -166,6 +166,7 @@ if (typeof window != "object") window = {};
     /// 	<description>Sends a message in the #100.3 message block.</description>
     /// </method>
     HemiEngine.log = function (s) {
+    	console.log(s);
         HemiEngine._logInternal(s, "100.3");
     };
     HemiEngine._logInternal = function(s, l){
@@ -218,11 +219,44 @@ if (typeof window != "object") window = {};
     ///		<return-value name = "NamespaceObject" type = "object">Returns an internal namespace object.</return-value>
     /// 	<description>Imports the specified namespace.</description>
     /// </method>
+    HemiEngine.including = {};
+    
+    /// 2019/03/06 - Currently a first pass at updating the structure
+    /// It's kludgy but works.  However, a better way seems to be making this an async function
     HemiEngine.include = function (s, z, n) {
+    	if(HemiEngine.including[s]) return HemiEngine.including[s];
         if(HemiEngine.isImported(s) || (!z && DATATYPES.TN(HemiEngine.NamespaceMap[s.replace(/^hemi\./, "")]))){
-			return HemiEngine.getLibrary(s);
+			return new Promise(function(res, rej){ res(HemiEngine.getLibrary(s)); });
 		}
-        var v, l = HemiEngine.Libraries.length, q, b = 0;
+        var v, q, k = s, kn=n,
+        	p = (z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxyProtocol(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js"
+        ;
+        
+        var x = HemiEngine.xml.promiseText(p, "GET", 0, s);
+        HemiEngine.including[k] = x;
+        
+        x.then(function(d){
+            var l = HemiEngine.Libraries.length, b = 0, o;
+             d = d.replace(/^\s+/, "").replace(/\s+$/, "");
+             if (!kn){
+            	 o= eval(d);
+            	 b = 1
+             }
+             q = {
+	             package: s,
+	             index: l,
+	             raw: d,
+	             loaded: b
+             };
+             HemiEngine.Libraries[l] = q;
+             HemiEngine.LibraryMap[s] = l;
+             return d;
+        });
+        x.catch(function(d){
+        	reject(d);
+        });
+        
+        /*
         var x = HemiEngine.xml.getText((z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxyProtocol(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js", 0, 0, s, 1);
         /// try {
             if (x) {
@@ -237,17 +271,7 @@ if (typeof window != "object") window = {};
         }
 		*/
 
-        q = {
-            package: s,
-            index: l,
-            raw: x,
-            loaded: b
-        };
-
-        HemiEngine.Libraries[l] = q;
-        HemiEngine.LibraryMap[s] = l;
-
-        return q;
+        return x;
 
     };
     /// <method>
@@ -259,8 +283,46 @@ if (typeof window != "object") window = {};
     /// <param name="bService" type="boolean" optional = "1">Bit indicating the namespace defines service and serviceImpl members, and to instantiate the service.</param>
     /// </method>
     ///
+
+    HemiEngine.dependencies = {};
+    HemiEngine.resolveDependency = function(s, o, b, m){
+    	if(HemiEngine.allStop) return;
+    	var d = HemiEngine.dependencies;
+    	if(!m) m = 1;
+    	else m++;
+    	if(m > 50){
+    		/// Using console since message service may not yet be ready
+    		console.error("Exceeded wait limit to resolve " + s);
+    		return;
+    	}
+    	if(DATATYPES.TU(d[s]) || !d[s].length){
+    		try{
+    			if (b && DATATYPES.TF(o["serviceImpl"]) && o.service == null){
+    				console.debug("Implementing service " + s);
+    				o.service = new o.serviceImpl();
+    				o.servicePromiseResolver(o.service)
+    			}
+    			else o.servicePromiseResolver(o);
+    	    	Object.keys(d).forEach(i => {
+    	    		d[i].forEach(function(item, index, object){
+    	    			if(item == s || item.match(new RegExp("hemi." + s,"gi"))){
+    	    				object.splice(index, 1);
+    	    			}
+    	    		});
+    	    	});
+    	    	delete HemiEngine.including["hemi." + s];
+    		}
+    		catch(e){
+    			console.error(s + " threw an error: " + e);
+    		}
+    	}
+    	else{
+    		console.debug(s + " is waiting for " + d[s].join(", "));
+    		setTimeout(HemiEngine.resolveDependency, 5, s, o, b, m);
+    	}
+    };
     HemiEngine.namespace = function (c, o, v, b) {
-        var a, i = 0, s, o, l, p;
+        var a, i = 0, s, o, l, p, sp, aP=[];
         if (!o) o = HemiEngine.Context;
         if (DATATYPES.TS(c)) {
             if (!HemiEngine.NamespaceMap[c]) {
@@ -276,11 +338,65 @@ if (typeof window != "object") window = {};
                 p = p[s];
             }
         }
+
         if (v) {
-            for (i in v) p[i] = v[i];
-            if (b && DATATYPES.TF(p["serviceImpl"])) p.service = new p.serviceImpl();
+        	o = Object.assign(p, v);
+        	if(!HemiEngine.dependencies[c]) HemiEngine.dependencies[c] = [];
+        	if(o.dependencies){
+        		
+        		o.dependencies.map(function(x){
+        			if(!HemiEngine.isImported(x)){
+        				HemiEngine.dependencies[c].push(x);
+        				aP.push(HemiEngine.include(x));
+        			}
+        		});
+        	}
+        	sp = Promise.all(aP).then(function(){
+        		HemiEngine.resolveDependency(c, o, b);
+        		
+        		/// 2019/03/13 - Fire framework load once the xml namespace is loaded and all dependencies resolved
+        		///
+        		if(c.match(/xml/) && window.HemiConfig){
+        			/// if(!window.HemiConfig.dependencies) window.HemiConfig.dependencies = [];
+        			HemiEngine.prepareFrameworkLoad(c);
+        		
+        		}
+        		/// if (b && DATATYPES.TF(o["serviceImpl"])) o.service = new o.serviceImpl();
+        		
+        	});
+        	
+        	o.servicePromise = new Promise((res,rej)=>{
+        		o.servicePromiseResolver = res;
+        		o.servicePromiseRejecter = rej;
+        	});
         }
         return p;
+    };
+    HemiEngine.prepareFrameworkLoad = function(c){
+    	var aP2 = [], aP3 = [], aP4 = [];
+		
+		window.HemiConfig.dependencies.map(function(x){
+			if(!HemiEngine.isImported(x)){
+				HemiEngine.dependencies[c].push(x);
+				aP2.push(HemiEngine.include(x));
+				aP3.push(x);
+			}
+		});
+		Promise.all(aP2).then((aO)=>{
+			
+			aP3.map(function(x){
+				var oN = Hemi.lookup(x);
+				if(oN && oN.servicePromise) aP4.push(oN.servicePromise);
+			});
+			Promise.all(aP4).then(()=>{
+				HemiEngine.frameworkLoad();
+			});
+		});
+    };
+    HemiEngine.frameworkLoad = function(){
+    
+    	if (!HemiEngine.xml.si) HemiEngine.xml.StaticInitialize();
+    	if(DATATYPES.TF(window.HemiConfig.frameworkLoad)) window.HemiConfig.frameworkLoad(HemiEngine);
     };
     /// <method>
     /// <name>lookup</name>
@@ -349,15 +465,17 @@ if (typeof window != "object") window = {};
     ///		<description>Creates and optionally registers a new FrameworkObject ready for use within the framework.</description>
     /// </method>
     HemiEngine.newObject = function (n, v, r, d, h) {
-        var o = {};
+        var o = {}, p, a;
         
-        if(DATATYPES.TO(h)){
-            for(i in h)
-                o[i] = h[i];
-        }
-        
+        if(DATATYPES.TO(h))
+        	o = Object.assign(o, h);
         HemiEngine.prepareObject(n, v, r, o, d);
-        if(DATATYPES.TF(o.object_create)) o.object_create();
+    	if(DATATYPES.TF(o.object_create)){
+    		if(( p = o.objects.promise)){
+    			p.then(function(){o.object_create();});
+    		}
+    		else o.object_create();
+    	}
         return o;
     };
 
@@ -370,25 +488,43 @@ if (typeof window != "object") window = {};
     ///		<param name = "d" type = "boolean">Bit indicating whether the object should include a deconstructor.</param>
     ///		<description>Prepares and optionally registers a new FrameworkObject ready for use within the Hemi framework.</description>
     /// </method>
+    
     HemiEngine.prepareObject = function (n, v, r, o, d) {
-        if (!o) o = {};
+        var p, aP = [];    
+    	if (!o) o = {}	
+
         if (!o.objects) o.objects = {};
         if (!o.properties) o.properties = {};
         if (!n) n = "custom_object";
         if (!v) v = "1.0";
         HemiEngine._implements(o, "base_object", n, v);
-        if (r)
+      
+        
+        if (r && HemiEngine.registry.service != null)
             HemiEngine.registry.service.addObject(o);
         
-        if(d){
-            HemiEngine.include("hemi.object");
-            HemiEngine.object.addObjectDeconstructor(o);
+        if(!HemiEngine.dependencies[n]) HemiEngine.dependencies[n] = [];
+ 		if(o.dependencies) o.dependencies.map(function(x){
+			if(!HemiEngine.isImported(x)){
+				HemiEngine.dependencies[n].push(x);
+				aP.push(HemiEngine.include(x));
+			}
+		});
+        
+    	aP.push(HemiEngine.include("hemi.object"));
+    	p = o.objects.promise = new Promise((res,rej)=>{
+    		Promise.all(aP).then(()=>{
+    			if(d) HemiEngine.object.addObjectDeconstructor(o);
+    			res(o);
+    		});
+    	});
+        
+        if(DATATYPES.TF(o.object_prepare)){
+        	if(p) p.then(function(){o.object_prepare();});
+        	else o.object_prepare();
         }
-        if(DATATYPES.TF(o.object_prepare))
-            o.object_prepare();
-
-        return o;
     };
+    
 
     /// <method private = "1">
     /// <name>_implements</name>
@@ -505,6 +641,7 @@ if (typeof window != "object") window = {};
     ///		<description>Repository service for storing and discovering framework objects.</description>
 
     HemiEngine.namespace("registry", HemiEngine, {
+    	dependencies : [],
         getEvalStatement : function(o){
             if(!HemiEngine.registry.service.isRegistered(o)) return 0;
             return "HemiEngine.registry.service.getObject('" + o.object_id + "')";
@@ -1198,10 +1335,13 @@ if (typeof window != "object") window = {};
                 };
             };
 
-            HemiEngine.prepareObject("message_service", "%FILE_VERSION%", 1, t);
-
-
+            HemiEngine.prepareObject("message_service", "%FILE_VERSION%", 0, t);
+            HemiEngine.registry.service.addObject(t);
             t.ready_state = 4;
+            
+
+
+            
         }
     }, 1);
 
@@ -1342,7 +1482,7 @@ if (typeof window != "object") window = {};
         _xml_http_object_pool_size: 5,
         _xml_http_object_pool_max: 50,
         _xml_http_pool_created: 0,
-        _xml_http_pool_enabled: 1,
+        _xml_http_pool_enabled: 0,
         si: 0,
 
         /// <method>
@@ -1724,8 +1864,8 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 2);
         },
         
-        promiseJSON: function (p, m, d) {
-        	return HemiEngine.xml.promise(p, m, d, 2);
+        promiseJSON: function (p, m, d, i) {
+        	return HemiEngine.xml.promise(p, m, d, i, 2);
         },
  
         deleteJSON: function (p, h, a, i, c) {
@@ -1748,8 +1888,8 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c, 1);
         },
         
-        promiseText: function (p, m, d) {
-        	return HemiEngine.xml.promise(p, m, d, 1);
+        promiseText: function (p, m, d, i) {
+        	return HemiEngine.xml.promise(p, m, d, i, 1);
         },
         
         deleteText: function (p, h, a, i, c) {
@@ -1772,8 +1912,8 @@ if (typeof window != "object") window = {};
 
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 0, null, c);
         },
-        promiseXml: function (p, m, d) {
-        	return HemiEngine.xml.promise(p, m, d, 0);
+        promiseXml: function (p, m, d, i) {
+        	return HemiEngine.xml.promise(p, m, d, i, 0);
         },
         deleteXml: function (p, h, a, i, c) {
 
@@ -1834,7 +1974,7 @@ if (typeof window != "object") window = {};
             return HemiEngine.xml._request_xmlhttp(p, h, a, i, 1, d, 0);
         },
         
-        promise : function(p, m, d, t){
+        promise : function(p, m, d, i, t){
         	var  n= ["xdom","text","json"][t];
 
         	return new Promise(function (resolve, reject) {
@@ -1844,10 +1984,11 @@ if (typeof window != "object") window = {};
                 			resolve(v[n]);
                 		}
                 		else{
-                			reject(v.message);
+                			///reject(v.message);
+                			resolve();
                 		}
                 	},
-                	1, 0, (m ? m : (d ? "POST" : "GET")), (d ? d : null), 1, t);
+                	1, (i ? i : p), (m ? m : (d ? "POST" : "GET")), (d ? d : null), 1, t);
         	});
         },
 
@@ -1875,7 +2016,6 @@ if (typeof window != "object") window = {};
 
             var _x = HemiEngine.xml, f, o = null, v, _m = HemiEngine.message.service, y, z, r, b, g, bi = 0;
 
-            if (!_x.si) _x.StaticInitialize();
             if (typeof p != DATATYPES.TYPE_STRING || p.length == 0) {
                 _m.sendMessage("Invalid path parameter '" + p + "' in _request_xmlhttp", "512.4", 1);
                 return 0;
@@ -1903,7 +2043,6 @@ if (typeof window != "object") window = {};
 				&&
 				(r = _x._xml_requests[_x._xml_requests_map[i]])
 			) {
-
                 if (r.c && (typeof r.cd == DATATYPES.TYPE_OBJECT || typeof r.ct == DATATYPES.TYPE_STRING)) {
                     if (!t)
                         b = { xdom: r.cd, id: i };
@@ -2627,9 +2766,7 @@ if (typeof window != "object") window = {};
     if (!window.Hemi) window.Hemi = HemiEngine;
 })();
 if(typeof window.Hemi == "object" && typeof Hemi != "object") Hemi = window.Hemi;
-if(window.HemiConfig){
-   if(DATATYPES.TF(window.HemiConfig.frameworkLoad)) window.HemiConfig.frameworkLoad(HemiEngine);
-}
+
 
 /// </package>
 /// </source>

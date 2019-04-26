@@ -65,6 +65,8 @@
 	/// </method>
 (function () {
     HemiEngine.namespace("util.logger", HemiEngine, {
+    	logToConsole : 1,
+    	levels : ["Debug", "Advisory", "Normal", "Warning", "Error", "Fatal"],
         /// <method>
         /// 	<name>addLogger</name>
         ///		<param name="oObject" type="FrameworkObject">Object onto which the logger will be instrumented.</param>
@@ -81,11 +83,27 @@
                 HemiEngine.message.service.data.ed.push([s, d, i]);
                 HemiEngine.message.service._blc();
             }
-            var a = ["Debug", "Advisory", "Normal", "Warning", "Error", "Fatal"], x = 0, f;
+            HemiEngine.util.logger.levels.map((x, z, a) => {
+            	o["log" + (z != 2 ? x : "")] = function(m, l){
+            		var lb = i + "." + (z + 1) + (i > 0 ? "." + i : "");
+            		HemiEngine.message.service.sendMessage(m, lb);
+            		if(HemiEngine.util.logger.logToConsole){
+            			var mn = "log";
+            			if(z < 2) mn = "debug";
+            			else if (z > 3) mn = "error";
+            			else if (z == 3) mn = "warn";
+            			console[mn]("(" + lb + ") " + x.toUpperCase() + " " + m);
+            		}
+            	};
+            });
+            	//function(m, i){HemiEngine.message.service.sendMessage(m, \"" + i + "." + (x + 1) + "\" + (i > 0 ? \".\" + i: \"\"));}
+            
+            /*
             for (; x < a.length; x++) {
                 eval("f = function(m, i){HemiEngine.message.service.sendMessage(m, \"" + i + "." + (x + 1) + "\" + (i > 0 ? \".\" + i: \"\"));}");
                 o["log" + (x != 2 ? a[x] : "")] = f;
             }
+            */
         }
     });
 } ());

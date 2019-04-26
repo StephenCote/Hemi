@@ -110,15 +110,8 @@
         TODO: Should the Template feature be refactored into its own class that inherits from an Application Component?  There is an obvious separation between the two, but separating them would result in a fair amount of duplicate handling.
 */
 (function () {
-	HemiEngine.include("hemi.util");
-	HemiEngine.include("hemi.util.logger");
-	HemiEngine.include("hemi.event");
-	HemiEngine.include("hemi.transaction");
-	HemiEngine.include("hemi.app.space");
-	HemiEngine.include("hemi.data.stack");
-	HemiEngine.include("hemi.data.form");
-
 	HemiEngine.namespace("app.comp", HemiEngine, {
+		dependencies : ["hemi.util","hemi.util.logger","hemi.event","hemi.transaction","hemi.app.space","hemi.data.stack","hemi.data.form"],
 		properties: {
 			/* id on an element that points to an appcomp entry */
 			c: "acid",
@@ -171,21 +164,18 @@
 
 			/* #1 Create a new ApplicationComponent for 'o' */
 			z = _a.newInstance(0, 0, o, 0, p, 1);
-			z.setAsync(!a);
-
+			/// z.setAsync(!a);
+			z.setAsync(1);
 			/* #2 Enabled bindings (for events) - this must be done prior to loading the component definition */
 
-			z.loadComponent(i, c);
+			z.getObjects().promise = z.loadComponent(i, c);
 			if (typeof q.setAttribute == DATATYPES.TYPE_UNDEFINED)
 				q[r] = z.object_id;
 
 			else
 				q.setAttribute(r, z.object_id);
 
-
-
-			HemiEngine.message.service.sendMessage("Bind to application component " + z.getObjectId(), "200.1");
-
+			HemiEngine.logDebug("Bind to application component " + i + " / " + z.getObjectId());
 
 			return z;
 		},
@@ -280,7 +270,8 @@
 				tp: [],
 				/// beans
 				b: [],
-				ts: HemiEngine.data.stack.service
+				ts: HemiEngine.data.stack.service,
+				dependencies:{}
 			};
 			n.properties = {
 				eic: 1,
@@ -426,6 +417,7 @@
 				var t = this, o, i;
 
 				/* only do this once */
+				Hemi.log("Destroy application component " + t.object_id);
 				if (t.ready_state < 5) {
 
 					HemiEngine.message.service.unsubscribe(this, "onspaceconfigload", "_handle_spaceconfig_load");
@@ -576,6 +568,7 @@
 			/// <description>Invokes a post initialization after the component has been initialized, and after any child content and objects have been added and initialized.  Automatically invoked by Space servire through XHTMLComponent. Or, can be manually invoked as needed.  Causes any virtual <i>component_post_init</i> function to be invoked.</description>
 			/// </method>
 			n.post_init = function (o, i) {
+				/// console.log("Application component post_init: " + this.component_post_init);
 				if (typeof this.component_post_init == DATATYPES.TYPE_FUNCTION) this.component_post_init();
 			};
 
@@ -711,7 +704,8 @@
 				Just use the path for the cache id for sync requests
 				*/
 
-				_x.getXml(c, null, _s.a, (_s.a ? t.object_id : c), 1);
+				/// _x.getXml(c, null, _s.a, (_s.a ? t.object_id : c), 1);
+				return HemiEngine.xml.promiseXml(c, "GET", 0, t.object_id);
 				/// 2009/09/21 - why not cache this? -- !(_s.a)
 			};
 
@@ -746,8 +740,8 @@
 				Check for ready_state < 4 because multiple requests using the same cache id 
 				and same comparison id will cause the component to be loaded multiple times.
 				*/
-
-				if (v.id == (_s.a ? t.object_id : _s.c) && t.ready_state < 4) {
+				/// console.log("Handle load XML: " + t.object_id + " : " + _s.c + ":" + t.object_id);
+				if (v.id == (_s.a ? t.object_id : _s.c ) && t.ready_state < 4) {
 					HemiEngine.message.service.unsubscribe(t, "onloadxml", "_handle_load_xml");
 					_s.hx = 0;
 					x = v.xdom;
@@ -756,6 +750,7 @@
 					* 2004/07/22
 					* Removed the alert-level on the warning message
 					*/
+
 					if (o != null) t.importNodeDefinition(o);
 					else {
 						HemiEngine.message.service.sendMessage("Invalid component definition for '" + _s.n + "' in '" + _s.m + "'", "200.4");
@@ -776,6 +771,7 @@
 				i = id
 				s = string data
 				*/
+				/// console.log("Import node definition");
 				var i, t = this, _s, p;
 				_s = t.properties;
 
@@ -820,10 +816,13 @@
 				i = id 
 				p = participant id
 				*/
-
+				/// console.log("Import component definition: " + s);
 				var t = this, _s, p;
 				_s = t.properties;
-				if (typeof s != DATATYPES.TYPE_STRING) return 0;
+				if (typeof s != DATATYPES.TYPE_STRING){
+					console.warn("Component definition is null");
+					return 0;
+				}
 
 				/*
 				If there is already a component definition loaded, then invoke any destroy handler.
@@ -923,6 +922,7 @@
 			n.importEmbeddedScript = function (oX, b) {
 
 				var j, j2, a = oX.getElementsByTagName("embedded-script"), _p = this.objects, i, t, x;
+				
 				for (i = a.length - 1; i >= 0; i--) {
 					t = HemiEngine.xml.getInnerText(a[i]);
 					if (!b) a[i].parentNode.removeChild(a[i]);
@@ -931,12 +931,18 @@
 
 						eval("x={" + t + "}");
 						for (j in x) {
+
 							j2 = j;
 							if (j2.match(/^embedded_init$/)) {
 								j2 = "embedded_init_" + this.properties.eic++;
 							}
 							else if (j2.match(/^embedded_destroy$/)) {
 								j2 = "embedded_destroy_" + this.properties.edc++;
+							}
+							else if(j.match(/^dependencies$/)){
+								x[j].map((n)=>{this.objects.dependencies[n]=1;});
+								
+								continue;
 							}
 							_p.tp[_p.tp.length] = j2;
 							this[j2] = x[j];
@@ -953,26 +959,45 @@
 			};
 			n._handle_spaceconfig_load = function (s, v) {
 				if (v && v.space_element && v.space_element.getAttribute("acrid") == this.object_id) {
+					Hemi.logDebug("App Comp Space Config Load: Space (" + v.space_id + ") : Space Comp Ref Id (" + v.space_element.getAttribute("acrid") + ") : Comp Id (" + this.object_id + ")");
 					this.properties.ei = v.space_id;
 					this.InitializeTemplate();
 				}
+				else{
+					Hemi.logDebug("Don't initialize for " + this.object_id);
+				}
 			};
 			n.InitializeTemplate = function () {
-
-
-				for (var i = 1; i < this.properties.eic; i++) {
-					this["embedded_init_" + i]();
-					this["embedded_init_" + i] = 0;
-				}
-				if (typeof this.template_init == DATATYPES.TYPE_FUNCTION) this.template_init();
-				this.template_init = 0;
-				this.properties.eic = 1;
-				if (typeof this.local_template_init == DATATYPES.TYPE_FUNCTION) this.local_template_init(this);
-				HemiEngine.message.service.publish("ontemplateload", this);
-			};
-			n._handle_load_template = function (s, v) {
-				HemiEngine.logDebug("Handle load template");
-				if (v && v.xdom) this.loadTemplateFromNode(v.xdom.documentElement);
+				Hemi.logDebug("Initialize template " + this.object_id);
+				
+				var aP = [];
+        		Object.keys(this.objects.dependencies).map(function(x){
+        			if(!HemiEngine.isImported(x)){
+        				aP.push(HemiEngine.include(x));
+        			}
+        		});
+				Promise.all(aP).then(()=>{
+					Hemi.logDebug("Resolved component (" + this.object_id + ") dependencies");
+					this.dependencies = {};
+					for (var i = 1; i < this.properties.eic; i++) {
+						this["embedded_init_" + i]();
+						this["embedded_init_" + i] = 0;
+					}
+					
+					if (typeof this.template_init == DATATYPES.TYPE_FUNCTION){
+						this.template_init();
+					}
+					
+					this.template_init = 0;	
+					this.properties.eic = 1;
+					if (typeof this.local_template_init == DATATYPES.TYPE_FUNCTION) this.local_template_init(this);
+					HemiEngine.message.service.publish("ontemplateload", this);
+					
+					if (typeof this.template_post_init == DATATYPES.TYPE_FUNCTION){
+						this.template_post_init();
+					}
+					this.template_post_init = 0;
+				});
 			};
 
 			///		<method>
@@ -1009,7 +1034,9 @@
 				if (typeof this.setTitle == DATATYPES.TYPE_FUNCTION) this.setTitle(q.getAttribute("Title"));
 				/// Import any embedded-script elements
 				///
-				this.importEmbeddedScript(q);
+				/// 2019/04/05 - Set the preserve bit to true since the mechanism by which the xml is being passed in
+				/// changed
+				this.importEmbeddedScript(q, 1);
 
 				if (typeof this.getTemplateContainer == DATATYPES.TYPE_FUNCTION) o = this.getTemplateContainer();
 				HemiEngine.xml.removeChildren(o);
@@ -1020,26 +1047,30 @@
 
 				/// check for any spaces in the loaded templates
 				///
-				///alert(b);
+				/// console.log("Checking for spaces loaded in template: " + b + " / " + this.properties.ei);
 				if (b) {
 					o.setAttribute("space-config", "self");
 					if (!this.properties.ei) {
+						Hemi.logDebug("Create new application component space");
 						HemiEngine.message.service.subscribe(this, "onspaceconfigload", "_handle_spaceconfig_load");
 						o.setAttribute("acrid", this.object_id);
 						o.setAttribute("is-space", "1");
 
 						this.scopeHandler("template_processor", 0, 0, 1);
-						///HemiEngine.app.space.service.loadSpaces(0,o.parentNode,this._prehandle_template_processor, this._handle_xhtml_token);
+						HemiEngine.logDebug("Create App Comp Space for " + this.object_id);
 						var oSpace = HemiEngine.app.space.service.createSpace(o, 0, this._prehandle_template_processor, this._handle_xhtml_token);
-						///alert(oSpace.space_id);
+
 					}
 					else {
+						/// console.log("Use existing application component space " + this.properties.ei);
 						x = HemiEngine.app.space.service.getSpace(this.properties.ei);
+						HemiEngine.logDebug("Configure App Comp Space for " + this.object_id);
 						HemiEngine.app.space.service.configureSpace(x, "self");
 					}
 				}
-				else
+				else{
 					this.InitializeTemplate();
+				}
 			};
 
 			///		<method virtual = "1">
@@ -1098,12 +1129,21 @@
 			///		</method>
 
 			n.loadTemplate = function (s, i) {
-				if (!s || !s.length) return;
+				HemiEngine.logDebug("Load template: " + s);
+				if (!s || !s.length){
+					console.error("Template (" + s + ") was null: " + s);
+					return;
+				}
 				this.cleanTemplate();
 				if (i) this.properties.tid = i;
 				/// Use path for cache
 				///
-				HemiEngine.xml.getXml(s, this._prehandle_load_template, 1);
+				return new Promise((res,rej)=>{
+					HemiEngine.xml.promiseXml(s, "GET", 0, i).then((v)=>{
+						this.loadTemplateFromNode(v.documentElement);
+						res(this);
+					});
+				});
 				/// ,s, 1
 			};
 			///		<method>

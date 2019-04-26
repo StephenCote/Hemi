@@ -11,12 +11,8 @@
 ///	<library>Hemi</library>
 ///	<description>Test Modules are Modules decorated for unit testing.  For example, the <a href = "../Tests/test.app.comp.js">Application Component Tests</a> includes several unit tests for vetting the Application Component class.</description>
 (function () {
-    HemiEngine.include("hemi.object");
-    HemiEngine.include("hemi.util.logger");
-    HemiEngine.include("hemi.app.module");
-    HemiEngine.include("hemi.task");
-    HemiEngine.include("hemi.event");
     HemiEngine.namespace("app.module.test", HemiEngine, {
+    	dependencies : ["hemi.object","hemi.util.logger","hemi.app.module","hemi.task","hemi.event"],
         ///	<static-class>
         ///		<name>service</name>
         ///		<version>%FILE_VERSION%</version>
@@ -74,48 +70,50 @@
             t.NewTest = function (n, x, ft, fs, p, b) {
                 if (!n) return 0;
                 if (!p) p = "Tests/";
-
-                var m = HemiEngine.app.module.service.NewModule(n, x, p, t, (b ? 1 : 0), "test_module");
-                m.objects.sh = fs;
-                m.objects.th = ft;
-
-                m.ResetSuite = function () {
-                    var a = m.TestMembers, k, h, i;
-                    if ((i = m.properties.ti)) {
-                        m.properties.ti = 0;
-                        this.logDebug("Unset suite task: " + i);
-                        HemiEngine.task.service.returnDependency(HemiEngine.task.service.getTask(i));
-                        k = HemiEngine.task.service.endTask(i, 1);
-                        for (h=0; h < a.length; )
-                            HemiEngine.task.service.clearDependency(m.properties.ts + "-" + a[h++]);
-                    }
-                    m.properties.ts = "TestSuite-" + m.getObjectId();
-                    k = HemiEngine.task.service.addTask(
-					    m.properties.ts,
-					    "default",
-					    "[nothing]",
-					    "function",
-					    Hemi.registry.getApplyStatement(m, "handle_testsuite_task")
-					);
-                    for (h =0; h < a.length; )
-                        HemiEngine.task.service.addTaskDependency(k, m.properties.ts + "-" + a[h++]);
-
-                    m.properties.ti = k.task_id;
-                    this.logDebug("Reset suite task: " + k.task_id + " / " + k.task_state);
-                    /// m.clearTests();
-                };
-
-
-                m.handle_testsuite_task = function (s, v) {
-                    if (!m.properties.ti) {
-                        this.log("Ignore completion of disengaged task");
-                        return;
-                    }
-                    m.log("TestSuite " + m.name + " Completed");
-                    if (DATATYPES.TF(m.objects.sh)) m.objects.sh(m);
-                };
-                m.ResetSuite();
-                return m;
+                var p2 = new Promise((res,rej)=>{
+                	var p1 = HemiEngine.app.module.service.NewModule(n, x, p, t, (b ? 1 : 0), "test_module");
+	                p1.then((m)=>{
+		                m.objects.sh = fs;
+		                m.objects.th = ft;
+		
+		                m.ResetSuite = function () {
+		                    var a = m.TestMembers, k, h, i;
+		                    if ((i = m.properties.ti)) {
+		                        m.properties.ti = 0;
+		                        this.logDebug("Unset suite task: " + i);
+		                        HemiEngine.task.service.returnDependency(HemiEngine.task.service.getTask(i));
+		                        k = HemiEngine.task.service.endTask(i, 1);
+		                        for (h=0; h < a.length; )
+		                            HemiEngine.task.service.clearDependency(m.properties.ts + "-" + a[h++]);
+		                    }
+		                    m.properties.ts = "TestSuite-" + m.getObjectId();
+		                    k = HemiEngine.task.service.addTask(
+							    m.properties.ts,
+							    "default",
+							    "[nothing]",
+							    "function",
+							    Hemi.registry.getApplyStatement(m, "handle_testsuite_task")
+							);
+		                    for (h =0; h < a.length; )
+		                        HemiEngine.task.service.addTaskDependency(k, m.properties.ts + "-" + a[h++]);
+		
+		                    m.properties.ti = k.task_id;
+		                    this.logDebug("Reset suite task: " + k.task_id + " / " + k.task_state);
+	                 
+		                };
+		                m.handle_testsuite_task = function (s, v) {
+		                    if (!m.properties.ti) {
+		                        this.log("Ignore completion of disengaged task");
+		                        return;
+		                    }
+		                    m.logDebug("TestSuite " + m.name + " Completed");
+		                    if (DATATYPES.TF(m.objects.sh)) m.objects.sh(m);
+		                };
+		                m.ResetSuite();
+		                res(m);
+	                });
+                });
+                return p2;
             };
             t.handle_testsuite_task = function (o, v) {
 
@@ -141,7 +139,7 @@
                 /// Start Test
 					+ "this._ST = function(n){this.logDebug(\"Start Test \" + n);var o = this.getTestByName(n);if(o)o=this.removeTest(o); o={name:n,start_time:(new Date()),stop_time:0,messages:[],result:0,error:0,status:0,data:0};this.addNewTest(o,n);return o;};"
                 /// Stop Test
-					+ "this._SP = function(o, a){if(a==true)this.log(\"Test " + n + ".\" + o.name + \" Succeeded\"); else this.logWarning(\"Test " + n + ".\" + o.name + \" Failed\");this.logDebug(\"Stop Test " + n + "\");o.stop_time = (new Date());o.result=a;};"
+					+ "this._SP = function(o, a){if(a==true)this.logDebug(\"Test " + n + ".\" + o.name + \" Succeeded\"); else this.logWarning(\"Test " + n + ".\" + o.name + \" Failed\");this.logDebug(\"Stop Test " + n + "\");o.stop_time = (new Date());o.result=a;};"
                 /// Add Test Message
 					+ "this._AM = function(o, a){this.logError(\"Test " + n + ": \" + a);o.messages.push(a);};"
                     + "this.RunTest = function(s){var e = \"" + n + "\",f=\"_X_\" + s;if(!this[f]){this.logError(\"Invalid test: \" + f);return false;} return this[f]();};"

@@ -2,8 +2,9 @@
 <application-components>
    <application-component id = "jsontree" participant-id ="tree">
       <![CDATA[
+      	dependencies : ["hemi.css"],
          component_init:function(){
-						Hemi.include("hemi.css");
+
 						Hemi.css.loadStyleSheet("Styles/tree.css","Tree");
 						this.scopeHandler("switchbranch",0,0,1);
 						this.getProperties().tree_loaded = 0;

@@ -106,6 +106,8 @@
          <pattern match="ACTIVEXOBJECT" replace="A" />
          <pattern match="XMLHTTPREQUEST" replace="X" />
          <pattern match="TYPE_STRING" replace="S" />
+         <pattern match="TYPE_BOOLEAN" replace="B" />
+         
          <pattern match="TYPE_NUMBER" replace="N" />
          <pattern match="TYPE_OBJECT" replace="O" />
          <pattern match="TYPE_FUNCTION" replace="F" />

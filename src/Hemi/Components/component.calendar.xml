@@ -2,6 +2,7 @@
 <application-components>
 	<application-component id="calendar">
 		<![CDATA[
+		dependencies : ["hemi.ui.util","hemi.ui.calendar"],
 		component_init:function(){
 			// Create a contex-sensitive handler
 			//
@@ -21,8 +22,7 @@
 				*/
 				return;
 			}
-			Hemi.include("hemi.ui.util");
-			Hemi.include("hemi.ui.calendar");
+
 			Hemi.css.loadStyleSheet("Styles/caltasche.css","caltasche");
 			this.scopeHandler("calendar_click",0,0,1);
 			this.scopeHandler("sync_value",0,0,1);

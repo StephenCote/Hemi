@@ -2,8 +2,9 @@
 <application-components>
 	<application-component id = "draggable" participant-id = "draggable">
 		<![CDATA[
+			dependencies : ["hemi.css"],
 			component_destroy:function(){
-				Hemi.include("hemi.css");
+
 				Hemi.log("Init draggable");
 				var oT = this.GetTracker();
 				if(oT && oT.getReadyState() == 4){

@@ -3,11 +3,9 @@
    <application-component id = "tree">
        <!-- participant-id ="datagrid" -->
       <![CDATA[
+      	dependencies : ["hemi.data.io","hemi.css","hemi.text"],
          component_init:function(){
          	var _p = this.getProperties();
-            Hemi.include("hemi.data.io");
-			Hemi.include("hemi.css");
-            Hemi.include("hemi.text");
             
             var sP = Hemi.GetSpecifiedAttribute(this.getContainer(),"participant-id");
             if(!sP) sP = "datagrid";

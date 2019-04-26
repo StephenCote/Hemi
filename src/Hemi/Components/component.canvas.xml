@@ -7,8 +7,8 @@
 			The canvas utility will size the instance by width/height attribute values,
 			Or by using the 'Resize' method.
 		 */
+		 dependencies : ["hemi.graphics.canvas"],
          component_init:function(){
-			Hemi.include("hemi.graphics.canvas");
 			if(this.getContainer() != null){
 				this.getObjects().canvas = Hemi.graphics.canvas.newInstance(this.getContainer());
 			}

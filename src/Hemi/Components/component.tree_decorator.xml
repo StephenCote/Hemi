@@ -2,9 +2,8 @@
 <application-components>
    <application-component id = "tree_decorator" participant-id ="tree">
       <![CDATA[
+      	dependencies : ["hemi.css","hemi.text"],
          component_init:function(){
-						Hemi.include("hemi.css");
-						Hemi.include("hemi.text");
 						Hemi.css.loadStyleSheet("Styles/TreeStyles.css","Tree");
 						this.scopeHandler("switchbranch",0,0,1);
 						this.getProperties().current_leaf = 0;

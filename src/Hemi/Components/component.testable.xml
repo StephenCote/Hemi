@@ -2,11 +2,8 @@
 <application-components>
 	<application-component id = "testable">
 		<![CDATA[
+			dependencies : ["hemi.app","hemi.app.module","hemi.app.module.test","hemi.css"],
          component_init:function(){
-			Hemi.include("hemi.app");
-			Hemi.include("hemi.app.module");
-			Hemi.include("hemi.app.module.test");
-			Hemi.include("hemi.css");
 			Hemi.css.loadStyleSheet("Styles/testsuite.css","TestSuite");
 			this.scopeHandler("test_status",0,0,1);
 			this.scopeHandler("test_suite",0,0,1);

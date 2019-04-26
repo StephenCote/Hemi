@@ -2,8 +2,9 @@
 <application-components>
 	<application-component id = "select_bus" participant-id ="iobus">
 		<![CDATA[
+		dependencies : ["hemi.data.io"],
          component_init:function(){
-				Hemi.include("hemi.data.io");
+
 				if(!this.getContainer().nodeName.match(/^select$/i)) return;
 				this.getContainer().options.length = 0;
 				var aB = Hemi.data.io.service.getBusType();

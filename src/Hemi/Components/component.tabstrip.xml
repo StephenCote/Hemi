@@ -2,8 +2,8 @@
 <application-components>
 	<application-component id = "tabstrip" participant-id = "printer-friendly">
 		<![CDATA[
+		dependencies : ["hemi.css"],
 		component_init : function(){
-			Hemi.include("hemi.css");
 			this.getObjects().tabs = [];
 			this.scopeHandler("tabclick",0,0,1);
 			Hemi.css.loadStyleSheet("Styles/tabs.css","tabs");

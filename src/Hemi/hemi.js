@@ -285,8 +285,21 @@ if (typeof window != "object") window = {};
     ///
 
     HemiEngine.dependencies = {};
+    HemiEngine.removeDependencyBlock = function(){
+    	if(typeof g_db != DATATYPES.TYPE_UNDEFINED && g_db >= 2){
+	        setTimeout(function(){
+	        	console.debug("Unset global dependency block");
+	        	g_db = 0;
+	        },10);
+    	}
+    };
     HemiEngine.resolveDependency = function(s, o, b, m){
     	if(HemiEngine.allStop) return;
+    	if(typeof g_db != DATATYPES.TYPE_UNDEFINED && g_db >= 2){
+    		console.debug(s + " is waiting for the global dependency resolver block to be removed");
+    		setTimeout(HemiEngine.resolveDependency, 5, s, o, b, m);
+    		return;
+    	}
     	var d = HemiEngine.dependencies;
     	if(!m) m = 1;
     	else m++;
@@ -358,6 +371,10 @@ if (typeof window != "object") window = {};
         		///
         		if(c.match(/xml/) && window.HemiConfig){
         			/// if(!window.HemiConfig.dependencies) window.HemiConfig.dependencies = [];
+        			if(typeof g_db != DATATYPES.TYPE_UNDEFINED){
+        				g_db = 1;
+        				Hemi.removeDependencyBlock();
+        			}
         			HemiEngine.prepareFrameworkLoad(c);
         		
         		}
@@ -1805,10 +1822,12 @@ if (typeof window != "object") window = {};
                         }
                     }
                     if (!o.t && v.xdom == null) {
-                        _m.sendMessage("Error loading '" + o.u + "'. Response text is: " + o.o.responseText + ".   Async is " + o.a + "; Pool Index is " + o.pi, "540.4", 1);
+                        console.error("Error loading '" + o.u + "'. Response text is: " + o.o.responseText + ".   Async is " + o.a + "; Pool Index is " + o.pi, "540.4", 1);
                     }
                     else if (o.t == 2 && v.json == null) {
-                        _m.sendMessage("Error loading '" + o.u + "'. The internal JSON object reference is null.  Async is " + o.a + "; Pool Index is " + o.pi, "540.4");
+                    	/// this isn't an error necessarily depending on authN/Z status
+                    	///
+                        console.debug("Error loading '" + o.u + "'. The internal JSON object reference is null.  Async is " + o.a + "; Pool Index is " + o.pi, "540.4");
                     }
 
 
@@ -1843,7 +1862,7 @@ if (typeof window != "object") window = {};
 
             }
             catch (e) {
-                _m.sendMessage("Error in handle_xml_request_load: " + (e.description ? e.description : e.message), "512.4", 1);
+                console.debug("Error in handle_xml_request_load: " + (e.description ? e.description : e.message), "512.4", 1);
             }
 
         },
@@ -2017,7 +2036,7 @@ if (typeof window != "object") window = {};
             var _x = HemiEngine.xml, f, o = null, v, _m = HemiEngine.message.service, y, z, r, b, g, bi = 0;
 
             if (typeof p != DATATYPES.TYPE_STRING || p.length == 0) {
-                _m.sendMessage("Invalid path parameter '" + p + "' in _request_xmlhttp", "512.4", 1);
+                console.error("Invalid path parameter '" + p + "' in _request_xmlhttp", "512.4", 1);
                 return 0;
             }
 			
@@ -2029,7 +2048,7 @@ if (typeof window != "object") window = {};
 
 			/// 2011/02/22 Only use the proxy if loaded
 			///
-			if( HemiEngine.lookup("hemi.data.io.proxy")){
+			if( HemiEngine.lookup("hemi.data.io.proxy") && HemiEngine.data.io.proxy.service != null){
 				if(HemiEngine.data.io.proxy.service.isProxied(p)){
 					return HemiEngine.data.io.proxy.service.proxyXml(p, h, a, i, x, d, c, t);
 				}
@@ -2145,7 +2164,7 @@ if (typeof window != "object") window = {};
                 }
             }
             catch (e) {
-                _m.sendMessage("Error in _request_xmlhttp: " + (e.description ? e.description : e.message), "512.4", 1);
+                console.error("Error in _request_xmlhttp: " + (e.description ? e.description : e.message), "512.4", 1);
             }
 
             if (b && !a) {
@@ -2762,7 +2781,7 @@ if (typeof window != "object") window = {};
     });
     ///	</static-class>
 
-
+	g_db = 1;
     if (!window.Hemi) window.Hemi = HemiEngine;
 })();
 if(typeof window.Hemi == "object" && typeof Hemi != "object") Hemi = window.Hemi;

@@ -8,6 +8,7 @@
 	
 	<application-component id="window">
 		<![CDATA[
+		dependencies : ["hemi.css"],
 		GetWindowContainer : function(){
 			var oE = this.GetSpace();
 			return (oE ? oE.space_element : document.body);
@@ -35,7 +36,6 @@
 				return;
 			}
 
-			Hemi.include("hemi.css");
 			var oS = Hemi.css.loadStyleSheet("Styles/GizmoStyles.css","GizmoStyles");
 
 			_p.manager = oManager;

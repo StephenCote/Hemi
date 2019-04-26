@@ -2,8 +2,9 @@
 <application-components>
 	<application-component id = "drag-tracker">
 	<![CDATA[
+		dependencies : ["hemi.css"],
 		component_init : function(){
-			Hemi.include("hemi.css");
+
 			Hemi.css.loadStyleSheet("Styles/hemi.css","hemi");
 			var _s = this.getProperties();
 			_s.zindex_dragitem = 121;

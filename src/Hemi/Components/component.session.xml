@@ -7,8 +7,8 @@
 
 	<application-component id="session">
 	<![CDATA[
+		dependencies : ["hemi.web.security"],
 		component_init:function(){
-			Hemi.include("hemi.web.security");
 			
 			this.getObjects().session = {};
 

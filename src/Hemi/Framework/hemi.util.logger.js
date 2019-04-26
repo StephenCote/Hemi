@@ -96,14 +96,6 @@
             		}
             	};
             });
-            	//function(m, i){HemiEngine.message.service.sendMessage(m, \"" + i + "." + (x + 1) + "\" + (i > 0 ? \".\" + i: \"\"));}
-            
-            /*
-            for (; x < a.length; x++) {
-                eval("f = function(m, i){HemiEngine.message.service.sendMessage(m, \"" + i + "." + (x + 1) + "\" + (i > 0 ? \".\" + i: \"\"));}");
-                o["log" + (x != 2 ? a[x] : "")] = f;
-            }
-            */
         }
     });
 } ());

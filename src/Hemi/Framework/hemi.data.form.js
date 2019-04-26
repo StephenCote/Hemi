@@ -156,7 +156,6 @@
 		Also, add a getXElement method, with the same stipulation as above regarding synchronization.
 */
 
-
 (function () {
     HemiEngine.namespace("data.form", HemiEngine, {
     	dependencies : ["hemi.object","hemi.text"],

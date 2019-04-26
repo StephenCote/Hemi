@@ -185,7 +185,7 @@
             	delete _p[ik][o.object_id];
             	delete _p[nk][o.access_name];
             	return 1;
-            }
+            };
             o["addNew" + s_name] = function(o, n, i){
             	var _p = b,l;
             	if(!i){

@@ -572,7 +572,7 @@
                             w.def = def;
                             w.cn = cn;
                             o.space_implementations[q] = w;
-                        } /// End  check for definition
+                        } /* End check for definition */
                        
                         /// If cached or defined
                         if (def || ci) {
@@ -598,7 +598,7 @@
 
                                     j[j.length] = u;
                                 }
-                            } /// End if (check_constructor)
+                            } /* End if (check_constructor) */
 
                             nr = HemiEngine.GetSpecifiedAttribute(n, "aid");
 
@@ -616,12 +616,12 @@
                                 else {
                                     this.logError("Unexpected implementation for " + q + " with g=" + g + " and f=" + f, "200.4");
                                 }
-                            } /// End if not abstracted
+                            } /* End if not abstracted */
                             else {
                                 /// Abstracted: just push out w to x
                                 this.logDebug("Apply #3 " + q + " abstracted");
                                 w = x;
-                            } /// End if abstracted
+                            } /* End if abstracted */
 
                         	var p1, pd = {
                             		o:o,
@@ -654,7 +654,7 @@
                         		t.completeParseConfiguration(pd.o, pd.cn, pd.ck, pd.cx, pd.cxp, pd.sf, pd.nr, pd.br, pd.n, pd.v, xd, pd.k, pd.e, pd.cs);
                         	});
                         	o.promises.push(p1);
-                        } /// End check for implementation or cached implementation 
+                        } /* End check for implementation or cached implementation */ 
                         else {
                             /// Copy the whole node
                             if (typeof x == DATATYPES.TYPE_UNDEFINED) x = o;
@@ -720,10 +720,9 @@
                 
                 if (w && w.object_type && w.object_type.match(/^xhtml_component$/)) {
                 	let p1 = w.post_init();
-                	if(p1 instanceof Promise){
-                		/// console.log("Include object post_init promise");
+                	if(p1 instanceof Promise)
                 		o.promises.push(p1);
-                	}
+                	
                 }
 
                 return;

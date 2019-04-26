@@ -231,12 +231,14 @@
 		CreateNewObject : function(){
 				if(this.getObjects().fragment_construct && this.getObjects().fragment_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
 
-				var oW = Hemi.app.createWindow(0,"Templates/NewFragment.xml","NewFragment-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
-				oW.resizeTo(500,350);
-				// Destroy the window when finished
-				//
-				oW.setHideOnClose(0);
-				//this.SetLabel("New Fragment - Remember to Save!");
+				Hemi.app.createWindow(0,"Templates/NewFragment.xml","NewFragment-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()})
+				.then((oW)=>{
+					oW.resizeTo(500,350);
+					// Destroy the window when finished
+					//
+					oW.setHideOnClose(0);
+					//this.SetLabel("New Fragment - Remember to Save!");
+				});
 		},
 
 		BuildFragment : function(){

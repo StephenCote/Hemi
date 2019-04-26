@@ -2,8 +2,9 @@
 <html-fragment>
 	<embedded-script>
 			<![CDATA[
+		dependencies : ["hemi.text","hemi.data.validator"],
 		embedded_init : function(){
-			Hemi.include("hemi.text");
+
 			if(this.getProperties().preferred_title && typeof this.setTitle == "function"){
 				this.setTitle(this.getProperties().preferred_title);
 			}
@@ -233,12 +234,10 @@
 			return oX;
 		},
 		ValidateForm : function(b){
-			Hemi.include("hemi.data.validator");
 			var oF = this.GetForm();
 			return Hemi.data.form.service.validateForm(oF.i, b);
 		},
 		ValidateForPattern : function(n, p){
-			Hemi.include("hemi.data.validator");
 			var oF = this.GetForm();
 			if(!oF) return 0;
 			var oE = oF.getElementByName(n);

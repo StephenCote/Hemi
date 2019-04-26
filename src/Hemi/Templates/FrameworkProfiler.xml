@@ -28,11 +28,8 @@
 
 		<embedded-script>
 				<![CDATA[
+				dependencies : ["hemi.app.module","hemi.app.module.test","hemi.ui.wideselect"],
 				template_init : function(){
-					//Hemi.include("hemi.data.io");
-					Hemi.include("hemi.app.module");
-					Hemi.include("hemi.app.module.test");
-
 					if(typeof this.resizeTo == "function"){
 						this.resizeTo(650,620);
 						this.setCanResize(0);

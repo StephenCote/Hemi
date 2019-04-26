@@ -11,24 +11,22 @@
 
 	<embedded-script>
           <![CDATA[
+        dependencies : ["hemi.data.io","hemi.worker","hemi.app.module","hemi.app.module.test","hemi.framework.io.provider"],
 		template_init : function(){
-			try{
-		  Hemi.include("hemi.data.io");
-		  Hemi.include("hemi.worker");
-		  Hemi.include("hemi.app.module");
-		  Hemi.include("hemi.app.module.test");
-		  Hemi.include("hemi.framework.io.provider");
+			//try{
+			console.log("FVT Init");
 		  var oReq = Hemi.data.io.service.getList(Hemi.data.io.service.getBusType().STATIC, "Explorer", "Data", "Tests", "List", 0, 0);
 		  var oResp = Hemi.data.io.service.getResponseByName(oReq.responseId);
 		  var a = [];
 
 		  for (var i = 0; i < oResp.responseData.length; i++) a.push(oResp.responseData[i].name.replace(/\.js$/,""));
 		  this.setTests(a);
-		  this.RefreshTestCases();
+		  /*
 		  }
 		  catch(e){
-		  alert(e.message ? e.message : e.description);
+		  console.error(e.message ? e.message : e.description);
 		  }
+		  */
 		},
     setTests : function(s,p){
       this.getObjects().tests = s;

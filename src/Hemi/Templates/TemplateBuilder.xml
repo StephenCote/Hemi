@@ -61,9 +61,8 @@
 	</div>
 	<embedded-script>
         <![CDATA[
+        dependencies : ["hemi.text"],
 		template_init : function (){
-			Hemi.include("hemi.text");
-
 			this.scopeHandler("templatemodelclick",0,0,1);
 			this.scopeHandler("linkedfragmentmodelclick",0,0,1);
 			this.scopeHandler("template_load",0,0,1);
@@ -229,11 +228,13 @@
 		CreateNewObject : function(){
 				if(this.getObjects().template_construct && this.getObjects().template_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
 
-				var oW = Hemi.app.createWindow(0,"Templates/NewTemplate.xml","NewTemplate-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
-				oW.resizeTo(500,350);
-				// Destroy the window when finished
-				//
-				oW.setHideOnClose(0);
+				Hemi.app.createWindow(0,"Templates/NewTemplate.xml","NewTemplate-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()})
+				.then((oW)=>{
+					oW.resizeTo(500,350);
+					// Destroy the window when finished
+					//
+					oW.setHideOnClose(0);
+				});
 		},
 
 		BuildTemplate : function(){
@@ -351,7 +352,7 @@
 		_handle_template_picker_open : function(oW){
 			oW.setCanResize(0);
 			oW.resizeTo(200,300);
-			Hemi.app.getWindowManager().CenterWindow(oW);
+			Hemi.app.getWindowManager().then((oM)=>{oM.CenterWindow(oW);});;
 			oW.setIsModal(1);
 
 			oW.SetPickerHandler(this._prehandle_template_picker_choose);

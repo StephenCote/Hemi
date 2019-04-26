@@ -110,47 +110,49 @@
 		this.handleViewer(v.data.src, "Load");
 	},
 	handleViewer: function (oViewer, sAction) {
-		var _p = this.getProperties(), oW;
+		var _p = this.getProperties(), oWp;
 		var oProps = this.getProps();
 		var sId = Hemi.guid();
 		if (sAction == "Load" || sAction == "Delete"){
 			sId = oViewer.GetCurrentItem().item_id;
 			oProps.local_invoke_params = [sId];
 		}
-		alert(sId);
+]
 		oProps.local_invoke = sAction + "Object";
 		switch (_p.current_group_name) {
 			case "Components":
-				oW = Hemi.app.createWindow("Component Builder", "Templates/ComponentBuilder.xml", "component-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Component Builder", "Templates/ComponentBuilder.xml", "component-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 
 			case "Fragments":
-				oW = Hemi.app.createWindow("Fragment Builder", "Templates/FragmentBuilder.xml", "fragment-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Fragment Builder", "Templates/FragmentBuilder.xml", "fragment-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 			case "Modules":
-				oW = Hemi.app.createWindow("Module Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Module Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 			case "Tests":
 				oProps.testFeat = 1;
-				oW = Hemi.app.createWindow("Test Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Test Builder", "Templates/ModuleBuilder.xml", "module-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 			case "Templates":
-				oW = Hemi.app.createWindow("Template Builder", "Templates/TemplateBuilder.xml", "template-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Template Builder", "Templates/TemplateBuilder.xml", "template-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 
 			case "Tasks":
-				oW = Hemi.app.createWindow("Task Builder", "Templates/TaskBuilder.xml", "task-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Task Builder", "Templates/TaskBuilder.xml", "task-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 			case "Projects":
-				oW = Hemi.app.createWindow("Project Builder", "Templates/ProjectBuilder.xml", "projects-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
+				oWp = Hemi.app.createWindow("Project Builder", "Templates/ProjectBuilder.xml", "projects-" + sId, 0, 0, oProps, this._prehandle_template_loaded);
 				break;
 		}
-		if (oW) {
-			oW.resizeTo(650, 650);
-			Hemi.app.getWindowManager().CenterWindow(oW);
-			// Destroy the window when finished
-			//
-			oW.setHideOnClose(0);
+		if (oWp) {
+			oWp.then((oW)=>{
+				oW.resizeTo(650, 650);
+				Hemi.app.getWindowManager().then((oM)=>{oM.CenterWindow(oW);});;
+				// Destroy the window when finished
+				//
+				oW.setHideOnClose(0);
+			});
 		}
 	},
 	_handle_deletecontent: function (s, v) {

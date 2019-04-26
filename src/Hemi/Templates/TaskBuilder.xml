@@ -225,21 +225,25 @@
 			this.GetElementByRID("task_text").value = sTemp;
 		},
 		NewTask : function(){
-				var oW = Hemi.app.createWindow(0,"Templates/NewTask.xml","NewTask-" + (new Date()).getTime(),0,0,{opener_id:this.getObjectId()});
-				oW.resizeTo(500,350);
-				// Destroy the window when finished
-				//
-				oW.setHideOnClose(0);
+				Hemi.app.createWindow(0,"Templates/NewTask.xml","NewTask-" + (new Date()).getTime(),0,0,{opener_id:this.getObjectId()})
+				.then((oW)=>{
+					oW.resizeTo(500,350);
+					// Destroy the window when finished
+					//
+					oW.setHideOnClose(0);
+				});
 		},
 		CreateNewObject : function(){
 				if(this.getObjects().task_construct && this.getObjects().task_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return;
 
-				var oW = Hemi.app.createWindow(0,"Templates/NewTaskList.xml","NewTaskList-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()});
-				oW.resizeTo(500,350);
-				// Destroy the window when finished
-				//
-				oW.setHideOnClose(0);
-				//this.SetLabel("New Task List - Remember to Save!");
+				Hemi.app.createWindow(0,"Templates/NewTaskList.xml","NewTaskList-" + this.getObjectId(),0,0,{opener_id:this.getObjectId()})
+				.then((oW)=>{
+					oW.resizeTo(500,350);
+					// Destroy the window when finished
+					//
+					oW.setHideOnClose(0);
+					//this.SetLabel("New Task List - Remember to Save!");
+				});
 		},
 
 		BuildTaskList : function(vTask){
@@ -502,7 +506,7 @@
 			var o = this.GetTaskList().getActiveItem();
 			oW.setCanResize(0);
 			oW.resizeTo(300,300);
-			Hemi.app.getWindowManager().CenterWindow(oW);
+			Hemi.app.getWindowManager().then((oM)=>{oM.CenterWindow(oW);});;
 			oW.setIsModal(1);
 			
 			oW.SetPickerHandler(this._prehandle_task_picker_choose);

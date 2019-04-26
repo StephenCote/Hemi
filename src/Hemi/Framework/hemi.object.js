@@ -113,6 +113,7 @@
     ///
 (function () {
     HemiEngine.namespace("object", HemiEngine, {
+      
         addObjectDeconstructor: function (o) {
             /// Object must be a registered framework object
             ///
@@ -130,7 +131,7 @@
             ///			<description>Prepares the object to be destroyed.  As a decoration, this method invokes any locally defined <i>handle_destroy</i> handler and increments the internal <i>ready_state</i> to five (5).   The method is created for an object with <i>addObjectDeconstructor</i>.</description>
             ///		</method>
             o.destroy = function () {
-                var t = this, i;
+                var t = this, v;
                 if (t.ready_state < 5) {
                     if (typeof t.object_destroy == DATATYPES.TYPE_FUNCTION) t.object_destroy();
                     t.ready_state = 5;
@@ -141,51 +142,74 @@
                     HemiEngine.registry.service.removeObject(t);
 
                     /* cleanup pointers */
-                    for (i in t.objects) t.objects[i] = null;
+                    v = t.objects;
+                    Object.keys(v).forEach(i => delete v[i]);
+ 
                     /* cleanup properties */
-                    for (i in t.properties) t.properties[i] = null;
+                    v = t.properties;
+                    Object.keys(v).forEach(i => delete v[i]);
                 }
             };
         },
         addObjectAccessor: function (o, s) {
-
             if (!DATATYPES.TO(o)) {
                 alert("Invalid object reference");
                 return 0;
             }
             if (!DATATYPES.TO(o.objects)) o.objects = {};
-
-            o.objects[s + "s"] = [];
-            o.objects[s + "Names"] = [];
-            o.objects[s + "Index"] = [];
+            var b = o.objects, nk = s + "Names",k = s + "s", ik = s + "Index";
+            b[s + "s"] = [];
+            b[nk] = [];
+            b[ik] = [];
             var 
 				s_name = s.substring(0, 1).toUpperCase() + s.substring(1, s.length),
 				f
 			;
 
-            o["get" + s_name + "ByName"] = eval(
-				'f = function(s){'
-				+ ' var c=this.objects;'
-				+ ' if(typeof c.' + s + 'Names[s]==DATATYPES.TYPE_NUMBER) return c.' + s + 's[c.' + s + 'Names[s]];'
-				+ ' return 0;'
-				+ ' }'
-			);
-            o["clear" + s_name + "s"] = eval(
-				'f = function(){var _p = this.objects;_p.' + s + 's = [];_p.' + s + 'Names = [];_p.' + s + 'Index = [];return 1;}'
-			);
-            o["remove" + s_name] = eval(
-				'f = function(o){var _p = this.objects,i; if(!DATATYPES.TO(o) || !DATATYPES.TN(o.access_index)) return 0; delete _p.' + s + 's[o.access_index];delete _p.' + s + 'Index[o.object_id];delete _p.' + s + 'Names[o.access_name];return 1;}'
-			);
-            o["addNew" + s_name] = eval(
-				'f = function(o, n, i){var _p = this.objects,l; if(!i){ if(!o.object_id) o.object_id = HemiEngine.guid(); i = o.object_id;}if(this.is' + s_name + '(n)) return 0;l = _p.' + s + 's.length;_p.' + s + 's[l] = o;_p.' + s + 'Index[i] = l;_p.' + s + 'Names[n] = l;o.access_index = l;o.access_name = n;return 1;}'
-			);
-
-            o["get" + s_name] = eval(
-				'f = function(i){var _p = this.objects;if(typeof _p.' + s + 'Index[i] == DATATYPES.TYPE_NUMBER && typeof _p.' + s + 's[_p.' + s + 'Index[i]] == DATATYPES.TYPE_OBJECT){return _p.' + s + 's[_p.' + s + 'Index[i]];}return 0;};'
-			);
-            o["get" + s_name + "s"] = eval(
-				'f = function(){return this.objects.' + s + 's;};'
-			);
+            o["get" + s_name + "ByName"] = function(n){
+				var c = this.objects;
+				if(typeof c[nk][n]==DATATYPES.TYPE_NUMBER) return c[k][c[nk][n]];
+				return 0;
+            };
+            o["clear" + s_name + "s"] = function(o){
+            	var _p = this.objects;
+            	_p[k] = [];
+            	_p[nk] = [];
+            	_p[ik] = [];
+            	return 1;
+            };
+            o["remove" + s_name] = function(o){
+            	var _p = this.objects,i;
+            	if(!DATATYPES.TO(o) || !DATATYPES.TN(o.access_index)) return 0;
+            	delete _p[k][o.access_index];
+            	delete _p[ik][o.object_id];
+            	delete _p[nk][o.access_name];
+            	return 1;
+            }
+            o["addNew" + s_name] = function(o, n, i){
+            	var _p = b,l;
+            	if(!i){
+            		if(!o.object_id) o.object_id = HemiEngine.guid();
+            		i = o.object_id;
+            	}
+            	if(this["is" + s_name](n)) return 0;
+            	l = _p[k].length;
+            	_p[k][l] = o;
+            	_p[ik][i] = l;
+            	_p[nk][n] = l;
+            	o.access_index = l;
+            	o.access_name = n;
+            	return 1;
+            };
+            o["get" + s_name] = function(i){
+            	if(typeof b[ik][i] == DATATYPES.TYPE_NUMBER && typeof b[k][b[ik][i]] == DATATYPES.TYPE_OBJECT){
+            		return b[k][b[ik][i]];
+            	}
+            	return 0;
+            };
+            o["get" + s_name + "s"] = function(){
+            	return b[k];
+            };
 
             o["is" + s_name] = eval(
 				'f = function(o){var _p = this.objects;if(typeof o == DATATYPES.TYPE_STRING){if(this.get' + s_name + 'ByName(o)) return 1;return 0;}if(typeof o==DATATYPES.TYPE_OBJECT&&o!=null&&typeof _p.' + s + 'Index[o.' + s + '_id] == DATATYPES.TYPE_NUMBER&&typeof _p.' + s + 's[_p.' + s + 'Index[o.' + s + '_id]] == DATATYPES.TYPE_OBJECT){return 1;}return 0;};'

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Hemi JavaScript Framework - v3.5</title>
+        <title>Hemi JavaScript Framework - v4.0 Beta 1</title>
 	    <link rel="stylesheet" href="Hemi/Styles/hemi.css" type="text/css" />
 	    <link rel="stylesheet" href ="/HemiFramework/Hemi/Styles/TreeStyles.css" type = "text/css" />
 	    <link rel = "shortcut icon" href="favicon.ico">
@@ -54,8 +54,8 @@
     </head>
     <body>
         <div class = "header">
-            <h1>Hemi JavaScript Framework - v3.5</h1>
-            <h2>Services - AJAX - Monitoring - Templates - Since 2002</h2>
+            <h1>Hemi JavaScript Framework - v4.0 Beta 1</h1>
+            <h2>Services - AJAX/JSONRPC - Monitoring - Templates - Since 2002</h2>
         </div>
         <!--
         <p>
@@ -65,7 +65,7 @@
         <div template = "ToolBar">&nbsp;</div>
 		<div template = "ExampleExplorer">&nbsp;</div>
         <p>
-	        Hemi is the third major version of Engine for Web Applications, and includes derivitives from the libXmlRequest, IMNMotion Behavior Monitor, Function Monitor, and JavaScript Profiler code bases.
+	        Hemi is the fourth major version of Engine for Web Applications, and includes derivatives from the libXmlRequest, IMNMotion Behavior Monitor, Function Monitor, and JavaScript Profiler code bases.
 	        To use Hemi for a Web application:
         </p>
 		<ol>

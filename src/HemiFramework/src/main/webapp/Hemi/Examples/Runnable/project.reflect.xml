@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<DWAC Title = "Echo" DWacTemplateId = "reflect">
-    <module type = "component"  uri = "dwac:/DWAC/Anonymous/Components/reflected" id = "5541555" name = "reflected" />
-    <module type = "component"  uri = "dwac:/DWAC/Anonymous/Components/reflector" id = "9045622" name = "reflector" />
-    <module type = "template"  uri = "dwac:/DWAC/Anonymous/Templates/reflect" id = "1068979" name = "reflect" />
-</DWAC>

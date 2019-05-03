@@ -1,4 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Template>
-	<import-xml src = "Fragments/ToolBar.xml" id = "ToolBarFragment" />
-</Template>

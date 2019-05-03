@@ -256,21 +256,6 @@ if (typeof window != "object") window = {};
         	reject(d);
         });
         
-        /*
-        var x = HemiEngine.xml.getText((z && (!HemiEngine.lookup("hemi.data.io.proxy") || !HemiEngine.data.io.proxy.service.isProxyProtocol(z)) && !z.match(/^\//) ? HemiEngine.hemi_base : "") + (z ? z : "Framework/") + s.toLowerCase() + ".js", 0, 0, s, 1);
-        /// try {
-            if (x) {
-                x = x.replace(/^\s+/, "").replace(/\s+$/, "");
-                if (!n) eval(x);
-                b = 1;
-            }
-		/*
-        }
-        catch (e) {
-            alert("Error including library '" + s + "'\n\n" + e.message);
-        }
-		*/
-
         return x;
 
     };
@@ -336,6 +321,7 @@ if (typeof window != "object") window = {};
     };
     HemiEngine.namespace = function (c, o, v, b) {
         var a, i = 0, s, o, l, p, sp, aP=[];
+        /// console.log(g_db + " " + c);
         if (!o) o = HemiEngine.Context;
         if (DATATYPES.TS(c)) {
             if (!HemiEngine.NamespaceMap[c]) {
@@ -358,9 +344,10 @@ if (typeof window != "object") window = {};
         	if(o.dependencies){
         		
         		o.dependencies.map(function(x){
+        			
         			if(!HemiEngine.isImported(x)){
         				HemiEngine.dependencies[c].push(x);
-        				aP.push(HemiEngine.include(x));
+        				if(typeof g_db == DATATYPES.TYPE_UNDEFINED || g_db != 1) aP.push(HemiEngine.include(x));
         			}
         		});
         	}
@@ -371,14 +358,15 @@ if (typeof window != "object") window = {};
         		///
         		if(c.match(/xml/) && window.HemiConfig){
         			/// if(!window.HemiConfig.dependencies) window.HemiConfig.dependencies = [];
+        			
         			if(typeof g_db != DATATYPES.TYPE_UNDEFINED){
-        				g_db = 1;
+        				g_db = 2;
         				Hemi.removeDependencyBlock();
         			}
+        			
         			HemiEngine.prepareFrameworkLoad(c);
         		
         		}
-        		/// if (b && DATATYPES.TF(o["serviceImpl"])) o.service = new o.serviceImpl();
         		
         	});
         	
@@ -2003,7 +1991,7 @@ if (typeof window != "object") window = {};
                 			resolve(v[n]);
                 		}
                 		else{
-                			///reject(v.message);
+                			/// reject(v.message);
                 			resolve();
                 		}
                 	},
@@ -2781,7 +2769,7 @@ if (typeof window != "object") window = {};
     });
     ///	</static-class>
 
-	g_db = 1;
+	/// g_db = 1;
     if (!window.Hemi) window.Hemi = HemiEngine;
 })();
 if(typeof window.Hemi == "object" && typeof Hemi != "object") Hemi = window.Hemi;

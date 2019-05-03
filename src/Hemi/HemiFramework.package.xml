@@ -13,9 +13,9 @@
       <param name="classname" value="MyPackageClass" />
    </encoding>
    <version>
-      <param name="major" value="3" />
-      <param name="minor" value="5" />
-      <param name="build" value="0" />
+      <param name="major" value="4" />
+      <param name="minor" value="0" />
+      <param name="build" value="Beta.1" />
    </version>
    <patternsets>
       <param name="Merge" value="1">

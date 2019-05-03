@@ -640,7 +640,8 @@
                             		k:k,
                             		w:w,
                             		i:i,
-                            		cs:cs
+                            		cs:cs,
+                            		px:x
                             	};
                         	
                         	if(w instanceof Promise)
@@ -651,7 +652,7 @@
                         	
                         	
                         	p1.then((xd)=>{
-                        		t.completeParseConfiguration(pd.o, pd.cn, pd.ck, pd.cx, pd.cxp, pd.sf, pd.nr, pd.br, pd.n, pd.v, xd, pd.k, pd.e, pd.cs);
+                        		t.completeParseConfiguration(pd.o, pd.cn, pd.ck, pd.cx, pd.cxp, pd.sf, pd.nr, pd.br, pd.n, pd.v, xd, pd.px, pd.k, pd.e, pd.cs);
                         	});
                         	o.promises.push(p1);
                         } /* End check for implementation or cached implementation */ 
@@ -679,7 +680,7 @@
                 return;
             };
 
-            t.completeParseConfiguration = function(o, cn, ck, cx, cxp, sf, nr, br, n, v, w, k, e, cs){
+            t.completeParseConfiguration = function(o, cn, ck, cx, cxp, sf, nr, br, n, v, w, x, k, e, cs){
 
                 /// If use parent */
             	/// this.logDebug("Complete configuration for " + n.nodeName);

@@ -12,12 +12,12 @@
 <description>Application Spaces are controlled environments in which the content (XHTML and XML nodes) drives the implementation (via Application Space Definitions).  XHTML Nodes (Presentation Nodes) that match space definitions are represented as XHTML Components. XHTML Components can automatically load Application Components, Modules, and Templates (which in turn spawn their own Application Space).  These components can be retrieved using unique object identifiers, or more friendly reference identifiers which are contextually sensitive to the space.  Form fields are augmented by the Hemi.data.form service to create Virtual Forms. Spaces can load automatically, or use the Hemi.task service to bootstrap asynchronous dependencies.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the Application Space service.</description>
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The Application Space service is used to create managed environments within Web pages.  Each Application Space uses its XHTML contents for self-configuration, instrumentation, and contained lifecycle management.</description>
 <message>
 <name>onspaceconfigload</name>
@@ -30,21 +30,10 @@
 <description>Returns the primary application space.   If a space is not explicitly created prior to the page loading, then, by default, a primary space object is created for the HTML BODY.</description>
 </method>
 <method>
-<name>clearAppSpace</name>
-<param name="i" type="variant">Name or object reference of the Space to clear.</param>
-<description>Clears the specified Space, and destroys all components of the Space.</description>
-</method>
-TODO: Refactor
-This is effectively identical with the configureSpace pre-step,
-Without the cleanup routines for Form and Parent Node
-
-2007/02/03
-Clear out any XHTMLForm references to this Engine
-
-<method>
 <name>clearAppSpaces</name>
 <description>Clears all Spaces, and destroys all components in each Space.</description>
 </method>
+Clean up any objects associated with the spaces
 <method>
 <name>loadSpaces</name>
 <param name="b" type="boolean">Bit indicating that a primary space should be defined if one is not specified.  This param will always be true if any space exists and none are marked as primary.</param>
@@ -53,7 +42,9 @@ Clear out any XHTMLForm references to this Engine
 <param name="xr" optional="1" type="function">XML Handler to use when invoking setInnerXHTML.</param>
 <description>Finds all spaces on the current Web page and loads them.  A space node is either the <i>body</i> element, or a <i>span</i>, <i>div</i>, or <i>form</i> element with an <i>is-space</i> attribute.</description>
 </method>
-return t.loadSpaces(1);
+Use spread operator to make an array from the nodelist
+Currently matching anything with is-space versus div,span,form
+force load a primary space if none exists
 <method>
 <name>createSpace</name>
 <param name="e" type="Node">XHTML Element</param>
@@ -64,20 +55,45 @@ return t.loadSpaces(1);
 <return-value name="v" type="SpaceObject">A new space object that has been tasked to initialize.</return-value>
 <description>Creates a new Application Space.</description>
 </method>
-alert(n + ":" + at + ":" + a + ":" + ht + ":" + h);
+<method>
+<name>clearAppSpace</name>
+<param name="i" type="variant">Name or object reference of the Space to clear.</param>
+<description>Clears the specified Space, and destroys all components of the Space.</description>
+</method>
+TODO: Refactor
+This is effectively identical with the configureSpace pre-step,
+Without the cleanup routines for Form and Parent Node
+
 <method>
 <name>configureSpace</name>
 <param name="o" type="Space">A space object.</param>
 <param name="c" type="String">Name of SpaceService configuration.</param>
 <description>Applies the specified configuration to the specified engine.  This can be used to repurpose Space objects, or to load alternate content into the Space.</description>
 </method>
-var d1 = new Date();
-alert(_s.config_task);
-if (!c) c = "self";
+only allow 'self' if the space has an HTML element behind it
 Don't require external XML
 
-this.log("Time to configure = " + (new Date()).getTime() - d1.getTime());
-alert("Time to configure = " + ((new Date()).getTime() - d1.getTime()));
+self can only be used once
+2019/03/07 - Rewrote portions of method to leverage promises in asynchronous dependencies
+There are likely still some issues with resolving transitive asynchronous dependencies prior to publishing the spaceloaded notification
+
+Self must have a space_element, and that becomes the default parent
+2008/02/07 : Do not process nodes specifically marked for avoidance
+/ 2004/07/02 : Make sure to cast the node name to lower case
+Cache
+If cached, import the cached values
+If this is a self reference, and the context switched, then push config reference to switchedself
+
+If cached or defined
+if cached
+g is a package
+Abstracted: just push out w to x
+Copy the whole node
+If use parent */
+this.logDebug("Complete configuration for " + n.nodeName);
+Use parent
+Switch the context back to the parent
+If recursive
 <object>
 <name>Space</name>
 <property name="space_element" type="object">The DOM Node associated with this Space.</property>

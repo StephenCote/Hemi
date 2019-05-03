@@ -13,12 +13,12 @@
 <static-class>
 <name>service</name>
 <description>Static instance of serviceImpl.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <class>
 <name>TaskServiceImpl</name>
 <description>A service for managing asynchronous and dependency-driven actions.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <object>
 <name>Task</name>
 <property name="task_state" type="int">Current state of the task.  State ranges from 0 to 5.</property>

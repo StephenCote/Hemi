@@ -12,12 +12,12 @@
 <description>Data provider for static file and data sets within the Hemi Framework.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.framework.io.provider.serviceImpl class.</description>
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The framework provider is a <i>hemi.data.io</i> provider for serving requests for static filesets related to the HemiFramework.</description>
 
 this.log("IO Request: " + oRequest.requestContext);

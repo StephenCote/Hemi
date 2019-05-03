@@ -1,526 +1,603 @@
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>API Hemi.wires.primitive Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css">
-</head>
-<body>
-<h1>Hemi JavaScript Framework</h1>
-<h2>Hemi.wires.primitive</h2>
-<ul class="top-nav">
-<li>
-<a href="/Hemi/">Hemi JavaScript Framework</a>
-</li>
-<li>
-<a href="Hemi_api.html">API Index</a>
-</li>
-</ul>
-<h3>Description</h3>
-<p>The primitive wire service is used to connect two disparate functions together.</p>
-<a name="classindex"> </a>
-<h3>Class Index</h3>
-<ul class="index">
-<li>
-<a href="#service"><i>static </i>Hemi.wires.service</a>: Static instance of PrimitiveWireImpl</li>
-<li>
-<a href="#serviceImpl">Hemi.wires.serviceImpl</a>: A primitive wire connects two functions, where the first function acts as the instigator of an action, and the second function acts as the handler for the action.</li>
-</ul>
-<a name="service"> </a>
-<h3 class="membertitle">
-<i>static </i>Hemi.wires.service</h3>
-<h4>version 3.5.1</h4>
-<p class="desc">Static instance of PrimitiveWireImpl</p>
-<p class="desc"></p>
-<a name="serviceImpl"> </a>
-<h3 class="membertitle">Hemi.wires.serviceImpl</h3>
-<h4>version 3.5.1</h4>
-<p class="desc">A primitive wire connects two functions, where the first function acts as the instigator of an action, and the second function acts as the handler for the action.</p>
-<p class="desc"></p>
-<h3>Index</h3>
-<a name="serviceImplexampleindex"> </a>
-<h4>Example Index</h4>
-<ul class="index">
-<li>
-<a href="#Wire two functions together">Wire two functions together</a>: Demonstrate how to wire two functions together with a primitive wire.</li>
-</ul>
-<a name="serviceImplpropertyindex"> </a>
-<h4>Property Index</h4>
-<ul class="index">
-<li>public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: objects and properties.</li>
-<li>public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.</li>
-<li>public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.</li>
-<li>public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.</li>
-<li>public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</li>
-</ul>
-<a name="serviceImplmethodindex"> </a>
-<h4>Method Index</h4>
-<ul class="index">
-<li>public <a href="#fireWire">fireWire</a>: Causes the specified wire to be invoked.</li>
-<li>public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.</li>
-<li>public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.</li>
-<li>public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.</li>
-<li>public <a href="#getPointers">getPointers</a>: Returns the objects sub structure.</li>
-<li>public <a href="#getPrimitiveWires">getPrimitiveWires</a>: Returns an array of primitive wires.</li>
-<li>public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.</li>
-<li>public <a href="#getStatus">getStatus</a>: Returns the properties sub structure.</li>
-<li>public <a href="#getWire">getWire</a> (<b>internal</b>): Returns the wire object based on the specified Identifier.</li>
-<li>public <a href="#invoke">invoke</a>: Invokes a wire, causing the action-handler chain to be processed.</li>
-<li>public <a href="#sigterm">sigterm</a>: Sends termination signal to destroy object.</li>
-<li>public <a href="#wire">wire</a>: Creates and returns a primitive wire based on the specified parameters.</li>
-</ul>
-<h3>Examples</h3>
-<a name="Wire two functions together"></a>
-<h3 class="membertitle">Wire two functions together</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplexampleindex">Examples</a>
-</li>
-</ul>
-<p class="exampledesc">Demonstrate how to wire two functions together with a primitive wire.</p>
-<h4>Example Code</h4>
-<pre class="example">&lt;script type = "text/javascript"&gt; function Init(){var _p = Hemi.wires.primitive.PrimitiveWire,w,w2,co;	/// Create a new custom object.	///	co = new CObj();	/// Wire custom object to function test	///	w = _p.wire(co,"testC",0,"test1");		/// Invoke wire #1 connecting custom object to function test2	/// Sending "test data" as a parameter	///	_p.invoke(w,["test data"]);}function test(){   alert('test: ' + arguments[0]);}function CObj(){	this.id = "XX";	this.testC = function(){		alert("TestC = " + this.id + "\n" + arguments[0]);		return 1;	}}&lt;/script&gt;</pre>
-<h3>Properties</h3>
-<a name="object_config"></a>
-<h3 class="membertitle">object_config</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplpropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">Object API structure for storing sub structures: objects and properties.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">object = <i>object</i>.object_config</p>
-<a name="object_id"></a>
-<h3 class="membertitle">object_id</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplpropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">Unique instance identifier.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">String = <i>object</i>.object_id</p>
-<a name="object_type"></a>
-<h3 class="membertitle">object_type</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplpropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">The type of this object.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">String = <i>object</i>.object_type</p>
-<a name="object_version"></a>
-<h3 class="membertitle">object_version</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplpropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">Version of the object class.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">String = <i>object</i>.object_version</p>
-<a name="ready_state"></a>
-<h3 class="membertitle">ready_state</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplpropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">int = <i>object</i>.ready_state</p>
-<h3>Methods</h3>
-<a name="fireWire"></a>
-<h3 class="membertitle">fireWire</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Causes the specified wire to be invoked.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void fireWire(
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>API Hemi.wires.primitive Hemi JavaScript Framework</title>
+        <link rel="stylesheet" href="ApiStyles.css" type="text/css">
+    </head>
+    <body>
+        <h1>Hemi JavaScript Framework</h1>
+        <h2>Hemi.wires.primitive</h2>
+        <ul class="top-nav">
+            <li>
+                <a href="/Hemi/">Hemi JavaScript Framework</a>
+            </li>
+            <li>
+                <a href="Hemi_api.html">API Index</a>
+            </li>
+        </ul>
+        <h3>Description</h3>
+        <p>The primitive wire service is used to connect two disparate functions together.</p>
+        <a name="classindex"> </a>
+        <h3>Class Index</h3>
+        <ul class="index">
+            <li>
+                <a href="#service"><i>static </i>Hemi.wires.service</a>: Static instance of PrimitiveWireImpl
+            </li>
+            <li>
+                <a href="#serviceImpl">Hemi.wires.serviceImpl</a>: A primitive wire connects two functions, where the first function acts as the instigator of an action, and the second function acts as the handler for the action.
+            </li>
+        </ul>
+        <a name="service"> </a>
+        <h3 class="membertitle">
+            <i>static </i>Hemi.wires.service
+        </h3>
+        <h4>version 4.0.1</h4>
+        <p class="desc">Static instance of PrimitiveWireImpl</p>
+        <p class="desc"></p>
+        <a name="serviceImpl"> </a>
+        <h3 class="membertitle">Hemi.wires.serviceImpl</h3>
+        <h4>version 4.0.1</h4>
+        <p class="desc">A primitive wire connects two functions, where the first function acts as the instigator of an action, and the second function acts as the handler for the action.</p>
+        <p class="desc"></p>
+        <h3>Index</h3>
+        <a name="serviceImplexampleindex"> </a>
+        <h4>Example Index</h4>
+        <ul class="index">
+            <li>
+                <a href="#Wire two functions together">Wire two functions together</a>: Demonstrate how to wire two functions together with a primitive wire.
+            </li>
+        </ul>
+        <a name="serviceImplpropertyindex"> </a>
+        <h4>Property Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#object_config">object_config</a> (<b>internal</b>): Object API structure for storing sub structures: objects and properties.
+            </li>
+            <li>
+                public <a href="#object_id">object_id</a> (<b>internal</b>): Unique instance identifier.
+            </li>
+            <li>
+                public <a href="#object_type">object_type</a> (<b>internal</b>): The type of this object.
+            </li>
+            <li>
+                public <a href="#object_version">object_version</a> (<b>internal</b>): Version of the object class.
+            </li>
+            <li>
+                public <a href="#ready_state">ready_state</a> (<b>internal</b>): Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.
+            </li>
+        </ul>
+        <a name="serviceImplmethodindex"> </a>
+        <h4>Method Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#fireWire">fireWire</a>: Causes the specified wire to be invoked.
+            </li>
+            <li>
+                public <a href="#getObjectId">getObjectId</a>: Returns the unique id of the object.
+            </li>
+            <li>
+                public <a href="#getObjectType">getObjectType</a>: Returns the type of the object.
+            </li>
+            <li>
+                public <a href="#getObjectVersion">getObjectVersion</a>: Returns the version of the object.
+            </li>
+            <li>
+                public <a href="#getPointers">getPointers</a>: Returns the objects sub structure.
+            </li>
+            <li>
+                public <a href="#getPrimitiveWires">getPrimitiveWires</a>: Returns an array of primitive wires.
+            </li>
+            <li>
+                public <a href="#getReadyState">getReadyState</a>: Returns the state of the object.
+            </li>
+            <li>
+                public <a href="#getStatus">getStatus</a>: Returns the properties sub structure.
+            </li>
+            <li>
+                public <a href="#getWire">getWire</a> (<b>internal</b>): Returns the wire object based on the specified Identifier.
+            </li>
+            <li>
+                public <a href="#invoke">invoke</a>: Invokes a wire, causing the action-handler chain to be processed.
+            </li>
+            <li>
+                public <a href="#sigterm">sigterm</a>: Sends termination signal to destroy object.
+            </li>
+            <li>
+                public <a href="#wire">wire</a>: Creates and returns a primitive wire based on the specified parameters.
+            </li>
+        </ul>
+        <h3>Examples</h3>
+        <a name="Wire two functions together"></a>
+        <h3 class="membertitle">Wire two functions together</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplexampleindex">Examples</a>
+            </li>
+        </ul>
+        <p class="exampledesc">Demonstrate how to wire two functions together with a primitive wire.</p>
+        <h4>Example Code</h4>
+        <pre class="example">&lt;script type = "text/javascript"&gt; function Init(){var _p = Hemi.wires.primitive.PrimitiveWire,w,w2,co;	/// Create a new custom object.	///	co = new CObj();	/// Wire custom object to function test	///	w = _p.wire(co,"testC",0,"test1");		/// Invoke wire #1 connecting custom object to function test2	/// Sending "test data" as a parameter	///	_p.invoke(w,["test data"]);}function test(){   alert('test: ' + arguments[0]);}function CObj(){	this.id = "XX";	this.testC = function(){		alert("TestC = " + this.id + "\n" + arguments[0]);		return 1;	}}&lt;/script&gt;</pre>
+        <h3>Properties</h3>
+        <a name="object_config"></a>
+        <h3 class="membertitle">object_config</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplpropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">Object API structure for storing sub structures: objects and properties.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">
+            object = <i>object</i>.object_config
+        </p>
+        <a name="object_id"></a>
+        <h3 class="membertitle">object_id</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplpropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">Unique instance identifier.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">
+            String = <i>object</i>.object_id
+        </p>
+        <a name="object_type"></a>
+        <h3 class="membertitle">object_type</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplpropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">The type of this object.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">
+            String = <i>object</i>.object_type
+        </p>
+        <a name="object_version"></a>
+        <h3 class="membertitle">object_version</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplpropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">Version of the object class.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">
+            String = <i>object</i>.object_version
+        </p>
+        <a name="ready_state"></a>
+        <h3 class="membertitle">ready_state</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplpropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">Object load and execution state.  Follows: 0 unitialized, 1 through 3 variant, 4 ready, 5 destroyed.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">
+            int = <i>object</i>.ready_state
+        </p>
+        <h3>Methods</h3>
+        <a name="fireWire"></a>
+        <h3 class="membertitle">fireWire</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Causes the specified wire to be invoked.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void fireWire(
 i
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>i</b> as String : Identifier of the primitive wire.</li>
-</ul>
-<a name="getObjectId"></a>
-<h3 class="membertitle">getObjectId</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the unique id of the object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">i = getObjectId(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>i</b> as String : Identifier of the primitive wire.
+            </li>
+        </ul>
+        <a name="getObjectId"></a>
+        <h3 class="membertitle">getObjectId</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the unique id of the object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">i = getObjectId(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>i</b> as String: The unique object instance id.</p>
-<a name="getObjectType"></a>
-<h3 class="membertitle">getObjectType</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the type of the object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">t = getObjectType(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>i</b> as String: The unique object instance id.
+        </p>
+        <a name="getObjectType"></a>
+        <h3 class="membertitle">getObjectType</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the type of the object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">t = getObjectType(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>t</b> as String: The type of the object instance.</p>
-<a name="getObjectVersion"></a>
-<h3 class="membertitle">getObjectVersion</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the version of the object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">v = getObjectVersion(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>t</b> as String: The type of the object instance.
+        </p>
+        <a name="getObjectVersion"></a>
+        <h3 class="membertitle">getObjectVersion</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the version of the object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">v = getObjectVersion(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>v</b> as String: The version of the object instance.</p>
-<a name="getPointers"></a>
-<h3 class="membertitle">getPointers</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the objects sub structure.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">o = getPointers(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>v</b> as String: The version of the object instance.
+        </p>
+        <a name="getPointers"></a>
+        <h3 class="membertitle">getPointers</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the objects sub structure.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">o = getPointers(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>o</b> as object: The objects substructure.</p>
-<a name="getPrimitiveWires"></a>
-<h3 class="membertitle">getPrimitiveWires</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns an array of primitive wires.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">w = getPrimitiveWires(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>o</b> as object: The objects substructure.
+        </p>
+        <a name="getPrimitiveWires"></a>
+        <h3 class="membertitle">getPrimitiveWires</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns an array of primitive wires.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">w = getPrimitiveWires(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>w</b> as Array: Array of primitive wire objects.</p>
-<a name="getReadyState"></a>
-<h3 class="membertitle">getReadyState</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the state of the object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">s = getReadyState(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>w</b> as Array: Array of primitive wire objects.
+        </p>
+        <a name="getReadyState"></a>
+        <h3 class="membertitle">getReadyState</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the state of the object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">s = getReadyState(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>s</b> as int: The object ready state.</p>
-<a name="getStatus"></a>
-<h3 class="membertitle">getStatus</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the properties sub structure.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">o = getStatus(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>s</b> as int: The object ready state.
+        </p>
+        <a name="getStatus"></a>
+        <h3 class="membertitle">getStatus</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the properties sub structure.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">o = getStatus(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>o</b> as object: The properties substructure.</p>
-<a name="getWire"></a>
-<h3 class="membertitle">getWire</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the wire object based on the specified Identifier.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">r = getWire(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>o</b> as object: The properties substructure.
+        </p>
+        <a name="getWire"></a>
+        <h3 class="membertitle">getWire</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the wire object based on the specified Identifier.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">r = getWire(
 i
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>i</b> as String : Identifier of the primitive wire.</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>r</b> as object: Returns a wire object.</p>
-<a name="invoke"></a>
-<h3 class="membertitle">invoke</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Invokes a wire, causing the action-handler chain to be processed.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">r = invoke(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>i</b> as String : Identifier of the primitive wire.
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>r</b> as object: Returns a wire object.
+        </p>
+        <a name="invoke"></a>
+        <h3 class="membertitle">invoke</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Invokes a wire, causing the action-handler chain to be processed.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            r = invoke(
 i, <i>a</i>, <i>b</i>, <i>z</i>, <i>p</i>, <i>m</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>i</b> as String : Identifier of the primitive wire to invoke.</li>
-<li>
-<b>a</b> as array <i>(optional)</i>: Arguments to pass to the wired functions.</li>
-<li>
-<b>b</b> as boolean <i>(optional)</i>: Bit indicating the handler should be force-fired even if the action did not evaluate to true.</li>
-<li>
-<b>z</b> as boolean <i>(optional)</i>: Bit indicating the handler should be skipped.</li>
-<li>
-<b>p</b> as boolean <i>(optional)</i>: Bit indicating the wire should be preserved.</li>
-<li>
-<b>m</b> as boolean <i>(optional)</i>: Bit indicating the wire may be used more than once.</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>r</b> as boolean: Returns true if the chain completed successfully, false if otherwise.</p>
-<a name="sigterm"></a>
-<h3 class="membertitle">sigterm</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Sends termination signal to destroy object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void sigterm(
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>i</b> as String : Identifier of the primitive wire to invoke.
+            </li>
+            <li>
+                <b>a</b> as array <i>(optional)</i>: Arguments to pass to the wired functions.
+            </li>
+            <li>
+                <b>b</b> as boolean <i>(optional)</i>: Bit indicating the handler should be force-fired even if the action did not evaluate to true.
+            </li>
+            <li>
+                <b>z</b> as boolean <i>(optional)</i>: Bit indicating the handler should be skipped.
+            </li>
+            <li>
+                <b>p</b> as boolean <i>(optional)</i>: Bit indicating the wire should be preserved.
+            </li>
+            <li>
+                <b>m</b> as boolean <i>(optional)</i>: Bit indicating the wire may be used more than once.
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>r</b> as boolean: Returns true if the chain completed successfully, false if otherwise.
+        </p>
+        <a name="sigterm"></a>
+        <h3 class="membertitle">sigterm</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Sends termination signal to destroy object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void sigterm(
 
 )
 </p>
-<a name="wire"></a>
-<h3 class="membertitle">wire</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Creates and returns a primitive wire based on the specified parameters.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">i = wire(
+        <a name="wire"></a>
+        <h3 class="membertitle">wire</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Creates and returns a primitive wire based on the specified parameters.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            i = wire(
 xp, x, yp, y, ep, e, <i>tl</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>xp</b> as variant : Object, or string evaluation, to which the action function is defined.</li>
-<li>
-<b>x</b> as function : The action function.</li>
-<li>
-<b>yp</b> as variant : Object, or string evaluation, to which the handler function is defined.</li>
-<li>
-<b>y</b> as function : The hander function.</li>
-<li>
-<b>ep</b> as variant : Object, or string evaluation, to which the error function is defined.</li>
-<li>
-<b>e</b> as function : The error function.</li>
-<li>
-<b>tl</b> as String <i>(optional)</i>: The label prefix of the wire.</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>i</b> as String: Returns the identifier of the primitive wire object.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
-</body>
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>xp</b> as variant : Object, or string evaluation, to which the action function is defined.
+            </li>
+            <li>
+                <b>x</b> as function : The action function.
+            </li>
+            <li>
+                <b>yp</b> as variant : Object, or string evaluation, to which the handler function is defined.
+            </li>
+            <li>
+                <b>y</b> as function : The hander function.
+            </li>
+            <li>
+                <b>ep</b> as variant : Object, or string evaluation, to which the error function is defined.
+            </li>
+            <li>
+                <b>e</b> as function : The error function.
+            </li>
+            <li>
+                <b>tl</b> as String <i>(optional)</i>: The label prefix of the wire.
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>i</b> as String: Returns the identifier of the primitive wire object.
+        </p>
+        <p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+    </body>
 </html>

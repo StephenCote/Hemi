@@ -14,14 +14,14 @@ Inside worker
 Add Hemi framework
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.worker.serviceImpl class.</description>
 
 
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The worker service provides a wrapper for adding the Hemi Module API to Worker scripts, and adding a lightweight wrapper for browsers that don't support Workers.</description>
 
 <object>
@@ -39,7 +39,8 @@ Add Hemi framework
 </object>
 <method>
 <name>NewWorker</name>
-<param name="sPath" type="String">Path to the script which the worker will process.</param>
+<param name="sName" type="String">Name of the worker script.</param>
+<param name="sPath" optional="1" type="String">Parent path to the script which the worker will process.</param>
 <param name="oContainer" optional="1" type="XHTMLComponent">XHTML Component acting as a container for the module.</param>
 <return-value name="vWorker" type="Worker">A Worker or PsuedoWorker object..</return-value>
 <description>Creates a new Worker or PsuedoWorker object, depending on browser support.</description>

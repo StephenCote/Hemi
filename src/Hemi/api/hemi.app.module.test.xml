@@ -12,14 +12,14 @@
 <description>Test Modules are Modules decorated for unit testing.  For example, the <a href="../Tests/test.app.comp.js">Application Component Tests</a> includes several unit tests for vetting the Application Component class.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.app.module.serviceImpl class.</description>
 
 
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</description>
 
 <method>
@@ -42,7 +42,6 @@ This means drilling through the implementation ids
 <return-value name="oTestModule" type="TestModule">A new TestModule object.</return-value>
 <description>Creates a new TestModule object.</description>
 </method>
-m.clearTests();
 Start Test
 Stop Test
 Add Test Message

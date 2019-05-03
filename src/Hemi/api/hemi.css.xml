@@ -12,7 +12,7 @@
 <description>The CSS Utility class includes tools for positioning, importing external stylesheets, and enabling and disabling stylesheets.</description>
 <static-class>
 <name>css</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Utilities for DOM Styles and Cascading Style Sheets.</description>
 <method>
 <name>toggleStyleSheet</name>
@@ -28,6 +28,7 @@
 <description>Imports the specified stylesheet.</description>
 </method>
 
+if(!u.match(/^\//)) u = HemiEngine.hemi_base + u;
 <method>
 <name>getAbsoluteTop</name>
 <param name="o" type="object">Source DOM Node.</param>

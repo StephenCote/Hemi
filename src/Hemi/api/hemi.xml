@@ -10,7 +10,7 @@
 <description>Framework base classes, including: Hemi for creating framework objects and loading external libraries; Hemi.xml for AJAX and JSON requests (libXmlRequest derivative); Hemi.registry for object repository management; Hemi.message for delegating message subscriptions and publications.</description>
 <library>Hemi</library>
 <global>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The base set of classes for the Hemi Framework.</description>
 <object>
 <name>Hemi</name>
@@ -132,7 +132,8 @@ alert('def: ' + n + ":" + HemiEngine.isImported(n));
 <return-value name="NamespaceObject" type="object">Returns an internal namespace object.</return-value>
 <description>Imports the specified namespace.</description>
 </method>
-try {
+2019/03/06 - Currently a first pass at updating the structure
+It's kludgy but works.  However, a better way seems to be making this an async function
 <method>
 <name>namespace</name>
 <description>Creates a hierarchical object namespace from the supplied name.</description>
@@ -142,6 +143,11 @@ try {
 <param name="bService" optional="1" type="boolean">Bit indicating the namespace defines service and serviceImpl members, and to instantiate the service.</param>
 </method>
 
+Using console since message service may not yet be ready
+console.log(g_db + " " + c);
+2019/03/13 - Fire framework load once the xml namespace is loaded and all dependencies resolved
+
+if(!window.HemiConfig.dependencies) window.HemiConfig.dependencies = [];
 <method>
 <name>lookup</name>
 <description>Verifies the specified hierarchy exists.</description>
@@ -217,7 +223,7 @@ try {
 </static-class>
 <static-class>
 <name>registry.service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of hemi.registry.serviceImpl</description>
 <method>
 <name>getEvalStatement</name>
@@ -236,7 +242,7 @@ try {
 </static-class>
 <class>
 <name>registry.serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Repository service for storing and discovering framework objects.</description>
 <method>
 <name>canRegister</name>
@@ -301,12 +307,12 @@ try {
 </class>
 <static-class>
 <name>message.service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of hemi.message.serviceImpl</description>
 </static-class>
 <class>
 <name>message.serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Service that delegates subscriptions and publications at a global and object level.</description>
 <method>
 <name>getReportThreshold</name>
@@ -427,7 +433,7 @@ Return the corresponding instruction object
 </class>
 <static-class>
 <name>xml</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>XML Utilities for making AJAX and JSON requests, result caching, request pooling, and XML-XHTML node manipulation.</description>
 <example>
 <name>Synchronous GET</name>
@@ -509,26 +515,6 @@ Return the corresponding instruction object
 <property get="1" set="1" type="String">
 <name>form_content_type</name>
 <description>Specifies the content type to use when auto_content_type is true and the post value is a string.</description>
-</property>
-<property get="1" set="1" type="String">
-<name>ax_http_control</name>
-<description>Specifies the name of the registered ActiveX control to use for XML requests.</description>
-</property>
-<property get="1" set="1" type="String">
-<name>ax_http_control</name>
-<description>Specifies the name of the registered ActiveX control to use for XML requests.</description>
-</property>
-<property get="1" set="1" type="boolean">
-<name>gadget_mode</name>
-<description>Specifies whether the xml package is operating in a mode that better supports Windows Sidebar Gadgets.</description>
-</property>
-<property get="1" set="1" type="String">
-<name>gadget_control</name>
-<description>Specifies the name of the registered ActiveX control to use for XML requests when in Gadget mode.</description>
-</property>
-<property get="1" set="1" type="String">
-<name>gadget_base_path</name>
-<description>Specifies the base path to use when operating in Gadget mode.  The base path should be in the format of a file URI, such as <i>file:///c:/...</i>.</description>
 </property>
 <method>
 <name>setCacheEnabled</name>
@@ -621,6 +607,8 @@ If offline (file:) and ActiveX is supported, use ActiveX instead of XMLHTTPReque
 <return-value name="oXml" type="XmlHttp">An XmlHttp object.</return-value>
 </method>
 
+this isn't an error necessarily depending on authN/Z status
+
 <method>
 <name>getJSON</name>
 <description>Retrieve a JSON object from the specified path.</description>
@@ -687,6 +675,7 @@ If offline (file:) and ActiveX is supported, use ActiveX instead of XMLHTTPReque
 <return-value name="v" type="variant">Returns boolean for asynchronous operations, and an XMLDocument object for synchronous operations.</return-value>
 </method>
 
+reject(v.message);
 <message>
 <name>onloadxml</name>
 <param name="oXml" type="XmlObject">The Hemi.xml object representing the request.</param>
@@ -699,7 +688,7 @@ If offline (file:) and ActiveX is supported, use ActiveX instead of XMLHTTPReque
 <param default="null" name="h" optional="1" type="function">Handler invoked for asynchronous requests.</param>
 <param default="false" name="a" optional="1" type="boolean">Bit indicating whether the request is asynchronous.</param>
 <param default="auto" name="i" optional="1" type="String">Identifier used to track the request and retrieve cached results.</param>
-<param default="false" name="x" optional="1" type="boolean">Bit indicating whether the request is a post.</param>
+<param default="false" name="x" optional="1" type="String">String representing the HTTP verb, or legacy bit field indicating whether the request is a post.</param>
 <param default="null" name="d" optional="1" type="XMLDocument">XML Document to send with post request.</param>
 <param default="false" name="c" optional="1" type="boolean">Bit indicating whether the response should be cached.</param>
 <param default="0" name="t" optional="1" type="int">Int indicating whether the request and response as text (1) or JSON (2) instead of XML (0).</param>
@@ -707,21 +696,7 @@ If offline (file:) and ActiveX is supported, use ActiveX instead of XMLHTTPReque
 </method>
 
 2011/02/22 Only use the proxy if loaded
-TODO - need to add in the feature tag support so statements like this check can be stripped from the whole compilation
-Otherwise, it's wasted space
 
-2011/02/22 - isProxied checks for a proxy protocol and supported data.io bus type
-2011/02/20 - This is an early phase proxy - the general data exchange across components needs to have a clean entry/exit through data.io instead of straight xml
-For current compatibility, it's shimmed into the xml-handling.
-NOTE: Because this is a shim, it does not use any of the xml utility level caching.
-Also, it's an ugly duplication of the XML OM reconstruction
-
-2011/02/22 - Strip any proxy protocol tags, which may occur for matching proxy protocols and unsupported bus types
-
-alert(i + "\n" + r.ct);
-b.json = JSON.parse(r.ct, _x.JSONReviver);
-z = JSON.parse(z, _x.JSONReviver);
-alert(z);
 <method>
 <name>transformNode</name>
 <description>Transforms the specified Document with the specified XSL document.</description>
@@ -848,5 +823,6 @@ IE 9.0 has problems with XMLSerializer and the responseXML document
 
 if(v == v.caller) break;
 </static-class>
+g_db = 1;
 </package>
 <index><description>Framework base classes, including: Hemi for creating framework objects and loading external libraries; Hemi.xml for AJAX and JSON requests (libXmlRequest derivative); Hemi.registry for object repository management; Hemi.message for delegating message subscriptions and publications.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

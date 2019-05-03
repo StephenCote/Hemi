@@ -1,129 +1,144 @@
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>API Hemi.web.security Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css">
-</head>
-<body>
-<h1>Hemi JavaScript Framework</h1>
-<h2>Hemi.web.security</h2>
-<ul class="top-nav">
-<li>
-<a href="/Hemi/">Hemi JavaScript Framework</a>
-</li>
-<li>
-<a href="Hemi_api.html">API Index</a>
-</li>
-</ul>
-<h3>Description</h3>
-<p>Utilities for exploit mitigation.</p>
-<a name="security"> </a>
-<h3 class="membertitle">
-<i>static </i>Hemi.web.security</h3>
-<h4>version </h4>
-<p class="desc">A utility class for providing client support for exploit mitigation (requires corresponding server-side support).</p>
-<p class="desc"></p>
-<h3>Index</h3>
-<a name="securitypropertyindex"> </a>
-<h4>Property Index</h4>
-<ul class="index">
-<li>public <a href="#PageTickets">PageTickets</a>: Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.</li>
-</ul>
-<a name="securitymethodindex"> </a>
-<h4>Method Index</h4>
-<ul class="index">
-<li>public <a href="#AddPageTicket">AddPageTicket</a>: Adds a new page ticket to the PageTickets array.  Used to reduce CSRF exploit potential.  A page ticket is a guid stored with the session, optionally for a specific server resource, and which may be required to complete an action.  Refer to the Hemi/Components/component.session.xml component, Account Manager 4 project, and Core Web project for a reference implementation.</li>
-<li>public <a href="#GetSession">GetSession</a>: Returns any session object added to the registry.  Hemi includes the Session component for use with Account Manager 4.  This can easily be updated to fit any desired server configuration.</li>
-<li>public <a href="#IsAuthenticated">IsAuthenticated</a>: Uses the Session Component to determine whether the current session has been authenticated.</li>
-</ul>
-<h3>Properties</h3>
-<a name="PageTickets"></a>
-<h3 class="membertitle">PageTickets</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#security">security</a>
-</li>
-<li>
-<a href="#securitypropertyindex">Properties</a>
-</li>
-</ul>
-<p class="propertydesc">Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.</p>
-<h4>Syntax</h4>
-<p class="propertysyntax">array = Hemi.web.security.PageTickets</p>
-<h3>Methods</h3>
-<a name="AddPageTicket"></a>
-<h3 class="membertitle">AddPageTicket</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#security">security</a>
-</li>
-<li>
-<a href="#securitymethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Adds a new page ticket to the PageTickets array.  Used to reduce CSRF exploit potential.  A page ticket is a guid stored with the session, optionally for a specific server resource, and which may be required to complete an action.  Refer to the Hemi/Components/component.session.xml component, Account Manager 4 project, and Core Web project for a reference implementation.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void AddPageTicket(
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>API Hemi.web.security Hemi JavaScript Framework</title>
+        <link rel="stylesheet" href="ApiStyles.css" type="text/css">
+    </head>
+    <body>
+        <h1>Hemi JavaScript Framework</h1>
+        <h2>Hemi.web.security</h2>
+        <ul class="top-nav">
+            <li>
+                <a href="/Hemi/">Hemi JavaScript Framework</a>
+            </li>
+            <li>
+                <a href="Hemi_api.html">API Index</a>
+            </li>
+        </ul>
+        <h3>Description</h3>
+        <p>Utilities for exploit mitigation.</p>
+        <a name="security"> </a>
+        <h3 class="membertitle">
+            <i>static </i>Hemi.web.security
+        </h3>
+        <h4>version </h4>
+        <p class="desc">A utility class for providing client support for exploit mitigation (requires corresponding server-side support).</p>
+        <p class="desc"></p>
+        <h3>Index</h3>
+        <a name="securitypropertyindex"> </a>
+        <h4>Property Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#PageTickets">PageTickets</a>: Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.
+            </li>
+        </ul>
+        <a name="securitymethodindex"> </a>
+        <h4>Method Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#AddPageTicket">AddPageTicket</a>: Adds a new page ticket to the PageTickets array.  Used to reduce CSRF exploit potential.  A page ticket is a guid stored with the session, optionally for a specific server resource, and which may be required to complete an action.  Refer to the Hemi/Components/component.session.xml component, Account Manager 4 project, and Core Web project for a reference implementation.
+            </li>
+            <li>
+                public <a href="#GetSession">GetSession</a>: Returns any session object added to the registry.  Hemi includes the Session component for use with Account Manager 4.  This can easily be updated to fit any desired server configuration.
+            </li>
+            <li>
+                public <a href="#IsAuthenticated">IsAuthenticated</a>: Uses the Session Component to determine whether the current session has been authenticated.
+            </li>
+        </ul>
+        <h3>Properties</h3>
+        <a name="PageTickets"></a>
+        <h3 class="membertitle">PageTickets</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#security">security</a>
+            </li>
+            <li>
+                <a href="#securitypropertyindex">Properties</a>
+            </li>
+        </ul>
+        <p class="propertydesc">Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.</p>
+        <h4>Syntax</h4>
+        <p class="propertysyntax">array = Hemi.web.security.PageTickets</p>
+        <h3>Methods</h3>
+        <a name="AddPageTicket"></a>
+        <h3 class="membertitle">AddPageTicket</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#security">security</a>
+            </li>
+            <li>
+                <a href="#securitymethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Adds a new page ticket to the PageTickets array.  Used to reduce CSRF exploit potential.  A page ticket is a guid stored with the session, optionally for a specific server resource, and which may be required to complete an action.  Refer to the Hemi/Components/component.session.xml component, Account Manager 4 project, and Core Web project for a reference implementation.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            void AddPageTicket(
 sId, <i>sUri</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>sId</b> as String : Ticket identifier.</li>
-<li>
-<b>sUri</b> as String <i>(optional)</i>: URL used to restrict the use of the ticket.</li>
-</ul>
-<a name="GetSession"></a>
-<h3 class="membertitle">GetSession</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#security">security</a>
-</li>
-<li>
-<a href="#securitymethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns any session object added to the registry.  Hemi includes the Session component for use with Account Manager 4.  This can easily be updated to fit any desired server configuration.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">oSession = GetSession(
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>sId</b> as String : Ticket identifier.
+            </li>
+            <li>
+                <b>sUri</b> as String <i>(optional)</i>: URL used to restrict the use of the ticket.
+            </li>
+        </ul>
+        <a name="GetSession"></a>
+        <h3 class="membertitle">GetSession</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#security">security</a>
+            </li>
+            <li>
+                <a href="#securitymethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns any session object added to the registry.  Hemi includes the Session component for use with Account Manager 4.  This can easily be updated to fit any desired server configuration.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">oSession = GetSession(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>oSession</b> as object: Returns the session object from the registry.</p>
-<a name="IsAuthenticated"></a>
-<h3 class="membertitle">IsAuthenticated</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#security">security</a>
-</li>
-<li>
-<a href="#securitymethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Uses the Session Component to determine whether the current session has been authenticated.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">bAuth = IsAuthenticated(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>oSession</b> as object: Returns the session object from the registry.
+        </p>
+        <a name="IsAuthenticated"></a>
+        <h3 class="membertitle">IsAuthenticated</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#security">security</a>
+            </li>
+            <li>
+                <a href="#securitymethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Uses the Session Component to determine whether the current session has been authenticated.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">bAuth = IsAuthenticated(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>bAuth</b> as boolean: Returns a bit indicating whether the session includes an authentication bit.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
-</body>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>bAuth</b> as boolean: Returns a bit indicating whether the session includes an authentication bit.
+        </p>
+        <p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+    </body>
 </html>

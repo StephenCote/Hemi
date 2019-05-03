@@ -13,12 +13,12 @@
 <static-class>
 <name>service</name>
 <description>Static instance of serviceImpl</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <class>
 <name>Monitor</name>
 <description>An object registerer with the <i>ObjectRegistry</i>, that defines an <i>initializeMonitor</i> method, and that may define any <i>handle_{event name}</i> method listed for the MonitorService.  The <i>initializeMonitor</i> method must return true for the object to be treated as a monitor and receive event notifications and intervall callbacks.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <example implementation="1">
 <name>Example Monitor #1</name>
 <description>Demonstrate how to create and register a basic monitor object.</description>
@@ -192,7 +192,7 @@
 <class>
 <name>MonitorServiceImpl</name>
 <description>A base class for creating beacon and XML transponders for monitoring Web pages.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <property get="1" internal="1" type="String">
 <name>object_id</name>
 <description>Unique instance identifier.</description>

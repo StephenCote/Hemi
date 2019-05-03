@@ -12,9 +12,9 @@
 <description>The Calendar control is a date picker control.</description>
 <static-class>
 <name>Calendar</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Visual representation of a date.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>newInstance</name>
 <param name="o" type="HTMLNode">Parent HTML Node in which the control will be created.</param>
@@ -24,7 +24,7 @@
 </static-class>
 <class>
 <name>CalendarInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A control for displaying the date.</description>
 </class>
 </package>

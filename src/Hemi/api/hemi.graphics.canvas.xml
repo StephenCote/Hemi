@@ -12,7 +12,7 @@
 <description>The Canvas class provides a shape management layer for browsers that support Canvas, including a temporary drawing layer and event to shape coordination.</description>
 <static-class>
 <name>Canvas</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static initializer for CanvasInstance objects.</description>
 <method>
 <name>newInstance</name>
@@ -24,7 +24,7 @@
 </static-class>
 <object>
 <name>ShapeDecorator</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A shape decorator receives event dispatches from the CanvasInstance allowing managed shapes to be manipulated in response to those events.  Event properties and positions are captured prior to the event being dispatched to the decorator, and are available on the CanvasInstance.properties member.</description>
 <method virtual="1">
 <name>handle_canvas_mousedown</name>
@@ -47,7 +47,7 @@
 </object>
 <class>
 <name>CanvasInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The Canvas Graphics class provides a number of utitilies and helper methods for working with Canvas elements, and instrumenting and tracking objects created for the Canvas.</description>
 shapes contains object representations of vectors applied to the canvas
 
@@ -222,7 +222,9 @@ alert(b + "?" + f + "\n" + c);
 <param name="oShape" type="Shape">The shape to be drawn.</param>
 <description>Draws a text shape.  If the measureText method is not implemented, a positioned HTML element is used to supply the text.</description>
 </method>
-this.log("Draw Text at " + vX + ", " + vY);
+2015/06/16
+Ok, this was just laughably bad
+
 this.log("Draw Text at " + vX + ", " + vY);
 <method>
 <name>ConnectShapes</name>

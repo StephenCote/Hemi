@@ -12,14 +12,14 @@
 <description>The Data IO service is used to broker data requests with configured data providers.  The built-in interchange format is loosely modelled on the Account Manager 4 Data and Group object model, but the implementation is open for any object type.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.data.io.proxy.serviceImpl class.</description>
 
 
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The Data IO proxy service marshals custom protocol requests through Data IO providers.</description>
 
 Change the bus type automatically based on the transaction

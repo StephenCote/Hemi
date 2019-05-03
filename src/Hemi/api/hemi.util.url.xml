@@ -12,9 +12,9 @@
 <description>The URL class parses URIs into individual parts.  The class also supports resolving relative paths against specified URLs.</description>
 <static-class>
 <name>url</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Utility for parsing URLs.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>qualifyToHost</name>
 <param name="u" type="String">Partial URL.</param>
@@ -32,7 +32,7 @@
 
 <class>
 <name>UrlInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>On object representation of a specified URL.</description>
 <example>
 <description>Demonstrate how to obtain a full URL from a specified partial URL.</description>

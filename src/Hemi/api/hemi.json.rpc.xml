@@ -13,12 +13,12 @@
 <static-class>
 <name>service</name>
 <description>Static instance of serviceImpl.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <class>
 <name>JSONRPCServiceImpl</name>
 <description>A service for managing JSON RPC end points.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 NOTE: Synchronous call
 
 JSON Bug?  javaClass is 'cleared' in stringify if not set as a first-class property.
@@ -33,6 +33,9 @@ o[sN].prototype.javaClass = sP;
 LOCAL CONFIG
 fn = "post";
 Check if the last argument is the hemiSvcCfg object
+
+Handle case where no a client accepts a config parameter, but passes in undefined
+Then trim off that undefined value from the method call
 
 TODO: Note, the cache mechanism is currently not supported for async requests
 

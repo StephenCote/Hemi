@@ -12,7 +12,7 @@
 <description>The utility class includes Web UI help functions.</description>
 <static-class>
 <name>util</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Hemi framework utilities</description>
 <method>
 <name>getIsRequested</name>

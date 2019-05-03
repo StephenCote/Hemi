@@ -67,18 +67,18 @@
 <return-value name="oRequest" type="DataIORequest">Returns a Data IO Request based on the supplied input.</return-value>
 <description>When registered as a protocol proxy, matching URI requests made from the context of the registered bus are diverted to this provider. The provider implements the handle_proxy_xml method to compose a Data IO Request based on the URI pattern. NOTE: Only one provider may register for a particular protocol, regardless of bus type.</description>
 </method>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.app.module.serviceImpl class.</description>
 
 
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The Data IO service provides a bus to registered Data Providers.  <i>IORequest</i> and <i>IOSubject</i> objects are used to convey a description of the request to the providers.  Each provider may then determine whether and when to handled the request, and return results as an <i>IOResponse</i>.</description>
 
 <method>

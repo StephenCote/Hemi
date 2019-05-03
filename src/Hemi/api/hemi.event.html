@@ -1,300 +1,340 @@
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>API Hemi.event Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css">
-</head>
-<body>
-<h1>Hemi JavaScript Framework</h1>
-<h2>Hemi.event</h2>
-<ul class="top-nav">
-<li>
-<a href="/Hemi/">Hemi JavaScript Framework</a>
-</li>
-<li>
-<a href="Hemi_api.html">API Index</a>
-</li>
-</ul>
-<h3>Description</h3>
-<p>The Event class provides utilities for working with the browser event object, listening to and capturing events, and decorating Framework Objects with an API for scoping handlers back to the object.</p>
-<a name="event"> </a>
-<h3 class="membertitle">
-<i>static </i>Hemi.event</h3>
-<h4>version 3.5.1</h4>
-<p class="desc">Utilities for DOM Events.</p>
-<p class="desc">
-See <a href="#Using event utilities">Using event utilities</a> for an example of implementating the script on a page. </p>
-<h3>Index</h3>
-<a name="eventexampleindex"> </a>
-<h4>Example Index</h4>
-<ul class="index">
-<li>
-<a href="#Using event utilities">Using event utilities</a>: This example shows how to use the event buffer and scopeHandler mechanisms to preserve the event handler context to a specific object instance.</li>
-</ul>
-<a name="eventmethodindex"> </a>
-<h4>Method Index</h4>
-<ul class="index">
-<li>virtual <a href="#_handle_event">_handle_event</a>: A developer specified event handler that is invoked after binding an event to the _prehandle_event handler, and which has the context specified by the scopeHandler method.</li>
-<li>public <a href="#_prehandle_event">_prehandle_event</a> (<b>internal</b>): Internal event handler used to establish context and to invoke the custom handler.</li>
-<li>public <a href="#addScopeBuffer">addScopeBuffer</a>: Creates the scopeHandler method on the specified object.</li>
-<li>public <a href="#cancelEvent">cancelEvent</a>: Cancels the event.</li>
-<li>public <a href="#getEvent">getEvent</a>: Returns the event object, where the specified parameter may or may not be the event object depending on the browser.</li>
-<li>public <a href="#getEventDestination">getEventDestination</a>: Returns the event destination or target object.</li>
-<li>public <a href="#getEventOrigination">getEventOrigination</a>: Returns the event origination object.</li>
-<li>public <a href="#getEventSource">getEventSource</a>: Returns the event source object.</li>
-<li>virtual <a href="#scopeHandler">scopeHandler</a>: Creates a custom event handler, _prehandle_event, which invokes _handle_event for the specified object, using the specified context.  This method is created by addScopeBuffer.</li>
-</ul>
-<h3>Examples</h3>
-<a name="Using event utilities"></a>
-<h3 class="membertitle">Using event utilities</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventexampleindex">Examples</a>
-</li>
-</ul>
-<p class="exampledesc">This example shows how to use the event buffer and scopeHandler mechanisms to preserve the event handler context to a specific object instance.</p>
-<h4>Example Code</h4>
-<pre class="example">&lt;p id = "oPara"&gt;Test paragraph&lt;/p&gt;&lt;script type = "text/javascript"&gt;var oObject = Hemi.newObject("DemoType","1.0",true);// Add the scopeHandler method for this object with addScopeBufferHemi.event.addScopeBuffer(oObject);// Create an event handler wrapper with scopeHandler for an onclick event.// Specify the event name and the bit to use the ObjectRegistry.// This creates oObject._prehandle_click which will invoke oObject._handle_click.oObject.scopeHandler("click",0,0,1);oObject._handle_click = function(e){   var oEvent = Hemi.event.getEvent(e);   var oSource = Hemi.event.getEventSource(e);   // The 'this' object refers to the instance of oObject}; // Add the onclick event to the paragraph element, oParavar oPara = document.getElementById("oPara");// Use the _prehandle_click created by the scopeHandler method.Hemi.event.addEventListener(oPara, "click", oObject._prehandle_click);&lt;/script&gt;</pre>
-<h3>Methods</h3>
-<a name="_handle_event"></a>
-<h3 class="membertitle">_handle_event</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">A developer specified event handler that is invoked after binding an event to the _prehandle_event handler, and which has the context specified by the scopeHandler method. Method is virtual and can be overridden.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">v = _handle_event(
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>API Hemi.event Hemi JavaScript Framework</title>
+        <link rel="stylesheet" href="ApiStyles.css" type="text/css">
+    </head>
+    <body>
+        <h1>Hemi JavaScript Framework</h1>
+        <h2>Hemi.event</h2>
+        <ul class="top-nav">
+            <li>
+                <a href="/Hemi/">Hemi JavaScript Framework</a>
+            </li>
+            <li>
+                <a href="Hemi_api.html">API Index</a>
+            </li>
+        </ul>
+        <h3>Description</h3>
+        <p>The Event class provides utilities for working with the browser event object, listening to and capturing events, and decorating Framework Objects with an API for scoping handlers back to the object.</p>
+        <a name="event"> </a>
+        <h3 class="membertitle">
+            <i>static </i>Hemi.event
+        </h3>
+        <h4>version 4.0.1</h4>
+        <p class="desc">Utilities for DOM Events.</p>
+        <p class="desc">
+            See <a href="#Using event utilities">Using event utilities</a> for an example of implementating the script on a page. 
+        </p>
+        <h3>Index</h3>
+        <a name="eventexampleindex"> </a>
+        <h4>Example Index</h4>
+        <ul class="index">
+            <li>
+                <a href="#Using event utilities">Using event utilities</a>: This example shows how to use the event buffer and scopeHandler mechanisms to preserve the event handler context to a specific object instance.
+            </li>
+        </ul>
+        <a name="eventmethodindex"> </a>
+        <h4>Method Index</h4>
+        <ul class="index">
+            <li>
+                virtual <a href="#_handle_event">_handle_event</a>: A developer specified event handler that is invoked after binding an event to the _prehandle_event handler, and which has the context specified by the scopeHandler method.
+            </li>
+            <li>
+                public <a href="#_prehandle_event">_prehandle_event</a> (<b>internal</b>): Internal event handler used to establish context and to invoke the custom handler.
+            </li>
+            <li>
+                public <a href="#addScopeBuffer">addScopeBuffer</a>: Creates the scopeHandler method on the specified object.
+            </li>
+            <li>
+                public <a href="#cancelEvent">cancelEvent</a>: Cancels the event.
+            </li>
+            <li>
+                public <a href="#getEvent">getEvent</a>: Returns the event object, where the specified parameter may or may not be the event object depending on the browser.
+            </li>
+            <li>
+                public <a href="#getEventDestination">getEventDestination</a>: Returns the event destination or target object.
+            </li>
+            <li>
+                public <a href="#getEventOrigination">getEventOrigination</a>: Returns the event origination object.
+            </li>
+            <li>
+                public <a href="#getEventSource">getEventSource</a>: Returns the event source object.
+            </li>
+            <li>
+                virtual <a href="#scopeHandler">scopeHandler</a>: Creates a custom event handler, _prehandle_event, which invokes _handle_event for the specified object, using the specified context.  This method is created by addScopeBuffer.
+            </li>
+        </ul>
+        <h3>Examples</h3>
+        <a name="Using event utilities"></a>
+        <h3 class="membertitle">Using event utilities</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventexampleindex">Examples</a>
+            </li>
+        </ul>
+        <p class="exampledesc">This example shows how to use the event buffer and scopeHandler mechanisms to preserve the event handler context to a specific object instance.</p>
+        <h4>Example Code</h4>
+        <pre class="example">&lt;p id = "oPara"&gt;Test paragraph&lt;/p&gt;&lt;script type = "text/javascript"&gt;var oObject = Hemi.newObject("DemoType","1.0",true);// Add the scopeHandler method for this object with addScopeBufferHemi.event.addScopeBuffer(oObject);// Create an event handler wrapper with scopeHandler for an onclick event.// Specify the event name and the bit to use the ObjectRegistry.// This creates oObject._prehandle_click which will invoke oObject._handle_click.oObject.scopeHandler("click",0,0,1);oObject._handle_click = function(e){   var oEvent = Hemi.event.getEvent(e);   var oSource = Hemi.event.getEventSource(e);   // The 'this' object refers to the instance of oObject}; // Add the onclick event to the paragraph element, oParavar oPara = document.getElementById("oPara");// Use the _prehandle_click created by the scopeHandler method.Hemi.event.addEventListener(oPara, "click", oObject._prehandle_click);&lt;/script&gt;</pre>
+        <h3>Methods</h3>
+        <a name="_handle_event"></a>
+        <h3 class="membertitle">_handle_event</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">A developer specified event handler that is invoked after binding an event to the _prehandle_event handler, and which has the context specified by the scopeHandler method. Method is virtual and can be overridden.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">v = _handle_event(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>v</b> as variant: Returns developer specified value.</p>
-<a name="_prehandle_event"></a>
-<h3 class="membertitle">_prehandle_event</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Internal event handler used to establish context and to invoke the custom handler.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">v = _prehandle_event(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>v</b> as variant: Returns developer specified value.
+        </p>
+        <a name="_prehandle_event"></a>
+        <h3 class="membertitle">_prehandle_event</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Internal event handler used to establish context and to invoke the custom handler.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">v = _prehandle_event(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>v</b> as variant: Returns value from </p>
-<a name="addScopeBuffer"></a>
-<h3 class="membertitle">addScopeBuffer</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Creates the scopeHandler method on the specified object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void addScopeBuffer(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>v</b> as variant: Returns value from 
+        </p>
+        <a name="addScopeBuffer"></a>
+        <h3 class="membertitle">addScopeBuffer</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Creates the scopeHandler method on the specified object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void addScopeBuffer(
 e
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>e</b> as object : A possible event object.  Use </li>
-</ul>
-<a name="cancelEvent"></a>
-<h3 class="membertitle">cancelEvent</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Cancels the event.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void cancelEvent(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>e</b> as object : A possible event object.  Use 
+            </li>
+        </ul>
+        <a name="cancelEvent"></a>
+        <h3 class="membertitle">cancelEvent</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Cancels the event.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void cancelEvent(
 o
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as object : Possible event object</li>
-</ul>
-<a name="getEvent"></a>
-<h3 class="membertitle">getEvent</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the event object, where the specified parameter may or may not be the event object depending on the browser.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">e = getEvent(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as object : Possible event object
+            </li>
+        </ul>
+        <a name="getEvent"></a>
+        <h3 class="membertitle">getEvent</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the event object, where the specified parameter may or may not be the event object depending on the browser.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">e = getEvent(
 o
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as object : Possible event object</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>e</b> as object: The event object.</p>
-<a name="getEventDestination"></a>
-<h3 class="membertitle">getEventDestination</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the event destination or target object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">e = getEventDestination(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as object : Possible event object
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>e</b> as object: The event object.
+        </p>
+        <a name="getEventDestination"></a>
+        <h3 class="membertitle">getEventDestination</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the event destination or target object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">e = getEventDestination(
 o
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as object : Possible event object</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>e</b> as object: The event destination object.</p>
-<a name="getEventOrigination"></a>
-<h3 class="membertitle">getEventOrigination</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the event origination object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">e = getEventOrigination(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as object : Possible event object
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>e</b> as object: The event destination object.
+        </p>
+        <a name="getEventOrigination"></a>
+        <h3 class="membertitle">getEventOrigination</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the event origination object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">e = getEventOrigination(
 o
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as object : Possible event object</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>e</b> as object: The event origination or source object.</p>
-<a name="getEventSource"></a>
-<h3 class="membertitle">getEventSource</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the event source object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">e = getEventSource(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as object : Possible event object
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>e</b> as object: The event origination or source object.
+        </p>
+        <a name="getEventSource"></a>
+        <h3 class="membertitle">getEventSource</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the event source object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">e = getEventSource(
 o
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as object : Possible event object</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>e</b> as object: The event source object.</p>
-<a name="scopeHandler"></a>
-<h3 class="membertitle">scopeHandler</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#event">event</a>
-</li>
-<li>
-<a href="#eventmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Creates a custom event handler, _prehandle_event, which invokes _handle_event for the specified object, using the specified context.  This method is created by addScopeBuffer. Method is virtual and can be overridden.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">f = scopeHandler(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as object : Possible event object
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>e</b> as object: The event source object.
+        </p>
+        <a name="scopeHandler"></a>
+        <h3 class="membertitle">scopeHandler</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#event">event</a>
+            </li>
+            <li>
+                <a href="#eventmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Creates a custom event handler, _prehandle_event, which invokes _handle_event for the specified object, using the specified context.  This method is created by addScopeBuffer. Method is virtual and can be overridden.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            f = scopeHandler(
 s, <i>r</i>, <i>x</i>, <i>l</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>s</b> as String : Event name, such as </li>
-<li>
-<b>r</b> as object <i>(optional)</i>: Reference object for which the event handler should have context.  Object must be registered with ObjectRegistry.</li>
-<li>
-<b>x</b> as boolean <i>(optional)</i>: Bit indicating whether or not the custom handler should be set on the specified object.</li>
-<li>
-<b>l</b> as boolean <i>(optional)</i>: Bit indicating whether the context should be referenced using the ObjectRegistry if true, or the this reference if false.</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>f</b> as function: Custom event handler function.</p>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
-</body>
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>s</b> as String : Event name, such as 
+            </li>
+            <li>
+                <b>r</b> as object <i>(optional)</i>: Reference object for which the event handler should have context.  Object must be registered with ObjectRegistry.
+            </li>
+            <li>
+                <b>x</b> as boolean <i>(optional)</i>: Bit indicating whether or not the custom handler should be set on the specified object.
+            </li>
+            <li>
+                <b>l</b> as boolean <i>(optional)</i>: Bit indicating whether the context should be referenced using the ObjectRegistry if true, or the this reference if false.
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>f</b> as function: Custom event handler function.
+        </p>
+        <p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+    </body>
 </html>

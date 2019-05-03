@@ -12,7 +12,7 @@
 <description>Helper utilities for creating Application Spaces, Application Components, XHTML Components, and loading <a href="../Components/component.window.xml">Window components</a>.</description>
 <static-class>
 <name>app</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Convenience methods for instrumenting the Hemi.app.* libraries.</description>
 <method>
 <name>createApplicationSpace</name>
@@ -33,6 +33,7 @@ within the space
 <param name="oElement" type="Node">XHTML Node for which the XHTML Component will be created.</param>
 <param name="oSpace" optional="1" type="SpaceObject">Application space in which the component will exist.</param>
 <param name="sRid" optional="1" type="String">Reference id for addressing this object through the registry service or within the application space.</param>
+<param name="bDynamic" optional="1" type="bit">Permit creating a component on an existing space.  This is a safety check to allow adding the component without creating a duplicate entry.</param>
 <return-value name="oComponent" type="XHTMLComponent">A new XHTML Component.</return-value>
 <description>Creates a new XHTML Component.</description>
 </method>

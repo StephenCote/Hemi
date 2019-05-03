@@ -12,7 +12,7 @@
 <description>The Configuration class imports and parses XML for providing application level configuration.</description>
 <static-class>
 <name>config</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static initializer for new Config objects.</description>
 <method>
 <name>newInstance</name>
@@ -25,7 +25,7 @@
 </static-class>
 <class>
 <name>ConfigInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Service for sending messages, and sending and receiving publication broadcasts.</description>
 <property get="1" internal="1" type="String">
 <name>object_id</name>

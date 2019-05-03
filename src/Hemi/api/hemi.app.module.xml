@@ -12,14 +12,14 @@
 <description>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the <a href="../Tests/test.app.comp.js">Application Component Tests</a> includes several unit tests for vetting the Application Component class.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.app.module.serviceImpl class.</description>
 
 
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The module service provides a convenience for modularizing and managing standard JavaScript as reusable components and tests.</description>
 
 <method>
@@ -33,7 +33,6 @@
 <return-value name="oModule" type="Module">A new Module object.</return-value>
 <description>Creates a new Module object.</description>
 </method>
-vMod._IMod();
 <method>
 <name>UnloadModuleImplementations</name>
 <param name="sModule" type="String">Name of the Module</param>
@@ -81,8 +80,6 @@ clean up the object.
 <property get="1" name="Container" type="Node">A pointer to the XHTML Node for which the module was loaded.</property>
 <property get="1" name="Component" type="XHTMLComponent">A pointer to the XHTMLComponent created for any Container, if a Container was used.</property>
 </object>
-+ "this._IMod = function(){ Module = this; };"
-if(!b) o.raw = x;
 <method virtual="1">
 <name>DecorateModuleHeader</name>
 <param name="sName" type="String">Name of the Module</param>
@@ -106,8 +103,6 @@ if(!b) o.raw = x;
 <return-value name="object" type="object">Internal module object.</return-value>
 <description>Registers a Module object.</description>
 </method>
-m = { name: n, data: c, impls: [] };
-return m;
 </class>
 </package>
 <index><description>Modules are external script instrumented with a basic API to operate within the Hemi framework and be included in the Hemi.registry service.  Similar to Application Components, the concept permits a typical external JavaScript format but which operates within its own namespace.  The module class also includes basic support for unit testing, so that modules may be quickly written to act as externally loaded unit tests.  For example, the  includes several unit tests for vetting the Application Component class.</description><url>Hemi_api.html</url><url-title>API Index</url-title></index></source>

@@ -13,12 +13,12 @@
 <static-class>
 <name>service</name>
 <description>Static instance of serviceImpl.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <class>
 <name>JSONRPCCacheServiceImpl</name>
 <description>A service for managing JSON RPC client caches.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 If the object was looked up via an alternate name,
 such as a directory by its path rather than name/parent
 then cache against the alternate name

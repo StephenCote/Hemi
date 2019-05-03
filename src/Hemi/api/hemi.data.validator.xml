@@ -13,12 +13,12 @@
 <static-class>
 <name>service</name>
 <description>Static instance of XHTMLValidatorImpl.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 </static-class>
 <class>
 <name>serviceImpl</name>
 <description>A service for managing asynchronous and dependency-driven actions.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <example implementation="1">
 <name>Example Implementation</name>
 <description>This is an example of using the validator service to validate a form field.</description>

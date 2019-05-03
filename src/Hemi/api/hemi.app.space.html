@@ -1,406 +1,489 @@
 <html>
-<head>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>API Hemi.app.space Hemi JavaScript Framework</title>
-<link rel="stylesheet" href="ApiStyles.css" type="text/css">
-</head>
-<body>
-<h1>Hemi JavaScript Framework</h1>
-<h2>Hemi.app.space</h2>
-<ul class="top-nav">
-<li>
-<a href="/Hemi/">Hemi JavaScript Framework Project</a>
-</li>
-<li>
-<a href="Hemi_api.html">API Index</a>
-</li>
-</ul>
-<h3>Description</h3>
-<p>Application Spaces are controlled environments in which the content (XHTML and XML nodes) drives the implementation (via Application Space Definitions).  XHTML Nodes (Presentation Nodes) that match space definitions are represented as XHTML Components. XHTML Components can automatically load Application Components, Modules, and Templates (which in turn spawn their own Application Space).  These components can be retrieved using unique object identifiers, or more friendly reference identifiers which are contextually sensitive to the space.  Form fields are augmented by the Hemi.data.form service to create Virtual Forms. Spaces can load automatically, or use the Hemi.task service to bootstrap asynchronous dependencies.</p>
-<a name="classindex"> </a>
-<h3>Class Index</h3>
-<ul class="index">
-<li>
-<a href="#service"><i>static </i>Hemi.app.space.service</a>: Static implementation of the Application Space service.</li>
-<li>
-<a href="#serviceImpl">Hemi.app.space.serviceImpl</a>: The Application Space service is used to create managed environments within Web pages.  Each Application Space uses its XHTML contents for self-configuration, instrumentation, and contained lifecycle management.</li>
-</ul>
-<a name="service"> </a>
-<h3 class="membertitle">
-<i>static </i>Hemi.app.space.service</h3>
-<h4>version 3.5.1</h4>
-<p class="desc">Static implementation of the Application Space service.</p>
-<p class="desc"></p>
-<a name="serviceImpl"> </a>
-<h3 class="membertitle">Hemi.app.space.serviceImpl</h3>
-<h4>version 3.5.1</h4>
-<p class="desc">The Application Space service is used to create managed environments within Web pages.  Each Application Space uses its XHTML contents for self-configuration, instrumentation, and contained lifecycle management.</p>
-<p class="desc"></p>
-<h3>Index</h3>
-<a name="serviceImplobjectindex"> </a>
-<h4>Object Index</h4>
-<ul class="index">
-<li>public <a href="#Space">Space</a>
-</li>
-</ul>
-<a name="serviceImplmethodindex"> </a>
-<h4>Method Index</h4>
-<ul class="index">
-<li>public <a href="#clearAppSpace">clearAppSpace</a>: Clears the specified Space, and destroys all components of the Space.</li>
-<li>public <a href="#clearAppSpaces">clearAppSpaces</a>: Clears all Spaces, and destroys all components in each Space.</li>
-<li>public <a href="#configureSpace">configureSpace</a>: Applies the specified configuration to the specified engine.  This can be used to repurpose Space objects, or to load alternate content into the Space.</li>
-<li>public <a href="#createSpace">createSpace</a>: Creates a new Application Space.</li>
-<li>public <a href="#getPrimarySpace">getPrimarySpace</a>: Returns the primary application space.   If a space is not explicitly created prior to the page loading, then, by default, a primary space object is created for the HTML BODY.</li>
-<li>public <a href="#loadSpaces">loadSpaces</a>: Finds all spaces on the current Web page and loads them.  A space node is either the body element, or a span, div, or form element with an is-space attribute.</li>
-<li>public <a href="#newSpaceObject">newSpaceObject</a> (<b>internal</b>): Creates a new Space object.</li>
-</ul>
-<a name="serviceImplmessageindex"> </a>
-<h4>Message Index</h4>
-<ul class="index">
-<li>public <a href="#onspaceconfigload">onspaceconfigload</a>: Message published to all subscribers when configuration has been loaded.</li>
-</ul>
-<h3>Objects</h3>
-<a name="Space"></a>
-<h3 class="membertitle">Space</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplobjectindex">Objects</a>
-</li>
-</ul>
-<p class="objectdesc"></p>
-<h4>Properties</h4>
-<ul class="methodparams">
-<li>
-<b>space_element</b> as object: The DOM Node associated with this Space.</li>
-<li>
-<b>space_id</b> as String: The unique identifier of this Space object.</li>
-<li>
-<b>space_name</b> as String: The friendly name of this Space object.</li>
-<li>
-<b>space_state</b> as int: The loading state of the space.</li>
-<li>
-<b>space_index</b> as int: The ordinal index of this Space object.</li>
-<li>
-<b>config_name</b> as String: The configuration name for this Space object.  This value specifically applies to a Space Configuration file.</li>
-<li>
-<b>task</b> as Task: The task object associated with this Space.  All Spaces are bootstrapped with a Task object.</li>
-<li>
-<b>is_primary</b> as boolean: Bit indicating whether this is the primary engine.  There can only be one primary engine per hemi.app.space.serviceImpl instance.</li>
-<li>
-<b>space_implementations</b> as array: Cache of implementation constructors used to build the content within the Space.</li>
-</ul>
-<h4>Methods</h4>
-<ul class="methodparams">
-<li>void <b>addSpaceObject</b>(
+    <head>
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>API Hemi.app.space Hemi JavaScript Framework</title>
+        <link rel="stylesheet" href="ApiStyles.css" type="text/css">
+    </head>
+    <body>
+        <h1>Hemi JavaScript Framework</h1>
+        <h2>Hemi.app.space</h2>
+        <ul class="top-nav">
+            <li>
+                <a href="/Hemi/">Hemi JavaScript Framework Project</a>
+            </li>
+            <li>
+                <a href="Hemi_api.html">API Index</a>
+            </li>
+        </ul>
+        <h3>Description</h3>
+        <p>Application Spaces are controlled environments in which the content (XHTML and XML nodes) drives the implementation (via Application Space Definitions).  XHTML Nodes (Presentation Nodes) that match space definitions are represented as XHTML Components. XHTML Components can automatically load Application Components, Modules, and Templates (which in turn spawn their own Application Space).  These components can be retrieved using unique object identifiers, or more friendly reference identifiers which are contextually sensitive to the space.  Form fields are augmented by the Hemi.data.form service to create Virtual Forms. Spaces can load automatically, or use the Hemi.task service to bootstrap asynchronous dependencies.</p>
+        <a name="classindex"> </a>
+        <h3>Class Index</h3>
+        <ul class="index">
+            <li>
+                <a href="#service"><i>static </i>Hemi.app.space.service</a>: Static implementation of the Application Space service.
+            </li>
+            <li>
+                <a href="#serviceImpl">Hemi.app.space.serviceImpl</a>: The Application Space service is used to create managed environments within Web pages.  Each Application Space uses its XHTML contents for self-configuration, instrumentation, and contained lifecycle management.
+            </li>
+        </ul>
+        <a name="service"> </a>
+        <h3 class="membertitle">
+            <i>static </i>Hemi.app.space.service
+        </h3>
+        <h4>version 4.0.1</h4>
+        <p class="desc">Static implementation of the Application Space service.</p>
+        <p class="desc"></p>
+        <a name="serviceImpl"> </a>
+        <h3 class="membertitle">Hemi.app.space.serviceImpl</h3>
+        <h4>version 4.0.1</h4>
+        <p class="desc">The Application Space service is used to create managed environments within Web pages.  Each Application Space uses its XHTML contents for self-configuration, instrumentation, and contained lifecycle management.</p>
+        <p class="desc"></p>
+        <h3>Index</h3>
+        <a name="serviceImplobjectindex"> </a>
+        <h4>Object Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#Space">Space</a>
+            </li>
+        </ul>
+        <a name="serviceImplmethodindex"> </a>
+        <h4>Method Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#clearAppSpace">clearAppSpace</a>: Clears the specified Space, and destroys all components of the Space.
+            </li>
+            <li>
+                public <a href="#clearAppSpaces">clearAppSpaces</a>: Clears all Spaces, and destroys all components in each Space.
+            </li>
+            <li>
+                public <a href="#configureSpace">configureSpace</a>: Applies the specified configuration to the specified engine.  This can be used to repurpose Space objects, or to load alternate content into the Space.
+            </li>
+            <li>
+                public <a href="#createSpace">createSpace</a>: Creates a new Application Space.
+            </li>
+            <li>
+                public <a href="#getPrimarySpace">getPrimarySpace</a>: Returns the primary application space.   If a space is not explicitly created prior to the page loading, then, by default, a primary space object is created for the HTML BODY.
+            </li>
+            <li>
+                public <a href="#loadSpaces">loadSpaces</a>: Finds all spaces on the current Web page and loads them.  A space node is either the body element, or a span, div, or form element with an is-space attribute.
+            </li>
+            <li>
+                public <a href="#newSpaceObject">newSpaceObject</a> (<b>internal</b>): Creates a new Space object.
+            </li>
+        </ul>
+        <a name="serviceImplmessageindex"> </a>
+        <h4>Message Index</h4>
+        <ul class="index">
+            <li>
+                public <a href="#onspaceconfigload">onspaceconfigload</a>: Message published to all subscribers when configuration has been loaded.
+            </li>
+        </ul>
+        <h3>Objects</h3>
+        <a name="Space"></a>
+        <h3 class="membertitle">Space</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplobjectindex">Objects</a>
+            </li>
+        </ul>
+        <p class="objectdesc"></p>
+        <h4>Properties</h4>
+        <ul class="methodparams">
+            <li>
+                <b>space_element</b> as object: The DOM Node associated with this Space.
+            </li>
+            <li>
+                <b>space_id</b> as String: The unique identifier of this Space object.
+            </li>
+            <li>
+                <b>space_name</b> as String: The friendly name of this Space object.
+            </li>
+            <li>
+                <b>space_state</b> as int: The loading state of the space.
+            </li>
+            <li>
+                <b>space_index</b> as int: The ordinal index of this Space object.
+            </li>
+            <li>
+                <b>config_name</b> as String: The configuration name for this Space object.  This value specifically applies to a Space Configuration file.
+            </li>
+            <li>
+                <b>task</b> as Task: The task object associated with this Space.  All Spaces are bootstrapped with a Task object.
+            </li>
+            <li>
+                <b>is_primary</b> as boolean: Bit indicating whether this is the primary engine.  There can only be one primary engine per hemi.app.space.serviceImpl instance.
+            </li>
+            <li>
+                <b>space_implementations</b> as array: Cache of implementation constructors used to build the content within the Space.
+            </li>
+        </ul>
+        <h4>Methods</h4>
+        <ul class="methodparams">
+            <li>
+                void <b>addSpaceObject</b>(
 o, s)
-<p class="messagedesc">Adds the specified object to the application space.</p>
-</li>
-<li>object = <b>getContainer</b>(
+
+                <p class="messagedesc">Adds the specified object to the application space.</p>
+            </li>
+            <li>
+                object = <b>getContainer</b>(
 )
-<p class="messagedesc">Returns the node that contains the Space.  For example, a DIV node on which the Space was defined.</p>
-</li>
-<li>PrimitiveWire = <b>getPrimitiveWire</b>(
+
+                <p class="messagedesc">Returns the node that contains the Space.  For example, a DIV node on which the Space was defined.</p>
+            </li>
+            <li>
+                PrimitiveWire = <b>getPrimitiveWire</b>(
 n)
-<p class="messagedesc">Returns the specified PrimitiveWire.</p>
-</li>
-<li>object = <b>getSpaceObject</b>(
+
+                <p class="messagedesc">Returns the specified PrimitiveWire.</p>
+            </li>
+            <li>
+                object = <b>getSpaceObject</b>(
 i)
-<p class="messagedesc">Returns the specified object created for this Space.</p>
-</li>
-<li>object = <b>getSpaceObjectByName</b>(
+
+                <p class="messagedesc">Returns the specified object created for this Space.</p>
+            </li>
+            <li>
+                object = <b>getSpaceObjectByName</b>(
 n)
-<p class="messagedesc">Returns the specified object created for this Space.</p>
-</li>
-<li>array = <b>getSpaceObjects</b>(
+
+                <p class="messagedesc">Returns the specified object created for this Space.</p>
+            </li>
+            <li>
+                array = <b>getSpaceObjects</b>(
 )
-<p class="messagedesc">Returns an array of objects created for this Space.</p>
-</li>
-<li>array = <b>getSpaceObjectsByClass</b>(
+
+                <p class="messagedesc">Returns an array of objects created for this Space.</p>
+            </li>
+            <li>
+                array = <b>getSpaceObjectsByClass</b>(
 n)
-<p class="messagedesc">Returns an array of objects with the specified class.</p>
-</li>
-<li>boolean = <b>isSpaceObjectByName</b>(
+
+                <p class="messagedesc">Returns an array of objects with the specified class.</p>
+            </li>
+            <li>
+                boolean = <b>isSpaceObjectByName</b>(
 n)
-<p class="messagedesc">Returns true if the object exists, false otherwise.</p>
-</li>
-<li>void <b>Processor</b>(
+
+                <p class="messagedesc">Returns true if the object exists, false otherwise.</p>
+            </li>
+            <li>
+                void <b>Processor</b>(
 o, v)
-<p class="messagedesc">Allows a document to be processed by an outside process before it is copied into the space context.</p>
-</li>
-<li>void <b>removeSpaceObject</b>(
+
+                <p class="messagedesc">Allows a document to be processed by an outside process before it is copied into the space context.</p>
+            </li>
+            <li>
+                void <b>removeSpaceObject</b>(
 i)
-<p class="messagedesc">Removes references to the specified identifier from the space.</p>
-</li>
-</ul>
-<h3>Methods</h3>
-<a name="clearAppSpace"></a>
-<h3 class="membertitle">clearAppSpace</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Clears the specified Space, and destroys all components of the Space.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void clearAppSpace(
+
+                <p class="messagedesc">Removes references to the specified identifier from the space.</p>
+            </li>
+        </ul>
+        <h3>Methods</h3>
+        <a name="clearAppSpace"></a>
+        <h3 class="membertitle">clearAppSpace</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Clears the specified Space, and destroys all components of the Space.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void clearAppSpace(
 i
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>i</b> as variant : Name or object reference of the Space to clear.</li>
-</ul>
-<a name="clearAppSpaces"></a>
-<h3 class="membertitle">clearAppSpaces</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Clears all Spaces, and destroys all components in each Space.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void clearAppSpaces(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>i</b> as variant : Name or object reference of the Space to clear.
+            </li>
+        </ul>
+        <a name="clearAppSpaces"></a>
+        <h3 class="membertitle">clearAppSpaces</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Clears all Spaces, and destroys all components in each Space.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void clearAppSpaces(
 
 )
 </p>
-<a name="configureSpace"></a>
-<h3 class="membertitle">configureSpace</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Applies the specified configuration to the specified engine.  This can be used to repurpose Space objects, or to load alternate content into the Space.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void configureSpace(
+        <a name="configureSpace"></a>
+        <h3 class="membertitle">configureSpace</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Applies the specified configuration to the specified engine.  This can be used to repurpose Space objects, or to load alternate content into the Space.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">void configureSpace(
 o, c
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>o</b> as Space : A space object.</li>
-<li>
-<b>c</b> as String : Name of SpaceService configuration.</li>
-</ul>
-<a name="createSpace"></a>
-<h3 class="membertitle">createSpace</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Creates a new Application Space.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">v = createSpace(
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>o</b> as Space : A space object.
+            </li>
+            <li>
+                <b>c</b> as String : Name of SpaceService configuration.
+            </li>
+        </ul>
+        <a name="createSpace"></a>
+        <h3 class="membertitle">createSpace</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Creates a new Application Space.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            v = createSpace(
 e, b, <i>pr</i>, <i>xr</i>, <i>fCallBack</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>e</b> as Node : XHTML Element</li>
-<li>
-<b>b</b> as boolean : Bit indicating the space is being forced.</li>
-<li>
-<b>pr</b> as function <i>(optional)</i>: Processor to assign to the space.  Used for pre-processing XML templates and configuration.</li>
-<li>
-<b>xr</b> as function <i>(optional)</i>: XML Handler to use when invoking setInnerXHTML.</li>
-<li>
-<b>fCallBack</b> as function <i>(optional)</i>: Callback handler to be invoked when the space is initialized.</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>v</b> as SpaceObject: A new space object that has been tasked to initialize.</p>
-<a name="getPrimarySpace"></a>
-<h3 class="membertitle">getPrimarySpace</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Returns the primary application space.   If a space is not explicitly created prior to the page loading, then, by default, a primary space object is created for the HTML BODY.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">oSpace = getPrimarySpace(
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>e</b> as Node : XHTML Element
+            </li>
+            <li>
+                <b>b</b> as boolean : Bit indicating the space is being forced.
+            </li>
+            <li>
+                <b>pr</b> as function <i>(optional)</i>: Processor to assign to the space.  Used for pre-processing XML templates and configuration.
+            </li>
+            <li>
+                <b>xr</b> as function <i>(optional)</i>: XML Handler to use when invoking setInnerXHTML.
+            </li>
+            <li>
+                <b>fCallBack</b> as function <i>(optional)</i>: Callback handler to be invoked when the space is initialized.
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>v</b> as SpaceObject: A new space object that has been tasked to initialize.
+        </p>
+        <a name="getPrimarySpace"></a>
+        <h3 class="membertitle">getPrimarySpace</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Returns the primary application space.   If a space is not explicitly created prior to the page loading, then, by default, a primary space object is created for the HTML BODY.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">oSpace = getPrimarySpace(
 
 )
 </p>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>oSpace</b> as SpaceObject: The primary space object.</p>
-<a name="loadSpaces"></a>
-<h3 class="membertitle">loadSpaces</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Finds all spaces on the current Web page and loads them.  A space node is either the body element, or a span, div, or form element with an is-space attribute.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">void loadSpaces(
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>oSpace</b> as SpaceObject: The primary space object.
+        </p>
+        <a name="loadSpaces"></a>
+        <h3 class="membertitle">loadSpaces</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Finds all spaces on the current Web page and loads them.  A space node is either the body element, or a span, div, or form element with an is-space attribute.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">
+            void loadSpaces(
 b, <i>o</i>, <i>pr</i>, <i>xr</i>
 )
-</p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>b</b> as boolean : Bit indicating that a primary space should be defined if one is not specified.  This param will always be true if any space exists and none are marked as primary.</li>
-<li>
-<b>o</b> as object <i>(optional)</i>: Object in which to search for potential space declarations.</li>
-<li>
-<b>pr</b> as function <i>(optional)</i>: Processor to assign to the space.  Used for pre-processing XML templates and configuration.</li>
-<li>
-<b>xr</b> as function <i>(optional)</i>: XML Handler to use when invoking setInnerXHTML.</li>
-</ul>
-<a name="newSpaceObject"></a>
-<h3 class="membertitle">newSpaceObject</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmethodindex">Methods</a>
-</li>
-</ul>
-<p class="methoddesc">Creates a new Space object.</p>
-<h4>Syntax</h4>
-<p class="methodsyntax">o = newSpaceObject(
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>b</b> as boolean : Bit indicating that a primary space should be defined if one is not specified.  This param will always be true if any space exists and none are marked as primary.
+            </li>
+            <li>
+                <b>o</b> as object <i>(optional)</i>: Object in which to search for potential space declarations.
+            </li>
+            <li>
+                <b>pr</b> as function <i>(optional)</i>: Processor to assign to the space.  Used for pre-processing XML templates and configuration.
+            </li>
+            <li>
+                <b>xr</b> as function <i>(optional)</i>: XML Handler to use when invoking setInnerXHTML.
+            </li>
+        </ul>
+        <a name="newSpaceObject"></a>
+        <h3 class="membertitle">newSpaceObject</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmethodindex">Methods</a>
+            </li>
+        </ul>
+        <p class="methoddesc">Creates a new Space object.</p>
+        <h4>Syntax</h4>
+        <p class="methodsyntax">o = newSpaceObject(
 e, i, n, k, x, f
 )
 </p>
-<h4>Parameters</h4>
-<ul class="methodparams">
-<li>
-<b>e</b> as Node : XHTML Element representing the space.</li>
-<li>
-<b>i</b> as String : Unique identifier.</li>
-<li>
-<b>n</b> as String : Friendly name for the object.</li>
-<li>
-<b>k</b> as TaskObject : Task object used to load this space.</li>
-<li>
-<b>x</b> as int : Index of space relative to adjacent spaces.</li>
-<li>
-<b>f</b> as function : Space initialization callback</li>
-</ul>
-<h4>Returns</h4>
-<p class="returnvalue">
-<b>o</b> as SpaceObject: New space object.</p>
-<h3>Messages</h3>
-<a name="onspaceconfigload"></a>
-<h3 class="membertitle">onspaceconfigload</h3>
-<ul class="nav">
-<li>
-<a href="#">Top</a>
-</li>
-<li>
-<a href="#classindex">Class Index</a>
-</li>
-<li>
-<a href="#serviceImpl">serviceImpl</a>
-</li>
-<li>
-<a href="#serviceImplmessageindex">Messages</a>
-</li>
-</ul>
-<p class="messagedesc">Message published to all subscribers when configuration has been loaded.</p>
-<h4>Syntax</h4>
-<p class="messagesyntax">
-// User-specified script to subscribe to message
-<br>
-org.cote.js.message.MessageService.subscribe("onspaceconfigload",<i>_handle_message</i>);
-<br>
-// Internal: how the message is published to subscribers
-<br>
-org.cote.js.message.MessageService.publish("onspaceconfigload" 
+        <h4>Parameters</h4>
+        <ul class="methodparams">
+            <li>
+                <b>e</b> as Node : XHTML Element representing the space.
+            </li>
+            <li>
+                <b>i</b> as String : Unique identifier.
+            </li>
+            <li>
+                <b>n</b> as String : Friendly name for the object.
+            </li>
+            <li>
+                <b>k</b> as TaskObject : Task object used to load this space.
+            </li>
+            <li>
+                <b>x</b> as int : Index of space relative to adjacent spaces.
+            </li>
+            <li>
+                <b>f</b> as function : Space initialization callback
+            </li>
+        </ul>
+        <h4>Returns</h4>
+        <p class="returnvalue">
+            <b>o</b> as SpaceObject: New space object.
+        </p>
+        <h3>Messages</h3>
+        <a name="onspaceconfigload"></a>
+        <h3 class="membertitle">onspaceconfigload</h3>
+        <ul class="nav">
+            <li>
+                <a href="#">Top</a>
+            </li>
+            <li>
+                <a href="#classindex">Class Index</a>
+            </li>
+            <li>
+                <a href="#serviceImpl">serviceImpl</a>
+            </li>
+            <li>
+                <a href="#serviceImplmessageindex">Messages</a>
+            </li>
+        </ul>
+        <p class="messagedesc">Message published to all subscribers when configuration has been loaded.</p>
+        <h4>Syntax</h4>
+        <p class="messagesyntax">
+            // User-specified script to subscribe to message
+
+            <br>
+            org.cote.js.message.MessageService.subscribe("onspaceconfigload",<i>_handle_message</i>);
+
+            <br>
+            // Internal: how the message is published to subscribers
+
+            <br>
+            org.cote.js.message.MessageService.publish("onspaceconfigload" 
 , o
 );
-<br>
-// User-specified script to handle the message subscription
-<br>
-function <i>_handle_message</i>("onspaceconfigload"
+
+            <br>
+            // User-specified script to handle the message subscription
+
+            <br>
+            function <i>_handle_message</i>("onspaceconfigload"
 , o
 ){
-<br>
-// message handler code
-<br>
-}
-</p>
-<h4>Parameters</h4>
-<ul class="messageparams">
-<li>
-<b>o</b> as SpaceObject : The EngineObject for which the configuration was loaded.</li>
-</ul>
-<p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
-</body>
+
+            <br>
+            // message handler code
+
+            <br>
+            }
+
+        </p>
+        <h4>Parameters</h4>
+        <ul class="messageparams">
+            <li>
+                <b>o</b> as SpaceObject : The EngineObject for which the configuration was loaded.
+            </li>
+        </ul>
+        <p class="copyright">[ Hemi JavaScript Framework - Stephen W. Cote, 2002 - 2013. ]</p>
+    </body>
 </html>

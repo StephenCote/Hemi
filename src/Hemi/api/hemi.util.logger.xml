@@ -12,7 +12,7 @@
 <description>The Logger class may be used to instrument an object with logging functionality.  Application logging is handled by the Hemi.message.service.sendMessage function, which supports multiple levels of message levels and message scoping. </description>
 <static-class>
 <name>logger</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Utility for instrumenting a logging API into an object.  Logging facilities use the Message Service message block format of: ###.#.###.### where the first set identifies the global scope, the second is the level, the third is the inner scope, and the fourth is the fine scope.</description>
 
 <example implementation="1">

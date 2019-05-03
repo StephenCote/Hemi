@@ -13,7 +13,7 @@
 <class>
 <name>XHTMLFormElement</name>
 <description>An internal representation of a form element.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>getType</name>
 <return-value name="t" type="String">The type of form element.</return-value>
@@ -53,7 +53,7 @@
 <class>
 <name>XHTMLForm</name>
 <description>An internal representation of a form within the framework.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>isElement</name>
 <param name="i" type="variant">Name or index of the XHTMLFormElement object.</param>
@@ -80,12 +80,12 @@
 </class>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of serviceImpl.</description>
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Manage collection of form elements used within Engine and XHTMLComponent contexts.</description>
 <example>
 <name><![CDATA[Virtual Form Example #1]]></name>

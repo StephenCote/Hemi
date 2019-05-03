@@ -12,9 +12,9 @@
 <description>The WideSelect control is a list control which supports buffered and paginated presentation.</description>
 <static-class>
 <name>WideSelect</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Control for buffering and paging large sets of data for display.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>newInstance</name>
 <param name="o" type="HTMLNode">Parent HTML Node in which the control will be created.</param>
@@ -26,7 +26,7 @@
 </static-class>
 <class>
 <name>WideSelectItem</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Object representing an item in the WideSelect control.</description>
 <property get="1" set="1" type="String">
 <name>name</name>
@@ -51,7 +51,7 @@
 </class>
 <class>
 <name>ImportPageItem</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Object construct used to bulk load paginated items.</description>
 <property get="1" set="1" type="String">
 <name>label</name>
@@ -72,7 +72,7 @@
 </class>
 <class>
 <name>WideSelectInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A buffering and pagination control for displaying large and incremental sets of data.</description>
 <property get="1" internal="1" type="String">
 <name>object_id</name>
@@ -214,6 +214,11 @@
 <name>getActiveItem</name>
 <return-value name="o" type="WideSelectItem">WideSelectItem object.</return-value>
 <description>Returns the selected WideSelectItem object.</description>
+</method>
+<method>
+<name>getActiveItems</name>
+<return-value name="a" type="Array">Array of WideSelectItem objects.</return-value>
+<description>Returns an array of selected WideSelectItem objects.</description>
 </method>
 <method>
 <name>setCanRequest</name>

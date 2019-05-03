@@ -12,7 +12,7 @@
 <description>The text class includes Text node and String manipulation utilities.</description>
 <static-class>
 <name>text</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Hemi framework utilities</description>
 <method>
 <name>trim</name>

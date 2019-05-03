@@ -23,7 +23,7 @@ org.cote = {};
 org.cote.js = {};
 <static-class>
 <name>dom</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A conditional wrapper exposed based on browser support.</description>
 2011/05/03 - Remove redundant check
 preference is local, then global, then session

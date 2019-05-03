@@ -12,7 +12,7 @@
 <description>The XHTML Component class is used to represent an XHTML Node within the Hemi Framework as a registered object. This class also coordinates the XHTML Node with referenced Application Components, Modules, Templates, Distributed Application Components, and Virtual Forms, and is used with Application Spaces as an Application Space Definition.</description>
 <static-class>
 <name>XHTMLComponent</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Factory for creating XHTMLComponentInstance objects, which represent a XHTML objects (HTML nodes) within the framework.</description>
 <example>
 <description>Demonstrate how an XHTMLInstanceObject is created from an HTML Node.  Also refer to Application Components, which connect an XHTMLInstanceObject to pre-defined code blocks.</description>
@@ -43,7 +43,7 @@
 </static-class>
 <class>
 <name>XHTMLComponentInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>An object representing a XHTML object (HTML node) to the framework.</description>
 <property get="1" type="object">
 <name>properties</name>
@@ -149,6 +149,9 @@ If a component path was specified in the constructor
 Check for an inline appcomp_path attribute
 
 Otherwise, check for the path in the configuration
+
+2017/01/10 - changed last bit from 1 to 0 for async load
+01/13 - and, changed it back - there are some downstream dependencies on this being synchronous,
 
 Remove the space attribute to promote this element into its own space
 

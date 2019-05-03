@@ -12,12 +12,12 @@
 <description>Application Space Definitions define the mapping between XML and XHTML nodes and JavaScript constructors.  The constructors can be from any framework or library, not just Hemi.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of hemi.app.space.definitions.serviceImpl</description>
 </static-class>
 <class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>This service defines space implementations for use by the Hemi Space Service.</description>
 <method>
 <name>clearDefinitions</name>

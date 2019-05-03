@@ -22,13 +22,10 @@ org.cote = {};
 org.cote.js = {};
 <static-class>
 <name>iestore</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A conditional wrapper exposed based on browser support.  This is not the preferred provider and is included to support IE 6 and 7.</description>
 Requires engine framework for config reader
 
-2011/04/27 - Remove explicit exclude
-preferred_storage : 0,
-o.setAttribute("id","ocjsIESP");
 <method>
 <name>getLength</name>
 <return-value name="l" type="int">Number of keys.</return-value>

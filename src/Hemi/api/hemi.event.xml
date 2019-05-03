@@ -12,7 +12,7 @@
 <description>The Event class provides utilities for working with the browser event object, listening to and capturing events, and decorating Framework Objects with an API for scoping handlers back to the object.</description>
 <static-class>
 <name>event</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Utilities for DOM Events.</description>
 <example implementation="1">
 <name>Using event utilities</name>

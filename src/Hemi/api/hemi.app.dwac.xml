@@ -13,7 +13,7 @@
 <static-class>
 <name>DistributedComponent</name>
 <description>Static initializer for DWAC objects.  DWAC objects are special constructs of Application Components.</description>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <method>
 <name>newInstance</name>
 <param name="o" type="variant">XHTML Node or XHTMLComponent Instance</param>
@@ -26,7 +26,7 @@
 </static-class>
 <class>
 <name>DistributedComponentInstance</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>An Application Component instance decorated with the DWAC loading modifiers.</description>
 <example>
 <description>Demonstrate how a DWAC can be used.</description>

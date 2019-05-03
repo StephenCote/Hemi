@@ -12,12 +12,12 @@
 <description>The primitive wire service is used to connect two disparate functions together.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static instance of PrimitiveWireImpl</description>
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A primitive wire connects two functions, where the first function acts as the instigator of an action, and the second function acts as the handler for the action.</description>
 <example>
 <description>Demonstrate how to wire two functions together with a primitive wire.</description>

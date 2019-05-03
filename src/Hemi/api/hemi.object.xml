@@ -12,7 +12,7 @@
 <description>The object utility class includes an API decorator for object mapping.</description>
 <static-class>
 <name>object</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Convenience methods for instrumenting object array mapping and retrieval.</description>
 <example>
 <description>Add an object accessor for conveniently storing and retrieving other objects.</description>

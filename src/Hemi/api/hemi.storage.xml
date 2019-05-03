@@ -20,7 +20,7 @@ Package("Hemi.storage");
 <description>A bridge for implementing DOM Storage or Storage facades.</description>
 <static-class>
 <name>storage</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A wrapper for cross browser storage support.</description>
 
 <example>
@@ -37,9 +37,6 @@ Package("Hemi.storage");
 <code>var provider = HemiEngine.storage.StorageManager.getStorageProvider();</code>
 <code>if(provider) var bReturn = provider.setItem("some key","some value");</code>
 </example>
-2011/05/03
-IE 9 is balking at the check for the Storage object in some conditions, potentially due to corporate proxy/firewall settings
-
 Interface Support
 
 length : 0,
@@ -79,7 +76,7 @@ key : function(iIndex);
 </static-class>
 <object>
 <name>StorageProvider</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>A storage provider.</description>
 <property get="1" internal="1" type="String">
 <name>storage_type</name>

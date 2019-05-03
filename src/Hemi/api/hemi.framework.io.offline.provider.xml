@@ -12,12 +12,12 @@
 <description>Data provider for offline storage for use with Hemi Framework projects files.</description>
 <static-class>
 <name>service</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>Static implementation of the hemi.framework.io.offline.provider.serviceImpl class.</description>
 </static-class>
 <class>
 <name>serviceImpl</name>
-<version>3.5.1</version>
+<version>4.0.1</version>
 <description>The framework provider is a <i>hemi.data.io</i> provider for serving requests for offline filesets related to the HemiFramework.</description>
 
 If the URI is shortened, eg: Components/test.xml instead of /DWAC/[User]/Components/test.xml, then prepend a stub

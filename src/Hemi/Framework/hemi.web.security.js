@@ -16,6 +16,7 @@
 (function(){
 	HemiEngine.namespace("web.security", HemiEngine, {
 		dependencies : ["hemi.app"],
+		/// <property type = "array" get = "1">
 		/// 	<name>PageTickets</name>
 		/// 	<description>Array of tickets included with the Web page.  Tickets should be included for server-side requests requiring the presence of a ticket.</description>
 		/// </property>

@@ -417,7 +417,7 @@
 				var t = this, o, i;
 
 				/* only do this once */
-				Hemi.log("Destroy application component " + t.object_id);
+				Hemi.logDebug("Destroy application component " + t.object_id);
 				if (t.ready_state < 5) {
 
 					HemiEngine.message.service.unsubscribe(this, "onspaceconfigload", "_handle_spaceconfig_load");

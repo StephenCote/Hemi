@@ -15,10 +15,10 @@
     <![CDATA[
 		template_init : function (){
 			if(this.getProperties().text)
-        this.GetElementByRID("text").value = this.getProperties().text;
+        this.getElementByRID("text").value = this.getProperties().text;
        
       if(this.getProperties().text_title){
-        Hemi.xml.setInnerXHTML(this.GetElementByRID("title"), this.getProperties().text_title);
+        Hemi.xml.setInnerXHTML(this.getElementByRID("title"), this.getProperties().text_title);
         this.setTitle(this.getProperties().text_title);
        }
 

@@ -33,7 +33,7 @@
 		this.joinTransactionPacket("examples");
 		this.joinTransactionPacket("iobus");
 		
-		var oTR = this.GetComponentByRID("tree");
+		var oTR = this.getComponentByRID("tree");
 		oTR.RePopulateTree();
 		
 		Hemi.data.io.service.mapSession(this.GetSession());
@@ -47,15 +47,15 @@
 		///
 		this.serveTransaction("viewerload", this, 1, "examples");
 
-        /// var oViewer = this.GetComponentByRID("content-viewer");
+        /// var oViewer = this.getComponentByRID("content-viewer");
         /// alert(oViewer.getProperties().template_loaded);
 	},
     _handle_viewerload: function(s, v){
-        var oViewer = this.GetComponentByRID("content-viewer");
+        var oViewer = this.getComponentByRID("content-viewer");
 		/*
-        oViewer.GetElementByRID("btnSave").style.display = "none";
-        oViewer.GetElementByRID("btnDel").style.display = "none";
-        oViewer.GetElementByRID("btnPub").style.display = "none";
+        oViewer.getElementByRID("btnSave").style.display = "none";
+        oViewer.getElementByRID("btnDel").style.display = "none";
+        oViewer.getElementByRID("btnPub").style.display = "none";
 		*/
     },
 	_handle_treenavigate: function (s, v) {

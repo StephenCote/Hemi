@@ -60,11 +60,11 @@
 			this._prehandle_richselect_showprofile = 0;
 		},
 		ShowButton : function(n){
-				var o = this.GetElementByRID("button_" + n);
+				var o = this.getElementByRID("button_" + n);
 				if(o) o.style.display = "";
 		},
 		HideButton : function(n){
-				var o = this.GetElementByRID("button_" + n);
+				var o = this.getElementByRID("button_" + n);
 				if(o) o.style.display = "none";
 		},
 		_handle_exec_button : function(e){
@@ -110,7 +110,7 @@
 				case "Delete":
 					if(!this.getProperties().item_toggled) return;
 						if(confirm("Delete this item?") && typeof this.DeleteSelectedItem == "function" && this.DeleteSelectedItem(this.getProperties().item_toggled)){
-							this.DisableButton("button_delete");
+							this.disableButton("button_delete");
 							if(typeof this.RefreshList == "function") this.RefreshList();
 							return;
 						}
@@ -120,16 +120,16 @@
 					break;
 			}
 		},
-		DisableButtons : function(){
-			this.DisableButton("button_delete");
-			this.DisableButton("button_open");
-			this.DisableButton("button_move_first");
-			this.DisableButton("button_move_last");
-			this.DisableButton("button_move_next");
-			this.DisableButton("button_move_prev");		
+		disableButtons : function(){
+			this.disableButton("button_delete");
+			this.disableButton("button_open");
+			this.disableButton("button_move_first");
+			this.disableButton("button_move_last");
+			this.disableButton("button_move_next");
+			this.disableButton("button_move_prev");		
 		},
 		LoadRichSelect : function(sUrl, sListElementName, sListItemElementName){
-			this.DisableButtons();
+			this.disableButtons();
 			this.getProperties().item_toggled =0;
 			
 			if(!sListElementName) sListItemElementName = "List";
@@ -137,12 +137,12 @@
 			if(!sListItemElementName) sListItemElementName = "Item";
 			this.getProperties().list_item_element_name = sListItemElementName;
 			
-			//Hemi.xml.removeChildren(this.GetElementByRID("record_label"));
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"), "Loading ...");
+			//Hemi.xml.removeChildren(this.getElementByRID("record_label"));
+			Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"), "Loading ...");
 			
-			Hemi.xml.removeChildren(this.GetElementByRID("richselect-header"));
-			Hemi.xml.removeChildren(this.GetElementByRID("richselect-footer"));
-			Hemi.xml.removeChildren(this.GetElementByRID("richselect-items"));
+			Hemi.xml.removeChildren(this.getElementByRID("richselect-header"));
+			Hemi.xml.removeChildren(this.getElementByRID("richselect-footer"));
+			Hemi.xml.removeChildren(this.getElementByRID("richselect-items"));
 			if(typeof sUrl == "object"){
 				this._handle_richselect_load("direct",sUrl);
 			}
@@ -160,17 +160,17 @@
 		SetTotalItemCount : function(i){
 			this.getProperties().total_count = i;
 			if(this.getProperties().start_record > 0){
-				this.GetElementByRID("button_move_prev").disabled = false;
-				this.GetElementByRID("button_move_first").disabled = false;
+				this.getElementByRID("button_move_prev").disabled = false;
+				this.getElementByRID("button_move_first").disabled = false;
 			}
 			
 			if((this.getProperties().start_record + this.getProperties().record_count) < this.getProperties().total_count){
-				this.GetElementByRID("button_move_next").disabled = false;
-				this.GetElementByRID("button_move_last").disabled = false;
+				this.getElementByRID("button_move_next").disabled = false;
+				this.getElementByRID("button_move_last").disabled = false;
 			}
 
-			if(this.getProperties().total_count > 0) Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),(this.getProperties().start_record + 1) + "-" + (this.getProperties().start_record + this.getProperties().record_count) + " of " + this.getProperties().total_count);
-			else Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),"0 of 0");
+			if(this.getProperties().total_count > 0) Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"),(this.getProperties().start_record + 1) + "-" + (this.getProperties().start_record + this.getProperties().record_count) + " of " + this.getProperties().total_count);
+			else Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"),"0 of 0");
 
 		},
 		_handle_richselect_open : function(e){
@@ -196,15 +196,15 @@
 				o.className = "richselect_item";
 				o.toggled = 0;
 				this.getProperties().item_toggled = 0;
-				this.DisableButton("button_delete");
-				this.DisableButton("button_open");
+				this.disableButton("button_delete");
+				this.disableButton("button_open");
 			}
 			else{
 				o.className = "richselect_item richselect_item_toggle";
 				o.toggled = 1;
 				this.getProperties().item_toggled = o;
-				this.EnableButton("button_delete");
-				this.EnableButton("button_open");
+				this.enableButton("button_delete");
+				this.enableButton("button_open");
 			}
 			
 		},
@@ -223,8 +223,8 @@
 		_handle_richselect_load : function(s, v){
 			var oX = (s == "direct" ? v : v.xdom);
 
-			if(this.IsLoginRequired(oX)){
-				this.ShowLogin();
+			if(this.isLoginRequired(oX)){
+				this.showLogin();
 				// if(typeof this.Close == "function") this.Close();
 				return;
 			}
@@ -241,23 +241,23 @@
 			}
 			
 			oDataList = oDataList[0];
-			var iCount = parseInt(this.GetElementText(oX.documentElement,"TotalCount"));
+			var iCount = parseInt(this.getElementText(oX.documentElement,"TotalCount"));
 
 			if(!isNaN(iCount)) this.SetTotalItemCount(iCount);
 
 			var aItems = oDataList.getElementsByTagName(this.getProperties().list_item_element_name);
 
-			var oList = this.GetElementByRID("richselect-items");
+			var oList = this.getElementByRID("richselect-items");
 			
-			if(typeof this.DrawRichSelectHeader == "function") this.DrawRichSelectHeader(oX, oDataList, aItems, this.GetElementByRID("richselect-header"));
+			if(typeof this.DrawRichSelectHeader == "function") this.DrawRichSelectHeader(oX, oDataList, aItems, this.getElementByRID("richselect-header"));
 			
 			for(var i = 0; i < aItems.length; i++){
 				var oItem = document.createElement("div");
 				oItem.item_id = aItems[i].getAttribute("Id");
 				oItem.group_id = aItems[i].getAttribute("GroupId");
-				oItem.item_name = this.GetElementText(aItems[i],"Name");
-				oItem.item_date = this.GetElementText(aItems[i],"Date");
-				oItem.item_description = this.GetElementText(aItems[i],"Description");
+				oItem.item_name = this.getElementText(aItems[i],"Name");
+				oItem.item_date = this.getElementText(aItems[i],"Date");
+				oItem.item_description = this.getElementText(aItems[i],"Description");
 				oItem.className = "richselect_item";
 				
 				if(typeof this.DrawRichSelectItem == "function") this.DrawRichSelectItem(oX, oDataList,aItems[i], oItem);
@@ -269,7 +269,7 @@
 				oItem.ondblclick = this._prehandle_richselect_open;
 			}
 			
-			if(typeof this.DrawRichSelectFooter == "function") this.DrawRichSelectFooter(oX, oDataList, aItems, this.GetElementByRID("richselect-footer"));
+			if(typeof this.DrawRichSelectFooter == "function") this.DrawRichSelectFooter(oX, oDataList, aItems, this.getElementByRID("richselect-footer"));
 
 		},
 		_handle_richselect_show_profile : function(e){

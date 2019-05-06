@@ -13,11 +13,11 @@
 			this.getContainer().style.height = "auto";
 		},
 		Next : function(){
-			if(this.ValidateForPattern("example_text","not-empty")){
+			if(this.validateForPattern("example_text","not-empty")){
 				this.loadTemplate("Templates/ExampleForm2.xml");
 			}
 			else{
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("example_label"),Hemi.data.validator.service.getValidationErrorText("not-empty"));
+				Hemi.xml.setInnerXHTML(this.getElementByRID("example_label"),Hemi.data.validator.service.getValidationErrorText("not-empty"));
 			}
 		}
 		

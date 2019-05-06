@@ -38,7 +38,7 @@
 		<![CDATA[
 		template_init : function(){
 			
-			this.GetElementByRID("fragment_text").value = "<!-- "
+			this.getElementByRID("fragment_text").value = "<!-- "
 				+ "Enter valid XHTML"
 			// + "Use ${this} for localized XHTML -> Component scripting,"
 			// + "\nand ${this.id} to access the component id string.\n"
@@ -47,12 +47,12 @@
 			
 		},
 		CreateNewFragment : function(){
-				var sName = this.GetElementByRID("fragment_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				var sName = this.getElementByRID("fragment_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
 				if(sName.length == 0){
 					this.setStatus("Invalid name.  Name must be specified.");
 					return;
 				}
-				var sXhtml = this.GetElementByRID("fragment_text").value;
+				var sXhtml = this.getElementByRID("fragment_text").value;
 				var oX = 0;
 				try{
 						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
@@ -72,19 +72,19 @@
 				
 				var aBuff = [];
 						
-				oBuilder.GetElementByRID("fragment_name").value = this.GetElementByRID("fragment_name").value;
-				oBuilder.GetElementByRID("fragment_description").value = this.GetElementByRID("fragment_description").value;
-				if(this.GetElementByRID("chk_enable_callbacks").checked){
+				oBuilder.getElementByRID("fragment_name").value = this.getElementByRID("fragment_name").value;
+				oBuilder.getElementByRID("fragment_description").value = this.getElementByRID("fragment_description").value;
+				if(this.getElementByRID("chk_enable_callbacks").checked){
 					oBuilder.AddFunctionStatement(oConstruct, "embedded_init","// Invoked when fragment is loaded, prior to template_init being invoked");
 					oBuilder.AddFunctionStatement(oConstruct, "embedded_destroy","// Invoked when a destroy signal is raised");
 				}
-				var bTools = this.GetElementByRID("chk_use_tools").checked;
-				var bForm = this.GetElementByRID("chk_enable_form").checked;
+				var bTools = this.getElementByRID("chk_use_tools").checked;
+				var bForm = this.getElementByRID("chk_enable_form").checked;
 				if(bTools || bForm){
 						aBuff.push("<!-- import-xml is defined in Hemi.app.space.definitions to use Hemi.xml.getXml to load an XML file and match at the root for html-fragment -->")
 						aBuff.push("<import-xml src = \"Templates/TemplateTools.xml\" id = \"TemplateTools\" />");
 				}
-				if(this.GetElementByRID("chk_enable_event").checked){
+				if(this.getElementByRID("chk_enable_event").checked){
 						aBuff.push("<!-- ${this} is a token interpreted by the host Application Component to return a context-sensitive JavaScript pointer.  The context is the hosting Application Component. -->");
 						aBuff.push("<p><span onclick = \"${this}.ClickEvent(Event)\">Click here</span></p>");
 						oBuilder.AddFunctionParameter(oConstruct, "ClickEvent","vEvent");
@@ -97,18 +97,18 @@
 						aBuff.push("<!-- The rid attribute is used by the Application Space to provide a context-sensitive object reference, and by the Data Form for Virtual Forms. The context is the hosting Application Space. -->");
 						aBuff.push("<!-- ${this} is a token interpreted by the host Application Component to return a context-sensitive JavaScript pointer. The context is the hosting Application Component. -->");
 						aBuff.push("<div>\n\t<input type = \"text\" rid = \"example_text\" />\n\t<input type = \"button\" value = \"Submit\" onclick = \"${this}.SubmitForm()\" />\n</div>");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Retrieve form field via TemplateTools::GetElementByRID");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oText = this.GetElementByRID(\"example_text\");");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Retrieve form field via TemplateTools::getElementByRID");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oText = this.getElementByRID(\"example_text\");");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Retrieve a virtual form field value via the template space (this.getTemplateSpace())");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var sValue = this.GetFormValue(\"example_text\");");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var sValue = this.getFormValue(\"example_text\");");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Validate value against validation pattern using Config/ValidationPatterns.xml");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var bValid = this.ValidateForPattern(\"example_text\",\"not-empty\");");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var bValid = this.validateForPattern(\"example_text\",\"not-empty\");");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Serialize entire virtual form into XML, and post it to the server.");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oX = this.SerializeForm();");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oX = this.serializeForm();");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oResponse = Hemi.xml.postXml(\"/path/to/server\",oX);");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","// Example: Serialize specified virtual form elements into specified XML, and post it to the server.");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oXmlRequest = Hemi.xml.newXmlDocument(\"XmlForm\");");
-						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oX2 = this.SerializeForm(oXmlRequest,[\"example_text\"]);");
+						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oX2 = this.serializeForm(oXmlRequest,[\"example_text\"]);");
 						oBuilder.AddFunctionStatement(oConstruct, "SubmitForm","var oResponse2 = Hemi.xml.postXml(\"/path/to/server\",oX2);");
 				}
 				if(aBuff.length) aBuff.push("");

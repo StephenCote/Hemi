@@ -145,9 +145,9 @@
 						var oA = document.createElement("a");
 						oA.setAttribute("href","#");
 						oLI.appendChild(oA);
-						oA.appendChild(document.createTextNode(this.GetElementText(aDat[c],"Name")));
+						oA.appendChild(document.createTextNode(this.getElementText(aDat[c],"Name")));
 						oLI.className = "leaf";
-						oLI.data_id = parseInt(this.GetElementText(aDat[c],"Id"));
+						oLI.data_id = parseInt(this.getElementText(aDat[c],"Id"));
 						oLI.policy = this.ImportPolicy(aDat[c]);
 						this.InstrumentDraggable(oLI);
 						oSUL.appendChild(oLI);

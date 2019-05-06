@@ -45,7 +45,7 @@
 		<![CDATA[
 		template_init : function(){
 			
-			this.GetElementByRID("template_text").value = "<!-- "
+			this.getElementByRID("template_text").value = "<!-- "
 				+ "Enter valid XHTML"
 			// + "Use ${this} for localized XHTML -> Component scripting,"
 			// + "\nand ${this.id} to access the component id string.\n"
@@ -54,12 +54,12 @@
 			
 		},
 		CreateNewTemplate : function(){
-				var sName = this.GetElementByRID("template_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				var sName = this.getElementByRID("template_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
 				if(sName.length == 0){
 					this.setStatus("Invalid name.  Name must be specified.");
 					return;
 				}
-				var sXhtml = this.GetElementByRID("template_text").value;
+				var sXhtml = this.getElementByRID("template_text").value;
 				var oX = 0;
 				try{
 						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
@@ -78,19 +78,19 @@
 				
 				var aBuff = [];
 						
-				oBuilder.GetElementByRID("template_name").value = this.GetElementByRID("template_name").value;
-				oBuilder.GetElementByRID("template_description").value = this.GetElementByRID("template_description").value;
-				if(this.GetElementByRID("chk_enable_callbacks").checked){
+				oBuilder.getElementByRID("template_name").value = this.getElementByRID("template_name").value;
+				oBuilder.getElementByRID("template_description").value = this.getElementByRID("template_description").value;
+				if(this.getElementByRID("chk_enable_callbacks").checked){
 					oBuilder.AddFunctionStatement(oConstruct, "template_init","// Invoked when template is loaded, after all embedded_init functions are invoked");
 					oBuilder.AddFunctionStatement(oConstruct, "template_destroy","// Invoked when a destroy signal is raised");
 				}
-				var bTools = this.GetElementByRID("chk_use_tools").checked;
+				var bTools = this.getElementByRID("chk_use_tools").checked;
 				
-				var bRichSelect = this.GetElementByRID("chk_use_rich_select").checked;
-				var bTab1 = this.GetElementByRID("chk_use_tab1").checked;
-				var bTab2 = this.GetElementByRID("chk_use_tab2").checked;
-				var bWideSelect = this.GetElementByRID("chk_use_wide_select").checked;
-				var bUseCanvas = this.GetElementByRID("chk_use_canvas").checked;
+				var bRichSelect = this.getElementByRID("chk_use_rich_select").checked;
+				var bTab1 = this.getElementByRID("chk_use_tab1").checked;
+				var bTab2 = this.getElementByRID("chk_use_tab2").checked;
+				var bWideSelect = this.getElementByRID("chk_use_wide_select").checked;
+				var bUseCanvas = this.getElementByRID("chk_use_canvas").checked;
 						
 				if(bTools || bRichSelect || bTab1){
 						aBuff.push("<!-- import-xml is defined in Hemi.app.space.definitions to use Hemi.xml.getXml to load an XML file and match at the root for html-fragment -->")

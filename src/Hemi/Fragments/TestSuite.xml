@@ -56,7 +56,7 @@
 			this.getObjects().test_cases = {};
 			this.scopeHandler("test_suite",0,0,1);
 			this.scopeHandler("test_status",0,0,1);
-			this.GetElementByRID("custom_test_text").value = (this.getProperties().custom_test ? this.getProperties().custom_test : "function TestCustom(){\n\tthis.Assert(true);\n}\n");
+			this.getElementByRID("custom_test_text").value = (this.getProperties().custom_test ? this.getProperties().custom_test : "function TestCustom(){\n\tthis.Assert(true);\n}\n");
 			if(!this.getObjects().tests){
       			this.getObjects().tests = [
               "custom"
@@ -74,20 +74,20 @@
     },
     RefreshTestCases : function(){
     
-      var o = this.GetElementByRID("select_test");
+      var o = this.getElementByRID("select_test");
       o.options.length = 1;
       var bCustom= 0;
       for(var i = 0; i < this.getObjects().tests.length; i++){
         o.options[o.options.length] = new Option(this.getObjects().tests[i],this.getObjects().tests[i]);
         if(this.getObjects().tests[i].match(/^custom$/i)) bCustom = 1;
       }
-      this.GetElementByRID("btnCustom").style.display = (bCustom ? "inline" : "none");
+      this.getElementByRID("btnCustom").style.display = (bCustom ? "inline" : "none");
       if(o.options.length >= 2){
-        this.GetElementByRID("select_test").selectedIndex = 1;
+        this.getElementByRID("select_test").selectedIndex = 1;
         this.handle_select_test();
       }
       else{
-        Hemi.xml.setInnerXHTML(this.GetElementByRID("suite_name"),"No test cases were specified.");
+        Hemi.xml.setInnerXHTML(this.getElementByRID("suite_name"),"No test cases were specified.");
       }
 		},
 		embedded_destroy : function(){
@@ -95,23 +95,23 @@
 		},
     LoadSelectedSuite : function(){
 		console.log("Load selected suite");
-      var n = this.GetElementByRID("select_test").value,
-        /// x = (this.GetElementByRID("select_test").selectedIndex == 1),
-        pt = this.GetElementByRID("test_path").value,
+      var n = this.getElementByRID("select_test").value,
+        /// x = (this.getElementByRID("select_test").selectedIndex == 1),
+        pt = this.getElementByRID("test_path").value,
         tc = this.getObjects().test_cases,
-        oT = this.GetElementByRID("tests");
+        oT = this.getElementByRID("tests");
       ;
 
-      this.GetElementByRID("btnReport").disabled = (n=="all");
+      this.getElementByRID("btnReport").disabled = (n=="all");
 
-      Hemi.xml.setInnerXHTML(this.GetElementByRID("current_test_name"),"");
+      Hemi.xml.setInnerXHTML(this.getElementByRID("current_test_name"),"");
       oT.options.length = 0;
       oT.options[oT.options.length] = new Option("All Tests","all");
-      Hemi.xml.removeChildren(this.GetElementByRID("active_status"),1);
-      Hemi.xml.removeChildren(this.GetElementByRID("active_test_status"),1);
-      Hemi.xml.setInnerXHTML(this.GetElementByRID("suite_name"),n);
+      Hemi.xml.removeChildren(this.getElementByRID("active_status"),1);
+      Hemi.xml.removeChildren(this.getElementByRID("active_test_status"),1);
+      Hemi.xml.setInnerXHTML(this.getElementByRID("suite_name"),n);
       
-      var a = (this.GetElementByRID("select_test").selectedIndex == 0 ? this.getObjects().tests : [n]);
+      var a = (this.getElementByRID("select_test").selectedIndex == 0 ? this.getObjects().tests : [n]);
         if(a.length == 1) oT.options[0].value = n + "::all";
         else oT.options[0].value = "all::all";
         console.log("Processing " + a.length + " suites");
@@ -119,7 +119,7 @@
           n = a[i];
           if(!tc[n]){
             x = (n == "custom");
-           var p1 = Hemi.app.module.test.service.NewTest(n,0,this._prehandle_test_status, this._prehandle_test_suite, (x ? this.GetElementByRID("custom_test_text").value : pt),x);
+           var p1 = Hemi.app.module.test.service.NewTest(n,0,this._prehandle_test_status, this._prehandle_test_suite, (x ? this.getElementByRID("custom_test_text").value : pt),x);
          	p1.then((ts)=>{
          	 tc[n] = ts;
          	 return ts;
@@ -141,16 +141,16 @@
     },
     LoadTest : function(c, n, b){
 
-      var oC = this.GetElementByRID("active_status"),
+      var oC = this.getElementByRID("active_status"),
         aT,
         tc = this.getObjects().test_cases,
         s
        ;
 
-      Hemi.xml.setInnerXHTML(this.GetElementByRID("current_test_name"),n);
+      Hemi.xml.setInnerXHTML(this.getElementByRID("current_test_name"),n);
       if(!b){
         Hemi.xml.removeChildren(oC, 1);
-        Hemi.xml.removeChildren(this.GetElementByRID("active_test_status"),1);
+        Hemi.xml.removeChildren(this.getElementByRID("active_test_status"),1);
       }
       if(c == "all"){
         for(var i = 0; i < this.getObjects().tests; i++)
@@ -189,7 +189,7 @@
         var sIRid2 = c + "-" + s + "-activestatus";
         oI2.setAttribute("rid",sIRid2);
         Hemi.app.createComponent(oI2, this.getTemplateSpace(), sIRid2);
-        this.GetElementByRID("active_test_status").appendChild(oI2);
+        this.getElementByRID("active_test_status").appendChild(oI2);
         
         var sId = this.getObjectId();
         var oBtn = document.createElement("input");
@@ -212,11 +212,11 @@
         //alert(oI.nodeType);
         p.appendChild(oL);
 
-        ///this.GetElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
+        ///this.getElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
 
     },
     RunCurrentTest : function(){
-      var p = this.GetElementByRID("tests").value.split("::"),v;
+      var p = this.getElementByRID("tests").value.split("::"),v;
       
       if(p[0] == "all" && p[1] == "all"){
         /// All suites, all tests
@@ -240,7 +240,7 @@
 
     },
     ViewReport : function(){
-      var c = this.GetElementByRID("select_test").value;
+      var c = this.getElementByRID("select_test").value;
       var vTest = (c == "all" ? 0 : this.getObjects().test_cases[c]);
       var sTitle = "Report: " + c;
       
@@ -253,12 +253,12 @@
       ///Hemi.log("Run test " + c + ":" + s + " (" + vTest.Module.name + ")");
       /// alert(s + "\n" + vTest["End" + s]);
       vTest.RunTest(s);
-      /// this.GetElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
+      /// this.getElementByRID(c + "-" + s + "-status").src = Hemi.hemi_base + "Graphics/star_25.jpg";
       
     },
     ResetSelectedTest : function(){
-      if(this.GetElementByRID("select_test").selectedIndex == 0) return;
-      var n = this.GetElementByRID("select_test").value, tc = this.getObjects().test_cases;
+      if(this.getElementByRID("select_test").selectedIndex == 0) return;
+      var n = this.getElementByRID("select_test").value, tc = this.getObjects().test_cases;
       if(tc[n])
         Hemi.app.module.test.service.UnloadTest(n);
        
@@ -269,10 +269,10 @@
     },
     SetupCustom : function(){
         //
-       if(this.GetElementByRID("select_test").selectedIndex == 0) return;
-         var n = this.GetElementByRID("select_test").value, c = "custom";
+       if(this.getElementByRID("select_test").selectedIndex == 0) return;
+         var n = this.getElementByRID("select_test").value, c = "custom";
          if(n == c) return;
-        var o = Hemi.include(n, this.GetElementByRID("test_path").value, 1);
+        var o = Hemi.include(n, this.getElementByRID("test_path").value, 1);
         if(!o || !o.raw) return;
 
         if(this.getObjects().test_cases[c]){
@@ -280,19 +280,19 @@
             delete this.getObjects().test_cases[c];
         }
 
-        this.GetElementByRID("custom_test_text").value = o.raw;
-        this.GetElementByRID("select_test").value = "custom";
+        this.getElementByRID("custom_test_text").value = o.raw;
+        this.getElementByRID("select_test").value = "custom";
         this.handle_select_test();
         
     },
     _handle_test_status : function(t, m, i){
 	  var sIco = (i * 25);
 	  if(m.error) sIco="error";
-      this.GetElementByRID(t.name + "-" + m.name + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
-      this.GetElementByRID(t.name + "-" + m.name + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+      this.getElementByRID(t.name + "-" + m.name + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+      this.getElementByRID(t.name + "-" + m.name + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
       
-      if(i != 4) Hemi.xml.setInnerXHTML(this.GetElementByRID(t.name + "-" + m.name + "-notes"),"Running.  Status " + i);
-      else Hemi.xml.setInnerXHTML(this.GetElementByRID(t.name + "-" + m.name + "-notes"),"Time: " + (m.stop_time.getTime() - m.start_time.getTime()) + "ms / Result: " + m.result);
+      if(i != 4) Hemi.xml.setInnerXHTML(this.getElementByRID(t.name + "-" + m.name + "-notes"),"Running.  Status " + i);
+      else Hemi.xml.setInnerXHTML(this.getElementByRID(t.name + "-" + m.name + "-notes"),"Time: " + (m.stop_time.getTime() - m.start_time.getTime()) + "ms / Result: " + m.result);
       
       /// Hemi.log("Handle status: " + t.name + ":" + m.name + ":" + i + " / " + (m == null));
 
@@ -304,19 +304,19 @@
 	    var sIco = "hover";
 		var oC = o.getTestByName(o.TestMembers[i]);
 		if(oC.error) sIco = "error";
-        this.GetElementByRID(o.name + "-" + o.TestMembers[i] + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
-        this.GetElementByRID(o.name + "-" + o.TestMembers[i] + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+        this.getElementByRID(o.name + "-" + o.TestMembers[i] + "-activestatus").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
+        this.getElementByRID(o.name + "-" + o.TestMembers[i] + "-status").src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
       }
     },
     handle_select_test : function(){
 
-      //this.LoadTest(this.GetElementByRID("select_test").value, this.GetElementByRID("tests").value);
-      this.GetElementByRID("custom_test").style.display = (this.GetElementByRID("select_test").value == "custom" ? "block" : "none");
+      //this.LoadTest(this.getElementByRID("select_test").value, this.getElementByRID("tests").value);
+      this.getElementByRID("custom_test").style.display = (this.getElementByRID("select_test").value == "custom" ? "block" : "none");
       console.log("Handle select test");
       this.LoadSelectedSuite();
     },
     handle_select_test_member : function(){
-      var p = this.GetElementByRID("tests").value.split("::");
+      var p = this.getElementByRID("tests").value.split("::");
 
       this.LoadTest(p[0], p[1]);
     }

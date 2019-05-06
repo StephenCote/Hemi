@@ -16,14 +16,14 @@
             function LoadCustomTest(sText) {
                 var oW = Hemi.app.createWindow("Test Suite", 'Templates/TestSuite.xml', 'Test Suite', 0, 0, { custom_test: sText });
                 if (!oW && (oW = Hemi.app.getWindowManager().GetWindowByName("Test Suite"))) {
-                    oW.GetElementByRID("custom_test_text").value = sText;
-                    oW.GetElementByRID("select_test").selectedIndex = 1;
+                    oW.getElementByRID("custom_test_text").value = sText;
+                    oW.getElementByRID("select_test").selectedIndex = 1;
                     oW.ResetSelectedTest();
                 }
             }
             Hemi.message.service.subscribe("ontemplateload", function (s, v) {
                 if (v.getContainerComponentId() != "Test Suite") return;
-                v.GetElementByRID("suite_commands").style.display = "none";
+                v.getElementByRID("suite_commands").style.display = "none";
             });
             function ShowLog() {
                 Hemi.app.createWindow("Log Viewer", 'Templates/LogViewer.xml', 'LogViewer');

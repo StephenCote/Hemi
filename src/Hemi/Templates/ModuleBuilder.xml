@@ -63,9 +63,9 @@
 		},
 		RefreshModuleBuilder : function(){
 			var b = (this.getObjects().module_construct ? 1 : 0);
-			this.GetElementByRID("module_name").disabled = (b ? false : true);
-			this.GetElementByRID("module_description").disabled = (b ? false : true);
-			this.GetElementByRID("build_module").disabled = (b ? false : true);
+			this.getElementByRID("module_name").disabled = (b ? false : true);
+			this.getElementByRID("module_description").disabled = (b ? false : true);
+			this.getElementByRID("build_module").disabled = (b ? false : true);
 		},
 		template_destroy : function(){
 			this._prehandle_module_load = 0;
@@ -75,19 +75,19 @@
 			var aBuff = [];
 			
 			this.BuildModule();
-			aBuff.push(this.GetElementByRID("module_text").value);
+			aBuff.push(this.getElementByRID("module_text").value);
 
-			var sName = this.GetElementByRID("module_name").value;
+			var sName = this.getElementByRID("module_name").value;
 
-			var aParams = [sName.replace(/\.js$/,""), aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_module_as").selectedIndex];
+			var aParams = [sName.replace(/\.js$/,""), aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.getElementByRID("run_module_as").selectedIndex];
 
 			this.RunControl((this.getProperties().testFeat ? "RunTestModule" : "RunModule"), aParams);
 		},
 		LoadObject : function(i){
 			this.SetLabel("Loading ...");
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"[ Volatile Module ]");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("module_info"),"[ Volatile Module ]");
 			this.getProperties().module_id = i;
-			this.GetElementByRID("build_module").selectedIndex = 0;
+			this.getElementByRID("build_module").selectedIndex = 0;
 			var _bt = Hemi.data.io.service.getBusType();
 			var sMT = (this.getProperties().busType != _bt.ONLINE ? "text/javascript" : 0);
 			AM6Client.get("DATA",i,this._prehandle_module_load);
@@ -103,17 +103,17 @@
 			this.SetDataPath(oData.groupPath);
 			var sTemp = uwm.base64Decode(oData.dataBytesStore);
 
-			this.GetElementByRID("module_text").value = sTemp;
+			this.getElementByRID("module_text").value = sTemp;
 			if(this.LoadModuleText()){
-				this.GetElementByRID("module_name").value = oData.name;
-				this.GetElementByRID("module_description").value = oData.description;
+				this.getElementByRID("module_name").value = oData.name;
+				this.getElementByRID("module_description").value = oData.description;
 
 				this.getObjects().module_construct.id = this.getProperties().module_id;
 				this.RefreshModuleBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"Id: " + this.getProperties().module_id + " / Path: " + oData.path);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("module_info"),"Id: " + this.getProperties().module_id + " / Path: " + oData.path);
 			}
 
-			this.GetElementByRID("module_id").value = this.getProperties().module_id + "";
+			this.getElementByRID("module_id").value = this.getProperties().module_id + "";
 	
 		},
 
@@ -135,12 +135,12 @@
 			}
 		},
 		ClearModule : function(){
-				this.GetElementByRID("build_module").selectedIndex = 0;
-				this.GetElementByRID("module_text").value = "";
-				this.GetElementByRID("module_id").value = "0";
-				this.GetElementByRID("module_name").value = "";
-				this.GetElementByRID("module_description").value = "";
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"[ Volatile Module ]");
+				this.getElementByRID("build_module").selectedIndex = 0;
+				this.getElementByRID("module_text").value = "";
+				this.getElementByRID("module_id").value = "0";
+				this.getElementByRID("module_name").value = "";
+				this.getElementByRID("module_description").value = "";
+				Hemi.xml.setInnerXHTML(this.getElementByRID("module_info"),"[ Volatile Module ]");
 				this.getObjects().module_construct = 0;
 				this.getProperties().module_id = 0;
 				this.SetLabel("");
@@ -159,12 +159,12 @@
 				 this.SetLabel("Didn't save - Nothing to do");
 				 return;
 			}
-			if(this.GetElementByRID("build_module").selectedIndex != 0){
-				this.GetElementByRID("build_module").selectedIndex = 0;
+			if(this.getElementByRID("build_module").selectedIndex != 0){
+				this.getElementByRID("build_module").selectedIndex = 0;
 				this.BuildModule();
 			}
-			var sName = this.GetElementByRID("module_name").value;
-			var sTemp = this.GetElementByRID("module_text").value;
+			var sName = this.getElementByRID("module_name").value;
+			var sTemp = this.getElementByRID("module_text").value;
 			var bRet = 0;
 			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
 			var oND = 0;
@@ -194,16 +194,16 @@
 				}
 				else{
 					this.getObjects().module_construct.id = sId;	
-					this.GetElementByRID("module_id").value = sId;
+					this.getElementByRID("module_id").value = sId;
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("module_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					Hemi.xml.setInnerXHTML(this.getElementByRID("module_info"),"Id: " + sId + " / Path: " + oND.groupPath);
 					this.SetDataPath(oND.groupPath);
 				}
 			}
 			else{
 				this.SetLabel("Failed to save module");
 			}
-			this.GetElementByRID("module_text").value = sTemp;
+			this.getElementByRID("module_text").value = sTemp;
 		},
 
 		CreateNewObject : function(){
@@ -224,30 +224,30 @@
 				this.SetLabel("Invalid module construct");
 				return;	 
 			}
-			var sName = Hemi.text.trim(this.GetElementByRID("module_name").value);
+			var sName = Hemi.text.trim(this.getElementByRID("module_name").value);
 			this.getObjects().module_construct.name = sName;
 			
 			var aBuff = [];	
-			var iIndex = this.GetElementByRID("build_module").selectedIndex;
+			var iIndex = this.getElementByRID("build_module").selectedIndex;
 			var bScript = (iIndex == 0 ? 1 : 0);
 			if(bScript){
-				 this.GetElementByRID("module_model_controls").style.display = "inline";
+				 this.getElementByRID("module_model_controls").style.display = "inline";
 			}
 			else{
-				 this.GetElementByRID("module_model_controls").style.display = "none";
+				 this.getElementByRID("module_model_controls").style.display = "none";
 			}
 			if(bScript){
 				aBuff.push(this.getObjects().module_construct.xhtml_content);
 
 			}
 			var sText = aBuff.join("");
-			this.GetElementByRID("module_text").value = sText;
+			this.getElementByRID("module_text").value = sText;
 		},
 
 		UpdateModuleMember : function(){
-			var iIndex = this.GetElementByRID("build_module").selectedIndex;
+			var iIndex = this.getElementByRID("build_module").selectedIndex;
 			if(iIndex == 0){
-				var sXhtml = this.GetElementByRID("module_text").value;
+				var sXhtml = this.getElementByRID("module_text").value;
 				this.getObjects().module_construct.xhtml_content = sXhtml;
 				this.getObjects().module_construct.changes++;
 				this.SetLabel("Updated - Remember to Save!");
@@ -256,14 +256,14 @@
 
 		LoadModuleText : function(){
 
-			var bScr = (this.GetElementByRID("build_module").selectedIndex == 0 ? 1 : 0);
+			var bScr = (this.getElementByRID("build_module").selectedIndex == 0 ? 1 : 0);
 			if(this.getObjects().module_construct && this.getObjects().module_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
 			
 			var oXml = null;
-			var sXhtmlContent = this.GetElementByRID("module_text").value
-			this.GetElementByRID("module_description").value = "";
-			this.GetElementByRID("module_name").value = "";
-			this.GetElementByRID("module_id").value = "";
+			var sXhtmlContent = this.getElementByRID("module_text").value
+			this.getElementByRID("module_description").value = "";
+			this.getElementByRID("module_name").value = "";
+			this.getElementByRID("module_id").value = "";
 
 			this.getObjects().module_construct = this.NewComponentConstruct();
 			this.getObjects().module_construct.xhtml_content = sXhtmlContent;

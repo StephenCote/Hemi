@@ -35,7 +35,7 @@
 				
 		},
 		CreateNewProject : function(){
-				var sName = this.GetElementByRID("project_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				var sName = this.getElementByRID("project_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
 				if(sName.length == 0){
 					this.setStatus("Invalid name.  Name must be specified.");
 					return;
@@ -50,8 +50,8 @@
 				
 				var aBuff = [];
 						
-				oBuilder.GetElementByRID("project_name").value = this.GetElementByRID("project_name").value;
-				oBuilder.GetElementByRID("project_description").value = this.GetElementByRID("project_description").value;
+				oBuilder.getElementByRID("project_name").value = this.getElementByRID("project_name").value;
+				oBuilder.getElementByRID("project_description").value = this.getElementByRID("project_description").value;
 
 				if(aBuff.length) aBuff.push("");
 				

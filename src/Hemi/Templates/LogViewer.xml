@@ -5,14 +5,14 @@
     <embedded-script>
                 <![CDATA[
         template_init : function(){
-            /// this.GetElementByRID("viewer").style.height = this.getContainer().clientHeight + "px";
+            /// this.getElementByRID("viewer").style.height = this.getContainer().clientHeight + "px";
             this.local_handle_resize();
         },
         local_handle_resize : function(){
            /// If in a window control
            ///
            
-           if(this.getBody) this.GetElementByRID("viewer").style.height = (this.getBody().clientHeight-30) + "px";
+           if(this.getBody) this.getElementByRID("viewer").style.height = (this.getBody().clientHeight-30) + "px";
         }
     ]]></embedded-script>
 </Template>

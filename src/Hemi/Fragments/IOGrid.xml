@@ -62,11 +62,11 @@
 			this._prehandle_iogrid_showprofile = 0;
 		},
 		ShowButton : function(n){
-				var o = this.GetElementByRID("button_" + n);
+				var o = this.getElementByRID("button_" + n);
 				if(o) o.style.display = "";
 		},
 		HideButton : function(n){
-				var o = this.GetElementByRID("button_" + n);
+				var o = this.getElementByRID("button_" + n);
 				if(o) o.style.display = "none";
 		},
 		_handle_exec_button : function(e){
@@ -112,7 +112,7 @@
 				case "Delete":
 					if(!this.getProperties().item_toggled) return;
 						if(confirm("Delete this item?") && typeof this.DeleteSelectedItem == "function" && this.DeleteSelectedItem(this.getProperties().item_toggled)){
-							this.DisableButton("button_delete");
+							this.disableButton("button_delete");
 							if(typeof this.RefreshList == "function") this.RefreshList();
 							return;
 						}
@@ -122,25 +122,25 @@
 					break;
 			}
 		},
-		DisableButtons : function(){
-			this.DisableButton("button_delete");
-			this.DisableButton("button_open");
-			this.DisableButton("button_move_first");
-			this.DisableButton("button_move_last");
-			this.DisableButton("button_move_next");
-			this.DisableButton("button_move_prev");		
+		disableButtons : function(){
+			this.disableButton("button_delete");
+			this.disableButton("button_open");
+			this.disableButton("button_move_first");
+			this.disableButton("button_move_last");
+			this.disableButton("button_move_next");
+			this.disableButton("button_move_prev");		
 		},
 		/// _p.current_bus, _p.current_application, "Data", sReq, sId
 		LoadIOGrid : function(iBus, sApp, sCat, sReq, sId){
-			this.DisableButtons();
+			this.disableButtons();
 			var _p = this.getProperties();
 			_p.item_toggled =0;
 			
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"), "Loading ...");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"), "Loading ...");
 			
-			Hemi.xml.removeChildren(this.GetElementByRID("grid-header"));
-			Hemi.xml.removeChildren(this.GetElementByRID("grid-footer"));
-			Hemi.xml.removeChildren(this.GetElementByRID("grid-items"));
+			Hemi.xml.removeChildren(this.getElementByRID("grid-header"));
+			Hemi.xml.removeChildren(this.getElementByRID("grid-footer"));
+			Hemi.xml.removeChildren(this.getElementByRID("grid-items"));
 			var oInstruction = Hemi.data.io.service.newIOInstruction(1, _p.start_record, _p.record_count, 0, 0);
             var oRequest = Hemi.data.io.service.newIORequest(
                 iBus,
@@ -160,17 +160,17 @@
 		SetTotalItemCount : function(i){
 			this.getProperties().total_count = i;
 			if(this.getProperties().start_record > 0){
-				this.GetElementByRID("button_move_prev").disabled = false;
-				this.GetElementByRID("button_move_first").disabled = false;
+				this.getElementByRID("button_move_prev").disabled = false;
+				this.getElementByRID("button_move_first").disabled = false;
 			}
 			
 			if((this.getProperties().start_record + this.getProperties().record_count) < this.getProperties().total_count){
-				this.GetElementByRID("button_move_next").disabled = false;
-				this.GetElementByRID("button_move_last").disabled = false;
+				this.getElementByRID("button_move_next").disabled = false;
+				this.getElementByRID("button_move_last").disabled = false;
 			}
 
-			if(this.getProperties().total_count > 0) Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),(this.getProperties().start_record + 1) + "-" + (this.getProperties().start_record + this.getProperties().record_count) + " of " + this.getProperties().total_count);
-			else Hemi.xml.setInnerXHTML(this.GetElementByRID("record_label"),"0 of 0");
+			if(this.getProperties().total_count > 0) Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"),(this.getProperties().start_record + 1) + "-" + (this.getProperties().start_record + this.getProperties().record_count) + " of " + this.getProperties().total_count);
+			else Hemi.xml.setInnerXHTML(this.getElementByRID("record_label"),"0 of 0");
 
 		},
 		_handle_iogrid_open : function(e){
@@ -196,16 +196,16 @@
 				o.className = "grid_item";
 				o.toggled = 0;
 				this.getProperties().item_toggled = 0;
-				this.DisableButton("button_delete");
-				this.DisableButton("button_open");
+				this.disableButton("button_delete");
+				this.disableButton("button_open");
 			}
 			else{
 				o.className = "grid_item grid_item_toggle";
 				o.toggled = 1;
 				this.getProperties().item_toggled = o;
 
-				if(!o.policy || o.policy.del) this.EnableButton("button_delete");
-				if(!o.policy || o.policy.read) this.EnableButton("button_open");
+				if(!o.policy || o.policy.del) this.enableButton("button_delete");
+				if(!o.policy || o.policy.read) this.enableButton("button_open");
 			}
 			
 		},
@@ -223,7 +223,7 @@
 		},
 		_handle_iogrid_load : function(oService, oSubject, oRequest, oResponse){
 			if(oResponse.authenticationRequired){
-				this.ShowLogin();
+				this.showLogin();
 				return;
 			}
 			
@@ -234,8 +234,8 @@
 			if(!isNaN(iCount)) this.SetTotalItemCount(iCount);
 
 			
-			var oList = this.GetElementByRID("grid-items");
-			if(typeof this.DrawIOGridHeader == "function") this.DrawIOGridHeader(oService, oSubject, oRequest, oResponse, this.GetElementByRID("grid-header"));
+			var oList = this.getElementByRID("grid-items");
+			if(typeof this.DrawIOGridHeader == "function") this.DrawIOGridHeader(oService, oSubject, oRequest, oResponse, this.getElementByRID("grid-header"));
 			for(var i = 0; i < aDataList.length; i++){
 				var oItem = document.createElement("div");
 				oItem.item_id = aDataList[i].id;
@@ -255,7 +255,7 @@
 				oItem.ondblclick = this._prehandle_iogrid_open;
 			}
 			
-			if(typeof this.DrawIOGridFooter == "function") this.DrawIOGridFooter(oX, oDataList, aItems, this.GetElementByRID("grid-footer"));
+			if(typeof this.DrawIOGridFooter == "function") this.DrawIOGridFooter(oX, oDataList, aItems, this.getElementByRID("grid-footer"));
 
 		},
 		_handle_iogrid_show_profile : function(e){

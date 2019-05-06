@@ -79,7 +79,7 @@
 		CreateNewTask : function(){
 			var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);
 			var oConstruct = oBuilder.getObjects().task_construct;
-			var sId = this.GetElementByRID("task_id").value.replace(/$\s*/,"").replace(/\s*$/,"");
+			var sId = this.getElementByRID("task_id").value.replace(/$\s*/,"").replace(/\s*$/,"");
 			if(sId.length == 0){
 				alert("Task Id is required.");
 				return;
@@ -88,16 +88,16 @@
 				alert("This task already exists");
 				return;
 			}
-			var sActionType = this.GetElementByRID("action_type").value;
+			var sActionType = this.getElementByRID("action_type").value;
 			var sAction = "";
-			var sHandlerType = this.GetElementByRID("handler_type").value;
+			var sHandlerType = this.getElementByRID("handler_type").value;
 			var sHandler = "";
 			if(sActionType == "script" && sHandlerType == "script"){
 				alert("Action and Handler cannot both be inline script.");
 				return;
 			}
-			sAction = this.GetElementByRID((sActionType == "script" ? "action_block" : "action_inline")).value;
-			sHandler = this.GetElementByRID((sHandlerType == "script" ? "handler_block" : "handler_inline")).value;
+			sAction = this.getElementByRID((sActionType == "script" ? "action_block" : "action_inline")).value;
+			sHandler = this.getElementByRID((sHandlerType == "script" ? "handler_block" : "handler_inline")).value;
 			if(sAction.length == 0) sAction = "[nothing]";
 			if(sHandler.length == 0) sHandler = "[nothing]";
 			oBuilder.AddTaskConstruct(oConstruct, sId, sActionType, sAction, sHandlerType, sHandler);
@@ -109,14 +109,14 @@
 
 		},
 		ToggleActionBlock : function(){
-			var sVal = this.GetElementByRID("action_type").value;
-			this.GetElementByRID("action_inline").style.display = (sVal == "script" ? "none" : "");		 
-			this.GetElementByRID("action_block").style.display = (sVal == "script" ? "block" : "none");
+			var sVal = this.getElementByRID("action_type").value;
+			this.getElementByRID("action_inline").style.display = (sVal == "script" ? "none" : "");		 
+			this.getElementByRID("action_block").style.display = (sVal == "script" ? "block" : "none");
 		},
 		ToggleHandlerBlock : function(){
-			var sVal = this.GetElementByRID("handler_type").value;
-			this.GetElementByRID("handler_inline").style.display = (sVal == "script" ? "none" : "");		 
-			this.GetElementByRID("handler_block").style.display = (sVal == "script" ? "block" : "none");
+			var sVal = this.getElementByRID("handler_type").value;
+			this.getElementByRID("handler_inline").style.display = (sVal == "script" ? "none" : "");		 
+			this.getElementByRID("handler_block").style.display = (sVal == "script" ? "block" : "none");
 		},
         local_handle_close : function(oWin){
             var oBuilder = Hemi.registry.service.getObject(this.getProperties().opener_id);

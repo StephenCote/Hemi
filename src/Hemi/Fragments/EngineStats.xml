@@ -31,10 +31,10 @@
       <![CDATA[
 		embedded_init : function (){
 			window.debugWindow = this;
-			console.log("Stat Init: " + this.GetComponentByRID("oRegistry"));
-			console.log("Stat Init: " + this.GetComponentByRID("oRegistry").getObjects().promise);
-			this.GetComponentByRID("oRegistry").setLoadHandler(this.scopeHandler("setupList",0,1,1));
-			this.GetComponentByRID("oModel").setLoadHandler(this.scopeHandler("setupModel",0,1,1));
+			console.log("Stat Init: " + this.getComponentByRID("oRegistry"));
+			console.log("Stat Init: " + this.getComponentByRID("oRegistry").getObjects().promise);
+			this.getComponentByRID("oRegistry").setLoadHandler(this.scopeHandler("setupList",0,1,1));
+			this.getComponentByRID("oModel").setLoadHandler(this.scopeHandler("setupModel",0,1,1));
 			this.getObjects().model_list = [];
 			this.getObjects().model_index = [];
 			this.getObjects().pathHash = [];
@@ -42,8 +42,8 @@
 			
 			
 			Hemi.uid_prefix = "dwd-";
-			this.GetElementByRID("oFilterPrefix").checked = false;
-      this.GetElementByRID("oMatch").checked = false;
+			this.getElementByRID("oFilterPrefix").checked = false;
+      this.getElementByRID("oMatch").checked = false;
       this.getProperties().printing = 0;
 		},
 		setupModel : function(){
@@ -69,10 +69,10 @@
 			Hemi.registry.service.sendSigterm();
 		},
 		GetList : function(){
-			return this.GetComponentByRID("oRegistry").GetWideSelect();
+			return this.getComponentByRID("oRegistry").GetWideSelect();
 		},
 		GetModel : function(){
-			return this.GetComponentByRID("oModel").GetWideSelect();
+			return this.getComponentByRID("oModel").GetWideSelect();
 		},
 		_handle_resultclick : function(sEvent,oItem){
 			//this.Model();
@@ -104,8 +104,8 @@
 				if(typeof this.ShowTab == "function" && typeof ActiveSource == "object"){
 					this.ShowTab("Active Source");
 					
-					var oSource = this.GetElementByRID("oSource");
-					var oEval = this.GetElementByRID("oEval");
+					var oSource = this.getElementByRID("oSource");
+					var oEval = this.getElementByRID("oEval");
 					var oObj = Hemi.registry.service.getObject(this.getProperties().model_id);
 					if(!oObj) oObj = Hemi.app.space.service.getSpace(this.getProperties().model_id);
 					var sCont = "";
@@ -231,10 +231,10 @@
     },
     
     MatchObjectVal : function(o){
-      var b = this.GetElementByRID("oMatch").checked;
+      var b = this.getElementByRID("oMatch").checked;
       if(!b) return 1;
       if(o == null || !o || typeof o.getObjectId != "function") return 0;
-      var exp = new RegExp(this.GetElementByRID("oMatchText").value);
+      var exp = new RegExp(this.getElementByRID("oMatchText").value);
       b = (o.getObjectType().match(exp) || o.getObjectId().match(exp));
       if(b) return 1;
       switch(o.getObjectType()){
@@ -256,7 +256,7 @@
 			oList.addItem("REGISTRY","_avoid");
 			for(var i = 0;i < a.length; i++){
 				o = a[i];
-				if(o != 0 && this.GetElementByRID("oFilterPrefix").checked && !o.getObjectId().match(/^dwd-/)) continue;
+				if(o != 0 && this.getElementByRID("oFilterPrefix").checked && !o.getObjectId().match(/^dwd-/)) continue;
         if(o != 0 && !this.MatchObjectVal(o)) continue;
 				if(o != 0){
 					oList.addItem(o.getObjectType() + " " + (o.getObjectType() == "xhtml_component" ? o.getContainer().nodeName + " " : "") + "(" + o.getObjectId() + ")",o.getObjectId());
@@ -313,7 +313,7 @@
           ||
           ts[h].getObjectType() != "transaction_service"
           ||
-          (this.GetElementByRID("oFilterPrefix").checked && !ts[h].getObjectId().match(/^dwd-/))
+          (this.getElementByRID("oFilterPrefix").checked && !ts[h].getObjectId().match(/^dwd-/))
           ||
           !this.MatchObjectVal(ts[h])
        ) continue;
@@ -332,7 +332,7 @@
 					}
 				}
 			}
-			//this.GetElementByRID("data").value = s;			
+			//this.getElementByRID("data").value = s;			
 		},
 		PrintMessages : function(){
       this.getProperties().printing = "msg";
@@ -365,7 +365,7 @@
 			oList.addItem("TASK SERVICES","_avoid");
 			or = Hemi.registry.service.getObjectsArray();
 			for(h = 0; h < or.length; h++){
-				if(!or[h] || or[h].getObjectType() != "task_service" || (this.GetElementByRID("oFilterPrefix").checked && !or[h].getObjectId().match(/^dwd-/)) || !this.MatchObjectVal(o)) continue;
+				if(!or[h] || or[h].getObjectType() != "task_service" || (this.getElementByRID("oFilterPrefix").checked && !or[h].getObjectId().match(/^dwd-/)) || !this.MatchObjectVal(o)) continue;
 
 				a = or[h].getTasks();
 				oList.addItem("....Task Service " + or[h].getObjectId(),or[h].getObjectId());
@@ -393,7 +393,7 @@
 				a = or[h].getProviders();
 				for(i=0;i<a.length;i++){
 					var eid = a[i].providerId;
-					if(this.GetElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
+					if(this.getElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
 					o = Hemi.registry.service.getObject(eid);
           if(o && !this.MatchObjectVal(o)) continue;
 					if(!o){
@@ -445,7 +445,7 @@
 					eo = t.Impls;
 					for(j = 0; j < eo.length; j++){
 						var eid = eo[j];
-					  if(this.GetElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
+					  if(this.getElementByRID("oFilterPrefix").checked && !eid.match(/^dwd-/)) continue;
             var mo = Hemi.registry.service.getObject(eid);
             if(mo && !this.MatchObjectVal(mo)) continue;
 					  var etype = mo.getObjectType();
@@ -474,7 +474,7 @@
 				for(i=0;i<a.length;i++){
 					t = a[i];
 					if(!t) continue;
-					if(!this.MatchObjectVal(t) || (this.GetElementByRID("oFilterPrefix").checked && !t.getObjectId().match(/^dwd-/))) continue;
+					if(!this.MatchObjectVal(t) || (this.getElementByRID("oFilterPrefix").checked && !t.getObjectId().match(/^dwd-/))) continue;
           
 					oList.addItem("....Space " + t.space_name + " (" + t.space_id + ")" + (t.is_primary ? " (primary)" : ""),t.space_id);
 					eo = t.getObjects();
@@ -496,7 +496,7 @@
 					}
 				}	
 			}		
-			//this.GetElementByRID("data").value = s;
+			//this.getElementByRID("data").value = s;
 		},
 		Model : function(){
 			var oList = this.GetList();

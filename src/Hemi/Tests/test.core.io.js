@@ -5,11 +5,11 @@ Hemi.include("core.io", "/Scripts/");
 function getLoginTemplate(u, p) {
    return "<Template><import-xml src = 'Templates/TemplateTools.xml' /><input type = 'password' rid = 'password' /><input type = 'text' rid = 'user_name' /><embedded-script><![CDATA["
     + "template_init : function(){"
-    + "this.GetElementByRID(\"user_name\").value = \"" + u + "\";"
-    + "this.GetElementByRID(\"password\").value = \"" + p + "\";"
-    + "var oR = Hemi.xml.postXml(g_application_path + \"Login.aspx?is-xml=1\", this.SerializeForm());"
-    + "this.SetFormValue(\"password\", \"\");"
-    + "if (this.IsSuccess(oR)) this.GetSession().Refresh(1);"
+    + "this.getElementByRID(\"user_name\").value = \"" + u + "\";"
+    + "this.getElementByRID(\"password\").value = \"" + p + "\";"
+    + "var oR = Hemi.xml.postXml(g_application_path + \"Login.aspx?is-xml=1\", this.serializeForm());"
+    + "this.setFormValue(\"password\", \"\");"
+    + "if (this.isSuccess(oR)) this.GetSession().Refresh(1);"
     + "}]]></embedded-script></Template>"
     ;
 }
@@ -46,7 +46,7 @@ function CheckLogin() {
     Module.Assert(oSubject.id, "Subject id '" + oSubject.id + "' should be specified");
 }
 
-function SerializeForm(oX, sFN, sFV) {
+function serializeForm(oX, sFN, sFV) {
 	if(typeof sFV == "boolean") sFV = sFV.toString();
 	if (!sFV || sFV.length == 0) return 0 ;
 	if(!oX) oX = Hemi.xml.newXmlDocument("Request");
@@ -131,7 +131,7 @@ function TestDataEdit() {
 	CheckLogin();
 
 	var oD = GetSerialData();
-	oD.value = SerializeForm(0, "component_name", "ExampleComponentTest2");
+	oD.value = serializeForm(0, "component_name", "ExampleComponentTest2");
 
 	var oRequest = Hemi.data.io.service.newIORequest(
         Hemi.data.io.service.getBusType().ONLINE,
@@ -150,9 +150,9 @@ function TestDataEdit() {
 	Hemi.data.io.service.openRequest(Hemi.data.io.service.getSubject(), oRequest);
 
 	oD = GetSerialData();
-	oX = SerializeForm(0, "component_name", "ExampleComponentTest2");
-	SerializeForm(oX, "participation_name", "ExampleComponentTest2");
-	SerializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init');},component_post_init : function(){}]]></application-component></application-components>\n"));
+	oX = serializeForm(0, "component_name", "ExampleComponentTest2");
+	serializeForm(oX, "participation_name", "ExampleComponentTest2");
+	serializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init');},component_post_init : function(){}]]></application-component></application-components>\n"));
 	oD.value = oX;
 	var oRequest = Hemi.data.io.service.newIORequest(
         Hemi.data.io.service.getBusType().ONLINE,
@@ -192,10 +192,10 @@ function TestDataEdit() {
 	var oDat = oResponse.responseData[0];
 
 	oD = GetSerialData();
-	oX = SerializeForm(0, "component_name", "ExampleComponentTest2");
-	SerializeForm(oX, "component_id", oDat.id);
-	SerializeForm(oX, "participation_name", "ExampleComponentTest2");
-	SerializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init edit');},\ncomponent_post_init : function(){\n}]]></application-component></application-components>\n"));
+	oX = serializeForm(0, "component_name", "ExampleComponentTest2");
+	serializeForm(oX, "component_id", oDat.id);
+	serializeForm(oX, "participation_name", "ExampleComponentTest2");
+	serializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init edit');},\ncomponent_post_init : function(){\n}]]></application-component></application-components>\n"));
 	oD.value = oX;
 
 	oRequest = Hemi.data.io.service.newIORequest(
@@ -220,10 +220,10 @@ function TestDataEdit() {
 function TestDataAdd() {
 	CheckLogin();
 	var oD = GetSerialData();
-	var oX = SerializeForm(0, "component_name", "ExampleComponentTest");
-	SerializeForm(oX, "participation_name", "ExampleComponentTest");
-	/// SerializeForm(oX, "package_name", "");
-	SerializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init');},component_post_init : function(){}]]></application-component></application-components>\n"));
+	var oX = serializeForm(0, "component_name", "ExampleComponentTest");
+	serializeForm(oX, "participation_name", "ExampleComponentTest");
+	/// serializeForm(oX, "package_name", "");
+	serializeForm(oX, "component_text", escape("<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<application-components><application-component id = \"test\"><![CDATA[component_init:function(){alert('init');},component_post_init : function(){}]]></application-component></application-components>\n"));
 	oD.value = oX;
 
 	var oRequest = Hemi.data.io.service.newIORequest(
@@ -248,7 +248,7 @@ function TestDataAdd() {
 function TestDataDelete() {
 	CheckLogin();
 	var oD = GetSerialData();
-	oD.value = SerializeForm(0, "component_name", "ExampleComponentTest");
+	oD.value = serializeForm(0, "component_name", "ExampleComponentTest");
 
 	var oRequest = Hemi.data.io.service.newIORequest(
         Hemi.data.io.service.getBusType().ONLINE,
@@ -270,7 +270,7 @@ function TestDataDelete() {
 }
 function TestDataCheckName() {
 	var oD = GetSerialData();
-	oD.value = SerializeForm(0, "component_name", "ExampleComponent");
+	oD.value = serializeForm(0, "component_name", "ExampleComponent");
 
 	var oRequest = Hemi.data.io.service.newIORequest(
         Hemi.data.io.service.getBusType().ONLINE,

@@ -46,7 +46,7 @@
 				
 		},
 		CreateNewTask : function(){
-				var sName = this.GetElementByRID("task_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				var sName = this.getElementByRID("task_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
 				if(sName.length == 0){
 					this.setStatus("Invalid name.  Name must be specified.");
 					return;
@@ -61,31 +61,31 @@
 				
 				var aBuff = [];
 						
-				oBuilder.GetElementByRID("task_name").value = this.GetElementByRID("task_name").value;
-				oBuilder.GetElementByRID("task_description").value = this.GetElementByRID("task_description").value;
+				oBuilder.getElementByRID("task_name").value = this.getElementByRID("task_name").value;
+				oBuilder.getElementByRID("task_description").value = this.getElementByRID("task_description").value;
 				var Example1 = 0;
-				if(this.GetElementByRID("chk_xml_script").checked){
+				if(this.getElementByRID("chk_xml_script").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"LoadXmlAndScriptIt","xml","api/hemi.task.xml","script","function RunTaskScript(oTask){\n\tvar oXmlDocument = oTask.data;\n\t// View the serialized XML document\n\talert(oXmlDocument.documentElement.nodeName);\n\treturn true;\n}");
 				}
-				if(this.GetElementByRID("chk_dom_load").checked){
+				if(this.getElementByRID("chk_dom_load").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"WaitForWindow","[default]","[nothing]","script","alert(\"The window loaded\");");
 					oBuilder.AddTaskDependencyConstruct(oConstruct,"WaitForWindow","dom_event_window_load",1,0);
 				}
-				if(this.GetElementByRID("chk_space_load").checked){
+				if(this.getElementByRID("chk_space_load").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"WaitForPrimarySpace","[default]","[nothing]","script","alert(\"The space started\");");
 					oBuilder.AddTaskDependencyConstruct(oConstruct,"WaitForPrimarySpace","space_driver",1,0);
 				}
-				if(this.GetElementByRID("chk_script_global").checked){
+				if(this.getElementByRID("chk_script_global").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"CallScript","function","SomeFunction()","[default]","[nothing]");
 				}
-				if(this.GetElementByRID("chk_script_component").checked){
+				if(this.getElementByRID("chk_script_component").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"CallComponentScript","function","${this}.SomeFunction.apply(${this})","[default]","[nothing]");
 				}
-				if(this.GetElementByRID("chk_sample_named_dependency").checked){
+				if(this.getElementByRID("chk_sample_named_dependency").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"WaitForDependency","[default]","[nothing]","script","alert(\"The dependency loaded\");");
 					oBuilder.AddTaskDependencyConstruct(oConstruct,"WaitForDependency","some_named_event_to_occur",1,0);
 				}
-				if(this.GetElementByRID("chk_sample_cdata_script").checked){
+				if(this.getElementByRID("chk_sample_cdata_script").checked){
 					oBuilder.AddTaskConstruct(oConstruct,"DemoScript","script","function RunTaskScript(oTask){\n\t// Do some scripting\n}\n","[default]","[nothing]");
 				}
 				if(aBuff.length) aBuff.push("");

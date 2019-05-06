@@ -46,15 +46,15 @@
 			if(typeof g_window != "undefined") this.getProperties().target_window = g_window;
             if(typeof g_element != "undefined") this.getProperties().target_element = g_element;
 
-			this.GetElementByRID("oThis").style.display = (this.getProperties().target_window && this.getProperties().target_window != window ? "inline" : "none");
+			this.getElementByRID("oThis").style.display = (this.getProperties().target_window && this.getProperties().target_window != window ? "inline" : "none");
 			
-			this.GetElementByRID("oSource").style.height = "415px";
+			this.getElementByRID("oSource").style.height = "415px";
 			this.getProperties().show_help = 1;
 			this.getObjects().srcEl = 0;
 			this.getObjects().srcWindow = this.getWindow();
 			this.getObjects().frames = [];
 			this.scopeHandler("input_keydown",0,0,1);
-			this.GetElementByRID("oEval").onkeydown = this._prehandle_input_keydown;
+			this.getElementByRID("oEval").onkeydown = this._prehandle_input_keydown;
 			this.getProperties().debug_mode = 0;
 			this.getObjects().potential_models = [];
 			this.getProperties().pointer_marker = "___pointer_marker_" + (new Date().getTime());
@@ -75,7 +75,7 @@
 			];
 			
 			this.RefreshFramesList();
-			this.GetElementByRID("oFrameSelect").selectedIndex = 0;
+			this.getElementByRID("oFrameSelect").selectedIndex = 0;
 			this.RefreshActiveSourceUI();
 			this.ShowRootSource();
 			
@@ -106,24 +106,24 @@
 			if(i >= 0 && this.getProperties().show_help){
 				sHelp=this.getObjects().help[i];	
 			}
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("notes"),sHelp);
+			Hemi.xml.setInnerXHTML(this.getElementByRID("notes"),sHelp);
 		},
 		RefreshActiveSourceUI : function(){
 			if(typeof (this.getProperties().target_window ? this.getProperties().target_window : window).FunctionMonitor == "object"){
-				this.GetElementByRID("oBtnMetrics").style.display = "inline";
+				this.getElementByRID("oBtnMetrics").style.display = "inline";
 			}
 			else{
-				this.GetElementByRID("oBtnMetrics").style.display = "none";
+				this.getElementByRID("oBtnMetrics").style.display = "none";
 			}
 		},
 		showElementSource : function(){
             var oEl = this.getProperties().target_element;
 			if(oEl && oEl != null){
-				this.GetElementByRID("oEval").value="-- Access the Source Element with 'oSrcEl' --";
-				this.GetElementByRID("oSource").value = this.PrototypeElement(oEl);
+				this.getElementByRID("oEval").value="-- Access the Source Element with 'oSrcEl' --";
+				this.getElementByRID("oSource").value = this.PrototypeElement(oEl);
 			}
 			else{
-				this.GetElementByRID("oSource").value="-- Could not glom onto the source element --";
+				this.getElementByRID("oSource").value="-- Could not glom onto the source element --";
 			}
 		},
 		PrototypeElement : function(oNode){
@@ -153,7 +153,7 @@
 		},
 		GetMetrics : function(){
 			try{
-				this.GetElementByRID("oSource").value = this.GetAllMetrics();
+				this.getElementByRID("oSource").value = this.GetAllMetrics();
 			}
 			catch(e){
 				alert(e.message);
@@ -161,7 +161,7 @@
 		},
 		Reflect : function(){
 			var a = [];
-			var s = this.GetElementByRID("oEval").value;
+			var s = this.getElementByRID("oEval").value;
 			var o = null;
 			a.push("Reflect '" + s + "'");
 			try{
@@ -180,7 +180,7 @@
 			catch(e){
 				a.push("Caught Exception '" + (e.message ? e.message : e.description) + "'");
 			}
-			this.GetElementByRID("oSource").value = a.join("\n");
+			this.getElementByRID("oSource").value = a.join("\n");
 		},
 		GetAllMetrics : function(){
 			var oTopWin = this.getObjects().srcWindow;
@@ -222,7 +222,7 @@
 		},
 
 		ChangeSrcWindow : function(){
-			var i = this.GetElementByRID("oFrameSelect").selectedIndex;
+			var i = this.getElementByRID("oFrameSelect").selectedIndex;
 			if(i < 0){
 				alert('invalid window');
 				return;
@@ -230,7 +230,7 @@
 			var o = this.getObjects().frames[i];
 			if(o == null && i > 0){
 				alert('denied');
-				this.GetElementByRID("oFrameSelect").selectedIndex = 0;		
+				this.getElementByRID("oFrameSelect").selectedIndex = 0;		
 				return;
 			}
 			this.RefreshActiveSourceUI();
@@ -240,7 +240,7 @@
 		RefreshFramesList : function(){
 			this.getObjects().frames=[];
 			this.getObjects().frames[0]=(this.getProperties().target_window ? this.getProperties().target_window : window);
-			this.GetElementByRID("oFrameSelect").options.length = 0;
+			this.getElementByRID("oFrameSelect").options.length = 0;
 			this.FindFrames((this.getProperties().target_window ? this.getProperties().target_window : window).top);
 		},
 
@@ -266,7 +266,7 @@
 
 			var op = document.createElement("option");
 			op.appendChild(document.createTextNode(n));
-			this.GetElementByRID("oFrameSelect").appendChild(op);
+			this.getElementByRID("oFrameSelect").appendChild(op);
 
 			if(!b){
 				for(var i = 0; i < o.frames.length;i++){
@@ -277,50 +277,50 @@
 		ShowRootSource : function(){
 			/*
 			if(this.getObjects().srcWindow == window){
-				this.GetElementByRID("oSource").value = "-- Active Source Window --";
+				this.getElementByRID("oSource").value = "-- Active Source Window --";
 				return;
 			}
 			*/
 			var sSrc=this.getObjects().srcWindow.document.documentElement.innerHTML;//window.dialogArguments.html.outerHTML;
 			if(this.getProperties().root_warn || sSrc.length < 10000){
-				this.GetElementByRID("oSource").value=sSrc;
+				this.getElementByRID("oSource").value=sSrc;
 			}
 			else{
-				this.GetElementByRID("oSource").value="-- Access Source with oSrcWindow.document.documentElement.outerHTML --";
+				this.getElementByRID("oSource").value="-- Access Source with oSrcWindow.document.documentElement.outerHTML --";
 			}
 			this.getProperties().root_warn = 1;
 			if(typeof(this.getObjects().srcWindow.eval)!="function"){
-				this.GetElementByRID("oEval").value="-- Access the DOM with 'oSrcWindow' --";
+				this.getElementByRID("oEval").value="-- Access the DOM with 'oSrcWindow' --";
 			}
 			else{
-				this.GetElementByRID("oEval").value="";
+				this.getElementByRID("oEval").value="";
 			}
 		},
 		_handle_input_keydown : function(e){
 			var evt=Hemi.event.getEvent(e);
 			var iCode=evt.keyCode;
 			if(iCode==13){
-				this.DoEval(this.GetElementByRID("oEval"));
+				this.DoEval(this.getElementByRID("oEval"));
 				Hemi.event.cancelEvent(evt);
 				return false;
 			}
 		},
 		DoEval : function(oObj){
-			if(typeof oObj == "string") oObj = this.GetElementByRID(oObj);
+			if(typeof oObj == "string") oObj = this.getElementByRID(oObj);
 			var sVal=oObj.value;
 			try{
 				sVal = sVal.replace(/\${this}/,"Hemi.registry.service.getObject(\"" + this.getObjectId() + "\")");
 				if(sVal.match(/^var/)) sVal="{" + sVal + "}";
 				if(typeof(this.getObjects().srcWindow.eval)!="function"){
-					this.GetElementByRID("oSource").value=(this.getProperties().target_window && !this.GetElementByRID("oThis").checked ? this.getProperties().target_window : window).eval.call(this.getObjects().srcWindow,sVal);
+					this.getElementByRID("oSource").value=(this.getProperties().target_window && !this.getElementByRID("oThis").checked ? this.getProperties().target_window : window).eval.call(this.getObjects().srcWindow,sVal);
 				}
 				else{
-					this.GetElementByRID("oSource").value=((!this.getProperties().target_window || !this.GetElementByRID("oThis").checked) ? this.getObjects().srcWindow : window).eval(sVal);
+					this.getElementByRID("oSource").value=((!this.getProperties().target_window || !this.getElementByRID("oThis").checked) ? this.getObjects().srcWindow : window).eval(sVal);
 				}	
 
 			}
 			catch(e){
-				this.GetElementByRID("oSource").value = "Caught: " + (e.message ? e.message : e.description) + "\n\nInput: " + sVal;
+				this.getElementByRID("oSource").value = "Caught: " + (e.message ? e.message : e.description) + "\n\nInput: " + sVal;
 			}
 		},
 		FindVar : function(){
@@ -333,17 +333,17 @@
 						break;
 					}
 				}
-				if(i > 0 && i < this.GetElementByRID("oFrameSelect").options.length) this.GetElementByRID("oFrameSelect").selectedIndex = i;
-				this.GetElementByRID("oSource").value = "Found " + this.GetElementByRID("oEval").value + " in " + (this.getObjects().varWindow.name ? this.getObjects().varWindow.name : "[unnamed]") + " window\nAccess locally with 'ActiveObjects.varWindow." + this.GetElementByRID("oEval").value + " or 'ActiveObjects.val'\nValue is '" + this.getObjects().varWindow[this.GetElementByRID("oEval").value] + "'";;
-				this.getObjects().val = this.getObjects().varWindow[this.GetElementByRID("oEval").value];
+				if(i > 0 && i < this.getElementByRID("oFrameSelect").options.length) this.getElementByRID("oFrameSelect").selectedIndex = i;
+				this.getElementByRID("oSource").value = "Found " + this.getElementByRID("oEval").value + " in " + (this.getObjects().varWindow.name ? this.getObjects().varWindow.name : "[unnamed]") + " window\nAccess locally with 'ActiveObjects.varWindow." + this.getElementByRID("oEval").value + " or 'ActiveObjects.val'\nValue is '" + this.getObjects().varWindow[this.getElementByRID("oEval").value] + "'";;
+				this.getObjects().val = this.getObjects().varWindow[this.getElementByRID("oEval").value];
 			}
 			else{
-				this.GetElementByRID("oSource").value = "Could not find variable '" + this.GetElementByRID("oEval").value + "'";
+				this.getElementByRID("oSource").value = "Could not find variable '" + this.getElementByRID("oEval").value + "'";
 			}
 		},
 		DrillForVar : function(o){
-			if(this.GetElementByRID("oEval").value.length == 0) return 0;		
-			if(typeof o[this.GetElementByRID("oEval").value] != "undefined"){
+			if(this.getElementByRID("oEval").value.length == 0) return 0;		
+			if(typeof o[this.getElementByRID("oEval").value] != "undefined"){
 				this.getObjects().varWindow = o;
 				return 1;
 			}
@@ -578,7 +578,7 @@
 				+ "\nvar temp_text=\"" + this.getObjects().aScoped.join("~") + "\";\n"
 				+ "</scr" + "ipt></head><body onload='ScopeText()'></body></html>"
 			);
-			this.GetElementByRID("oSource").value = "Time to scope: " + d + "\n\n" + this.getObjects().aScoped.join("~"); //scope_viewer;
+			this.getElementByRID("oSource").value = "Time to scope: " + d + "\n\n" + this.getObjects().aScoped.join("~"); //scope_viewer;
 
 			var oNewWin = window.open("about:blank");
 			if(oNewWin == null){

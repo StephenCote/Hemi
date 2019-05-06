@@ -24,7 +24,7 @@
 				this.getObjects().steps = [];
 				this.getObjects().step_panes = [];
 			},
-			GetElementByRID : function(n){
+			getElementByRID : function(n){
 				var o = Hemi.app.space.getSpace(this.getReferenceId()).getSpaceObjectByName(n);
 				if(!o || !o.object) return o;
 				o = o.object;
@@ -43,7 +43,7 @@
 				
 				if(it > 0){
 					this.SetupSteps(it);
-					this.DiagramStep(0);
+					this.diagramStep(0);
 				}
 			},
 			_handle_printerfriendly : function(s, p){
@@ -90,9 +90,9 @@
 			_handle_stepclick : function(e){
 				var o = Hemi.event.getEventSource(e);
 
-				if(o && typeof o.step_index == "number") this.DiagramStep(o.step_index);
+				if(o && typeof o.step_index == "number") this.diagramStep(o.step_index);
 			},
-			DiagramStep : function(iMark){
+			diagramStep : function(iMark){
 				var aS = this.getObjects().steps;
 				var oDiag = this.getObjects().step_strip;
 				if(!oDiag) return;

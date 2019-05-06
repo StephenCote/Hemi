@@ -29,7 +29,7 @@
 			return this.getProperties().data_path;
 		},
 		SetLabel : function(s){
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("builder-label"),s);
+			Hemi.xml.setInnerXHTML(this.getElementByRID("builder-label"),s);
 		},
         _handle_template_loaded: function (v) {
             if (v && v.getProperties().local_invoke) {
@@ -53,8 +53,8 @@
 		refreshBuilderUI : function(){
 			if(this.setStatus) this.setStatus("Builder");
 			var bNO = false;
-			this.GetElementByRID("btnSave").disabled = bNO;
-			this.GetElementByRID("btnDel").disabled = bNO;
+			this.getElementByRID("btnSave").disabled = bNO;
+			this.getElementByRID("btnDel").disabled = bNO;
 		},
 		_handle_change_bus : function(s, v){
 			this.getProperties().busType = v.data.src;
@@ -146,7 +146,7 @@
 			oData.postData = 1;
 			oData.name = "serial_form_data";
 			oData.mimeType = "application/xml";
-			oData.value = this.SerializeForm(0,aF);
+			oData.value = this.serializeForm(0,aF);
 			return oData;
 		}
 		]]>

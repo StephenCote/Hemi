@@ -84,32 +84,32 @@
 		},
 		RefreshTemplateBuilder : function(){
 			var b = (this.getObjects().template_construct ? 1 : 0);
-			this.GetElementByRID("template_name").disabled = (b ? false : true);
-			this.GetElementByRID("template_description").disabled = (b ? false : true);
-			this.GetElementByRID("build_template").disabled = (b ? false : true);
+			this.getElementByRID("template_name").disabled = (b ? false : true);
+			this.getElementByRID("template_description").disabled = (b ? false : true);
+			this.getElementByRID("build_template").disabled = (b ? false : true);
 		},
 		RunTemplate : function(s){
 			if(!this.getObjects().template_construct) return;
-			this.GetElementByRID("build_template").selectedIndex = 0;
+			this.getElementByRID("build_template").selectedIndex = 0;
 			this.BuildTemplate();
-			var sName = this.GetElementByRID("template_name").value;
-			var aParams = [sName, this.GetElementByRID("template_text").value, g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_template_as").selectedIndex];
+			var sName = this.getElementByRID("template_name").value;
+			var aParams = [sName, this.getElementByRID("template_text").value, g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.getElementByRID("run_template_as").selectedIndex];
 
 			this.RunControl("RunApplicationTemplate", aParams);
 		},
 		GetTemplateModel : function(){
-			return this.GetComponentByRID("embedded_template_model").GetWideSelect();
+			return this.getComponentByRID("embedded_template_model").GetWideSelect();
 		},
 		GetLinkedFragmentModel : function(){
-			return this.GetComponentByRID("linked_fragment_model").GetWideSelect();
+			return this.getComponentByRID("linked_fragment_model").GetWideSelect();
 		},
 
 		LoadObject : function(i){
 			this.SetLabel("Loading ...");
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"[ Volatile Template ]");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("template_info"),"[ Volatile Template ]");
 
 			this.getProperties().template_id = i;
-			this.GetElementByRID("build_template").selectedIndex = 0;
+			this.getElementByRID("build_template").selectedIndex = 0;
 			AM6Client.get("DATA",i,this._prehandle_template_load);
 		},
 		_handle_template_load : function(s, v){
@@ -124,15 +124,15 @@
 			this.SetDataPath(oData.groupPath);
 			var sTemp = uwm.base64Decode(oData.dataBytesStore);
 
-			this.GetElementByRID("template_text").value = sTemp;
+			this.getElementByRID("template_text").value = sTemp;
 
 			if(this.LoadTemplateText()){
 				this.getObjects().template_construct.id = this.getProperties().template_id;
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"Id: " + this.getProperties().template_id + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + this.getProperties().template_id);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("template_info"),"Id: " + this.getProperties().template_id + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + this.getProperties().template_id);
 				this.RefreshTemplateBuilder();
 			}
 
-			this.GetElementByRID("template_id").value = this.getProperties().template_id + "";
+			this.getElementByRID("template_id").value = this.getProperties().template_id + "";
 	
 		},
 
@@ -152,10 +152,10 @@
 			}
 		},
 		ClearTemplate : function(){
-				this.GetElementByRID("build_template").selectedIndex = 0;
-				this.GetElementByRID("template_text").value = "";
-				this.GetElementByRID("template_id").value = "0";
-				this.GetElementByRID("template_name").value = "";
+				this.getElementByRID("build_template").selectedIndex = 0;
+				this.getElementByRID("template_text").value = "";
+				this.getElementByRID("template_id").value = "0";
+				this.getElementByRID("template_name").value = "";
 				this.getObjects().template_construct = 0;
 				this.getProperties().template_id = 0;
 				this.GetTemplateModel().clearItems();
@@ -176,15 +176,15 @@
 				 this.SetLabel("Didn't save - Nothing to do");
 				 return;
 			}
-			if(this.GetElementByRID("build_template").selectedIndex != 0){
-				this.GetElementByRID("build_template").selectedIndex = 0;
+			if(this.getElementByRID("build_template").selectedIndex != 0){
+				this.getElementByRID("build_template").selectedIndex = 0;
 
 			}
 			this.BuildTemplate();
 			
-			var sName = this.GetElementByRID("template_name").value;
+			var sName = this.getElementByRID("template_name").value;
 
-			var sTemp = this.GetElementByRID("template_text").value;
+			var sTemp = this.getElementByRID("template_text").value;
 
 			var bRet = 0;
 			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
@@ -216,13 +216,13 @@
 					this.getObjects().template_construct.id = sId;
 					this.SetLabel("Saved!");
 					this.RefreshTemplateBuilder();
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("template_info"),"Id: " + sId + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + sId);
+					Hemi.xml.setInnerXHTML(this.getElementByRID("template_info"),"Id: " + sId + " / Path: " + g_application_path + "DWAC/" + Hemi.data.io.service.getSubject().name + "/Templates/ID-" + sId);
 				}
 			}
 			else{
 					this.SetLabel("Failed to save template");
 			}
-			this.GetElementByRID("template_text").value = sTemp;
+			this.getElementByRID("template_text").value = sTemp;
 		},
 
 		CreateNewObject : function(){
@@ -242,30 +242,30 @@
 				this.SetLabel("Invalid template construct");
 				return;	 
 			}
-			if(this.GetElementByRID("build_template").selectedIndex == 3){
-				this.GetElementByRID("build_template").selectedIndex = 0;
+			if(this.getElementByRID("build_template").selectedIndex == 3){
+				this.getElementByRID("build_template").selectedIndex = 0;
 			}
 			 
-			this.GetElementByRID("template_model_controls").style.display = "none";
-			this.GetElementByRID("linkedfragment_model_controls").style.display = "none";
+			this.getElementByRID("template_model_controls").style.display = "none";
+			this.getElementByRID("linkedfragment_model_controls").style.display = "none";
 				 
-			this.getObjects().template_construct.name = this.GetElementByRID("template_name").value;
-			var sTitle = Hemi.text.trim(this.GetElementByRID("template_description").value);
+			this.getObjects().template_construct.name = this.getElementByRID("template_name").value;
+			var sTitle = Hemi.text.trim(this.getElementByRID("template_description").value);
 			
 			var aBuff = [];	
 			
-			var iIndex = this.GetElementByRID("build_template").selectedIndex;
+			var iIndex = this.getElementByRID("build_template").selectedIndex;
 			var bXml = (iIndex == 0 ? 1 : 0);
 			var bXhtml = (iIndex == 1 ? 1 : 0);
 			var bEmbScr = (iIndex == 2 ? 1 : 0);
 			if(bEmbScr || bXhtml){
-				 this.GetElementByRID("template_model_controls").style.display = "inline";
+				 this.getElementByRID("template_model_controls").style.display = "inline";
 			}
 			else{
-				 this.GetElementByRID("template_model_controls").style.display = "none";
+				 this.getElementByRID("template_model_controls").style.display = "none";
 			}
-			if(bXhtml || bXml) this.GetElementByRID("linkedfragment_model_controls").style.display = "inline";
-			else this.GetElementByRID("linkedfragment_model_controls").style.display = "none";
+			if(bXhtml || bXml) this.getElementByRID("linkedfragment_model_controls").style.display = "inline";
+			else this.getElementByRID("linkedfragment_model_controls").style.display = "none";
 				 
 			if(bXml){
 				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Template id=\"" + this.getObjects().template_construct.name + "\"" + (sTitle.length > 0 && sTitle != this.getObjects().template_construct.name ? " Title = \"" + sTitle + "\"" : "") + ">\n");
@@ -287,7 +287,7 @@
 			}
 			var sText = aBuff.join("");
 
-			this.GetElementByRID("template_text").value = sText;
+			this.getElementByRID("template_text").value = sText;
 		},
 
 		NewTemplateFunction : function(){
@@ -295,9 +295,9 @@
 		},
 
 		UpdateTemplateMember : function(){
-			var iIndex = this.GetElementByRID("build_template").selectedIndex;
+			var iIndex = this.getElementByRID("build_template").selectedIndex;
 			if(iIndex == 1){
-				var sXhtml = this.GetElementByRID("template_text").value;
+				var sXhtml = this.getElementByRID("template_text").value;
 				var oX = 0;
 				try{
 						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
@@ -312,24 +312,24 @@
 				else this.SetLabel("Updated Member - The content is invalid!");
 			}
 			else if(iIndex == 3){
-				this.UpdateFunction(this.getObjects().template_construct, this.GetElementByRID("template_text").value);
+				this.UpdateFunction(this.getObjects().template_construct, this.getElementByRID("template_text").value);
 				this.SetLabel("Updated Template - Remember to Save!");
 			}
 		},
 		_handle_templatemodelclick : function(sEvent,oItem){
 
 			if(!oItem || typeof oItem.data != "string" || !this.getObjects().template_construct){
-				 this.GetElementByRID("template_text").value = "";
+				 this.getElementByRID("template_text").value = "";
 				 return;
 			}
 			var vFunc = this.getObjects().template_construct.functions[oItem.name];
 			if(!vFunc){
-				this.GetElementByRID("template_text").value = "Member '" + oItem.name + "' is not constructed.";
+				this.getElementByRID("template_text").value = "Member '" + oItem.name + "' is not constructed.";
 				return;
 			}
-			this.GetElementByRID("template_model_controls").style.display = "inline";
-			this.GetElementByRID("build_template").selectedIndex = 3;
-			this.GetElementByRID("template_text").value = 
+			this.getElementByRID("template_model_controls").style.display = "inline";
+			this.getElementByRID("build_template").selectedIndex = 3;
+			this.getElementByRID("template_text").value = 
 			"/// Notes: Comments before and after members will be lost.\n"
 			+ "\n" + this.BuildFunction(vFunc)
 			;
@@ -338,12 +338,12 @@
 		_handle_linkedfragmentmodelclick : function(sEvent,oItem){
 
 			if(!oItem || typeof oItem.data != "string" || !this.getObjects().template_construct){
-				 this.GetElementByRID("template_text").value = "";
+				 this.getElementByRID("template_text").value = "";
 				 return;
 			}
-			this.GetElementByRID("template_model_controls").style.display = "inline";
-			var index = this.GetElementByRID("build_template").selectedIndex;
-			if(index != 0 && index != 1) this.GetElementByRID("build_template").selectedIndex = 1;
+			this.getElementByRID("template_model_controls").style.display = "inline";
+			var index = this.getElementByRID("build_template").selectedIndex;
+			if(index != 0 && index != 1) this.getElementByRID("build_template").selectedIndex = 1;
 			this.BuildTemplate();			
 		},
 		LinkFragment : function(){
@@ -424,17 +424,17 @@
 		},
 		LoadTemplateText : function(){
 
-			var bXml = (this.GetElementByRID("build_template").selectedIndex == 0 ? 1 : 0);
+			var bXml = (this.getElementByRID("build_template").selectedIndex == 0 ? 1 : 0);
 			if(this.getObjects().template_construct && this.getObjects().template_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
 
 			if(!bXml){
 				this.SetLabel("Parsing only available for full application component XML file format.  Select Template XML.");
 				return 0;
 			}
-			var sTempText = this.GetElementByRID("template_text").value
+			var sTempText = this.getElementByRID("template_text").value
 			var oXml = null;
 			try{
-				 oXml = Hemi.xml.parseXmlDocument(this.GetElementByRID("template_text").value);
+				 oXml = Hemi.xml.parseXmlDocument(this.getElementByRID("template_text").value);
 			}
 			catch(e){
 				 //alert("Error parsing XML");
@@ -467,8 +467,8 @@
 			}
 			var oComp = aAppComp[0];
 			var n;
-			this.GetElementByRID("template_name").value = ((n = oComp.getAttribute("id")) ? n : "");
-			this.GetElementByRID("template_description").value = ((n = oComp.getAttribute("Title")) ? n : "");
+			this.getElementByRID("template_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			this.getElementByRID("template_description").value = ((n = oComp.getAttribute("Title")) ? n : "");
 			
 
 			var aX = oComp.getElementsByTagName("import-xml");
@@ -490,7 +490,7 @@
  		 return 1;
 		},
 		DeobfuscateTemplate : function(){
-			this.GetElementByRID("template_text").value = this.Deobfuscate(this.GetElementByRID("template_text").value);
+			this.getElementByRID("template_text").value = this.Deobfuscate(this.getElementByRID("template_text").value);
 		},
 		RemoveTemplateMember : function(){
 			var o = this.GetTemplateModel().getActiveItem();
@@ -502,7 +502,7 @@
 			delete oConstruct.functions[o.data];
 			this.GetTemplateModel().clearItem(o.index);
 			oConstruct.changes++;
-			this.GetElementByRID("build_as").selectedIndex = 0;
+			this.getElementByRID("build_as").selectedIndex = 0;
 			this.BuildTemplate();
 			this.SetLabel("Removed Member - Remember to Save!");
 		}

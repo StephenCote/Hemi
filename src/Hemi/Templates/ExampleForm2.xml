@@ -9,7 +9,7 @@
 
 	<embedded-script><![CDATA[
 		template_init : function(){
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("text_label"), this.GetFormValue("example_text"));
+			Hemi.xml.setInnerXHTML(this.getElementByRID("text_label"), this.getFormValue("example_text"));
 		},
 		Prev : function(){
 			this.loadTemplate("Templates/ExampleForm.xml");

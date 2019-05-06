@@ -155,7 +155,7 @@
             };
             /// Duplicate Method w/ core.io.js
             ///
-            /// GetElementText
+            /// getElementText
             t.GT = function (oP, sN) {
                 var a = oP.getElementsByTagName(sN);
                 if (a.length == 0) return "";

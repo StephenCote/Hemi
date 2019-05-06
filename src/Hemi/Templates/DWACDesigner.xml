@@ -54,11 +54,11 @@
 		this.joinTransactionPacket("datagrid");
 		this.joinTransactionPacket("iobus");
 		
-		var oTR = this.GetComponentByRID("tree");
+		var oTR = this.getComponentByRID("tree");
 		oTR.RePopulateTree();
 		
 		Hemi.data.io.service.mapSession(this.GetSession());
-		var oTS = this.GetComponentByRID("TestSuite");
+		var oTS = this.getComponentByRID("TestSuite");
 		if(oTS){
 			oTS.setTests(["test.core.io", "test.message", "test.framework.io.provider", "test.data.io"]);
 		}

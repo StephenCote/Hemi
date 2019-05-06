@@ -65,7 +65,7 @@
 
 		},
 		CreateNewComponent : function(){
-				var sName = this.GetElementByRID("component_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
+				var sName = this.getElementByRID("component_name").value.replace(/$\s*/,"").replace(/\s*$/,"");
 				if(sName.length == 0 || sName.match(/\s+/)){
 					this.setStatus("Invalid name.  Name must be specified, and should not use spaces.");
 					return;
@@ -78,15 +78,15 @@
 				var oConstruct = oBuilder.NewComponentConstruct(oBuilder.GetComponentModel());
 				oConstruct.changes++;
 						
-				oBuilder.GetElementByRID("component_name").value = this.GetElementByRID("component_name").value;
-				oBuilder.GetElementByRID("participation_name").value = this.GetElementByRID("participation_name").value;
+				oBuilder.getElementByRID("component_name").value = this.getElementByRID("component_name").value;
+				oBuilder.getElementByRID("participation_name").value = this.getElementByRID("participation_name").value;
 							
-				oBuilder.GetElementByRID("package_name").value = this.GetElementByRID("package_name").value;
+				oBuilder.getElementByRID("package_name").value = this.getElementByRID("package_name").value;
 				
 				oBuilder.AddFunctionStatement(oConstruct, "component_init","// Invoked when component is loaded");
 				oBuilder.AddFunctionStatement(oConstruct, "component_destroy","// Invoked when a destroy signal is raised");
 				
-				if(this.GetElementByRID("chk_use_json").checked){
+				if(this.getElementByRID("chk_use_json").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add a delegate for async JSON callbacks.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// This could also be done without the delegate by using a MessageService subscription for \"onloadxml\" (there is not a separate \"onloadjson\" message).  The handler would be the same.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"async_json\",0,0,1);");
@@ -126,7 +126,7 @@
 						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousJSON","var oJSON = Hemi.xml.getJSON(sPath, null, AsyncRequest, sRequestId, bCacheResult);");
 				}
 				
-				if(this.GetElementByRID("chk_use_xml").checked){
+				if(this.getElementByRID("chk_use_xml").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add a delegate for async XML callbacks.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// This could also be done without the delegate by using a MessageService subscription for \"onloadxml\".  The handler would be the same.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"async_xml\",0,0,1);");
@@ -165,7 +165,7 @@
 						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var sRequestId = null;");
 						oBuilder.AddFunctionStatement(oConstruct, "GetSynchronousXML","var oXmlDocument = Hemi.xml.getXml(sPath, null, AsyncRequest, sRequestId, bCacheResult);");
 				}
-				if(this.GetElementByRID("chk_use_monitor").checked){
+				if(this.getElementByRID("chk_use_monitor").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Add this component to the monitor service");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","Hemi.monitor.service.addMonitor(this);");
 						oBuilder.AddFunctionStatement(oConstruct, "initializeMonitor","// Required API for MonitorService - return true to enable monitor");
@@ -176,7 +176,7 @@
 						oBuilder.AddFunctionStatement(oConstruct, "handle_mouse_click","var oSrcEl = Hemi.event.getEventSource(e);");
 						oBuilder.AddFunctionStatement(oConstruct, "doInterval","// Invoked by internal monitoring thread");
 				}
-				if(this.GetElementByRID("chk_use_delegates").checked){
+				if(this.getElementByRID("chk_use_delegates").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// createHandler injects an object sensitive wrapper around the method callback");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// In this example: _prehandle_delegate_example is created to invoke _handle_delegate_example");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.scopeHandler(\"delegate_example\",0,0,1);");
@@ -184,7 +184,7 @@
 						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","// Cleanup the generated function");
 						oBuilder.AddFunctionStatement(oConstruct, "component_destroy","this._prehandle_delegate_example = null;");
 				}
-				if(this.GetElementByRID("chk_use_threads").checked){
+				if(this.getElementByRID("chk_use_threads").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.getObjects().thread = Hemi.util.thread.newInstance(this);");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Remember to start the thread!  invoke component_post_init if not using this with an XHTMLComponent.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.component_post_init();");
@@ -199,13 +199,13 @@
 						oBuilder.AddFunctionStatement(oConstruct, "handle_thread_run","// Invoked every iteration of the thread");
 
 				}
-				if(this.GetElementByRID("chk_enable_log").checked){
+				if(this.getElementByRID("chk_enable_log").checked){
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Instrument functionality for a locally scoped logger.");
-						oBuilder.AddFunctionStatement(oConstruct, "component_init","Hemi.util.logger.addLogger(this, \"" + this.GetElementByRID("component_name").value + "\", \"" + this.GetElementByRID("component_name").value + " Component\", \"150\");");
-						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.logDebug(\"Loaded : " + this.GetElementByRID("component_name").value + "\");");
-						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.log(\"Loaded : " + this.GetElementByRID("component_name").value + "\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","Hemi.util.logger.addLogger(this, \"" + this.getElementByRID("component_name").value + "\", \"" + this.getElementByRID("component_name").value + " Component\", \"150\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.logDebug(\"Loaded : " + this.getElementByRID("component_name").value + "\");");
+						oBuilder.AddFunctionStatement(oConstruct, "component_init","// this.log(\"Loaded : " + this.getElementByRID("component_name").value + "\");");
 				}
-				if(this.GetElementByRID("chk_enable_templates").checked){
+				if(this.getElementByRID("chk_enable_templates").checked){
 						// getTemplateContainer
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Instrument functionality for loading templates");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.setTemplateIsSpace(1);");
@@ -217,10 +217,10 @@
 						oBuilder.AddFunctionStatement(oConstruct, "getTemplateContainer","// Change this to use any object.  Otherwise, all children within the component may be destroyed.");						
 						oBuilder.AddFunctionStatement(oConstruct, "getTemplateContainer","return this.getContainer();");
 				}
-				if(this.GetElementByRID("chk_use_transactions").checked){
+				if(this.getElementByRID("chk_use_transactions").checked){
 						//oBuilder.serveTransaction('printerfriendly');
-						var sPart = oBuilder.GetElementByRID("participation_name").value;
-						if(sPart.length == 0) sPart = oBuilder.GetElementByRID("component_name").value;
+						var sPart = oBuilder.getElementByRID("participation_name").value;
+						if(sPart.length == 0) sPart = oBuilder.getElementByRID("component_name").value;
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Serve the transaction \"example\" to all \"" + sPart + "\" participants.");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","this.serveTransaction(\"example\");");
 						oBuilder.AddFunctionStatement(oConstruct, "component_init","// Alternately, serve the transaction \"example\" to participants in named transaction \"ExampleParticipants\".");
@@ -230,7 +230,7 @@
 						oBuilder.AddFunctionStatement(oConstruct, "_handle_example","// Return false to continue receiving notification.  Return true to stop receiving notification.");
 						oBuilder.AddFunctionStatement(oConstruct, "_handle_example","return false;");
 				}
-				if(this.GetElementByRID("chk_use_ui_events").checked){
+				if(this.getElementByRID("chk_use_ui_events").checked){
 					var aEvts = "change,focus,blur,mouseover,mouseout,mouseup,mousedown,click".split(",");
 					for(var i = 0; i < aEvts.length; i++){
 						var sName = "_handle_" + aEvts[i];

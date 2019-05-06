@@ -27,8 +27,8 @@
 			this._prehandle_running_profiler_open = 0;
 		},
 		ToggleViewInfo : function(){
-			var oBtn = this.GetElementByRID("btn_view");
-			var oInfo = this.GetElementByRID("running_info");
+			var oBtn = this.getElementByRID("btn_view");
+			var oInfo = this.getElementByRID("running_info");
 			var b = (oInfo.style.display != "block");
 			oBtn.value = (b ? "Hide Example Info" : "View Example Info");
 			oInfo.style.display = (b ? "block" : "none");
@@ -62,7 +62,7 @@
 				 // oComp.setAttribute("appcomp_path","Gizmos/component.templateloader.xml");
 				 oComp.setAttribute("template",sUrl);
 				 this.getObjects().running_container.appendChild(oComp);
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 				//this.getObjects().demo_buff.push("<div Template = \"" + sUrl + "\" acid = \"TemplateLoader\" appcomp_path = \"Gizmos/component.templateloader.xml\"></div>");
 				this.getObjects().demo_buff.push("<div template = \"" + sUrl + "\"></div>");
 				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
@@ -103,7 +103,7 @@
 				 oComp.setAttribute("DWacTemplateId",sTemplate);
 				 if(sTask && sTask.length) oComp.setAttribute("DWacControlTask",sTask);
 				 this.getObjects().running_container.appendChild(oComp);
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 				 this.getObjects().demo_buff.push("<div is-dwac = \"1\" DWacControlUri = \"" + sUrl + "\"" + (sTemplate && sTemplate.length ? " DWacTemplateId = \"" + sTemplate + "\"" : "") + (sTask && sTask.length ? " DWacControlTask = \"" + sTask + "\"" : "") + "></div>");
 				 this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
 			}
@@ -125,7 +125,7 @@
 				 // oComp.setAttribute("appcomp_path","Gizmos/component.templateloader.xml");
 				 oComp.setAttribute("template",sUrl);
 				 this.getObjects().running_container.appendChild(oComp);
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 				// this.getObjects().demo_buff.push("<div Template = \"" + sUrl + "\" acid = \"TemplateLoader\" appcomp_path = \"Gizmos/component.templateloader.xml\"></div>");
 				this.getObjects().demo_buff.push("<div template = \"" + sUrl + "\"></div>");
 				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
@@ -147,7 +147,7 @@
 				 oComp.setAttribute("appcomp_path",sUrl);
 				 this.getObjects().running_container.appendChild(oComp);
 
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 				this.getObjects().demo_buff.push("<div acid = \"" + sId + "\" appcomp_path = \"" + sUrl + "\"></div>");
 				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
 
@@ -185,9 +185,9 @@
                 oComp.appendChild(document.createTextNode("[ Node to Test ]"));
                 this.getObjects().running_container.appendChild(oComp);
 
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 
-				 Hemi.app.space.service.loadSpaces(0,this.GetElementByRID("running_body"));
+				 Hemi.app.space.service.loadSpaces(0,this.getElementByRID("running_body"));
 				this.getObjects().demo_buff.push("<div component = \"testable\" test-path = \"" + sUrl + "\" tests = \"" + sId + "\">[ Node to Test ]</div>");
 				this.getObjects().demo_buff.push("</div><" + "!-- End Space -" + "->");
 
@@ -218,7 +218,7 @@
 			this.FlushDemoBuff();
 		},
 		FlushDemoBuff : function(){
-				this.GetElementByRID("running_info").value = this.getObjects().demo_buff.join("\n");
+				this.getElementByRID("running_info").value = this.getObjects().demo_buff.join("\n");
 		},
 		ResetContainer : function(iType){
 			try{
@@ -238,7 +238,7 @@
 			if(this.getObjects().running_container) return;
 			var oDiv = document.createElement("div");
 			oDiv.appendChild(document.createTextNode(""));
-			this.GetElementByRID("running_body").appendChild(oDiv);
+			this.getElementByRID("running_body").appendChild(oDiv);
 			oDiv.style.cssText = "background-color:#FFFFFF;border:1px solid #000000;";
 
 			this.getObjects().running_container = oDiv;
@@ -315,7 +315,7 @@
 			if(this.getObjects().running_task_service){
 				this.getObjects().running_task_service.destroy();
 			}
-			Hemi.xml.removeChildren(this.GetElementByRID("running_body"));			
+			Hemi.xml.removeChildren(this.getElementByRID("running_body"));			
 			this.getObjects().running_component = 0;
 			this.getObjects().running_container = 0;
 			this.getObjects().running_task_service = 0;
@@ -335,8 +335,8 @@
 		UpdateActiveSource : function(oWin){
 				oWin.ShowTab("Active Source");
 				
-				var oSource = oWin.GetElementByRID("oSource");
-				var oEval = oWin.GetElementByRID("oEval");
+				var oSource = oWin.getElementByRID("oSource");
+				var oEval = oWin.getElementByRID("oEval");
 				var oObj = this.getProperties().running_space ? Hemi.app.space.service.getSpace("running-space") : this.getObjects().running_component;
 				if(!oObj && this.getObjects().running_task_service) oObj = this.getObjects().running_task_service;
 				if(!oObj && this.getObjects().running_module) oObj = this.getObjects().running_module;

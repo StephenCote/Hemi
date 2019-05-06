@@ -63,9 +63,9 @@
 		},
 		RefreshFragmentBuilder : function(){
 			var b = (this.getObjects().fragment_construct ? 1 : 0);
-			this.GetElementByRID("fragment_name").disabled = (b ? false : true);
-			this.GetElementByRID("fragment_description").disabled = (b ? false : true);
-			this.GetElementByRID("build_fragment").disabled = (b ? false : true);
+			this.getElementByRID("fragment_name").disabled = (b ? false : true);
+			this.getElementByRID("fragment_description").disabled = (b ? false : true);
+			this.getElementByRID("build_fragment").disabled = (b ? false : true);
 		},
 		template_destroy : function(){
 			this._prehandle_fragment_load = 0;
@@ -77,34 +77,34 @@
 
 			// Get the XHTML Value
 			//
-			this.GetElementByRID("build_fragment").selectedIndex = 1;
+			this.getElementByRID("build_fragment").selectedIndex = 1;
 			this.BuildFragment();
-			aBuff.push(this.GetElementByRID("fragment_text").value);
+			aBuff.push(this.getElementByRID("fragment_text").value);
 			// Get the embedded script value
 			//
-			this.GetElementByRID("build_fragment").selectedIndex = 2;
+			this.getElementByRID("build_fragment").selectedIndex = 2;
 			this.BuildFragment();
-			aBuff.push(this.GetElementByRID("fragment_text").value);
+			aBuff.push(this.getElementByRID("fragment_text").value);
 
 			// Move the display back to the whole fragment to avoid confusion about what is being run
 			//
-			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			this.getElementByRID("build_fragment").selectedIndex = 0;
 			this.BuildFragment();
 			
-			var sName = this.GetElementByRID("fragment_name").value;
-			var aParams = [this.GetElementByRID("fragment_name").value, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_fragment_as").selectedIndex];
+			var sName = this.getElementByRID("fragment_name").value;
+			var aParams = [this.getElementByRID("fragment_name").value, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.getElementByRID("run_fragment_as").selectedIndex];
 
 
 			this.RunControl("RunApplicationFragment", aParams);
 		},
 		SetLabel : function(s){
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment-builder-label"),s);
+			Hemi.xml.setInnerXHTML(this.getElementByRID("fragment-builder-label"),s);
 		},
 		LoadObject : function(i){
 			this.SetLabel("Loading ...");
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"[ Volatile Fragment ]");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("fragment_info"),"[ Volatile Fragment ]");
 			this.getProperties().fragment_id = i;
-			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			this.getElementByRID("build_fragment").selectedIndex = 0;
 			AM6Client.get("DATA",i,this._prehandle_fragment_load);
 
 		},
@@ -120,19 +120,19 @@
 			this.SetDataPath(oData.groupPath);
 			var sTemp = uwm.base64Decode(oData.dataBytesStore);
 
-			this.GetElementByRID("fragment_text").value = sTemp;
+			this.getElementByRID("fragment_text").value = sTemp;
 
 			if(this.LoadFragmentText()){
-				this.GetElementByRID("fragment_name").value = oData.name;
-				this.GetElementByRID("fragment_description").value = oData.description;
+				this.getElementByRID("fragment_name").value = oData.name;
+				this.getElementByRID("fragment_description").value = oData.description;
 
 				this.getObjects().fragment_construct.id = this.getProperties().fragment_id;
 				this.RefreshFragmentBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"Id: " + this.getProperties().fragment_id + " / Path: " + oData.path);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("fragment_info"),"Id: " + this.getProperties().fragment_id + " / Path: " + oData.path);
 				this.SetDataPath(oData.path);
 			}
 
-			this.GetElementByRID("fragment_id").value = this.getProperties().fragment_id + "";
+			this.getElementByRID("fragment_id").value = this.getProperties().fragment_id + "";
 	
 		},
 
@@ -153,12 +153,12 @@
 			}
 		},
 		ClearFragment : function(){
-				this.GetElementByRID("build_fragment").selectedIndex = 0;
-				this.GetElementByRID("fragment_text").value = "";
-				this.GetElementByRID("fragment_id").value = "0";
-				this.GetElementByRID("fragment_name").value = "";
-				this.GetElementByRID("fragment_description").value = "";
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"[ Volatile Fragment ]");
+				this.getElementByRID("build_fragment").selectedIndex = 0;
+				this.getElementByRID("fragment_text").value = "";
+				this.getElementByRID("fragment_id").value = "0";
+				this.getElementByRID("fragment_name").value = "";
+				this.getElementByRID("fragment_description").value = "";
+				Hemi.xml.setInnerXHTML(this.getElementByRID("fragment_info"),"[ Volatile Fragment ]");
 				this.getObjects().fragment_construct = 0;
 				this.getProperties().fragment_id = 0;
 				this.GetFragmentModel().clearItems();
@@ -179,13 +179,13 @@
 				 this.SetLabel("Didn't save - Nothing to do");
 				 return;
 			}
-			if(this.GetElementByRID("build_fragment").selectedIndex != 0){
-				this.GetElementByRID("build_fragment").selectedIndex = 0;
+			if(this.getElementByRID("build_fragment").selectedIndex != 0){
+				this.getElementByRID("build_fragment").selectedIndex = 0;
 				this.BuildFragment();
 			}
-			var sName = this.GetElementByRID("fragment_name").value;
+			var sName = this.getElementByRID("fragment_name").value;
 
-			var sTemp = this.GetElementByRID("fragment_text").value;
+			var sTemp = this.getElementByRID("fragment_text").value;
 
 			var bRet = 0;
 			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
@@ -215,17 +215,17 @@
 				}
 				else{
 					this.getObjects().fragment_construct.id = sId;	
-					this.GetElementByRID("fragment_id").value = sId;
+					this.getElementByRID("fragment_id").value = sId;
 					/// this.RefreshDWACLists();
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("fragment_info"),"Id: " + sId + " / Path: " + this.getProperties().current_path);
+					Hemi.xml.setInnerXHTML(this.getElementByRID("fragment_info"),"Id: " + sId + " / Path: " + this.getProperties().current_path);
 					this.SetDataPath(oResp.responsePath);
 				}
 			}
 			else{
 				this.SetLabel("Failed to save fragment");
 			}
-			this.GetElementByRID("fragment_text").value = sTemp;
+			this.getElementByRID("fragment_text").value = sTemp;
 		},
 
 		CreateNewObject : function(){
@@ -246,19 +246,19 @@
 				this.SetLabel("Invalid fragment construct");
 				return;	 
 			}
-			var sName = Hemi.text.trim(this.GetElementByRID("fragment_name").value);
+			var sName = Hemi.text.trim(this.getElementByRID("fragment_name").value);
 			this.getObjects().fragment_construct.name = sName;
 			
 			var aBuff = [];	
-			var iIndex = this.GetElementByRID("build_fragment").selectedIndex;
+			var iIndex = this.getElementByRID("build_fragment").selectedIndex;
 			var bXml = (iIndex == 0 ? 1 : 0);
 			var bXhtml = (iIndex == 1 ? 1 : 0);
 			var bEmbScr = (iIndex == 2 ? 1 : 0);
 			if(bEmbScr || bXhtml){
-				 this.GetElementByRID("fragment_model_controls").style.display = "inline";
+				 this.getElementByRID("fragment_model_controls").style.display = "inline";
 			}
 			else{
-				 this.GetElementByRID("fragment_model_controls").style.display = "none";
+				 this.getElementByRID("fragment_model_controls").style.display = "none";
 			}
 			if(bXml){
 				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<html-fragment>\n");
@@ -278,10 +278,10 @@
 			}
 			var sText = aBuff.join("");
 
-			this.GetElementByRID("fragment_text").value = sText;
+			this.getElementByRID("fragment_text").value = sText;
 		},
 		GetFragmentModel : function(){
-			return this.GetComponentByRID("embedded_fragment_model").GetWideSelect();
+			return this.getComponentByRID("embedded_fragment_model").GetWideSelect();
 		},
 		NewFragmentFunction : function(){
 				this.NewFunction(this.getObjects().fragment_construct);
@@ -289,9 +289,9 @@
 		},
 
 		UpdateFragmentMember : function(){
-			var iIndex = this.GetElementByRID("build_fragment").selectedIndex;
+			var iIndex = this.getElementByRID("build_fragment").selectedIndex;
 			if(iIndex == 1){
-				var sXhtml = this.GetElementByRID("fragment_text").value;
+				var sXhtml = this.getElementByRID("fragment_text").value;
 				var oX = 0;
 				try{
 						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
@@ -306,24 +306,24 @@
 				else this.SetLabel("Updated Member - The content is invalid!");
 			}
 			else if(iIndex == 3){
-				this.UpdateFunction(this.getObjects().fragment_construct, this.GetElementByRID("fragment_text").value);
+				this.UpdateFunction(this.getObjects().fragment_construct, this.getElementByRID("fragment_text").value);
 				this.SetLabel("Updated Fragment - Remember to Save!");
 			}
 		},
 		_handle_fragmentmodelclick : function(sEvent,oItem){
 
 			if(!oItem || typeof oItem.data != "string" || !this.getObjects().fragment_construct){
-				 this.GetElementByRID("fragment_text").value = "";
+				 this.getElementByRID("fragment_text").value = "";
 				 return;
 			}
 			var vFunc = this.getObjects().fragment_construct.functions[oItem.name];
 			if(!vFunc){
-				this.GetElementByRID("fragment_text").value = "Member '" + oItem.name + "' is not constructed.";
+				this.getElementByRID("fragment_text").value = "Member '" + oItem.name + "' is not constructed.";
 				return;
 			}
-			this.GetElementByRID("fragment_model_controls").style.display = "inline";
-			this.GetElementByRID("build_fragment").selectedIndex = 3;
-			this.GetElementByRID("fragment_text").value = 
+			this.getElementByRID("fragment_model_controls").style.display = "inline";
+			this.getElementByRID("build_fragment").selectedIndex = 3;
+			this.getElementByRID("fragment_text").value = 
 			"/// Notes: Comments before and after members will be lost.\n"
 			+ "\n" + this.BuildFunction(vFunc)
 			;
@@ -331,7 +331,7 @@
 		},
 		LoadFragmentText : function(){
 
-			var bXml = (this.GetElementByRID("build_fragment").selectedIndex == 0 ? 1 : 0);
+			var bXml = (this.getElementByRID("build_fragment").selectedIndex == 0 ? 1 : 0);
 			if(this.getObjects().fragment_construct && this.getObjects().fragment_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
 
 			if(!bXml){
@@ -340,7 +340,7 @@
 			}
 			
 			var oXml = null;
-			var sFragText = this.GetElementByRID("fragment_text").value
+			var sFragText = this.getElementByRID("fragment_text").value
 			try{
 				 oXml = Hemi.xml.parseXmlDocument(sFragText);
 			}
@@ -375,8 +375,8 @@
 			var oComp = aAppComp[0];
 			var n;
 
-			this.GetElementByRID("fragment_description").value = "";
-			this.GetElementByRID("fragment_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			this.getElementByRID("fragment_description").value = "";
+			this.getElementByRID("fragment_name").value = ((n = oComp.getAttribute("id")) ? n : "");
 
 			
 			var aE = oComp.getElementsByTagName("embedded-script");
@@ -389,7 +389,7 @@
  		 return 1;
 		},
 		RemoveFragmentMember : function(){
-			if(this.GetElementByRID("build_fragment").selectedIndex != 3) return;
+			if(this.getElementByRID("build_fragment").selectedIndex != 3) return;
 			var o = this.GetFragmentModel().getActiveItem();
 			var oConstruct = this.getObjects().fragment_construct;
 			if(!o || !oConstruct || !oConstruct.functions[o.data]){
@@ -399,13 +399,13 @@
 			delete oConstruct.functions[o.data];
 			this.GetFragmentModel().clearItem(o.index);
 			oConstruct.changes++;
-			this.GetElementByRID("build_fragment").selectedIndex = 0;
+			this.getElementByRID("build_fragment").selectedIndex = 0;
 			this.BuildFragment();
 			this.SetLabel("Removed Member - Remember to Save!");
 		},
 		DeobfuscateFragment : function(){
-			if(this.GetElementByRID("build_fragment").selectedIndex != 3) return;
-			this.GetElementByRID("fragment_text").value = this.Deobfuscate(this.GetElementByRID("fragment_text").value);
+			if(this.getElementByRID("build_fragment").selectedIndex != 3) return;
+			this.getElementByRID("fragment_text").value = this.Deobfuscate(this.getElementByRID("fragment_text").value);
 		}
 
 	]]></embedded-script>

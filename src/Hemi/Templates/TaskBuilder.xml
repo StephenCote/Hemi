@@ -70,9 +70,9 @@
 		},
 		RefreshTaskBuilder : function(){
 			var b = (this.getObjects().task_construct ? 1 : 0);
-			this.GetElementByRID("task_name").disabled = (b ? false : true);
-			this.GetElementByRID("task_description").disabled = (b ? false : true);
-			this.GetElementByRID("build_task").disabled = (b ? false : true);
+			this.getElementByRID("task_name").disabled = (b ? false : true);
+			this.getElementByRID("task_description").disabled = (b ? false : true);
+			this.getElementByRID("build_task").disabled = (b ? false : true);
 		},
 		template_destroy : function(){
 			this._prehandle_task_load = 0;
@@ -93,20 +93,20 @@
 			var aBuff = [];
 			// Get the XHTML value
 			//
-			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.getElementByRID("build_task").selectedIndex = 0;
 			this.BuildTaskList();
-			aBuff.push(this.GetElementByRID("task_text").value);
+			aBuff.push(this.getElementByRID("task_text").value);
 			
-			var sName = this.GetElementByRID("task_name").value;
-			var aParams = [this.GetElementByRID("task_name").value, oTask.name, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_task_as").selectedIndex];
+			var sName = this.getElementByRID("task_name").value;
+			var aParams = [this.getElementByRID("task_name").value, oTask.name, aBuff.join("\n"),g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.getElementByRID("run_task_as").selectedIndex];
 			this.RunControl("RunApplicationTaskList", aParams);
 		},
 
 		LoadObject : function(i){
 			this.SetLabel("Loading ...");
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"[ Volatile Task ]");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("task_info"),"[ Volatile Task ]");
 			this.getProperties().task_id = i;
-			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.getElementByRID("build_task").selectedIndex = 0;
 			AM6Client.get("DATA",i,this._prehandle_task_load);
 		},
 		_handle_task_load : function(s, v){
@@ -120,18 +120,18 @@
 			this.SetDataPath(oData.groupPath);
 			var sTemp = uwm.base64Decode(oData.dataBytesStore);
 			
-			this.GetElementByRID("task_text").value = sTemp;
+			this.getElementByRID("task_text").value = sTemp;
 
 			if(this.LoadTaskText()){
-				this.GetElementByRID("task_name").value = oData.name;
-				this.GetElementByRID("task_description").value = oData.description;
+				this.getElementByRID("task_name").value = oData.name;
+				this.getElementByRID("task_description").value = oData.description;
 
 				this.getObjects().task_construct.id = this.getProperties().task_id;
 				this.RefreshTaskBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + this.getProperties().task_id + " / Path: " + oData.groupPath);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("task_info"),"Id: " + this.getProperties().task_id + " / Path: " + oData.groupPath);
 			}
 
-			this.GetElementByRID("task_id").value = this.getProperties().task_id + "";
+			this.getElementByRID("task_id").value = this.getProperties().task_id + "";
 	
 		},
 
@@ -154,12 +154,12 @@
 		},
 		ClearTaskList : function(){
 				delete this.getProperties().data_object;
-				this.GetElementByRID("build_task").selectedIndex = 0;
-				this.GetElementByRID("task_text").value = "";
-				this.GetElementByRID("task_id").value = "0";
-				this.GetElementByRID("task_name").value = "";
-				this.GetElementByRID("task_description").value = "";
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"[ Volatile Task ]");
+				this.getElementByRID("build_task").selectedIndex = 0;
+				this.getElementByRID("task_text").value = "";
+				this.getElementByRID("task_id").value = "0";
+				this.getElementByRID("task_name").value = "";
+				this.getElementByRID("task_description").value = "";
+				Hemi.xml.setInnerXHTML(this.getElementByRID("task_info"),"[ Volatile Task ]");
 				this.getObjects().task_construct = 0;
 				this.getProperties().task_id = 0;
 				this.GetTaskList().clearItems();
@@ -180,12 +180,12 @@
 				 this.SetLabel("Didn't save - Nothing to do");
 				 return;
 			}
-			if(this.GetElementByRID("build_task").selectedIndex != 0){
-				this.GetElementByRID("build_task").selectedIndex = 0;
+			if(this.getElementByRID("build_task").selectedIndex != 0){
+				this.getElementByRID("build_task").selectedIndex = 0;
 				this.BuildTaskList();
 			}
-			var sName = this.GetElementByRID("task_name").value;
-			var sTemp = this.GetElementByRID("task_text").value;
+			var sName = this.getElementByRID("task_name").value;
+			var sTemp = this.getElementByRID("task_text").value;
 			var bRet = 0;
 			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
 			if(this.getObjects().task_construct.id && this.getProperties().data_object){
@@ -212,17 +212,17 @@
 				}
 				else{
 					this.getObjects().task_construct.id = sId;	
-					this.GetElementByRID("task_id").value = sId;
+					this.getElementByRID("task_id").value = sId;
 					///this.RefreshDWACLists();
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("task_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					Hemi.xml.setInnerXHTML(this.getElementByRID("task_info"),"Id: " + sId + " / Path: " + oND.groupPath);
 					this.SetDataPath(oND.groupPath);
 				}
 			}
 			else{
 					this.SetLabel("Failed to save task list");
 			}
-			this.GetElementByRID("task_text").value = sTemp;
+			this.getElementByRID("task_text").value = sTemp;
 		},
 		NewTask : function(){
 				Hemi.app.createWindow(0,"Templates/NewTask.xml","NewTask-" + (new Date()).getTime(),0,0,{opener_id:this.getObjectId()})
@@ -251,19 +251,19 @@
 				this.SetLabel("Invalid task construct");
 				return;	 
 			}
-			var sName = Hemi.text.trim(this.GetElementByRID("task_name").value);
+			var sName = Hemi.text.trim(this.getElementByRID("task_name").value);
 			this.getObjects().task_construct.name = sName;
 			
 			var aBuff = [];	
-			var iIndex = this.GetElementByRID("build_task").selectedIndex;
+			var iIndex = this.getElementByRID("build_task").selectedIndex;
 			var bXml = (iIndex == 0 ? 1 : 0);
 			var bTaskXml = (iIndex == 1 ? 1 : 0);
 			var bEmbScr = (iIndex == 2 ? 1 : 0);
 			if(bEmbScr || bTaskXml){
-				 this.GetElementByRID("task_model_controls").style.display = "inline";
+				 this.getElementByRID("task_model_controls").style.display = "inline";
 			}
 			else{
-				 this.GetElementByRID("task_model_controls").style.display = "none";
+				 this.getElementByRID("task_model_controls").style.display = "none";
 			}
 			if(bXml){
 				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasks>\n");
@@ -309,14 +309,14 @@
 			}
 			var sText = aBuff.join("");
 
-			this.GetElementByRID("task_text").value = sText;
+			this.getElementByRID("task_text").value = sText;
 		},
 		GetDependencyList : function(){
-			 return this.GetComponentByRID("dependency_list").GetWideSelect();
+			 return this.getComponentByRID("dependency_list").GetWideSelect();
 		},
 		GetTaskList : function(){
 
-			return this.GetComponentByRID("task_list").GetWideSelect();
+			return this.getComponentByRID("task_list").GetWideSelect();
 		},
 		NewTaskFunction : function(){
 				this.NewFunction(this.getObjects().task_construct);
@@ -324,7 +324,7 @@
 		},
 
 		UpdateTaskMember : function(){
-			var iIndex = this.GetElementByRID("build_task").selectedIndex;
+			var iIndex = this.getElementByRID("build_task").selectedIndex;
 			var oItem = this.GetTaskList().getActiveItem();
 			if(iIndex == 0 || !oItem){
 				alert("Item not specified");
@@ -332,7 +332,7 @@
 			}
 					 
 			if(iIndex == 1){
-				var sXhtml = this.GetElementByRID("task_text").value;
+				var sXhtml = this.getElementByRID("task_text").value;
 				var oX = 0;
 				try{
 						oX = Hemi.xml.parseXmlDocument("<test>" + sXhtml + "</test>");
@@ -360,16 +360,16 @@
 		_handle_tasklistclick : function(sEvent,oItem){
 			this.GetDependencyList().clearItems();
 			if(!oItem || typeof oItem.data != "string" || !this.getObjects().task_construct){
-				 this.GetElementByRID("task_text").value = "";
+				 this.getElementByRID("task_text").value = "";
 				 return;
 			}
 			var vTask = this.getObjects().task_construct.tasks[oItem.name];
 			if(!vTask){
-				this.GetElementByRID("task_text").value = "Task '" + oItem.name + "' is not constructed.";
+				this.getElementByRID("task_text").value = "Task '" + oItem.name + "' is not constructed.";
 				return;
 			}
-			this.GetElementByRID("task_model_controls").style.display = "inline";
-			this.GetElementByRID("build_task").selectedIndex = 1;
+			this.getElementByRID("task_model_controls").style.display = "inline";
+			this.getElementByRID("build_task").selectedIndex = 1;
 			this.BuildTaskList(oItem.name);
 			this.RefreshTaskDependencyList();
 			
@@ -390,7 +390,7 @@
 		},
 		LoadTaskText : function(){
 
-			var bXml = (this.GetElementByRID("build_task").selectedIndex == 0 ? 1 : 0);
+			var bXml = (this.getElementByRID("build_task").selectedIndex == 0 ? 1 : 0);
 			if(this.getObjects().task_construct && this.getObjects().task_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
 
 			if(!bXml){
@@ -399,7 +399,7 @@
 			}
 			
 			var oXml = null;
-			var sTaskText = this.GetElementByRID("task_text").value
+			var sTaskText = this.getElementByRID("task_text").value
 			try{
 				 oXml = Hemi.xml.parseXmlDocument(sTaskText);
 			}
@@ -427,8 +427,8 @@
 			var oComp = aAppComp[0];
 			var n;
 
-			this.GetElementByRID("task_description").value = "";
-			this.GetElementByRID("task_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			this.getElementByRID("task_description").value = "";
+			this.getElementByRID("task_name").value = ((n = oComp.getAttribute("id")) ? n : "");
 			
 			this.getObjects().task_construct = this.ParseConstruct(this.GetTaskList(), "");
 			this.getObjects().task_construct.xhtml_content = "";
@@ -469,7 +469,7 @@
 			}
 		},
 		RemoveTaskMember : function(){
-			if(this.GetElementByRID("build_task").selectedIndex != 1) return;
+			if(this.getElementByRID("build_task").selectedIndex != 1) return;
 			var o = this.GetTaskList().getActiveItem();
 			var oConstruct = this.getObjects().task_construct;
 			if(!o || !oConstruct || !oConstruct.tasks[o.data]){
@@ -479,7 +479,7 @@
 			delete oConstruct.tasks[o.data];
 			this.GetTaskList().clearItem(o.index);
 			oConstruct.changes++;
-			this.GetElementByRID("build_task").selectedIndex = 0;
+			this.getElementByRID("build_task").selectedIndex = 0;
 			this.BuildTaskList();
 			this.SetLabel("Removed Member - Remember to Save!");
 		},

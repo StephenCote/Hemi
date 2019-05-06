@@ -84,25 +84,25 @@
 		},
 		RefreshComponentBuilder : function(){
 			var b = (this.getObjects().component_construct ? 1 : 0);
-			this.GetElementByRID("component_name").disabled = (b ? false : true);
-			this.GetElementByRID("package_name").disabled = (b ? false : true);
-			this.GetElementByRID("participation_name").disabled = (b ? false : true);
-			this.GetElementByRID("build_as").disabled = (b ? false : true);
+			this.getElementByRID("component_name").disabled = (b ? false : true);
+			this.getElementByRID("package_name").disabled = (b ? false : true);
+			this.getElementByRID("participation_name").disabled = (b ? false : true);
+			this.getElementByRID("build_as").disabled = (b ? false : true);
 		},
 		RunComponent : function(){
 			if(!this.getObjects().component_construct) return;
-			this.GetElementByRID("build_as").selectedIndex = 1;
+			this.getElementByRID("build_as").selectedIndex = 1;
 			this.BuildComponent();
-			var sName = this.GetElementByRID("component_name").value;
-			var aParams = [sName, this.GetElementByRID("participation_name").value, this.GetElementByRID("component_text").value,g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.GetElementByRID("run_component_as").selectedIndex];
+			var sName = this.getElementByRID("component_name").value;
+			var aParams = [sName, this.getElementByRID("participation_name").value, this.getElementByRID("component_text").value,g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + this.GetDataPath() + "/" + sName,this.getElementByRID("run_component_as").selectedIndex];
 			this.RunControl("RunApplicationComponent", aParams);
 		},
 
 		LoadObject : function(i){
 			this.SetLabel("Loading ...");
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("component_info"),"[ Volatile Component ]");
+			Hemi.xml.setInnerXHTML(this.getElementByRID("component_info"),"[ Volatile Component ]");
 			this.getProperties().component_id = i;
-			this.GetElementByRID("build_as").selectedIndex = 0;
+			this.getElementByRID("build_as").selectedIndex = 0;
 			AM6Client.get("DATA",i,this._prehandle_component_load);
 		},
 		_handle_component_load : function(s, v){
@@ -116,16 +116,16 @@
 			var oData = v;
 			this.SetDataPath(oData.groupPath);
 			var sTemp = uwm.base64Decode(oData.dataBytesStore);
-			this.GetElementByRID("component_text").value = sTemp;
+			this.getElementByRID("component_text").value = sTemp;
 
 
 			if(this.LoadComponentText(1)){
-				this.GetElementByRID("component_name").value = oData.name;
+				this.getElementByRID("component_name").value = oData.name;
 				this.getObjects().component_construct.id = this.getProperties().component_id;
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("component_info"),"Id: " + this.getProperties().component_id + " / Path: " + oData.path);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("component_info"),"Id: " + this.getProperties().component_id + " / Path: " + oData.path);
 			}
 
-			this.GetElementByRID("component_id").value = this.getProperties().component_id + "";
+			this.getElementByRID("component_id").value = this.getProperties().component_id + "";
 	
 		},
 
@@ -145,18 +145,18 @@
 			}
 		},
 		ClearComponent : function(bKeepText){
-				this.GetElementByRID("build_as").selectedIndex = 0;
+				this.getElementByRID("build_as").selectedIndex = 0;
 				delete this.getProperties().data_object;
-				if(!bKeepText) this.GetElementByRID("component_text").value = "";
-				this.GetElementByRID("component_id").value = "0";
-				this.GetElementByRID("component_name").value = "";
-				this.GetElementByRID("package_name").value = "";
-				this.GetElementByRID("participation_name").value = "";
+				if(!bKeepText) this.getElementByRID("component_text").value = "";
+				this.getElementByRID("component_id").value = "0";
+				this.getElementByRID("component_name").value = "";
+				this.getElementByRID("package_name").value = "";
+				this.getElementByRID("participation_name").value = "";
 				this.getObjects().component_construct = 0;
 				this.getProperties().component_id = 0;
 				this.GetComponentModel().clearItems();
 				this.SetLabel("");
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("component_info"),"[ Volatile Component ]");
+				Hemi.xml.setInnerXHTML(this.getElementByRID("component_info"),"[ Volatile Component ]");
 				this.RefreshComponentBuilder();
 		},
 		SaveCurrentObject : function(){
@@ -172,12 +172,12 @@
 				 this.SetLabel("Nothing to do");
 				 return;
 			}
-			if(this.GetElementByRID("build_as").selectedIndex != 0){
-				this.GetElementByRID("build_as").selectedIndex = 0;
+			if(this.getElementByRID("build_as").selectedIndex != 0){
+				this.getElementByRID("build_as").selectedIndex = 0;
 				this.BuildComponent();
 			}
-			var sName = this.GetElementByRID("component_name").value;
-			var sTemp = this.GetElementByRID("component_text").value;
+			var sName = this.getElementByRID("component_name").value;
+			var sTemp = this.getElementByRID("component_text").value;
 			oResp = 0;
 			var bRet = 0;
 			var oG = AM6Client.find("GROUP","DATA",this.getProperties().current_path);
@@ -205,16 +205,16 @@
 				}
 				else{
 					this.getObjects().component_construct.id = sId;
-					this.GetElementByRID("component_id").value = sId;
+					this.getElementByRID("component_id").value = sId;
 					this.SetLabel("Saved!");
-					Hemi.xml.setInnerXHTML(this.GetElementByRID("component_info"),"Id: " + sId + " / Path: " + oND.groupPath);
+					Hemi.xml.setInnerXHTML(this.getElementByRID("component_info"),"Id: " + sId + " / Path: " + oND.groupPath);
 					this.SetDataPath(oND.groupPath);
 				}
 			}
 			else{
 					this.SetLabel("Failed to save changes");
 			}
-			this.GetElementByRID("component_text").value = sTemp;
+			this.getElementByRID("component_text").value = sTemp;
 		},
 
 		CreateNewObject : function(){
@@ -238,7 +238,7 @@
 			delete oConstruct.functions[o.data];
 			this.GetComponentModel().clearItem(o.index);
 			oConstruct.changes++;
-			this.GetElementByRID("build_as").selectedIndex = 0;
+			this.getElementByRID("build_as").selectedIndex = 0;
 			this.BuildComponent();
 			this.SetLabel("Removed Member - Remember to Save!");
 		},
@@ -250,20 +250,20 @@
 				this.SetLabel("Invalid component construct");
 				return;	 
 			}
-			if(this.GetElementByRID("build_as").selectedIndex == 3){
-				this.GetElementByRID("build_as").selectedIndex = 0;
+			if(this.getElementByRID("build_as").selectedIndex == 3){
+				this.getElementByRID("build_as").selectedIndex = 0;
 			}
-			this.GetElementByRID("component_model_controls").style.display = "none";
+			this.getElementByRID("component_model_controls").style.display = "none";
 
-			this.getObjects().component_construct.name = this.GetElementByRID("component_name").value;
-			var sPart = Hemi.text.trim(this.GetElementByRID("participation_name").value);
-			var sPack = Hemi.text.trim(this.GetElementByRID("package_name").value);
+			this.getObjects().component_construct.name = this.getElementByRID("component_name").value;
+			var sPart = Hemi.text.trim(this.getElementByRID("participation_name").value);
+			var sPack = Hemi.text.trim(this.getElementByRID("package_name").value);
 			//if(sPack.length == 0) sPack = "DemoComponent";
 			
 			var aBuff = [];	
 			
-			var bXml = (this.GetElementByRID("build_as").selectedIndex == 0 ? 1 : 0);
-			var bCompiled = (this.GetElementByRID("build_as").selectedIndex == 2 ? 1 : 0);
+			var bXml = (this.getElementByRID("build_as").selectedIndex == 0 ? 1 : 0);
+			var bCompiled = (this.getElementByRID("build_as").selectedIndex == 2 ? 1 : 0);
 				 
 			if(bXml){
 				aBuff.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<application-components>\n<application-component id=\"" + this.getObjects().component_construct.name + "\"" + (sPart.length > 0 && sPart != this.getObjects().component_construct.name ? " participant-id = \"" + sPart + "\"" : "") + " package-name = \"" + sPack + "\">\n<![CDATA[\n");
@@ -321,44 +321,44 @@
 							 
 					sText = sBase;
 			}
-			this.GetElementByRID("component_text").value = sText;
+			this.getElementByRID("component_text").value = sText;
 		},
 
 		GetComponentModel : function(){
-			return this.GetComponentByRID("component_model").GetWideSelect();
+			return this.getComponentByRID("component_model").GetWideSelect();
 		},
 
 		UpdateComponentMember : function(){
 
-			this.UpdateFunction(this.getObjects().component_construct, this.GetElementByRID("component_text").value);
+			this.UpdateFunction(this.getObjects().component_construct, this.getElementByRID("component_text").value);
 			this.SetLabel("Updated Component - Remember to Save!");
 		},
 		_handle_componentmodelclick : function(sEvent,oItem){
 
 			if(!oItem || typeof oItem.data != "string" || !this.getObjects().component_construct){
-				 this.GetElementByRID("component_text").value = "";
+				 this.getElementByRID("component_text").value = "";
 				 return;
 			}
 			var vFunc = this.getObjects().component_construct.functions[oItem.name];
 			if(!vFunc){
-				this.GetElementByRID("component_text").value = "Member '" + oItem.name + "' is not constructed.";
+				this.getElementByRID("component_text").value = "Member '" + oItem.name + "' is not constructed.";
 				return;
 			}
-			this.GetElementByRID("component_model_controls").style.display = "inline";
-			this.GetElementByRID("build_as").selectedIndex = 3;
-			this.GetElementByRID("component_text").value = 
+			this.getElementByRID("component_model_controls").style.display = "inline";
+			this.getElementByRID("build_as").selectedIndex = 3;
+			this.getElementByRID("component_text").value = 
 			"/// Notes: Comments before and after members will be lost.\n"
 			+ "\n" + this.BuildFunction(vFunc)
 			;
 			
 		},
 		DebugParse : function(){
-			this.GetElementByRID("build_as").selectedIndex = 0;
+			this.getElementByRID("build_as").selectedIndex = 0;
 			var oX = Hemi.xml.getXml("Gizmos/component.window.xml");
-			this.GetElementByRID("component_text").value = Hemi.xml.serialize(oX);
+			this.getElementByRID("component_text").value = Hemi.xml.serialize(oX);
 		},
 		LoadComponentText : function(bSkipClear){
-			var bXml = (this.GetElementByRID("build_as").selectedIndex == 0 ? 1 : 0);
+			var bXml = (this.getElementByRID("build_as").selectedIndex == 0 ? 1 : 0);
 			if(this.getObjects().component_construct && this.getObjects().component_construct.changes > 0 && !confirm("Continue?  Changes will be lost.")) return 0;
 			
 			if(!bSkipClear) this.ClearComponent(1);
@@ -370,7 +370,7 @@
 			
 			var oXml = null;
 			try{
-				 oXml = Hemi.xml.parseXmlDocument(this.GetElementByRID("component_text").value);
+				 oXml = Hemi.xml.parseXmlDocument(this.getElementByRID("component_text").value);
 			}
 			catch(e){
 				 //alert("Error parsing XML");
@@ -393,9 +393,9 @@
 			var oComp = aAppComp[0];
 			var n;
 
-			this.GetElementByRID("component_name").value = ((n = oComp.getAttribute("id")) ? n : "");
-			this.GetElementByRID("package_name").value = ((n = oComp.getAttribute("package-name")) ? n : "");
-			this.GetElementByRID("participation_name").value = ((n = oComp.getAttribute("participant-id")) ? n : "");
+			this.getElementByRID("component_name").value = ((n = oComp.getAttribute("id")) ? n : "");
+			this.getElementByRID("package_name").value = ((n = oComp.getAttribute("package-name")) ? n : "");
+			this.getElementByRID("participation_name").value = ((n = oComp.getAttribute("participant-id")) ? n : "");
 			
 			var sCodeText = Hemi.xml.getInnerText(oComp);
 
@@ -405,7 +405,7 @@
 		},
 
 		DeobfuscateComponent : function(){
-			this.GetElementByRID("component_text").value = this.Deobfuscate(this.GetElementByRID("component_text").value);
+			this.getElementByRID("component_text").value = this.Deobfuscate(this.getElementByRID("component_text").value);
 		}
 		
 

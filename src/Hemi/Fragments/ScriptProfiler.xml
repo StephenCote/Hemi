@@ -36,24 +36,24 @@
 		</div>
 	<embedded-script><![CDATA[
 		embedded_init : function (){
-  			this.GetComponentByRID("object_model").setLoadHandler(this.scopeHandler("setupObjectModel",0,1,1));
-			this.GetComponentByRID("script_model").setLoadHandler(this.scopeHandler("setupScriptModel",0,1,1));
-			this.GetComponentByRID("function_list").setLoadHandler(this.scopeHandler("setupFunctionList",0,1,1));
+  			this.getComponentByRID("object_model").setLoadHandler(this.scopeHandler("setupObjectModel",0,1,1));
+			this.getComponentByRID("script_model").setLoadHandler(this.scopeHandler("setupScriptModel",0,1,1));
+			this.getComponentByRID("function_list").setLoadHandler(this.scopeHandler("setupFunctionList",0,1,1));
 		
 			this.scopeHandler("show_jsprofiler",0,0,1);
-			this.GetElementByRID("profile_type").selectedIndex = -1;
+			this.getElementByRID("profile_type").selectedIndex = -1;
 		},
 		setupFunctionList : function(){
 			this.scopeHandler("flist_click",0,0,1);
-			this.GetComponentByRID("function_list").GetWideSelect().setResultHandler( this._prehandle_flist_click);
+			this.getComponentByRID("function_list").GetWideSelect().setResultHandler( this._prehandle_flist_click);
 		},
 		setupScriptModel : function(){
 			 this.scopeHandler("smodel_click",0,0,1);
-			this.GetComponentByRID("script_model").GetWideSelect().setResultHandler( this._prehandle_smodel_click);
+			this.getComponentByRID("script_model").GetWideSelect().setResultHandler( this._prehandle_smodel_click);
 		},
 		 setupObjectModel : function(){
 			this.scopeHandler("omodel_click",0,0,1);   
-			this.GetComponentByRID("object_model").GetWideSelect().setResultHandler( this._prehandle_omodel_click);
+			this.getComponentByRID("object_model").GetWideSelect().setResultHandler( this._prehandle_omodel_click);
 		},
 		embedded_destroy : function(){
 			this._prehandle_fmodel_click = 0;
@@ -62,18 +62,18 @@
 			this._prehandle_show_jsprofiler = 0;
 		},
 		_handle_show_jsprofiler : function(){
-			if(this.GetElementByRID("profile_type").selectedIndex == -1){
+			if(this.getElementByRID("profile_type").selectedIndex == -1){
 				this.AttachProfiler();
-				JavaScriptProfiler.ModelsList = this.GetComponentByRID("object_model").GetWideSelect();
-				JavaScriptProfiler.FunctionsList = this.GetComponentByRID("function_list").GetWideSelect();
-				JavaScriptProfiler.ScriptsList = this.GetComponentByRID("script_model").GetWideSelect();
-				JavaScriptProfiler.TextArea = this.GetElementByRID("oProtoData");
-				this.GetElementByRID("profile_type").selectedIndex = 0;
+				JavaScriptProfiler.ModelsList = this.getComponentByRID("object_model").GetWideSelect();
+				JavaScriptProfiler.FunctionsList = this.getComponentByRID("function_list").GetWideSelect();
+				JavaScriptProfiler.ScriptsList = this.getComponentByRID("script_model").GetWideSelect();
+				JavaScriptProfiler.TextArea = this.getElementByRID("oProtoData");
+				this.getElementByRID("profile_type").selectedIndex = 0;
 				this.ShowProfileType(1);
 			}
 		},
 		GetList2 : function(){
-			return this.GetComponentByRID("oRegistry").GetWideSelect();
+			return this.getComponentByRID("oRegistry").GetWideSelect();
 		},
 		GetProfilerMetrics : function(){
 			var s = "Active Source Template Required";
@@ -85,7 +85,7 @@
 					s = (e.message ? e.message : e.description);
 				}
 			}
-			this.GetElementByRID("oProtoData").value = s;
+			this.getElementByRID("oProtoData").value = s;
 		},
 		_handle_omodel_click : function(sEvent, oItem){
 			this._handle_smodel_click(sEvent, oItem, 1);
@@ -98,10 +98,10 @@
 			JavaScriptProfiler.FunctionsList.clearItems();
 			
 			if(!bModelMode){
-				this.GetElementByRID("oProtoData").value = "Fetch Time: " + parseFloat(JavaScriptProfiler.downloadTimeA[sPath]/1000) + " seconds\n\n" + JavaScriptProfiler.srcData[sPath];
+				this.getElementByRID("oProtoData").value = "Fetch Time: " + parseFloat(JavaScriptProfiler.downloadTimeA[sPath]/1000) + " seconds\n\n" + JavaScriptProfiler.srcData[sPath];
 			}
 			else{
-				this.GetElementByRID("oProtoData").value = "Model introspection.";
+				this.getElementByRID("oProtoData").value = "Model introspection.";
 			}
 			
 			var iFLen=JavaScriptProfiler.functionIndex.length;
@@ -125,7 +125,7 @@
 
 		},
 		SwitchFunctionMonitor : function(){
-			var oBtn = this.GetElementByRID("btn_prof_monitor");
+			var oBtn = this.getElementByRID("btn_prof_monitor");
 			var oItem = JavaScriptProfiler.FunctionsList.getActiveItem();
 			if(!oItem) return;
 			var FP = JavaScriptProfiler.functionList[oItem.data];
@@ -155,31 +155,31 @@
 			if(FP){
 				var vFP = FP.pointer;
 				JavaScriptProfiler.activeFunction = FP;
-				this.GetElementByRID("oProtoData").value = vFP.toString();
+				this.getElementByRID("oProtoData").value = vFP.toString();
 				var bReg = 0;
 				if(this.CheckLoadFunctionMonitor(FP.window)) bReg = (FP.proto ? FP.window.FunctionMonitor.getIsRegistered(FP.name, FP.window,FP.proto) : FP.window.FunctionMonitor.getIsRegistered(FP.name,FP.window));
-				this.GetElementByRID("btn_prof_monitor").value = (bReg ? "Unregister" : "Register");
+				this.getElementByRID("btn_prof_monitor").value = (bReg ? "Unregister" : "Register");
 			}
 			else{
 				JavaScriptProfiler.activeFunction=null;	
-				this.GetElementByRID("oProtoData").value=oResult.data + " is a bad internal reference.";
+				this.getElementByRID("oProtoData").value=oResult.data + " is a bad internal reference.";
 			}
 		},
 		SwitchProfileType : function(){
-			this.ShowProfileType(this.GetElementByRID("profile_type").selectedIndex + 1);
+			this.ShowProfileType(this.getElementByRID("profile_type").selectedIndex + 1);
 		},
 		ShowProfileType : function(iType){
 			JavaScriptProfiler.FunctionsList.clearItems();
-			this.GetElementByRID("profile_model_container").style.display = "none";
-			this.GetElementByRID("profile_file_container").style.display = "none";
+			this.getElementByRID("profile_model_container").style.display = "none";
+			this.getElementByRID("profile_file_container").style.display = "none";
 			switch(iType){
 				case 2:
-					this.GetElementByRID("profile_model_container").style.display = "block";
+					this.getElementByRID("profile_model_container").style.display = "block";
 					this.ModelProfile();
 					if(JavaScriptProfiler.ModelsList.getActiveItem()) this._handle_omodel_click(0,JavaScriptProfiler.ModelsList.getActiveItem());
 					break;
 				case 1:
-					this.GetElementByRID("profile_file_container").style.display = "block";
+					this.getElementByRID("profile_file_container").style.display = "block";
 					this.FilesProfile();
 					if(JavaScriptProfiler.ScriptsList.getActiveItem()) this._handle_smodel_click(0,JavaScriptProfiler.ScriptsList.getActiveItem());
 					break;
@@ -188,13 +188,13 @@
 		},
 		FilesProfile : function(){
 			if(!JavaScriptProfiler.ScriptsProfiled){
-				this.GetElementByRID("oProtoData").value = "PROFILING SCRIPTS ...";
+				this.getElementByRID("oProtoData").value = "PROFILING SCRIPTS ...";
 				JavaScriptProfiler.runFilesProfiler();
 			}
 		},
 		ModelProfile : function(){
 			if(!JavaScriptProfiler.ModelsProfiled){
-				this.GetElementByRID("oProtoData").value = "ANALYZING MODEL ...";
+				this.getElementByRID("oProtoData").value = "ANALYZING MODEL ...";
 				JavaScriptProfiler.runModelProfiler();
 			}
 		},
@@ -207,7 +207,7 @@
 			return sRet;
 		},
 		deobfuscate : function(){
-			var sVal = this.GetElementByRID("oProtoData").value;
+			var sVal = this.getElementByRID("oProtoData").value;
 			var aLines = sVal.split("\n");
 
 			var sParsed="";
@@ -255,7 +255,7 @@
 				}
 				sParsed+=sReplace;
 			}
-			this.GetElementByRID("oProtoData").value=sParsed;
+			this.getElementByRID("oProtoData").value=sParsed;
 		},
 
 		CheckLoadFunctionMonitor : function(oWindow, bAdd){

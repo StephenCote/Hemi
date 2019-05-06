@@ -44,9 +44,9 @@
         <![CDATA[
 		template_init : function (){
 			 Hemi.include("hemi.text");
-			this.GetElementByRID("btnDel").style.display = "none";
-			this.GetElementByRID("btnNew").style.display = "none";
-			this.GetElementByRID("btnSave").style.display = "none";
+			this.getElementByRID("btnDel").style.display = "none";
+			this.getElementByRID("btnNew").style.display = "none";
+			this.getElementByRID("btnSave").style.display = "none";
 			this.RefreshScriptBuilder();
 			this.getProperties().builder_title = "Script Runner";
 			this.scopeHandler("load_example",0,0,1);
@@ -59,26 +59,26 @@
 		},
 		/*
 		SetLabel : function(s){
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("builder-label"),s);
+			Hemi.xml.setInnerXHTML(this.getElementByRID("builder-label"),s);
 		},
 		*/
 		RunScript : function(s){
 			var aBuff = [];
 			
 			/// this.BuildScript();
-			aBuff.push(this.GetElementByRID("script_text").value);
+			aBuff.push(this.getElementByRID("script_text").value);
 
-			var aParams = [Hemi.xml.getInnerText(this.GetElementByRID("lblLabel")), aBuff.join("\n"),"/MyModules/",0];
+			var aParams = [Hemi.xml.getInnerText(this.getElementByRID("lblLabel")), aBuff.join("\n"),"/MyModules/",0];
 			this.RunControl("RunModule", aParams);
 		},
 		CreateNewObject : function(){
-			this.GetElementByRID("script_text").value = "";
+			this.getElementByRID("script_text").value = "";
 			if(this.LoadScriptText()){
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("lblLabel"),"Custom");
-		        Hemi.xml.setInnerXHTML(this.GetElementByRID("lblDescription"),"Custom script");
+				Hemi.xml.setInnerXHTML(this.getElementByRID("lblLabel"),"Custom");
+		        Hemi.xml.setInnerXHTML(this.getElementByRID("lblDescription"),"Custom script");
 				this.getProperties().script_id = this.getObjects().script_construct.id = "CustomId";
 				this.RefreshScriptBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("script_info"),"Id: " + this.getProperties().script_id);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("script_info"),"Id: " + this.getProperties().script_id);
 			}
 		},
 		LoadObject : function(i){
@@ -97,24 +97,24 @@
 				this.SetLabel("Failed to load example " + this.getProperties().script_id);
 				return;
 			}
-			var sName = this.GetElementText(oExample, "Name");
-			var sDescription = this.GetElementText(oExample, "Description");
-			var sScript = this.GetElementText(oExample, "Script");
+			var sName = this.getElementText(oExample, "Name");
+			var sDescription = this.getElementText(oExample, "Description");
+			var sScript = this.getElementText(oExample, "Script");
 			
-			this.GetElementByRID("script_text").value = sScript;
+			this.getElementByRID("script_text").value = sScript;
 			if(this.LoadScriptText()){
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("lblLabel"),sName);
-		        Hemi.xml.setInnerXHTML(this.GetElementByRID("lblDescription"),sDescription);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("lblLabel"),sName);
+		        Hemi.xml.setInnerXHTML(this.getElementByRID("lblDescription"),sDescription);
 				this.getObjects().script_construct.id = this.getProperties().script_id;
 				this.RefreshScriptBuilder();
-				Hemi.xml.setInnerXHTML(this.GetElementByRID("script_info"),"Id: " + this.getProperties().script_id);
+				Hemi.xml.setInnerXHTML(this.getElementByRID("script_info"),"Id: " + this.getProperties().script_id);
 			}
 		},
 
 		ClearScript : function(){
-				this.GetElementByRID("script_text").value = "";
-                Hemi.xml.setInnerXHTML(this.GetElementByRID("lblLabel"),"[ Label ]");
-                Hemi.xml.setInnerXHTML(this.GetElementByRID("lblDescription"),"[ Description ]");
+				this.getElementByRID("script_text").value = "";
+                Hemi.xml.setInnerXHTML(this.getElementByRID("lblLabel"),"[ Label ]");
+                Hemi.xml.setInnerXHTML(this.getElementByRID("lblDescription"),"[ Description ]");
 				this.getObjects().script_construct = 0;
 				this.SetLabel("");
 				this.RefreshScriptBuilder();
@@ -126,24 +126,24 @@
 				this.SetLabel("Invalid module construct");
 				return;	 
 			}
-			var sName = Hemi.text.trim(Hemi.xml.getInnerText(this.GetElementByRID("lblLabel")).value);
+			var sName = Hemi.text.trim(Hemi.xml.getInnerText(this.getElementByRID("lblLabel")).value);
 			this.getObjects().script_construct.name = sName;
 			
 			var sText = this.getObjects().script_construct.xhtml_content;
-			this.GetElementByRID("script_text").value = sText;
+			this.getElementByRID("script_text").value = sText;
 		},
 
 		UpdateScriptMember : function(){
-			var sXhtml = this.GetElementByRID("script_text").value;
+			var sXhtml = this.getElementByRID("script_text").value;
 			this.getObjects().script_construct.xhtml_content = sXhtml;
 			this.getObjects().script_construct.changes++;
 		},
 
 		LoadScriptText : function(){
 
-			var sXhtmlContent = this.GetElementByRID("script_text").value
-            Hemi.xml.setInnerXHTML(this.GetElementByRID("lblLabel"),"[ Label ]");
-            Hemi.xml.setInnerXHTML(this.GetElementByRID("lblDescription"),"[ Description ]");
+			var sXhtmlContent = this.getElementByRID("script_text").value
+            Hemi.xml.setInnerXHTML(this.getElementByRID("lblLabel"),"[ Label ]");
+            Hemi.xml.setInnerXHTML(this.getElementByRID("lblDescription"),"[ Description ]");
 
 			this.getObjects().script_construct = this.NewComponentConstruct();
 			this.getObjects().script_construct.xhtml_content = sXhtmlContent;

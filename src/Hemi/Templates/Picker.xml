@@ -11,7 +11,7 @@
             <![CDATA[
 		template_init : function (){
 			this.scopeHandler("pickerlistclick",0,0,1);
-			this.GetComponentByRID("picker_list").setLoadHandler(this.scopeHandler("configList",0,1,1));
+			this.getComponentByRID("picker_list").setLoadHandler(this.scopeHandler("configList",0,1,1));
 		},
 		configList : function(){
 			var bM = this.getProperties().multiple;
@@ -22,7 +22,7 @@
 			/// otherwise, this would have to be paged in, committed, and then selected
 			///
 			this.GetPickerList().setIsBuffered((bM ? 0 : 1));
-			this.GetElementByRID("btnCont").style.display = (bM ? "block" : "none");
+			this.getElementByRID("btnCont").style.display = (bM ? "block" : "none");
 			this.doSelectValues();
 			this.getProperties().configured = 1;
 		},
@@ -59,7 +59,7 @@
 			this.getObjects().picker_handler = 0;
 		},
 		GetPickerList : function(){
-			return this.GetComponentByRID("picker_list").GetWideSelect();
+			return this.getComponentByRID("picker_list").GetWideSelect();
 		},
 		_handle_pickerlistclick : function(sEvent,oItem){
 			if(this.GetPickerList().getMultiple()) return;

@@ -54,7 +54,7 @@
 		},
 		_handle_newcontent : function(s, v){
 			var oViewer = v.data.src;
-			var sName = this.GetComponentByRID("tree").GetCurrentNodeName();
+			var sName = this.getComponentByRID("tree").GetCurrentNodeName();
 			/*
 			switch(sName){
 				case "Projects":
@@ -82,10 +82,10 @@
 		},
 		_handle_deletecontent : function(s, v){
 			var oViewer = v.data.src;
-			var sName = this.GetComponentByRID("tree").GetCurrentGroupName();
+			var sName = this.getComponentByRID("tree").GetCurrentGroupName();
 			var iId = parseInt(oViewer.GetCurrentItem().item_id);
 			var oR = Hemi.xml.getXml(g_application_path + "DWAC/" + this.getProperties().dwac_user + "/" + sName + "/ID-" + iId + "/Delete?is-xml=1&ts=" + (new Date()).getTime());
-			if(this.IsSuccess(oR)){
+			if(this.isSuccess(oR)){
 				this.RefreshDWACLists();
 			}
 			
@@ -93,7 +93,7 @@
 		},		
 		_handle_opencontent : function(s, v){
 			var oViewer = v.data.src;
-			var sName = this.GetComponentByRID("tree").GetCurrentGroupName();
+			var sName = this.getComponentByRID("tree").GetCurrentGroupName();
 			var iId = parseInt(oViewer.GetCurrentItem().item_id);
 
 			switch(sName){
@@ -121,9 +121,9 @@
 		},
 
 		RefreshDWACLists : function(){
-				this.GetComponentByRID("content-viewer").ClearCache(1);
-				this.GetComponentByRID("tree").SelectLeaf(this.GetComponentByRID("tree").GetCurrentGroupName());
-				//this.GetComponentByRID("tree").RePopulateTree();
+				this.getComponentByRID("content-viewer").ClearCache(1);
+				this.getComponentByRID("tree").SelectLeaf(this.getComponentByRID("tree").GetCurrentGroupName());
+				//this.getComponentByRID("tree").RePopulateTree();
 				//Hemi.xml.getXml(g_application_path + "DWAC/" + this.getProperties().dwac_user + "/List?is-xml=1&ts=" + (new Date()).getTime(), this._prehandle_dwaclists_load);
 		},
 		embedded_destroy : function(){

@@ -18,10 +18,10 @@
 
 			var o = 0,p,l=tabs.length;
 			
-			var strip = this.GetElementByRID("tabstrip");
+			var strip = this.getElementByRID("tabstrip");
 
 				var tab = tabs[l] = {index:l,tab:0,pane:0,paneid:i,label:n};
-				p = this.GetElementByRID(tab.paneid);
+				p = this.getElementByRID(tab.paneid);
 
 				if(!p) return 0;
 				o = document.createElement("div");

@@ -26,7 +26,7 @@
 			}
 			return o;
 		},
-		FormatStringIntoHtml : function(oNode, sData){
+		formatStringIntoHtml : function(oNode, sData){
 			if(!oNode || !sData) return;
 			var aDat = sData.split("\n");
 			for(var i = 0; i < aDat.length; i++){
@@ -37,7 +37,7 @@
 				oNode.appendChild(oD);
 			}
 		},
-		GetElementByRID : function(n){
+		getElementByRID : function(n){
 			var o = this.getTemplateSpace().getSpaceObjectByName(n);
 			if(!o) return 0;
 			if(o.object){
@@ -46,56 +46,42 @@
 			}
 			return o;
 		},
-		// TODO: Temporary fix until form set value is fixed for selects
-		//
-		/* TODO: Check to Deprecate
-		SetSelectValueByIndex : function(n,v){
-			var o = this.GetElementByRID(n);
-			if(!o || typeof o.selectedIndex != "number") return;
-			for(var i = 0; i < o.options.length; i++){
-				if(o.options[i].value == v || (o.options[i].value == "" && o.options[i].text == v)){
-					o.selectedIndex = i;
-					break;
-				}
-				
-			}
-		},
-		*/
+
 		// TODO: There is a bug in the setValue function in ocjxf.setValue where select options
 		// are not being selected
 		//
-		SetFormValue : function(n, v){
+		setFormValue : function(n, v){
 			return Hemi.data.form.service.setValue(n,v, this.getTemplateSpace().space_id)
 		},
-		GetFormValue : function(n){
+		getFormValue : function(n){
 			return Hemi.data.form.service.getValue(n,this.getTemplateSpace().space_id)
 		},
-		GetForm : function(){
+		getForm : function(){
 			return Hemi.data.form.service.getFormByName(this.getTemplateSpace().space_id);
 		},
-		ClearForm : function(){
+		clearForm : function(){
 			return Hemi.data.form.service.clearDataForm(this.getTemplateSpace().space_id,0,0);
 		},
-		GetElementText : function(oParent, sName){
+		getElementText : function(oParent, sName){
 			var aN = oParent.getElementsByTagName(sName);
 			if(aN.length == 0) return ""; // was 0;
 			return Hemi.xml.getInnerText(aN[0]);
 		},
-		SetText : function(sName, sValue){
-			var o = this.GetElementByRID(sName);
+		setText : function(sName, sValue){
+			var o = this.getElementByRID(sName);
 			if(!o) return;
 			Hemi.xml.setInnerXHTML(o,sValue);
 		},
 
-		IsSuccess : function(oX){
+		isSuccess : function(oX){
 		  if(!oX || !oX.documentElement) return 0;
 		  return (oX.getElementsByTagName("Success").length > 0 ? 1 : 0);
 		},
-		IsLoginRequired : function(oX){
+		isLoginRequired : function(oX){
 		  if(!oX || !oX.documentElement) return 0;
 		  return (oX.getElementsByTagName("Login-Required").length > 0 ? 1 : 0);
 		},
-		ShowLogin : function(){
+		showLogin : function(){
 			var oW = Hemi.app.getWindowManager().GetWindowByName("LoginWindow");
 			if(oW){
 				oW.open();
@@ -105,7 +91,7 @@
 				oW.loadTemplate("ActionForms/Login.xml");
 			}
 		},
-		SetElementParam : function(oX, name, val){
+		setElementParam : function(oX, name, val){
 		  if(!oX || !oX.documentElement) return 0;
 		  var oParams = oX.documentElement.getElementsByTagName("Params");
 		  if(oParams.length == 0){
@@ -121,22 +107,13 @@
 				oParam.setAttribute("Value","#cdata");
 				oParam.appendChild(oX.createCDATASection(val));
 		},
-		GetDataNameExists : function(sSubAppPath,aFields){
-			var oForm = this.SerializeForm(0,aFields);
-			var oX = Hemi.xml.postXml(sSubAppPath + "/CheckName?is-xml=1",oForm);
-			if(oX == null || oX.documentElement == null){
-				alert("Error retrieving response");
-				return 1;
-			}
-			if(oX.getElementsByTagName("True").length > 0) return 1;
-			return 0;
-		},
+
 		/// Synchronize the visible form with its backing elements
 		/// Note: This is only needed when trying to get a backing bean with the current values
 		/// while the form is still visible. Otherwise, if the template is destroyed, the values will automatically be sync'd
 		///
 		synchronizeForm : function(bSyncIn){
-			var aElements = this.GetForm().getElements();
+			var aElements = this.getForm().getElements();
 			for(var e = 0; e < aElements.length; e++){
 				if(!aElements[e]) continue;
 				if(aElements[e].getIsRendered()){
@@ -152,14 +129,14 @@
 			}
 		},
 
-		SerializeFormJSON : function(oJ, aLimit){
+		serializeFormJSON : function(oJ, aLimit){
 			var eid = this.getTemplateSpace().space_id;
 			
 			if(!oJ) oJ = {};
 			oJ.cid = this.getObjectId();
 			oJ.eid = eid;
 				
-			var aElements = this.GetForm().getElements();
+			var aElements = this.getForm().getElements();
 			oJ.elements = [];
 			for(var e = 0; e < aElements.length;e++){
 				var name = aElements[e].getName();
@@ -188,7 +165,7 @@
 			}
 			return oJ;
 		},
-		SerializeForm : function(oX,aLimit){
+		serializeForm : function(oX,aLimit){
 			var eid = this.getTemplateSpace().space_id;
 			
 			if(!oX) oX = Hemi.xml.newXmlDocument("Request");
@@ -197,7 +174,7 @@
 			oForm.setAttribute("eid",eid);
 			
 			oX.documentElement.appendChild(oForm);				
-			var aElements = this.GetForm().getElements();
+			var aElements = this.getForm().getElements();
 			for(var e = 0; e < aElements.length;e++){
 				var name = aElements[e].getName();
 				if(typeof aLimit == "object" && aLimit.length){
@@ -233,20 +210,20 @@
 			}
 			return oX;
 		},
-		ValidateForm : function(b){
-			var oF = this.GetForm();
+		validateForm : function(b){
+			var oF = this.getForm();
 			return Hemi.data.form.service.validateForm(oF.i, b);
 		},
-		ValidateForPattern : function(n, p){
-			var oF = this.GetForm();
+		validateForPattern : function(n, p){
+			var oF = this.getForm();
 			if(!oF) return 0;
 			var oE = oF.getElementByName(n);
 			if(!oE) return 0;
 			return Hemi.data.validator.service.validateField(oE.getElement(),p);
 		},
-		DiagramStep : function(sLabel, iMark, iTotal){
-			var oLabel = this.GetElementByRID("step_label");
-			var oDiag = this.GetElementByRID("step_diagram");
+		diagramStep : function(sLabel, iMark, iTotal){
+			var oLabel = this.getElementByRID("step_label");
+			var oDiag = this.getElementByRID("step_diagram");
 			if(!oLabel || !oDiag) return;
 			Hemi.xml.setInnerXHTML(oLabel,sLabel);
 			for(var i = 0; i < iTotal; i++){
@@ -257,14 +234,14 @@
 				oDiag.appendChild(oI);
 			}
 		},
-		EnableButton : function(n){
-			this.SwitchButton(n,false);
+		enableButton : function(n){
+			this.switchButton(n,false);
 		},
-		DisableButton : function(n){
-			this.SwitchButton(n,true);
+		disableButton : function(n){
+			this.switchButton(n,true);
 		},
-		SwitchButton : function(n, b){
-			var o = this.GetElementByRID(n),a,ac=" ";
+		switchButton : function(n, b){
+			var o = this.getElementByRID(n),a,ac=" ";
 			if(!o) return;
 			a = o.getAttribute("button-action");
 			if(a) ac += a.toLowerCase() + "_button";
@@ -314,14 +291,14 @@
 			return o;
 		},
 		
-		GetComponentByRID : function(sRid){
+		getComponentByRID : function(sRid){
 			var o = this.getTemplateSpace().getSpaceObjectByName(sRid);
 			//alert(this.getTemplateSpace().space_id);
 			if(!o || !o.object) return 0;
 			return o.object.getApplicationComponent();
 
 		},
-		ResizeFrame : function(n,iModWidth,iModHeight){
+		resizeFrame : function(n,iModWidth,iModHeight){
 			try{
 				var d = (typeof n == "object" ? n : this.getTemplateObjectByName(n));
 				
@@ -349,7 +326,7 @@
 				if(this.setStatus) this.setStatus("Unexpected UI Error: " + (e.message ? e.message : e.description));
 			}
 		},
-		Assert : function(b,m){
+		assert : function(b,m){
 			if(!b) throw m;
 		}
 	]]></embedded-script>

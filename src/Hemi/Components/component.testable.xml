@@ -126,7 +126,7 @@
 			if(m.error) sIco="error";
 			this.getObjects().testIcons[t.name + "-" + m.name].src = Hemi.hemi_base + "Graphics/star_" + sIco + ".jpg";
 			  
-			/// Hemi.xml.setInnerXHTML(this.GetElementByRID(t.name + "-" + m.name + "-notes"),"Time: " + (m.stop_time.getTime() - m.start_time.getTime()) + "ms / Result: " + m.result);
+			/// Hemi.xml.setInnerXHTML(this.getElementByRID(t.name + "-" + m.name + "-notes"),"Time: " + (m.stop_time.getTime() - m.start_time.getTime()) + "ms / Result: " + m.result);
       
 		},
 		_handle_test_suite : function(o){

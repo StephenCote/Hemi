@@ -32,7 +32,7 @@
       this.getObjects().tests = s;
       this.getObjects().tests.push("custom");
       if(!p) p = "Tests/";
-      this.GetElementByRID("test_path").value = p;
+      this.getElementByRID("test_path").value = p;
       this.RefreshTestCases();
 		}
 

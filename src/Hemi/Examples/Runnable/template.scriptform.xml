@@ -14,13 +14,13 @@
 	<textarea name = "serialText" style = "width:350px;height:150px;"></textarea>
 	<embedded-script><![CDATA[
 		PrintValue : function(){
-			/// Optionally, the TemplateTool GetFormValue may be used
-			/// Eg: sFirstName = this.GetFormValue("firstName");
+			/// Optionally, the TemplateTool getFormValue may be used
+			/// Eg: sFirstName = this.getFormValue("firstName");
 			/// 
-			var sFirstName = this.GetElementByRID("firstName").value;
-			var sLastName = this.GetElementByRID("lastName").value;
-			Hemi.xml.setInnerXHTML(this.GetElementByRID("lblValue"),sLastName + ", " + sFirstName + " likes " + this.GetElementByRID("favoriteColor").value);
-			this.GetElementByRID("serialText").value = JSON.stringify(this.SerializeFormJSON(0,["firstName","lastName","favoriteColor"]));
+			var sFirstName = this.getElementByRID("firstName").value;
+			var sLastName = this.getElementByRID("lastName").value;
+			Hemi.xml.setInnerXHTML(this.getElementByRID("lblValue"),sLastName + ", " + sFirstName + " likes " + this.getElementByRID("favoriteColor").value);
+			this.getElementByRID("serialText").value = JSON.stringify(this.serializeFormJSON(0,["firstName","lastName","favoriteColor"]));
 		}
 	]]>	
 	</embedded-script>

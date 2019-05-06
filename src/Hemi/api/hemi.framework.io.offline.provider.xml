@@ -26,7 +26,7 @@ Scrub off the online CoreWeb ID- prefix
 .replace(/^ID\-/, "");
 Duplicate Method w/ core.io.js
 
-GetElementText
+getElementText
 If the Data is in the CoreWeb serialization style, it needs to be decomposed
 
 If the Data is in the CoreWeb serialization style, it needs to be decomposed

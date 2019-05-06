@@ -18,7 +18,7 @@
       s.push("custom");
       this.getObjects().tests = s;
       if(!p) p = "Tests/";
-      this.GetElementByRID("test_path").value = p;
+      this.getElementByRID("test_path").value = p;
       this.RefreshTestCases();
 		}
 	]]>

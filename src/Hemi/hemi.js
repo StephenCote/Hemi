@@ -1792,12 +1792,12 @@ if (typeof window != "object") window = {};
                             v.text = o.o.responseText;
                             if (o.t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED) {
                                 try {
-                                    v.json = JSON.parse(v.text, _x.JSONReviver);
+                                    v.json = (v.text == null || v.text.length == 0 ? null : JSON.parse(v.text, _x.JSONReviver));
                                 }
                                 catch (e) {
                                     v.json = null;
                                     v.error = e.message;
-                                    Hemi.logError(e.message);
+                                    Hemi.logError("Internal JSON Request Handler Error: " + e.message);
                                 }
                             }
                         }
@@ -2057,12 +2057,12 @@ if (typeof window != "object") window = {};
                         b = { text: r.ct, id: i };
                         if (t == 2 && typeof JSON != DATATYPES.TYPE_UNDEFINED){
                             try {
-                                b.json = JSON.parse(r.ct, _x.JSONReviver);
+                                b.json = (r.ct == null || r.ct.length == 0 ? null : JSON.parse(r.ct, _x.JSONReviver));
                             }
                             catch (e) {
                                 b.json = null;
                                 b.error = e.message;
-                                Hemi.logError(e.message);
+                                Hemi.logError("JSON Cache Resolution Error: " + e.message);
                             }
                         }
                     }

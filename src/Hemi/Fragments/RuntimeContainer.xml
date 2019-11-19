@@ -165,14 +165,16 @@
 			sUrl = sUrl.substring(0,sUrl.lastIndexOf("/") + 1);
 			Hemi.log("Run Module: " + sId + " via Type " + iType + " from " + sUrl);
 			if(iType == 0){
-				this.getObjects().running_module_name = sId;
-				this.getObjects().running_module = Hemi.app.module.test.service.NewTest(sId,this.getObjects().running_container,0,0,sUrl);
-        
-				if(this.getObjects().running_module) this.getObjects().running_module.RunTests();
-				this.getObjects().demo_buff.push("// Create the test suite");
-				this.getObjects().demo_buff.push("var oTest = Hemi.app.module.test.service.NewTest(\"" + sId + "\",{obj},\"" + sUrl + "\");");
-				this.getObjects().demo_buff.push("// Run all tests");
-				this.getObjects().demo_buff.push("oTest.RunTests();");
+				Hemi.app.module.test.service.NewTest(sId,this.getObjects().running_container,0,0,sUrl).then((t)=>{
+					this.getObjects().running_module_name = sId;
+					this.getObjects().running_module = t;
+	        
+					if(this.getObjects().running_module) this.getObjects().running_module.RunTests();
+					this.getObjects().demo_buff.push("// Create the test suite");
+					this.getObjects().demo_buff.push("var oTest = Hemi.app.module.test.service.NewTest(\"" + sId + "\",{obj},\"" + sUrl + "\");");
+					this.getObjects().demo_buff.push("// Run all tests");
+					this.getObjects().demo_buff.push("oTest.RunTests();");
+				});
 			}
 			else if(iType ==1){
 				///
@@ -204,10 +206,12 @@
 			Hemi.log("Run Module: " + sId + " via Type: " + iType);
 
 			if(iType == 0){
-				this.getObjects().running_module_name = sId;
-				this.getObjects().running_module = Hemi.app.module.service.NewModule(sId,this.getObjects().running_container,sText,0,1);
-				this.getObjects().demo_buff.push("// Create the module by feeding in the script directly");
-				this.getObjects().demo_buff.push("var oModule = Hemi.app.module.service.NewModule(\"" + sId + "\",{obj},\"{script}\",0,1);");
+				Hemi.app.module.service.NewModule(sId,this.getObjects().running_container,sText,0,1).then((m)=>{
+					this.getObjects().running_module_name = sId;
+					this.getObjects().running_module = m;
+					this.getObjects().demo_buff.push("// Create the module by feeding in the script directly");
+					this.getObjects().demo_buff.push("var oModule = Hemi.app.module.service.NewModule(\"" + sId + "\",{obj},\"{script}\",0,1);");
+				});
 			}
 			else if(iType ==1){
 				this.getObjects().running_module_name = sId;

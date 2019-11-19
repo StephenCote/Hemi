@@ -41,14 +41,14 @@
         },
 		RunControl : function(sInvoke, aParams){
 			var oProps = {show_example:0,opener_id:this.getObjectId(),local_invoke: sInvoke, local_invoke_params:aParams};
-			var oW = Hemi.app.createWindow("Runtime", "Templates/RuntimeContainer.xml", "Runtime-" + Hemi.guid(), 0, 0, oProps, this._prehandle_template_loaded);
-            if (oW) {
+			Hemi.app.createWindow("Runtime", "Templates/RuntimeContainer.xml", "Runtime-" + Hemi.guid(), 0, 0, oProps, this._prehandle_template_loaded)
+            .then((oW)=>{
             	oW.resizeTo(650, 650);
             	Hemi.app.getWindowManager().then((oM)=>{oM.CenterWindow(oW);});;
             	// Destroy the window when closed
             	//
             	oW.setHideOnClose(0);
-            }
+            });
 		},
 		refreshBuilderUI : function(){
 			if(this.setStatus) this.setStatus("Builder");

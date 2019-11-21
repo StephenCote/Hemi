@@ -696,6 +696,8 @@
                 if (cx && w) {
                     if (ck && cn) {
                         k = document.createElement(cn);
+                        /// 2019/08/16 - BUG - parentNode is null during a logout operation; initial thinking is the node reference in the UI is likely being wiped out during an async operation
+                        ///
                         n.parentNode.insertBefore(k, n);
                         n.parentNode.removeChild(n);
                         n = k;

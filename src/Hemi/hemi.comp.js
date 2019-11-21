@@ -2,8 +2,8 @@
 /*
 	"Hemi" JavaScript Framework
 	Engine for Web Applications 4.0 Beta 1
-	Composite file "hemi.comp.js" release: 0.0.2001
-	Copyright 2002 - 2016. All Rights Reserved.
+	Composite file "hemi.comp.js" release: 0.0.2081
+	Copyright 2002 - 2020. All Rights Reserved.
 	Author: Stephen W. Cote
 	Project: https://github.com/StephenCote/Hemi
 	BSD License File: hemi.license.txt

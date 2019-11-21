@@ -3,7 +3,8 @@ package org.cote.pkglib.factories;
 import java.io.File;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.CalendarUtil;
 import org.cote.accountmanager.util.StreamUtil;
 import org.cote.pkglib.objects.DeployEnumType;
@@ -18,7 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class PackageFactory {
-	public static final Logger logger = Logger.getLogger(PackageFactory.class.getName());
+	public static final Logger logger = LogManager.getLogger(PackageFactory.class.getName());
 	
 	public static PackageType importPackage(String packageFile){
 		PackageType pt = null;

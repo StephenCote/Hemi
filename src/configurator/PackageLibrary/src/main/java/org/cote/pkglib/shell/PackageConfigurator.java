@@ -7,8 +7,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.ParseException;
 import org.cote.accountmanager.util.FileUtil;
 import org.cote.accountmanager.util.JAXBUtil;
@@ -20,9 +20,9 @@ import org.cote.pkglib.objects.PackageType;
 import org.cote.pkglib.objects.ScriptConfigType;
 
 public class PackageConfigurator {
-	public static final Logger logger = Logger.getLogger(PackageConfigurator.class.getName());
+	public static final Logger logger = LogManager.getLogger(PackageConfigurator.class);
 	public static void main(String[] args){
-		PropertyConfigurator.configure(getLogProps());
+
 		logger.info("PackageConfigurator");
 		Options options = new Options();
 		options.addOption("scriptConfig",true,"JavaScript Configuration File");

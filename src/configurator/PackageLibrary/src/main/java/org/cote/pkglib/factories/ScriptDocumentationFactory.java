@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.transform.Transformer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.FileUtil;
 import org.cote.accountmanager.util.StreamUtil;
 import org.cote.accountmanager.util.XmlUtil;
@@ -35,7 +36,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ScriptDocumentationFactory {
-	public static final Logger logger = Logger.getLogger(ScriptDocumentationFactory.class.getName());
+	public static final Logger logger = LogManager.getLogger(ScriptDocumentationFactory.class);
 	
 	private String basePath = "./export/";
 	private String apiPath = "api/";

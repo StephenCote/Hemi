@@ -4,7 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.FileUtil;
 import org.cote.accountmanager.util.StreamUtil;
 import org.cote.accountmanager.util.ZipUtil;
@@ -19,7 +20,7 @@ import org.cote.pkglib.objects.ResourceType;
 import org.cote.pkglib.util.PatternUtil;
 
 public class EncoderFactory {
-	public static final Logger logger = Logger.getLogger(EncoderFactory.class.getName());
+	public static final Logger logger = LogManager.getLogger(EncoderFactory.class);
 	public static boolean emitEncodedComponent(EncodedType enc, String componentName, String path){
 		boolean out_bool = false;
 		byte[] data = getEncodedComponentValue(enc, componentName);

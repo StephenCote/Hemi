@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.StreamUtil;
 import org.cote.pkglib.factories.PackageFactory;
 import org.cote.pkglib.objects.PackageType;
@@ -27,7 +28,7 @@ import org.cote.pkglib.objects.ResourceType;
 
 public class PatternUtil {
 	private static Map<String,Pattern> patterns = new HashMap<String,Pattern>();
-	public static final Logger logger = Logger.getLogger(PatternUtil.class.getName());
+	public static final Logger logger = LogManager.getLogger(PatternUtil.class);
 	public static Pattern getPattern(String pattern){
 		if(pattern == null || pattern.length() == 0) return null;
 		if(patterns.containsKey(pattern)) return patterns.get(pattern);

@@ -1,41 +1,26 @@
 package org.cote.pkglib.test;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.FileUtil;
 import org.cote.accountmanager.util.JAXBUtil;
 import org.cote.pkglib.config.ScriptPackageConfigurator;
-
 import org.cote.pkglib.factories.EncoderFactory;
 import org.cote.pkglib.factories.PackageFactory;
 import org.cote.pkglib.factories.ScriptDocumentationFactory;
-import org.cote.pkglib.objects.DistributionType;
-import org.cote.pkglib.objects.EncodedType;
-import org.cote.pkglib.objects.FeatureType;
-import org.cote.pkglib.objects.LinkerType;
 import org.cote.pkglib.objects.PackageType;
-import org.cote.pkglib.objects.PatternType;
-import org.cote.pkglib.objects.PropertyType;
 import org.cote.pkglib.objects.ScriptConfigType;
-import org.cote.pkglib.objects.ScriptFileType;
-import org.cote.pkglib.objects.TemplateConfigType;
-import org.cote.pkglib.util.ConfigReader;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestPackageLib {
-	public static final Logger logger = Logger.getLogger(TestPackageLib.class.getName());
+	public static final Logger logger = LogManager.getLogger(TestPackageLib.class);
 
 	@Before
 	public void setUp() throws Exception {
-		String log4jPropertiesPath = System.getProperty("log4j.configuration");
-		if(log4jPropertiesPath != null){
-			System.out.println("Properties=" + log4jPropertiesPath);
-			PropertyConfigurator.configure(log4jPropertiesPath);
-		}
+
 	}
 	
 	@Test

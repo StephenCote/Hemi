@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.accountmanager.util.CalendarUtil;
 import org.cote.accountmanager.util.FileUtil;
 import org.cote.accountmanager.util.JAXBUtil;
@@ -34,7 +35,7 @@ import org.cote.pkglib.objects.ScriptFileType;
 import org.w3c.dom.Document;
 
 public class ScriptPackageConfigurator {
-	public static final Logger logger = Logger.getLogger(ScriptPackageConfigurator.class.getName());
+	public static final Logger logger = LogManager.getLogger(ScriptPackageConfigurator.class);
 	
 	private EncodedType encodedFile = null;
 	private ScriptConfigType scriptConfig = null;

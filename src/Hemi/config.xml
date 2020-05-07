@@ -20,7 +20,7 @@
 	Project: https://github.com/StephenCote/Hemi
 	BSD License File: hemi.license.txt
 */
-	console.debug("Set global dependency block");
+	/// console.debug("Set global dependency block");
     var g_db = 1;
 		</outputHeader>
 		<outputFooter>

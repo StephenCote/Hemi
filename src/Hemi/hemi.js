@@ -1815,7 +1815,7 @@ if (typeof window != "object") window = {};
                     else if (o.t == 2 && v.json == null) {
                     	/// this isn't an error necessarily depending on authN/Z status
                     	///
-                        console.debug("Error loading '" + o.u + "'. The internal JSON object reference is null.  Async is " + o.a + "; Pool Index is " + o.pi, "540.4");
+                        console.debug("'" + o.u + "' returned a null JSON object.  Async is " + o.a + "; Pool Index is " + o.pi, "540.4");
                     }
 
 

@@ -374,7 +374,6 @@
                     return 0;
                 }
                 return (_sp.removeItem(_hk) ? 1 : 0);
-                return 1;
             };
             t.SaveGroup = function (g) {
                 var _sp = HemiEngine.storage.getStorageProvider(), _hk = this.getProperties().hfs_key + "_grp_" + g.name;

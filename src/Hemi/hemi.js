@@ -273,7 +273,7 @@ if (typeof window != "object") window = {};
     HemiEngine.removeDependencyBlock = function(){
     	if(typeof g_db != DATATYPES.TYPE_UNDEFINED && g_db >= 2){
 	        setTimeout(function(){
-	        	console.debug("Unset global dependency block");
+///	        	console.debug("Unset global dependency block");
 	        	g_db = 0;
 	        },10);
     	}
@@ -281,7 +281,7 @@ if (typeof window != "object") window = {};
     HemiEngine.resolveDependency = function(s, o, b, m){
     	if(HemiEngine.allStop) return;
     	if(typeof g_db != DATATYPES.TYPE_UNDEFINED && g_db >= 2){
-    		console.debug(s + " is waiting for the global dependency resolver block to be removed");
+///    		console.debug(s + " is waiting for the global dependency resolver block to be removed");
     		setTimeout(HemiEngine.resolveDependency, 5, s, o, b, m);
     		return;
     	}
@@ -296,7 +296,7 @@ if (typeof window != "object") window = {};
     	if(DATATYPES.TU(d[s]) || !d[s].length){
     		try{
     			if (b && DATATYPES.TF(o["serviceImpl"]) && o.service == null){
-    				console.debug("Implementing service " + s);
+///    				console.debug("Implementing service " + s);
     				o.service = new o.serviceImpl();
     				o.servicePromiseResolver(o.service)
     			}
@@ -315,7 +315,7 @@ if (typeof window != "object") window = {};
     		}
     	}
     	else{
-    		console.debug(s + " is waiting for " + d[s].join(", "));
+ ///   		console.debug(s + " is waiting for " + d[s].join(", "));
     		setTimeout(HemiEngine.resolveDependency, 5, s, o, b, m);
     	}
     };

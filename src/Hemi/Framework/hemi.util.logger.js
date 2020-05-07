@@ -85,9 +85,9 @@
             }
             HemiEngine.util.logger.levels.map((x, z, a) => {
             	o["log" + (z != 2 ? x : "")] = function(m, l){
-            		var lb = i + "." + (z + 1) + (i > 0 ? "." + i : "");
-            		HemiEngine.message.service.sendMessage(m, lb);
-            		if(HemiEngine.util.logger.logToConsole){
+            		var lb = i + "." + (z + 1) + (i > 0 ? "." + i : ""), _m = HemiEngine.message.service;
+            		_m.sendMessage(m, lb);
+            		if(_m.properties.rt <= z && HemiEngine.util.logger.logToConsole){
             			var mn = "log";
             			if(z < 2) mn = "debug";
             			else if (z > 3) mn = "error";

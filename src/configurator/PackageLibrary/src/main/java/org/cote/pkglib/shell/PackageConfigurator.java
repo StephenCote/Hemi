@@ -91,14 +91,5 @@ public class PackageConfigurator {
 			e.printStackTrace();
 		}
 	}
-	private static Properties getLogProps(){
-		Properties logProps = new Properties();
-		try {
-			logProps.load(ClassLoader.getSystemResourceAsStream("logging.properties"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return logProps;
-	}
+	
 }

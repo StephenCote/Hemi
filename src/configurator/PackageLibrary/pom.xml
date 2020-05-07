@@ -22,8 +22,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>13</source>
-					<target>13</target>
+					<source>14</source>
+					<target>14</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -37,7 +37,7 @@
 <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 
@@ -45,7 +45,7 @@
 
 							<addClasspath>true</addClasspath>
 							<mainClass>org.cote.pkglib.shell.PackageConfigurator</mainClass>
-							<classpathPrefix>${project.build.directory}/lib/</classpathPrefix>
+							<classpathPrefix>./lib/</classpathPrefix>
 							<!-- <classpathLayoutType>repository</classpathLayoutType> -->
 						</manifest>
 					</archive>

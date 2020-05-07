@@ -32,7 +32,6 @@ import org.cote.pkglib.objects.PropertyStructureType;
 import org.cote.pkglib.objects.PropertyType;
 import org.cote.pkglib.objects.ScriptConfigType;
 import org.cote.pkglib.objects.ScriptFileType;
-import org.w3c.dom.Document;
 
 public class ScriptPackageConfigurator {
 	public static final Logger logger = LogManager.getLogger(ScriptPackageConfigurator.class);

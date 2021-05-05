@@ -193,6 +193,7 @@
 						delete this.getObjects().module_construct.id;
 				}
 				else{
+					this.getProperties().data_object = oND;
 					this.getObjects().module_construct.id = sId;	
 					this.getElementByRID("module_id").value = sId;
 					this.SetLabel("Saved!");

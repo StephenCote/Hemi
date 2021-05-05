@@ -204,6 +204,7 @@
 						delete this.getObjects().component_construct.id;
 				}
 				else{
+					this.getProperties().data_object = oND;
 					this.getObjects().component_construct.id = sId;
 					this.getElementByRID("component_id").value = sId;
 					this.SetLabel("Saved!");

@@ -46,22 +46,22 @@
 			<input type = "text" class = "input_text" rid = "project_control_task" />
 		</div>
 	</div>
-	<div style ="width:25%;float:left;">
+	<div style ="width:24%;float:left;clear:left;">
 		<div class="title">Tasks</div>
 		<div ___pointer_marker = "never" component = "wideselect" rid = "project_tasks_list">
 		</div>
 	</div>
-	<div style ="width:25%;float:left;">
+	<div style ="width:24%;float:left;">
 		<div class="title">Templates</div>
 		<div ___pointer_marker = "never" component = "wideselect" rid = "project_templates_list">
 		</div>
 	</div>
-	<div style ="width:25%;float:left;">
+	<div style ="width:24%;float:left;">
 		<div class="title">Fragments</div>
 		<div ___pointer_marker = "never" component = "wideselect" rid = "project_fragments_list">
 		</div>
 	</div>
-	<div style ="width:25%;float:left;">
+	<div style ="width:24%;float:left;">
 		<div class="title">Components</div>
 		<div ___pointer_marker = "never" component = "wideselect" rid = "project_components_list">
 		</div>
@@ -327,6 +327,7 @@
 						delete this.getObjects().project_construct.id;
 				}
 				else{
+					this.getProperties().data_object = oND;
 					this.getObjects().project_construct.id = sId;	
 					this.getElementByRID("project_id").value = sId;
 					this.SetLabel("Saved!");

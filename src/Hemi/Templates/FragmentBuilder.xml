@@ -214,6 +214,7 @@
 						delete this.getObjects().fragment_construct.id;
 				}
 				else{
+					this.getProperties().data_object = oND;
 					this.getObjects().fragment_construct.id = sId;	
 					this.getElementByRID("fragment_id").value = sId;
 					/// this.RefreshDWACLists();

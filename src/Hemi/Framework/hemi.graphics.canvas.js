@@ -814,7 +814,7 @@
 			/// </method>
 			n.Rasterize = function () {
 				var _p = this.objects, a = [], i=0,x=0;
-
+		
 				/// Repaint temp objects from the temp canvas to the final canvas
 				///
 				/*

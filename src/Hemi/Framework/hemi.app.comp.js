@@ -309,6 +309,9 @@
 				/* transaction id */
 				TransactionId: 0
 			};
+			
+			/// 2021/05/06 - Add a convenience to hold field pointers for simpler reference
+			rid = {};
 
 			if (i && 1) n.object_id = i;
 
@@ -977,26 +980,42 @@
         			}
         		});
 				Promise.all(aP).then(()=>{
-					Hemi.logDebug("Resolved component (" + this.object_id + ") dependencies");
-					this.dependencies = {};
-					for (var i = 1; i < this.properties.eic; i++) {
+					var t = this, oS, aO,i=0, o, r;
+					Hemi.logDebug("Resolved component (" + t.object_id + ") dependencies");
+					t.dependencies = {};
+					t.rid = {};
+					oS = t.getTemplateSpace();
+					if(oS){
+						aO = oS.getSpaceObjects();
+						for(; i < aO.length; i++){
+							o = aO[i];
+							r = (o ? o.rid : 0);
+							if(!r) continue;
+							if(typeof o.object.getContainer == 'function') o = o.object.getContainer();
+							else o = o.object;
+							t.rid[r] = o;
+						}
+					}
+					
+					
+					for (var i = 1; i < t.properties.eic; i++) {
 						this["embedded_init_" + i]();
 						this["embedded_init_" + i] = 0;
 					}
 					
-					if (typeof this.template_init == DATATYPES.TYPE_FUNCTION){
-						this.template_init();
+					if (typeof t.template_init == DATATYPES.TYPE_FUNCTION){
+						t.template_init();
 					}
 					
-					this.template_init = 0;	
-					this.properties.eic = 1;
-					if (typeof this.local_template_init == DATATYPES.TYPE_FUNCTION) this.local_template_init(this);
+					t.template_init = 0;	
+					t.properties.eic = 1;
+					if (typeof t.local_template_init == DATATYPES.TYPE_FUNCTION) t.local_template_init(this);
 					HemiEngine.message.service.publish("ontemplateload", this);
 					
-					if (typeof this.template_post_init == DATATYPES.TYPE_FUNCTION){
-						this.template_post_init();
+					if (typeof t.template_post_init == DATATYPES.TYPE_FUNCTION){
+						t.template_post_init();
 					}
-					this.template_post_init = 0;
+					t.template_post_init = 0;
 				});
 			};
 

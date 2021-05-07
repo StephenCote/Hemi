@@ -6,12 +6,12 @@
 		component_init:function(){
 			// Create a contex-sensitive handler
 			//
-			/// alert('blah');
+
 			Hemi.css.loadStyleSheet("Styles/wideselect.css","wideselect");
 			this.scopeHandler("result_click",0,0,1);
 			this.getProperties().local_result_click = this.getContainer().getAttribute("localresultclick");
 
-			var fp = this._prehandle_result_click;//(sHandler && typeof eval(sHandler) == "function" ? eval(sHandler) : this._prehandle_result_click);
+			var fp = this._prehandle_result_click;
 			this.getObjects().wide_select = Hemi.ui.wideselect.newInstance(this.getContainer(), fp);
 
 			// default wideselect style is to hide an absolutely positioned container, so
@@ -31,9 +31,6 @@
 		_handle_result_click : function(v,b){
 			if(this.getProperties().local_result_click){
 				eval(this.getProperties().local_result_click)();
-			}
-			else{
-				//alert('default result click: ' + this.getObjectId());
 			}
 		},
 

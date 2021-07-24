@@ -218,7 +218,7 @@
 				_m = HemiEngine.message.service
 			;
             t.objects = {
-                fn: ["date","hidden", "text", "password", "textarea", "select-multiple", "select-one", "checkbox"]
+                fn: ["datetime-local","time","date","hidden", "text", "password", "textarea", "select-multiple", "select-one", "checkbox"]
             };
             t.properties = {
                 a: 1,
@@ -349,7 +349,9 @@
                             case "hidden":
                             case "text":
                             case "password":
-
+                            case "date":
+                            case "time":
+                            case "datetime-local":
                             case "textarea":
                                 o.e.value = "";
                                 break;
@@ -534,9 +536,12 @@
                         }
                         else c.checked = (w ? w[j] : o.v);
                         break;
+ 
                     case "hidden":
                     case "password":
+                    case "time":
                     case "date":
+                    case "datetime-local":
                     case "text":
                     case "textarea":
                         if (!b) {
@@ -544,10 +549,8 @@
                             if (w){
                             	if(w[j] instanceof Date){
                             		w[j] = new Date(c.value + (o.t == "date" ? " 00:00:00":""));
-                            		/// alert("in: " + j + ":" + w[j]);
                             	}
                             	else{
-
                             		w[j] = c.value;
                             	}
                             }
@@ -555,16 +558,16 @@
 
                         else{
                         	if(w && (w[j] instanceof Date)){
-                        		/// alert("in: " + j + ":" + w[j]);
-                        		if(o.t != "date") c.value = (w[j].getMonth() + 1) + "/" + w[j].getDate() + "/" + w[j].getFullYear();
-                        		else c.value = w[j].getFullYear() + "-" + HemiEngine.text.pad((w[j].getMonth() + 1),2) + "-" + HemiEngine.text.pad(w[j].getDate(),2);
+                        		if(o.t == "datetime-local" || o.t == "text") c.value = new Date(w[j].getTime() - (w[j].getTimezoneOffset() * 60000)).toISOString().slice(0,16);
+                        		else if(o.t == "date") c.value = w[j].getFullYear() + "-" + HemiEngine.text.pad((w[j].getMonth() + 1),2) + "-" + HemiEngine.text.pad(w[j].getDate(),2);
+                        		else c.value = (w[j].getMonth() + 1) + "/" + w[j].getDate() + "/" + w[j].getFullYear();
+                        		
                         	}
                         	else{
                         		c.value = (w ? w[j] : o.v);
                         	}
                         }
-                        
-                        /// if (w) alert(b + ":" + j + ":" + w[j]);
+
                         break;
                     case "select-multiple":
                         if (!b) {
@@ -642,7 +645,7 @@
 
 
                 _m.sendMessage("Synchronize " + (b ? "in" : "out") + " '" + o.n + "'", "200.1");
-                Hemi.message.service.publish("onsynchronizevalue", x);
+                Hemi.message.service.publish("onsynchronizevalue" + (b ? "in" : "out"), x);
 
             };
 

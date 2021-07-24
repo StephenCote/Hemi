@@ -7,42 +7,84 @@
 			// Create a contex-sensitive handler
 			//
 
+			var oC = this.getContainer();
+			var _o = this.getObjects();
+			var _p = this.getProperties();
+			if(oC.nodeName && oC.nodeName.match(/^input$/gi) && oC.getAttribute("type").match(/^datetime-local/gi)  && oC.type.match(/^text/gi)){
+				/// patch with 'date' and 'time' for FireFox
+				console.log('patch firefox datetime-local');
+				var d = (oC.value.match(/^\d+/) ? new Date(oC.value) : new Date());
+
+				_p.ffPatch = 1;
+				oC.style.display = "none";
+				var oD = document.createElement("input");
+				oD.setAttribute("type","date");
+				oD.setAttribute("value",d.getFullYear() + "-" + HemiEngine.text.pad((d.getMonth() + 1),2) + "-" + HemiEngine.text.pad(d.getDate(),2));
+				oC.parentNode.insertBefore(oD,oC.nextSibling);
+				oD.disabled = oC.disabled;
+				_o.dateField = oD;
+				
+				oD = document.createElement("input");
+				oD.setAttribute("type","time");
+				oD.setAttribute("value",HemiEngine.text.pad(d.getHours(),2) + ":" + HemiEngine.text.pad(d.getMinutes(),2));
+				oC.parentNode.insertBefore(oD,oD.nextSibling);	
+				oD.disabled = oC.disabled;
+				
+				
+				_o.timeField = oD;
+				this.scopeHandler("sync2in_value",0,0,1);
+				this.scopeHandler("sync2out_value",0,0,1);
+				
+				Hemi.message.service.subscribe(this,"onsynchronizevaluein","_prehandle_sync2in_value", Hemi.registry.service.getObject(this.getContainerId()));
+				Hemi.message.service.subscribe(this,"onsynchronizevalueout","_prehandle_sync2out_value", Hemi.registry.service.getObject(this.getContainerId()));
+				console.log('attempt sync');
+				this.synchronize2Value(this,1);
+
+			}
 		},
 		_handle_sync_value : function(s, v){
 			this.synchronizeValue();
 		},
+		_handle_sync2in_value : function(s, v){
+			this.synchronize2Value(v,1);
+		},
+		_handle_sync2out_value : function(s, v){
+			this.synchronize2Value(v,0);
+		},
 		buildCalendar : function(){
 			if(this.getProperties().build) return;
 			this.getProperties().build = 1;
-			if(this.getContainer().nodeName && this.getContainer().nodeName.match(/^input$/gi) && this.getContainer().type.match(/^date/gi)){
-				/*
-				var oD = new Date();
-				this.getContainer().value =  oD.getFullYear() + "-" + Hemi.text.pad((oD.getMonth() + 1),2) + "-" + Hemi.text.pad(oD.getDate(),2);
-				alert('set: ' + oD.getFullYear() + "-" + Hemi.text.pad((oD.getMonth() + 1),2) + "-" + Hemi.text.pad(oD.getDate(),2) + " == " + this.getContainer().value);
-				*/
+			var oC = this.getContainer();
+			var _o = this.getObjects();
+
+			if(oC.nodeName && oC.nodeName.match(/^input$/gi) && oC.type.match(/^date/gi)){
+				return;
+			}
+			if(oC.nodeName && oC.nodeName.match(/^input$/gi) && oC.getAttribute("type").match(/^datetime-local/gi)  && oC.type.match(/^text/gi)){
+				/// patched in init
 				return;
 			}
 
 			Hemi.css.loadStyleSheet("Styles/caltasche.css","caltasche");
 			this.scopeHandler("calendar_click",0,0,1);
 			this.scopeHandler("sync_value",0,0,1);
-			this.getProperties().local_calendar_click = this.getContainer().getAttribute("localcalendarclick");
+			this.getProperties().local_calendar_click = oC.getAttribute("localcalendarclick");
 
 			var fp = this._prehandle_calendar_click;
 			var o = document.createElement("div");
 			o.className = "caltasche_container";
 			document.body.appendChild(o);
-			this.getObjects().calendar_container = o;
+			_o.calendar_container = o;
 			
 			/// Set a bit for the UI util to recognize this as an alignable control
 			///
 			this.getProperties().can_request = 1;
-			this.getObjects().calendar = Hemi.ui.calendar.newInstance(o);
-			this.getObjects().calendar.setDayLabels("Sun,Mon,Tue,Wed,Thu,Fri,Sat");
-			this.getObjects().calendar.render();
-			Hemi.message.service.subscribe(this,"ondatechanged",fp, this.getObjects().calendar);
-			Hemi.message.service.subscribe(this,"onselectdate",fp, this.getObjects().calendar);
-			Hemi.message.service.subscribe(this,"onsynchronizevalue",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
+			_o.calendar = Hemi.ui.calendar.newInstance(o);
+			_o.calendar.setDayLabels("Sun,Mon,Tue,Wed,Thu,Fri,Sat");
+			_o.calendar.render();
+			Hemi.message.service.subscribe(this,"ondatechanged",fp, _o.calendar);
+			Hemi.message.service.subscribe(this,"onselectdate",fp, _o.calendar);
+			Hemi.message.service.subscribe(this,"onsynchronizevalueout",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
 			
 			this.synchronizeValue();
 		},
@@ -55,6 +97,47 @@
 			}
 			else{
 				Hemi.log("Invalid calendar value: " + this.getContainer().value);
+			}
+		},
+		synchronize2Value : function(v, b){
+
+			if(!v || v == null || !v.getProperties().rid || !v.getProperties().cid){
+				/// may not be valid on initial invoke in the init method
+				return;
+			}
+			var f = Hemi.data.form.service.getFormByName(v.getProperties().rid);
+			if(!f){
+				console.error("Invalid form");
+				return;
+			}
+			var j = v.getProperties().cid;
+			var e = f.getElementByName(j);
+			if(!e){
+				console.error("Invalid element");
+				return;
+			}
+			var o = (e.b ? HemiEngine.registry.service.getObject(e.b) : 0);
+			
+			if(!o){
+				console.error("Unbound sync fix not implemented");
+				return;
+			}
+			if(o.bind) o = o.bind;
+			if(!(o[j] instanceof Date)){
+				console.error("Expected Date object");
+				return;
+			}
+			/// Synchronize into the form
+			var _o = this.getObjects();
+			if(b){
+				_o.dateField.value = o[j].getFullYear() + "-" + HemiEngine.text.pad((o[j].getMonth() + 1),2) + "-" + HemiEngine.text.pad(o[j].getDate(),2);
+				_o.timeField.value = o[j].getHours() + ":" + o[j].getMinutes();
+				console.log("Sync in " + j + ": " + _o.dateField.value + "T" + _o.timeField.value);
+			}
+			else{
+				console.log("Sync out " + j + ": " + this.getContainer().value);
+				this.getContainer().value = _o.dateField.value + "T" + _o.timeField.value;
+				o[j] = new Date(this.getContainer().value);
 			}
 		},
 		_handle_click : function(){
@@ -77,16 +160,21 @@
 			}
 		},
 		component_destroy : function(){
+
 			if(this.getObjects().calendar != null){
 				Hemi.message.service.unsubscribe(this,"ondatechanged", this._prehandle_calendar_click, this.getObjects().calendar);
-				Hemi.message.service.unsubscribe(this,"onsynchronizevalue",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
+				Hemi.message.service.unsubscribe(this,"onsynchronizevalueout",this._prehandle_sync_value, Hemi.registry.service.getObject(this.getContainerId()));
 				this.getObjects().calendar.destroy();
 				document.body.removeChild(this.getObjects().calendar_container);
 			}
-			
+			if(this.getProperties().ffPatch){
+				Hemi.message.service.unsubscribe(this,"onsynchronizevaluein","_prehandle_sync2in_value", Hemi.registry.service.getObject(this.getContainerId()));
+				Hemi.message.service.unsubscribe(this,"onsynchronizevaluein","_prehandle_sync2out_value", Hemi.registry.service.getObject(this.getContainerId()));
+			}
 			this._prehandle_calendar_click = 0;
 		},
 		_handle_calendar_click : function(v, b){
+			if(this.getProperties().ffPatch) return;
 			this.getContainer().value =  (this.getObjects().calendar.getCurrentMonth() + 1) + "/" + this.getObjects().calendar.getCurrentDay() + "/" + this.getObjects().calendar.getCurrentYear();
 			if(this.getProperties().local_calendar_click){
 				eval(this.getProperties().local_calendar_click)(v, b);

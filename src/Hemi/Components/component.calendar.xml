@@ -37,7 +37,7 @@
 				
 				Hemi.message.service.subscribe(this,"onsynchronizevaluein","_prehandle_sync2in_value", Hemi.registry.service.getObject(this.getContainerId()));
 				Hemi.message.service.subscribe(this,"onsynchronizevalueout","_prehandle_sync2out_value", Hemi.registry.service.getObject(this.getContainerId()));
-				console.log('attempt sync');
+
 				this.synchronize2Value(this,1);
 
 			}
@@ -131,11 +131,11 @@
 			var _o = this.getObjects();
 			if(b){
 				_o.dateField.value = o[j].getFullYear() + "-" + HemiEngine.text.pad((o[j].getMonth() + 1),2) + "-" + HemiEngine.text.pad(o[j].getDate(),2);
-				_o.timeField.value = o[j].getHours() + ":" + o[j].getMinutes();
-				console.log("Sync in " + j + ": " + _o.dateField.value + "T" + _o.timeField.value);
+				_o.timeField.value = HemiEngine.text.pad(o[j].getHours(),2) + ":" + HemiEngine.text.pad(o[j].getMinutes(),2);
+				/// console.log("Sync in " + j + ": " + _o.dateField.value + "T" + _o.timeField.value);
 			}
 			else{
-				console.log("Sync out " + j + ": " + this.getContainer().value);
+				/// console.log("Sync out " + j + ": " + this.getContainer().value);
 				this.getContainer().value = _o.dateField.value + "T" + _o.timeField.value;
 				o[j] = new Date(this.getContainer().value);
 			}

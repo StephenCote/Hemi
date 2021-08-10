@@ -21,8 +21,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cote.example.EntitySchema;
 import org.cote.example.objects.ExampleType;
 import org.cote.rpc.SchemaBean;
@@ -32,7 +32,7 @@ import org.cote.rpc.ServiceSchemaBuilder;
 @Path("/example")
 public class ExampleService{
 
-	public static final Logger logger = Logger.getLogger(ExampleService.class.getName());
+	private static final Logger logger = LogManager.getLogger(ExampleService.class);
 	private static DatatypeFactory dataTypeFactory = null;
 	
 	/*

@@ -927,7 +927,7 @@
 				var j, j2, a = oX.getElementsByTagName("embedded-script"), _p = this.objects, i, t, x;
 				
 				for (i = a.length - 1; i >= 0; i--) {
-					t = HemiEngine.xml.getInnerText(a[i]);
+					t = this._handle_xhtml_token(2, HemiEngine.xml.getInnerText(a[i]));
 					if (!b) a[i].parentNode.removeChild(a[i]);
 
 					try {

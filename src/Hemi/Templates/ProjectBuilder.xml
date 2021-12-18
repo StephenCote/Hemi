@@ -72,12 +72,6 @@
 		<span rid ="project_model_controls" style ="display:none;">
 			<select rid ="project_link_type"><option>TaskList</option><option>Template</option><option>Fragment</option><option>Component</option></select>
 			<input type ="button" value ="Link" onclick ="${this}.LinkToProject()" />
-		<!--
-			<input type ="button" value ="Link Template" onclick ="${this}.LinkTemplateToProject()" />
-			<input type ="button" value ="Link Fragment" onclick ="${this}.LinkFragmentToProject()" />
-			<input type ="button" value ="Link Component" onclick ="${this}.LinkComponentToProject()" />
-			<input type ="button" value ="Link Task List" onclick ="${this}.LinkTaskListToProject()" />
-		-->
 			<input type ="button" value ="Remove" onclick ="${this}.RemoveProjectLink()" />
 		</span>
 		<br />
@@ -506,12 +500,13 @@
 			var sPB = g_application_path + "media/" + AM6Client.dotPath(AM6Client.currentOrganization) + "/Data" + sP;
 			var regComp = new RegExp("appcomp_path\\s*=\\s*\"(dwac:)*" + sPB + "/Components/([^\"]*)\"","g");
 			var regFrag = new RegExp("(dwac:)*" + sPB + "/Fragments/([\\S\\s]+)");
+			var regTemp = /\.loadTemplate\(['"]((~\/DWAC|\/Home\/[A-Za-z0-9@\.]\/DWAC|\/AccountManagerService\/media\/[\S\.]+\/[A-Za-z0-9@\.]+\/DWAC))\/(Fragments|Templates|Components|Tasks|Modules)\/(\S+)['"]\)/;
+			var regWin = /(Hemi\.app\.createWindow\(["'\sA-Za-z0-9+\.]+\s*,\s*["'])((~\/DWAC|\/Home\/[A-Za-z0-9@\.]\/DWAC|\/AccountManagerService\/media\/[\S\.]+\/[A-Za-z0-9@\.]+\/DWAC))\/(Fragments|Templates)\/([\sA-Za-z0-9\._\-+]+)(['"])/;
 			var oM;
 			var aBuff = [];
 			var oImports = oNode.getElementsByTagName("import-xml");
 			for(var i = oImports.length - 1; i>=0; i--){
 				var sHref = Hemi.text.trim(oImports[i].getAttribute("src"));
-				//alert("'" + sHref + "\n" + regFrag + "\n" + sHref.match(regFrag));
 				if((oM = sHref.match(regFrag)) && oM.length > 1){
 					var oSwap = oXml.createElement("import-dxml");
 					var bUseKey = oM[2].match(/^ID\-/) ? 1 : 0;
@@ -540,12 +535,19 @@
 					// <import-dxml context-path = "/DWAC/fragments/fragment/div" src = "${dwac.path}" />
 				}
 			}
-			//var regComp = new RegExp("appcomp_path\\s*=\\s*" + g_application_path + "/DWAC/" + Hemi.data.io.service.getSubject().name + "/Components/([\\S\\s]+[^\"])");
 			var sText = Hemi.xml.serialize(oNode);
-			/// alert(sText + "\n" + sText.match(regComp));
 			sText = sText.replace(regComp,"appcomp_path = \"${dwac.path}\"");
 			sText = sText.replace(/<html\-fragment>/,"<span>");
 			sText = sText.replace(/<\/html\-fragment>/,"</span>");
+			
+			var m;
+			while((m = sText.match(regTemp)) && m.length > 1){
+				sText = sText.replace(regTemp, '.loadTemplate("${dwac.path}","' + m[4] + '")');
+			}
+			while((m = sText.match(regWin)) && m.length > 1){
+				sText = sText.replace(regWin, "$1${dwac.path}[$5]$6");
+			}
+			
 			aBuff.push(sText);
 			//alert(sText);
 			//(/appcomp_path\s*=\s*"\/DWAC\/steve\/Components\/([\S\s]+)/)

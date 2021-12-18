@@ -170,7 +170,7 @@
         /// </method>
         createWindow: function (t, l, n, v, b, a, f) {
 
-            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), c, b1, b2, u, d, p, p1, r, ex = /\[([\S\.]+)\]$/;
+            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), c, b1, b2, u, d, p, p1, r, dw = /\/DWAC\//,ex = /\[([\S\.]+)\]$/;
             if (!o) o = HemiEngine.app.getPrimarySpace();
             if (!o) {
                 HemiEngine.logError("Invalid space");
@@ -212,6 +212,10 @@
 		            else
 		                o.space_element.appendChild(d);
 		
+					if(l.match(dw) && (r = l.match(ex)) && r.length){
+						r = r[1];
+						l = l.replace(ex, "");
+					}
 		            var p2 = HemiEngine.app.createApplicationComponent("window", d, o, n);
 		            p2.then((c)=>{
 			            c.setTemplateIsSpace(1);
@@ -235,10 +239,10 @@
 			            m.CenterWindow(c);
 			            c.getFocus();
 			            
-			            if((r = l.match(ex)) && r.length){
-							l = l.replace(ex, "");
+			            if(!r) c.loadTemplate(l);
+			            else{
+							Hemi.app.dwac.newInstance(c.objects.body,l, r, "");
 						}
-			            c.loadTemplate(l, r?r[1]:r);
 			            res(c);
 		            });
 			        

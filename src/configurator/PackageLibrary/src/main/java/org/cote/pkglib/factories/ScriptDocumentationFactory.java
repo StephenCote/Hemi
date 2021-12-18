@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class ScriptDocumentationFactory {
 	}
 	private void bufferInlineDocumentation(PackageType pkg, File recF, StringBuffer buff){
 		try{
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(recF),"UTF-8"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(recF),StandardCharsets.UTF_8));
 			String line = null;
 			Pattern p = Pattern.compile("^\\s*///\\s*(.*)$");
 			String lineChar = System.getProperty("line.separator");
@@ -114,66 +115,56 @@ public class ScriptDocumentationFactory {
 
 			String out_data = PatternUtil.applyPattern(ver_pat, buff.toString());
 			if(out_data == null || out_data.length() == 0) continue;
-			try{
-			
-				Document doc = XmlUtil.GetDocumentFromBytes(out_data.getBytes("UTF-8"));
-				if(doc == null){
-					logger.error("Failed to parse XML from resource " + rec.getName());
-					continue;
-				}
-				
-				String lib_name = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/package/library"));
-	            String lib_desc = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/package/description"));
-	            String src_name = null;
-	            boolean add_lib = false;
-	            if(lib_name != null){
-	            	src_name = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/name"));
-	            	Element ind = doc.createElement("index");
-	            	doc.getDocumentElement().appendChild(ind);
-	            	if(lib_desc != null){
-	            		Element desc = doc.createElement("description");
-	            		ind.appendChild(desc);
-	            		desc.appendChild(doc.createTextNode(lib_desc));
-	            	}
-	            	Element url = doc.createElement("url");
-	            	url.appendChild(doc.createTextNode(lib_name + "_api.html"));
-	            	ind.appendChild(url);
-	            	Element url_t = doc.createElement("url-title");
-	            	url_t.appendChild(doc.createTextNode("API Index"));
-	            	ind.appendChild(url_t);
-	            	out_data = XmlUtil.GetStringFromDoc(doc);
-	            	add_lib = true;
-	            }
-	            
-	            String out_name = recF.getName();
 
-	            String xml_name = out_name.substring(0,out_name.lastIndexOf(".")) + ".xml";
-	            out_name = out_name.substring(0,out_name.lastIndexOf(".")) + ".html";
-	            
-	            FileUtil.emitFile(contextPath + xml_name, out_data);
-	            byte[] trans = XmlUtil.transform(transformer, doc);
-	            FileUtil.emitFile(contextPath + out_name, trans);
-	            //logger.info("Out = " + out_name + " / XML = " + xml_name);
-	            
-	            if(add_lib){
-	            	if(libs.containsKey(lib_name) == false){
-	            		libs.put(lib_name, new ArrayList<DocumentIndexType>());
-	            	}
-	            	DocumentIndexType dit = new DocumentIndexType();
-	            	dit.setName(src_name);
-	            	dit.setPath(out_name);
-	            	dit.setXmlPath(xml_name);
-	            	if(lib_desc != null) dit.setDescription(lib_desc);
-	            	libs.get(lib_name).add(dit);
-	            }
-	            
-	            proc_count++;
-			}
-			catch(UnsupportedEncodingException uee){
-				logger.error(uee.getMessage());
-				out_bool = false;
-				break;
-			}
+			Document doc = XmlUtil.getDocumentFromBytes(out_data.getBytes(StandardCharsets.UTF_8));
+			
+			String lib_name = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/package/library"));
+            String lib_desc = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/package/description"));
+            String src_name = null;
+            boolean add_lib = false;
+            if(lib_name != null){
+            	src_name = XmlUtil.getNodeText(XmlUtil.selectSingleNode(doc,"/source/name"));
+            	Element ind = doc.createElement("index");
+            	doc.getDocumentElement().appendChild(ind);
+            	if(lib_desc != null){
+            		Element desc = doc.createElement("description");
+            		ind.appendChild(desc);
+            		desc.appendChild(doc.createTextNode(lib_desc));
+            	}
+            	Element url = doc.createElement("url");
+            	url.appendChild(doc.createTextNode(lib_name + "_api.html"));
+            	ind.appendChild(url);
+            	Element url_t = doc.createElement("url-title");
+            	url_t.appendChild(doc.createTextNode("API Index"));
+            	ind.appendChild(url_t);
+            	out_data = XmlUtil.getStringFromDoc(doc);
+            	add_lib = true;
+            }
+            
+            String out_name = recF.getName();
+
+            String xml_name = out_name.substring(0,out_name.lastIndexOf(".")) + ".xml";
+            out_name = out_name.substring(0,out_name.lastIndexOf(".")) + ".html";
+            
+            FileUtil.emitFile(contextPath + xml_name, out_data);
+            byte[] trans = XmlUtil.transform(transformer, doc);
+            FileUtil.emitFile(contextPath + out_name, trans);
+            //logger.info("Out = " + out_name + " / XML = " + xml_name);
+            
+            if(add_lib){
+            	if(libs.containsKey(lib_name) == false){
+            		libs.put(lib_name, new ArrayList<DocumentIndexType>());
+            	}
+            	DocumentIndexType dit = new DocumentIndexType();
+            	dit.setName(src_name);
+            	dit.setPath(out_name);
+            	dit.setXmlPath(xml_name);
+            	if(lib_desc != null) dit.setDescription(lib_desc);
+            	libs.get(lib_name).add(dit);
+            }
+            
+            proc_count++;
+
             
 		}
 		if(out_bool && libs.size() > 0){
@@ -205,7 +196,7 @@ public class ScriptDocumentationFactory {
 				FileUtil.emitFile(contextPath + key + "_api.xml", buff.toString());
 				File tst = new File(contextPath + key.toLowerCase() + "_api.xml",buff.toString());
 				if(tst.exists() == false) FileUtil.emitFile(contextPath + key.toLowerCase() + "_api.xml", buff.toString());
-				byte[] indData = XmlUtil.transform(transformer, XmlUtil.GetDocumentFromBytes(buff.toString().getBytes()));
+				byte[] indData = XmlUtil.transform(transformer, XmlUtil.getDocumentFromBytes(buff.toString().getBytes()));
 				FileUtil.emitFile(contextPath +  out_name,indData);
 			}
 		}

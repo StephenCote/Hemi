@@ -1,6 +1,7 @@
 package org.cote.pkglib.factories;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,12 +79,7 @@ public class EncoderFactory {
 						String rec_data = PatternUtil.applyPatternsToResource(pkg, pset, resource);
 						EncodedComponentType encc = new EncodedComponentType();
 						encc.setName(resource.getName());
-						try {
-							encc.setData(ZipUtil.gzipBytes(rec_data.getBytes("UTF-8")));
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						encc.setData(ZipUtil.gzipBytes(rec_data.getBytes(StandardCharsets.UTF_8)));	
 						enc.getComponents().add(encc);
 					}
 				}

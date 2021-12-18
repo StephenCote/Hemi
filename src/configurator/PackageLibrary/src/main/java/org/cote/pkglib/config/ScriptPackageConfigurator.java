@@ -3,6 +3,7 @@ package org.cote.pkglib.config;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class ScriptPackageConfigurator {
 	private String deployPath = "";
 	
 	public ScriptPackageConfigurator(){
-		patterns = new HashMap<String,Pattern>();
+		patterns = new HashMap<>();
 	}
 	
 	public void setConfig(ScriptConfigType config){
@@ -63,17 +64,7 @@ public class ScriptPackageConfigurator {
 	}
 	public boolean initializeConfiguration(String configName){
 		if(encodedFile == null) return false;
-		String contents = null;
-		try {
-			contents = new String(EncoderFactory.getEncodedComponentValue(encodedFile, configName),"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(contents == null){
-			logger.error("Config does nat exist for " + configName);
-			return false;
-		}
+		String contents = new String(EncoderFactory.getEncodedComponentValue(encodedFile, configName),StandardCharsets.UTF_8);
 		scriptConfig = JAXBUtil.importObject(ScriptConfigType.class, contents);
 		setConfig(scriptConfig);
 		return (scriptConfig != null);
@@ -121,20 +112,20 @@ public class ScriptPackageConfigurator {
 		String dlist = scriptConfig.getDistribution().getDocumentListFile();
 		File fdList = new File(contextPath + dlist);
 
-		DocumentListType document_list = null;
+		DocumentListType documentList = null;
 
 		if(fdList.exists() == false){
-			document_list = new DocumentListType();
+			documentList = new DocumentListType();
 		}
 		else{
-			document_list = JAXBUtil.importObject(DocumentListType.class, FileUtil.getFileAsString(contextPath + dlist));
+			documentList = JAXBUtil.importObject(DocumentListType.class, FileUtil.getFileAsString(contextPath + dlist));
 		}
 	
 	
-		String output_path = contextPath + scriptConfig.getDistribution().getOutputFile();
-		File output_file = new File(output_path);
+		String outputPath = contextPath + scriptConfig.getDistribution().getOutputFile();
+		File outputFile = new File(outputPath);
 		try{
-			if(output_file.exists()) output_file.delete();
+			if(outputFile.exists()) outputFile.delete();
 		}
 		catch(Exception e){
 			logger.error("Exception: " + e.getMessage());
@@ -154,66 +145,63 @@ public class ScriptPackageConfigurator {
 		 * 
 		 */
 
-		List<PackageFileType> file_list = fileLinker();
+		List<PackageFileType> fileList = fileLinker();
 		PackageVersionType av = new PackageVersionType();
 		
-        for (int i = 0; i < file_list.size(); i++)
+        for (int i = 0; i < fileList.size(); i++)
         {
         	
 			av.setMajorVersion(0);
 			av.setMinorVersion(0);
 			av.setBuildVersion(0);
 
-			File info = new File(output_path);
-			if(file_list.get(i).getName().equals(info.getName())){
-				logger.info("Skip output file entry: " + file_list.get(i).getName());
+			File info = new File(outputPath);
+			if(fileList.get(i).getName().equals(info.getName())){
+				logger.info("Skip output file entry: " + fileList.get(i).getName());
 				continue;
 			}
 		
 			Date last_modified = new Date(info.lastModified());
 
-			DocumentType file_node = getDocumentByName(document_list, file_list.get(i).getName());
+			DocumentType file_node = getDocumentByName(documentList, fileList.get(i).getName());
 			if(file_node == null){
-                logger.info("Add new entry: " + file_list.get(i).getName());
+                logger.info("Add new entry: " + fileList.get(i).getName());
 				file_node = new DocumentType();
-				file_node.setFileName(file_list.get(i).getName());
+				file_node.setFileName(fileList.get(i).getName());
 				file_node.setLastModified(CalendarUtil.getXmlGregorianCalendar(last_modified));
-				document_list.getDocuments().add(file_node);
+				documentList.getDocuments().add(file_node);
 			}
 		
 		
-			boolean file_changed = (last_modified.getTime() > file_node.getLastModified().toGregorianCalendar().getTimeInMillis())?true:false;
+			boolean fileChanged = (last_modified.getTime() > file_node.getLastModified().toGregorianCalendar().getTimeInMillis())?true:false;
 
-            file_list.get(i).setData(applyPatternsToPackageFileType(file_list.get(i).getData(), file_list.get(i).getName(), av, file_changed));
-			file_list.get(i).setRawData(applyPatternsToPackageFileType(file_list.get(i).getRawData(), file_list.get(i).getName(), av, file_changed));
+            fileList.get(i).setData(applyPatternsToPackageFileType(fileList.get(i).getData(), fileList.get(i).getName(), av, fileChanged));
+			fileList.get(i).setRawData(applyPatternsToPackageFileType(fileList.get(i).getRawData(), fileList.get(i).getName(), av, fileChanged));
 
-			if(file_changed) file_node.setLastModified(CalendarUtil.getXmlGregorianCalendar(last_modified));
+			if(fileChanged) file_node.setLastModified(CalendarUtil.getXmlGregorianCalendar(last_modified));
 			file_node.setVersion(PackageVersionFactory.getVersion(av));
-
-			//logger.info("Script File " + file_list.get(i).getName() + " (" + last_modified + ")");
 		
-			if(file_list.get(i).getWrap()){
-				wrapper.append("\r\n" + (new String(file_list.get(i).getData(),"UTF-8")));
+			if(fileList.get(i).getWrap()){
+				wrapper.append("\r\n" + (new String(fileList.get(i).getData(),StandardCharsets.UTF_8)));
 			}
 			else{
-				data.append("\r\n" + (new String(file_list.get(i).getData(),"UTF-8")));
+				data.append("\r\n" + (new String(fileList.get(i).getData(),StandardCharsets.UTF_8)));
 			}
 		} // end for files loop
 
 		/*
 		 * Handle code wrapping / embedding
 		 */
-		String config_data = data.toString();
-		String wrapper_data = wrapper.toString();
-		String wrapper_token = "%WRAP_CODE%";
-		if(wrapper_data.length() > 0){
+		String configData = data.toString();
+		String wrapperData = wrapper.toString();
+		String wrapperToken = "%WRAP_CODE%";
+		if(wrapperData.length() > 0){
 		
-			//Pattern expr = GetBufferPattern(wrapper_token);
-			Matcher m = getBufferMatcher(wrapper_token,wrapper_data);
+			Matcher m = getBufferMatcher(wrapperToken,wrapperData);
 			if(m.find()){
 			
-				config_data = m.replaceAll(config_data);
-				wrapper_data = null;
+				configData = m.replaceAll(configData);
+				wrapperData = null;
 			}
 		}
 		/* clear out data buffer */
@@ -221,16 +209,16 @@ public class ScriptPackageConfigurator {
 		data = null;
 
 
-		config_data = applyPropertyConfiguration(config_data);
-		config_data = applyPropertySetConfiguration(config_data);
-		config_data = applyPropertyStructsConfiguration(config_data, dataset_id);
-		config_data = applyFilePatterns(config_data);
-		config_data = applyFileHeaderFooter(output_path,av,config_data);
-		config_data = applySpecialTokens(config_data);
+		configData = applyPropertyConfiguration(configData);
+		configData = applyPropertySetConfiguration(configData);
+		configData = applyPropertyStructsConfiguration(configData, dataset_id);
+		configData = applyFilePatterns(configData);
+		configData = applyFileHeaderFooter(outputPath,av,configData);
+		configData = applySpecialTokens(configData);
 		
-		logger.info("Writing configured resource: " + output_path);
-			if(writeFile(output_path,config_data, true) == false){
-				logger.error("Failed to Write " + output_path);
+		logger.info("Writing configured resource: " + outputPath);
+			if(writeFile(outputPath,configData, true) == false){
+				logger.error("Failed to Write " + outputPath);
 			}
 	
 	
@@ -243,15 +231,15 @@ public class ScriptPackageConfigurator {
 			* 
 			*/
 			//for(int i = 0;i<files.size();i++){
-			for(int i = 0; i < file_list.size(); i++){
-				String out_path = file_list.get(i).getSourcePath();
+			for(int i = 0; i < fileList.size(); i++){
+				String out_path = fileList.get(i).getSourcePath();
 				//logger.info("Writing template: " + out_path);
-				String raw_data = new String(file_list.get(i).getRawData(), "UTF-8");
+				String raw_data = new String(fileList.get(i).getRawData(), StandardCharsets.UTF_8);
 				raw_data = applyPropertyConfiguration(raw_data);
 				raw_data = applyPropertySetConfiguration(raw_data);
 				raw_data = applyPropertyStructsConfiguration(raw_data, dataset_id);
 				raw_data = applyFilePatterns(raw_data);
-				raw_data = applyFileHeaderFooter(output_path, av, raw_data);
+				raw_data = applyFileHeaderFooter(outputPath, av, raw_data);
 				raw_data = applySpecialTokens(raw_data);
 				FileUtil.emitFile(out_path, raw_data);
 
@@ -259,25 +247,23 @@ public class ScriptPackageConfigurator {
 		//}  // end if decodeOnly == false
 		if(encountered_error == true) return false;
 	
-		FileUtil.emitFile(contextPath  + dlist, JAXBUtil.exportObject(DocumentListType.class, document_list));
+		FileUtil.emitFile(contextPath  + dlist, JAXBUtil.exportObject(DocumentListType.class, documentList));
 		return true;
 	}
-	private boolean writeFile(String output_path, String data, boolean overwrite){
-		logger.info("Writing " + output_path);
-		return FileUtil.emitFile(output_path, data);
+	private boolean writeFile(String outputPath, String data, boolean overwrite){
+		logger.info("Writing " + outputPath);
+		return FileUtil.emitFile(outputPath, data);
 	}
 
-	private byte[] applyPatternsToPackageFileType(byte[] file_data_bytes, String name, PackageVersionType av,boolean file_changed) throws UnsupportedEncodingException{
-		String file_data = new String(file_data_bytes,"UTF-8");
+	private byte[] applyPatternsToPackageFileType(byte[] file_data_bytes, String name, PackageVersionType av,boolean fileChanged) throws UnsupportedEncodingException{
+		String file_data = new String(file_data_bytes,StandardCharsets.UTF_8);
 
-			//Pattern expr = getBufferPattern("%FILE_VERSION%");
 			Matcher matcher = getBufferMatcher("%FILE_VERSION%",file_data);
 			
 			String version_name = contextPath + "config/versions/" + name + ".public.xml";
 			if(matcher.find() == true){
 				PackageVersionFactory.importIntoPackageVersion(av, version_name);
-				if(file_changed){
-					//logger.info("Increment build version for " + name);
+				if(fileChanged){
 					av.setBuildVersion(av.getBuildVersion() + 1);
 				}
 				
@@ -326,11 +312,11 @@ public class ScriptPackageConfigurator {
 				logger.info("JSConfig: Invalid Feature '" + feature_name + "'");
 			}
 		} // end for 
-		return file_data.getBytes("UTF-8");
+		return file_data.getBytes(StandardCharsets.UTF_8);
 	}
 
 
-	public String applyPropertySetConfiguration(String in_data){
+	public String applyPropertySetConfiguration(String inData){
 		for(int j = 0; j < scriptConfig.getPropertySets().size(); j++){
 			PropertySetType pset = scriptConfig.getPropertySets().get(j);
 			String name_token;
@@ -354,7 +340,7 @@ public class ScriptPackageConfigurator {
 				){
 				name_token = "%" + name_attr.toUpperCase() + "%";
 
-				Matcher m = getBufferMatcher(name_token,in_data);
+				Matcher m = getBufferMatcher(name_token,inData);
 				if(m.find()){
 					logger.info("Configure property-set: " + name_attr);
 					StringBuffer value_buff = new StringBuffer();
@@ -376,15 +362,15 @@ public class ScriptPackageConfigurator {
 						}
 					}
 					value_buff.append(set_close);
-					in_data = m.replaceAll(value_buff.toString());
+					inData = m.replaceAll(value_buff.toString());
 				}
 
 			}	
 		}
-		return in_data;
+		return inData;
 	}
 
-	public String applyPropertyConfiguration(String in_data){
+	public String applyPropertyConfiguration(String inData){
 		
 		for(int j=0; j < scriptConfig.getProperties().size(); j++){
 			PropertyType prop = scriptConfig.getProperties().get(j);
@@ -401,16 +387,16 @@ public class ScriptPackageConfigurator {
 				name_token = "%" + name_attr.toUpperCase() + "%";
 
 				
-				Matcher m = getBufferMatcher(name_token,in_data);
+				Matcher m = getBufferMatcher(name_token,inData);
 				if(m.find()){
 					logger.info("Configure property: " + name_attr);
-					in_data = m.replaceAll(value_attr);
+					inData = m.replaceAll(value_attr);
 				}
 
 
 			}		
 		}
-		return in_data;
+		return inData;
 	}
 	private PropertyDataSetType getDataSetById(PropertyStructureCollectionType pcol, int id){
 		PropertyDataSetType dset = null;
@@ -433,7 +419,7 @@ public class ScriptPackageConfigurator {
 		}
 		return pstruct;
 	}
-	public String applyPropertyStructsConfiguration(String in_data, int dataset_id){
+	public String applyPropertyStructsConfiguration(String inData, int dataset_id){
 		
 		for(int j = 0; j <scriptConfig.getPropertyStructures().size(); j++){
 			PropertyStructureCollectionType pstruct = scriptConfig.getPropertyStructures().get(j);
@@ -446,7 +432,7 @@ public class ScriptPackageConfigurator {
 				){
 				name_token = "%" + name_attr.toUpperCase() + "%";
 
-				Matcher m = getBufferMatcher(name_token,in_data);
+				Matcher m = getBufferMatcher(name_token,inData);
 				if(m.find()){
 					logger.info("Configure property-struct: " + name_attr);
 					PropertyDataSetType dataset_0 = getDataSetById(pstruct,0);
@@ -534,18 +520,18 @@ public class ScriptPackageConfigurator {
 							}
 						} // end loop through non-bubbled dataset_0 structs
 					} // end check for dataset_0;
-					in_data = m.replaceAll(value_buff.toString());
+					inData = m.replaceAll(value_buff.toString());
 				}
 
 
 			}	
 		}
 
-		return in_data;
+		return inData;
 	}
 
 	public String applyFilePatterns(String data){
-		String in_data = data;
+		String inData = data;
 
 		for(int i = 0; i < scriptConfig.getPatterns().size(); i++){
 			PatternType pat = scriptConfig.getPatterns().get(i);
@@ -576,26 +562,26 @@ public class ScriptPackageConfigurator {
 				}
 				
 				
-				Matcher m = getBufferMatcher(pattern,in_data);
+				Matcher m = getBufferMatcher(pattern,inData);
 				if(m.find()){
-					in_data = m.replaceAll(replace);
+					inData = m.replaceAll(replace);
 				}
 				else{
 					//logger.info("Didn't match " + pattern);
 				}
 			}
 		}
-		return in_data;
+		return inData;
 	}
 
-	private String applyFileHeaderFooter(String output_path,PackageVersionType av,String in_data) throws UnsupportedEncodingException{
+	private String applyFileHeaderFooter(String outputPath,PackageVersionType av,String inData) throws UnsupportedEncodingException{
 
 
-		File info = new File(output_path);
-		String file_header = scriptConfig.getDistribution().getOutputHeader();
+		File info = new File(outputPath);
+		String fileHeader = scriptConfig.getDistribution().getOutputHeader();
 		String lineChar = System.getProperty("line.separator");
-		if(file_header == null || file_header.length() == 0){
-			file_header = 
+		if(fileHeader == null || fileHeader.length() == 0){
+			fileHeader = 
 				"/*" + lineChar + "\t"
 				+ info.getName().toUpperCase() + " (deployment_version: %FILE_VERSION%)"
 				+ lineChar + lineChar + "\t"
@@ -606,10 +592,10 @@ public class ScriptPackageConfigurator {
 		}
 
 		String name_token = "%OUTPUT_FILE%";
-		Matcher match = getBufferMatcher(name_token,file_header);
+		Matcher match = getBufferMatcher(name_token,fileHeader);
 
 		if(match.find()){
-			file_header = match.replaceAll(info.getName());
+			fileHeader = match.replaceAll(info.getName());
 		}
 
 
@@ -623,35 +609,35 @@ public class ScriptPackageConfigurator {
 				;
 		}
 	
-		file_header = new String(applyPatternsToPackageFileType(file_header.getBytes("UTF-8"), info.getName(), av, true),"UTF-8");
+		fileHeader = new String(applyPatternsToPackageFileType(fileHeader.getBytes(StandardCharsets.UTF_8), info.getName(), av, true),StandardCharsets.UTF_8);
 	
-		return (file_header + in_data + file_footer);
+		return (fileHeader + inData + file_footer);
 
 	}
 
-	public String applySpecialTokens(String in_data){
-		String tmp_token = "%CDATA_START%";
-		//Pattern expr = GetBufferPattern(tmp_token);
-		Matcher match = getBufferMatcher(tmp_token,in_data);
+	public String applySpecialTokens(String inData){
+		String tmpToken = "%CDATA_START%";
+		//Pattern expr = GetBufferPattern(tmpToken);
+		Matcher match = getBufferMatcher(tmpToken,inData);
 		if(match.find()){
-			in_data = match.replaceAll("<![CDATA[");
+			inData = match.replaceAll("<![CDATA[");
 		}
 	
-		tmp_token = "%CDATA_STOP%";
-		//expr = GetBufferPattern(tmp_token);
-		match = getBufferMatcher(tmp_token,in_data);
+		tmpToken = "%CDATA_STOP%";
+		//expr = GetBufferPattern(tmpToken);
+		match = getBufferMatcher(tmpToken,inData);
 		if(match.find()){
-			in_data = match.replaceAll("]]>");
+			inData = match.replaceAll("]]>");
 		}
 
-		tmp_token = "%FILE_SIZE%";
-		//expr = GetBufferPattern(tmp_token);
-		match = getBufferMatcher(tmp_token,in_data);
+		tmpToken = "%FILE_SIZE%";
+
+		match = getBufferMatcher(tmpToken,inData);
 		if(match.find()){
-			in_data = match.replaceAll(Integer.toString(in_data.length()));				
+			inData = match.replaceAll(Integer.toString(inData.length()));				
 		}
 	
-		return in_data;
+		return inData;
 
 	}
     private void linkFile(List<PackageFileType> out_list, List<PackageFileType> work_list, Map<String, Integer> list_map, int work_index) throws Exception
@@ -766,7 +752,7 @@ public class ScriptPackageConfigurator {
                 data = FileUtil.getFile(file_data.getSourcePath());
             }
 			*/
-		    String data_str = new String(data,"UTF-8");
+		    String data_str = new String(data,StandardCharsets.UTF_8);
 		    if(data_str.contains("<source")) logger.error("Remove inline documentation from file: " + file_data.getSourcePath());
 			file_data.setRawData(data);
             if (use_linker)
@@ -782,7 +768,7 @@ public class ScriptPackageConfigurator {
                 	data_str = match.replaceAll("");
                 }
             }
-			file_data.setData(data_str.getBytes("UTF-8"));
+			file_data.setData(data_str.getBytes(StandardCharsets.UTF_8));
 			work_list.add(file_data);
 			if(file_data.getLinkBase()) out_list.add(file_data);
         }

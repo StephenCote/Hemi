@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class PatternUtil {
 			try{
 			File f = PackageFactory.getResourceFile(pkg, rec);
 	
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),StandardCharsets.UTF_8));
 			StringWriter strWriter = new StringWriter();
 			BufferedWriter writer = new BufferedWriter(strWriter);
 			
@@ -105,19 +106,13 @@ public class PatternUtil {
 			}
 		}
 		else{
-			try {
-				//File p = new File(pkg.getConfigPath());
-				//File f = new File((new File(pkg.getConfigPath()).getParent(),rec.getSourceFile());
-				out_string = new String(StreamUtil.fileHandleToBytes(new File((new File(pkg.getConfigPath())).getParent(),rec.getSourceFile())),"UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			out_string = new String(StreamUtil.fileHandleToBytes(new File((new File(pkg.getConfigPath())).getParent(),rec.getSourceFile())),StandardCharsets.UTF_8);
+
 		}
 		List<PatternType> patterns = pset.getPatterns();
 		PatternType pattern = null;
 		for(int p = 0; p < patterns.size(); p++){
-			pattern = (PatternType)patterns.get(p);
+			pattern = patterns.get(p);
 			if(pattern.getReplace() != null && pattern.getReplace().equals("%VERSION%")){
 				pattern.setVolatileReplace(pkg.getMajorVersion() + "." + pkg.getMinorVersion() + "." + pkg.getBuildVersion());
 			}

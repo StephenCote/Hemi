@@ -43,7 +43,7 @@ public class ConfigReader{
 	}
 	
 	public boolean init(byte[] config_bytes){
-		xmlConfig = XmlUtil.GetDocumentFromBytes(config_bytes);
+		xmlConfig = XmlUtil.getDocumentFromBytes(config_bytes);
 		this.config_path = null;
 		ready = false;
 		if(xmlConfig != null && xmlConfig.getDocumentElement() != null) ready = true;
@@ -85,7 +85,7 @@ public class ConfigReader{
 		return true;
 	}
 	protected boolean dumpToDisk(String path){
-		String contents = XmlUtil.GetStringFromDoc(xmlConfig);
+		String contents = XmlUtil.getStringFromDoc(xmlConfig);
 		return FileUtil.emitFile(path, contents);
 	}
 	public boolean setCDATAParam(String paramSetName,String paramName,String paramValue){

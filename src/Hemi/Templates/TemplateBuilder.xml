@@ -74,6 +74,7 @@
 			this.GetLinkedFragmentModel().setResultHandler( this._prehandle_linkedfragmentmodelclick);
 			this.refreshBuilderUI();
 			this.RefreshTemplateBuilder();
+			window.dbgForm = this;
 		},
 		template_destroy : function(){
 			this._prehandle_templatemodelclick = 0;
@@ -456,7 +457,7 @@
 			this.GetLinkedFragmentModel().clearItems();
 				 
 			var regEmb = /<embedded\-script>[\s\S]*?<\/embedded\-script>/;
-			var regTemp = /<template[A-Za-z0-9=\s"]*>([\s\S]*?)<\/template>/mi;
+			var regTemp = /<template[A-Za-z0-9=\s\."]*>([\s\S]*?)<\/template>/mi;
 			var oM;
 			var sXhtmlContent = "";
 			if((oM = sTempText.match(regTemp)) && oM.length > 1){

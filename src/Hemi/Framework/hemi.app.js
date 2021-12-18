@@ -170,7 +170,7 @@
         /// </method>
         createWindow: function (t, l, n, v, b, a, f) {
 
-            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), c, b1, b2, u, d, p, p1;
+            var o = (DATATYPES.TO(v) ? v : HemiEngine.app.space.service.getSpace(v)), c, b1, b2, u, d, p, p1, r, ex = /\[([\S\.]+)\]$/;
             if (!o) o = HemiEngine.app.getPrimarySpace();
             if (!o) {
                 HemiEngine.logError("Invalid space");
@@ -234,7 +234,11 @@
 			            c.setHideOnClose(1);
 			            m.CenterWindow(c);
 			            c.getFocus();
-			            c.loadTemplate(l);
+			            
+			            if((r = l.match(ex)) && r.length){
+							l = l.replace(ex, "");
+						}
+			            c.loadTemplate(l, r?r[1]:r);
 			            res(c);
 		            });
 			        

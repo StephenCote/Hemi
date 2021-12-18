@@ -542,7 +542,7 @@
 			
 			var m;
 			while((m = sText.match(regTemp)) && m.length > 1){
-				sText = sText.replace(regTemp, '.loadTemplate("${dwac.path}","' + m[4] + '")');
+				sText = sText.replace(regTemp, '.loadTemplate(\'${dwac.path}\',\'' + m[4] + '\')');
 			}
 			while((m = sText.match(regWin)) && m.length > 1){
 				sText = sText.replace(regWin, "$1${dwac.path}[$5]$6");

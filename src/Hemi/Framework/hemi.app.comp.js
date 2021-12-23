@@ -823,8 +823,8 @@
 				var t = this, _s, p;
 				_s = t.properties;
 				if (typeof s != DATATYPES.TYPE_STRING){
-					console.warn("Component definition is null");
-					return 0;
+					console.warn("Component definition is a string");
+					/// return 0;
 				}
 
 				/*
@@ -850,9 +850,13 @@
 
 						_s.TransactionName = _s.n;
 				}
-
-				s = '{' + s + '}';
-				HemiEngine.util.merge(t, _s.n, s);
+				if(typeof s == DATATYPES.TYPE_STRING){
+					s = '{' + s + '}';
+					HemiEngine.util.merge(t, _s.n, s);
+				}
+				else if(typeof s == DATATYPES.TYPE_OBJECT){
+					
+				}
 
 				/*
 				Invoke the component initialization handler.
@@ -1026,47 +1030,50 @@
 			///		</method>
 			n.loadTemplateFromNode = function (oX) {
 				var a, o = this.getContainer(), x, i, t, _p = this.objects, b = this.properties.te, q, z;
-				if (!oX) return;
-				q = oX;
-				z = this.properties.tid;
-				if (q.nodeName.match(/^Template$/) != null) {
-					if (z && q.getAttribute("id") != z) return;
-				}
-				else {
-					a = oX.getElementsByTagName("Template");
-					if (!a.length) return;
-					if (!z) q = a[0];
-					else {
-						q = 0;
-						for (i = 0; i < a.length; i++) {
-							if (a[i].getAttribute("id") == z) {
-								q = a[i];
-								break;
-							}
-						}
-						if (!q) return;
+				/// if (!oX) return;
+
+				if(oX){
+					q = oX;
+					z = this.properties.tid;
+					if (q.nodeName.match(/^Template$/) != null) {
+						if (z && q.getAttribute("id") != z) return;
 					}
+					else {
+						a = oX.getElementsByTagName("Template");
+						if (!a.length) return;
+						if (!z) q = a[0];
+						else {
+							q = 0;
+							for (i = 0; i < a.length; i++) {
+								if (a[i].getAttribute("id") == z) {
+									q = a[i];
+									break;
+								}
+							}
+							if (!q) return;
+						}
+					}
+	
+					this.properties.tid = 0;
+	
+					if (typeof this.setTitle == DATATYPES.TYPE_FUNCTION) this.setTitle(q.getAttribute("Title"));
+					/// Import any embedded-script elements
+					///
+					/// 2019/04/05 - Set the preserve bit to true since the mechanism by which the xml is being passed in
+					/// changed
+					this.importEmbeddedScript(q, 1);
+		
+					if (typeof this.getTemplateContainer == DATATYPES.TYPE_FUNCTION) o = this.getTemplateContainer();
+					HemiEngine.xml.removeChildren(o);
+				
+					a = q.childNodes;
+					for (i = 0; i < a.length; )
+						HemiEngine.xml.setInnerXHTML(o, a[i++], 1, 0, 0, 0, 0, this._handle_xhtml_token);
 				}
-
-				this.properties.tid = 0;
-
-				if (typeof this.setTitle == DATATYPES.TYPE_FUNCTION) this.setTitle(q.getAttribute("Title"));
-				/// Import any embedded-script elements
-				///
-				/// 2019/04/05 - Set the preserve bit to true since the mechanism by which the xml is being passed in
-				/// changed
-				this.importEmbeddedScript(q, 1);
-
-				if (typeof this.getTemplateContainer == DATATYPES.TYPE_FUNCTION) o = this.getTemplateContainer();
-				HemiEngine.xml.removeChildren(o);
-
-				a = q.childNodes;
-				for (i = 0; i < a.length; )
-					HemiEngine.xml.setInnerXHTML(o, a[i++], 1, 0, 0, 0, 0, this._handle_xhtml_token);
-
 				/// check for any spaces in the loaded templates
 				///
 				/// console.log("Checking for spaces loaded in template: " + b + " / " + this.properties.ei);
+
 				if (b) {
 					o.setAttribute("space-config", "self");
 					if (!this.properties.ei) {

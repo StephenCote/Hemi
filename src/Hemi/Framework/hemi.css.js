@@ -46,7 +46,7 @@
 			if (_s[n]) return;
 			/* location.protocol.match(/^http/i) && */
 			/// if(!u.match(/^\//)) u = HemiEngine.hemi_base + u;
-			if(!u.match(/^\//)) u = HemiEngine.css.getCSSBase() + u;
+			if(!u.match(/^\//) && !u.match(/^http/)) u = HemiEngine.css.getCSSBase() + u;
 			if(typeof document.createStyleSheet != DATATYPES.TYPE_UNDEFINED){
 				o = document.createStyleSheet(u);
 				if(o)

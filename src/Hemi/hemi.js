@@ -1459,7 +1459,7 @@ if (typeof window != "object") window = {};
         form_content_type: "application/x-www-form-urlencoded",
         _xml_requests: [],
         _xml_requests_map: [],
-
+       	withCredentials : true,
          _xml_http_cache_enabled: 1,
 
         /// <method>
@@ -2165,6 +2165,8 @@ if (typeof window != "object") window = {};
             z = (t ? (t==2?_x.json_content_type : _x.text_content_type) : _x.xml_content_type);
             if (_x.auto_content_type && !t && typeof d == DATATYPES.TYPE_STRING) z = HemiEngine.xml.form_content_type;
             o.setRequestHeader("Content-Type", z);
+            /// 2022/01/04 - add option to set withCredentials
+            o.withCredentials = _x.withCredentials;
             o.send(d);
             
             if (!a) {

@@ -1,0 +1,9 @@
+[INFO ] 2021-12-23 16:43:51.733 [main] PackageConfigurator - PackageConfigurator
+[INFO ] 2021-12-23 16:43:51.744 [main] PackageConfigurator - Processing C:\Users\swcot\Documents\GitHub\Hemi\src\Hemi\HemiFramework.package.xml with C:\Users\swcot\Documents\GitHub\Hemi\src\Hemi\config.xml
+[INFO ] 2021-12-23 16:43:52.152 [main] ScriptDocumentationFactory - Generating documentation in ./export/HemiFramework/api/
+[INFO ] 2021-12-23 16:43:52.974 [main] ScriptDocumentationFactory - Skipping non JavaScript resource
+[INFO ] 2021-12-23 16:43:52.974 [main] ScriptDocumentationFactory - Skipping non JavaScript resource
+[INFO ] 2021-12-23 16:43:52.975 [main] ScriptDocumentationFactory - Generating documentation index in ./export/HemiFramework/api/
+[INFO ] 2021-12-23 16:43:53.106 [main] ScriptPackageConfigurator - Writing configured resource: ./export/HemiFramework/./hemi.comp.js
+[INFO ] 2021-12-23 16:43:53.106 [main] ScriptPackageConfigurator - Writing ./export/HemiFramework/./hemi.comp.js
+[INFO ] 2021-12-23 16:43:53.350 [main] PackageConfigurator - Finished configuration

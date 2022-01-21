@@ -571,6 +571,9 @@ if (typeof window != "object") window = {};
             eval("v=" + HemiEngine.ClassImports[s]);
             return v;
         }
+        else if(DATATYPES.TO(HemiEngine.ClassImports[s])){
+			return Object.assign({}, HemiEngine.ClassImports[s]);
+		}
         switch (s) {
             case "base_object":
                 return {

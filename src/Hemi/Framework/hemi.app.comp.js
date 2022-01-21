@@ -823,7 +823,7 @@
 				var t = this, _s, p;
 				_s = t.properties;
 				if (typeof s != DATATYPES.TYPE_STRING){
-					console.warn("Component definition is a string");
+					console.debug("Component definition is not a string");
 					/// return 0;
 				}
 
@@ -855,7 +855,7 @@
 					HemiEngine.util.merge(t, _s.n, s);
 				}
 				else if(typeof s == DATATYPES.TYPE_OBJECT){
-					
+					HemiEngine.util.merge(t, _s.n, s);
 				}
 
 				/*

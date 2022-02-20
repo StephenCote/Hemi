@@ -141,7 +141,7 @@
 			}
 		},
 		_handle_click : function(){
-			Hemi.log("Handle cal field click");
+			// Hemi.log("Handle cal field click");
 			this.buildCalendar();
 			if(this.getObjects().calendar){
 				if(Hemi.ui.util.getIsRequested(this)){
@@ -156,7 +156,7 @@
 				}
 			}
 			else{
-				Hemi.log("Don't know what to do");
+				// Hemi.log("Don't know what to do");
 			}
 		},
 		component_destroy : function(){
